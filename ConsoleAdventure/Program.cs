@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ConsoleAdventure.Settings;
+using System;
 
 namespace ConsoleAdventure
 {
@@ -10,6 +7,15 @@ namespace ConsoleAdventure
     {
         static void Main(string[] args)
         {
+            World.World world = new World.World();
+            string lastKey;
+
+            while (true)
+            {
+                Console.Write($"{Docs.GetInfo()}\n\n{world.Render()}");
+                lastKey = Console.ReadKey().ToString();
+                Console.Clear();
+            }
         }
     }
 }
