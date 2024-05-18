@@ -1,22 +1,23 @@
-﻿using System;
-
-namespace ConsoleAdventure.World
+﻿namespace ConsoleAdventure.WorldEngine
 {
     public class Field
     {
         private string description;
-        public FieldType type;
         public Transform content;
 
         public string GetSymbol()
         {
-            switch (type) {
-                case FieldType.empty:
-                    return " .";
-                case FieldType.player:
-                    return " @";
-                case FieldType.wall:
+            if (content == null) return "  ";
+
+            switch (content.renderFieldType) {
+                case RenderFieldType.empty:
+                    return "  ";
+                case RenderFieldType.player:
+                    return " ^";
+                case RenderFieldType.wall:
                     return " #";
+                case RenderFieldType.tree:
+                    return "{}";
                 default:
                     return " ^";
             }

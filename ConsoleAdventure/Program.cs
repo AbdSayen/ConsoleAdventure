@@ -1,3 +1,3 @@
 ﻿
-using var game = new ConsoleAdventure.Game1();
+using var game = new ConsoleAdventure.ConsoleAdventure();
 game.Run();

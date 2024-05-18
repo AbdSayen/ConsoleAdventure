@@ -1,10 +1,13 @@
-﻿using System;
+﻿using ConsoleAdventure.Settings;
 using System.Collections.Generic;
-namespace ConsoleAdventure.World
+
+namespace ConsoleAdventure.WorldEngine
 {
     internal class Renderer
     {
         List<List<List<Field>>> fields;
+        private int viewDistanceY = 20;
+        private int viewDistanceX = 40;
         public Renderer(List<List<List<Field>>> fields) {
             this.fields = fields;
         }
@@ -12,26 +15,19 @@ namespace ConsoleAdventure.World
         public string Render(Transform observer)
         {
             string output = "";
-            for (int y = observer.y - Console.WindowHeight / 3; y < observer.y + Console.WindowHeight / 3; y++)
+            for (int y = observer.position.y - viewDistanceY / 2; y < observer.position.y + viewDistanceY / 2; y++)
             {
                 if (y <= fields[World.FloorLayerId].Count - 1 && y >= 0)
                 {
-                    for (int x = observer.x - Console.WindowWidth / 6; x < observer.x + Console.WindowWidth / 6; x++)
+                    for (int x = observer.position.x - viewDistanceX / 2; x < observer.position.x + viewDistanceX / 2; x++)
                     {
                         if (x <= fields[World.FloorLayerId][y].Count - 1 && x >= 0)
                         {
-                            if (fields[World.MobsLayerId][y][x] != null)
-                            {
-                                output += fields[World.MobsLayerId][y][x].GetSymbol();
-                            }
-                            else if (fields[World.BlocksLayerId][y][x] != null)
-                            {
-                                output += fields[World.BlocksLayerId][y][x].GetSymbol();
-                            }
+                            output += fields[World.BlocksLayerId][y][x].GetSymbol();
                         }
                         else
                         {
-                            output += " #";
+                            output += " `";
                         }
                     }
                     output += "\n";
@@ -39,12 +35,27 @@ namespace ConsoleAdventure.World
                 else
                 {
                     string outputX = "";
-                    for (int x = 0; x < Console.WindowWidth / 3; x++)
+                    for (int x = 0; x < viewDistanceX; x++)
                     {
-                        outputX += " #";
+                        outputX += " `";
                     }
                     output += outputX + "\n";
                 }
+            }
+            return output;
+        }
+
+        public string PrimitiveRender()
+        {
+            string output = string.Empty;
+            for (int y = 0; y < fields[World.FloorLayerId].Count; y++)
+            {
+                for (int x = 0; x < fields[World.FloorLayerId][y].Count; x++)
+                {
+                    output += fields[World.FloorLayerId][y][x].GetSymbol();
+                }
+                output += "\n";
+                Loger.AddLog("Successful");
             }
             return output;
         }

@@ -3,6 +3,6 @@
     public enum MessageType { 
         info,
         error,
-        waring
+        warning
     }
 }

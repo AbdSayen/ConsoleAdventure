@@ -1,17 +1,27 @@
-﻿using ConsoleAdventure.World;
-using System.Collections.Generic;
+﻿using ConsoleAdventure.Settings;
+using ConsoleAdventure.WorldEngine;
+using System.Threading;
 
 namespace ConsoleAdventure
 {
-    public class Transform
+    abstract public class Transform
     {
-        public int x;
-        public int y;
+        protected WorldEngine.World world;
+        protected int worldLayer;
+        
+        public Position position = new Position(0, 0);
+        public RenderFieldType renderFieldType;
         public bool isObstacle;
 
-        public void PostInFields(int layerId, List<List<List<Field>>> fields)
+        protected Transform(WorldEngine.World world, int worldLayer)
         {
-            fields[layerId][y][x].content = this;
+            this.world = world;
+            this.worldLayer = worldLayer;
+        }
+
+        public virtual void Move(int stepSize, Rotation rotation)
+        {
+            world.MoveSubject(this, worldLayer, stepSize, rotation);
         }
     }
 }
