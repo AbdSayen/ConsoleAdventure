@@ -1,7 +1,6 @@
 ﻿using ConsoleAdventure.Settings;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Threading;
 
 namespace ConsoleAdventure
 {
@@ -11,8 +10,8 @@ namespace ConsoleAdventure
         private Microsoft.Xna.Framework.Graphics.SpriteBatch _spriteBatch;
         SpriteFont font;
 
+        Display display = new Display();
         WorldEngine.World world = new WorldEngine.World();
-        string output = "";
 
         public ConsoleAdventure()
         {
@@ -25,6 +24,9 @@ namespace ConsoleAdventure
         {
             _graphics.PreferredBackBufferHeight = 64;
             Window.Title = $"Console Adventure {Docs.version}. By Bonds";
+            _graphics.PreferredBackBufferWidth = 1600;
+            _graphics.PreferredBackBufferHeight = 900;
+            _graphics.ApplyChanges();
             Window.AllowUserResizing = true;
             base.Initialize();
         }
@@ -37,7 +39,6 @@ namespace ConsoleAdventure
 
         protected override void Update(GameTime gameTime)
         {
-            output = $"{Docs.GetInfo()}\n\n{world.Render()}{Loger.GetLogs()}";
             world.ListenEvents();
             base.Update(gameTime);
         }
@@ -47,7 +48,7 @@ namespace ConsoleAdventure
             GraphicsDevice.Clear(Color.White);
 
             _spriteBatch.Begin();
-            _spriteBatch.DrawString(font, output, new Vector2(0, 0), Color.Black);
+            _spriteBatch.DrawString(font, display.Show(world), new Vector2(0, 0), Color.Black);
             _spriteBatch.End();
 
             base.Draw(gameTime);

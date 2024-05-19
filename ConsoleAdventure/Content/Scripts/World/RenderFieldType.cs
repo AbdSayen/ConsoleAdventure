@@ -5,5 +5,8 @@
         player,
         wall,
         tree,
+        floor,
+        door,
+        ruine,
     }
 }

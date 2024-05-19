@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic.Logging;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ConsoleAdventure.Settings
 {
@@ -10,6 +9,10 @@ namespace ConsoleAdventure.Settings
         public static void AddLog(string log)
         {
             logs.Add(log);
+            if (logs.Count > 10)
+            {
+                logs.RemoveAt(0);
+            }
         }
 
         public static void ClearLogs()

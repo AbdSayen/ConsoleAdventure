@@ -1,23 +1,11 @@
-﻿using ConsoleAdventure.Settings;
-
-namespace ConsoleAdventure.World
+﻿namespace ConsoleAdventure.World
 {
     internal class Tree : Transform
     {
-        public Tree(WorldEngine.World world, int worldLayer) : base(world, worldLayer)
+        public Tree(WorldEngine.World world, Position position, int worldLayer) : base(world, position, worldLayer)
         {
             renderFieldType = WorldEngine.RenderFieldType.tree;
             isObstacle = true;
-            //for (int i = 0; i < 30; i++)
-            //{
-            //    Dance();
-            //}
-            //Loger.AddLog("Done.");
-        }
-
-        private void Dance()
-        {
-            Move(1, Rotation.down);
         }
     }
 }

@@ -1,15 +1,19 @@
-﻿using ConsoleAdventure.Content.Scripts.World;
-using ConsoleAdventure.World;
+﻿using ConsoleAdventure.World;
+using ConsoleAdventure.World.Generate;
 using System;
 using System.Collections.Generic;
 
-namespace ConsoleAdventure.WorldEngine
+namespace ConsoleAdventure.WorldEngine.Generate
 {
     internal class Generator
     {
         private Random random;
         private readonly int size;
         private readonly World world;
+
+        private LandspaceGenerator landspaceGenerator = new LandspaceGenerator();
+        private StructureGenerator structureGenerator = new StructureGenerator();
+
         public Generator(World world, int size)
         {
             this.size = size;
@@ -21,13 +25,14 @@ namespace ConsoleAdventure.WorldEngine
             random = new Random(seed);
             Generate();
         }
+
         public void Generate()
         {
             random = new Random();
             GenerateSpace();
             GenerateBarriers();
-            //GenerateTrees();
-            //BuildRuine();
+            structureGenerator.Generate(world, random);
+            landspaceGenerator.Generate(world, random);
         }
 
         private void GenerateSpace()
@@ -55,43 +60,8 @@ namespace ConsoleAdventure.WorldEngine
                     if (y == size - 1 || y == 0 || x == size - 1 || x == 0)
                     {
                         Field field = world.fields[World.BlocksLayerId][x][y];
-                        field.content = new Wall(world, World.BlocksLayerId);
+                        field.content = new Wall(world, new Position(x, y), World.BlocksLayerId);
                         field.content.renderFieldType = RenderFieldType.wall;
-                        field.content.position.SetPosition(x, y);
-                    }
-                }
-            }
-        }
-
-        private void GenerateTrees()
-        {
-            for (int y = 0; y < world.fields[World.BlocksLayerId].Count; y++)
-            {
-                for (int x = 0; x < world.fields[World.BlocksLayerId][y].Count; x++)
-                {
-                    Field field = world.fields[World.BlocksLayerId][y][x];
-
-                    if (field.content == null && random.Next(0, 5) == 0)
-                    {
-                        field.content = new Tree(world, World.BlocksLayerId);
-                        field.content.position.SetPosition(x, y);
-                    }
-                }
-            }
-        }
-
-        private void BuildRuine()
-        {
-            for (int y = 0; y < world.fields[World.BlocksLayerId].Count; y++)
-            {
-                for (int x = 0; x < world.fields[World.BlocksLayerId][y].Count; x++)
-                {
-                    Field field = world.fields[World.BlocksLayerId][x][y];
-                    
-                    if (y == 10 || y == 11)
-                    {
-                        field.content = new Wall(world, World.BlocksLayerId);
-                        field.content.position.SetPosition(x, y);
                     }
                 }
             }

@@ -1,6 +1,4 @@
-﻿using ConsoleAdventure.Settings;
-using ConsoleAdventure.WorldEngine;
-using System.Threading;
+﻿using ConsoleAdventure.WorldEngine;
 
 namespace ConsoleAdventure
 {
@@ -13,10 +11,11 @@ namespace ConsoleAdventure
         public RenderFieldType renderFieldType;
         public bool isObstacle;
 
-        protected Transform(WorldEngine.World world, int worldLayer)
+        protected Transform(WorldEngine.World world, Position position, int worldLayer)
         {
             this.world = world;
             this.worldLayer = worldLayer;
+            this.position = position;
         }
 
         public virtual void Move(int stepSize, Rotation rotation)

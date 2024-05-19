@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 
 namespace ConsoleAdventure
 {
@@ -11,7 +10,7 @@ namespace ConsoleAdventure
         //characteristics
         private int speed = 1;
 
-        public Player(int id, WorldEngine.World world, int worldLayer) : base(world, worldLayer)
+        public Player(int id, WorldEngine.World world, Position position, int worldLayer) : base(world, position, worldLayer)
         {
             this.id = id;
             this.world = world;
@@ -21,7 +20,7 @@ namespace ConsoleAdventure
 
         private void Initiate()
         {
-            position.SetPosition(1, 1);
+            position.SetPosition(5, 5);
         }
 
         public void CheckMove()

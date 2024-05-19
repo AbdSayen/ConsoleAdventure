@@ -1,13 +1,14 @@
 ﻿using ConsoleAdventure.Settings;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ConsoleAdventure.WorldEngine
 {
     internal class Renderer
     {
         List<List<List<Field>>> fields;
-        private int viewDistanceY = 20;
-        private int viewDistanceX = 40;
+        private int viewDistanceY = 40;
+        private int viewDistanceX = 80;
         public Renderer(List<List<List<Field>>> fields) {
             this.fields = fields;
         }
@@ -23,7 +24,22 @@ namespace ConsoleAdventure.WorldEngine
                     {
                         if (x <= fields[World.FloorLayerId][y].Count - 1 && x >= 0)
                         {
-                            output += fields[World.BlocksLayerId][y][x].GetSymbol();
+                            if (fields[World.ItemsLayerId][y][x].content != null)
+                            {
+                                output += fields[World.ItemsLayerId][y][x].GetSymbol();
+                            }
+                            else if (fields[World.MobsLayerId][y][x].content != null)
+                            {
+                                output += fields[World.MobsLayerId][y][x].GetSymbol();
+                            }
+                            else if (fields[World.BlocksLayerId][y][x].content != null)
+                            {
+                                output += fields[World.BlocksLayerId][y][x].GetSymbol();
+                            }
+                            else if (fields[World.FloorLayerId][y][x] != null)
+                            {
+                                output += fields[World.FloorLayerId][y][x].GetSymbol();
+                            }
                         }
                         else
                         {
@@ -47,17 +63,16 @@ namespace ConsoleAdventure.WorldEngine
 
         public string PrimitiveRender()
         {
-            string output = string.Empty;
+            StringBuilder output = new StringBuilder();
             for (int y = 0; y < fields[World.FloorLayerId].Count; y++)
             {
                 for (int x = 0; x < fields[World.FloorLayerId][y].Count; x++)
                 {
-                    output += fields[World.FloorLayerId][y][x].GetSymbol();
+                    output.Append(fields[World.BlocksLayerId][y][x].GetSymbol());
                 }
-                output += "\n";
-                Loger.AddLog("Successful");
+                output.AppendLine();
             }
-            return output;
+            return output.ToString();
         }
     }
 }

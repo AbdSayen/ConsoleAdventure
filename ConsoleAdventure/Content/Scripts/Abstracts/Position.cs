@@ -1,4 +1,6 @@
-﻿namespace ConsoleAdventure
+﻿using ConsoleAdventure.Settings;
+
+namespace ConsoleAdventure
 {
     public class Position
     {

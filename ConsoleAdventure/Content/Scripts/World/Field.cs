@@ -2,6 +2,8 @@
 {
     public class Field
     {
+        public bool isStructure = false;
+        public string structureName { get; set; } = "None";
         private string description;
         public Transform content;
 
@@ -14,12 +16,18 @@
                     return "  ";
                 case RenderFieldType.player:
                     return " ^";
+                case RenderFieldType.ruine:
+                    return "::";
                 case RenderFieldType.wall:
-                    return " #";
+                    return "##";
                 case RenderFieldType.tree:
-                    return "{}";
+                    return " *";
+                case RenderFieldType.floor:
+                    return " .";
+                case RenderFieldType.door:
+                    return "[]";
                 default:
-                    return " ^";
+                    return "??";
             }
 
         }
