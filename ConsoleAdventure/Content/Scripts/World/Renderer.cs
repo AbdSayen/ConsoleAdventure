@@ -7,8 +7,8 @@ namespace ConsoleAdventure.WorldEngine
     internal class Renderer
     {
         List<List<List<Field>>> fields;
-        private int viewDistanceY = 40;
-        private int viewDistanceX = 80;
+        private int viewDistanceY = 30;
+        private int viewDistanceX = 60;
         public Renderer(List<List<List<Field>>> fields) {
             this.fields = fields;
         }
@@ -24,13 +24,13 @@ namespace ConsoleAdventure.WorldEngine
                     {
                         if (x <= fields[World.FloorLayerId][y].Count - 1 && x >= 0)
                         {
-                            if (fields[World.ItemsLayerId][y][x].content != null)
-                            {
-                                output += fields[World.ItemsLayerId][y][x].GetSymbol();
-                            }
-                            else if (fields[World.MobsLayerId][y][x].content != null)
+                            if (fields[World.MobsLayerId][y][x].content != null)
                             {
                                 output += fields[World.MobsLayerId][y][x].GetSymbol();
+                            }
+                            else if (fields[World.ItemsLayerId][y][x].content != null)
+                            {
+                                output += fields[World.ItemsLayerId][y][x].GetSymbol();
                             }
                             else if (fields[World.BlocksLayerId][y][x].content != null)
                             {

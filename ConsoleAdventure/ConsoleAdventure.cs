@@ -10,8 +10,8 @@ namespace ConsoleAdventure
         private Microsoft.Xna.Framework.Graphics.SpriteBatch _spriteBatch;
         SpriteFont font;
 
-        Display display = new Display();
         WorldEngine.World world = new WorldEngine.World();
+        Display display;
 
         public ConsoleAdventure()
         {
@@ -22,12 +22,15 @@ namespace ConsoleAdventure
 
         protected override void Initialize()
         {
+            display = new Display(world);
+
             _graphics.PreferredBackBufferHeight = 64;
             Window.Title = $"Console Adventure {Docs.version}. By Bonds";
             _graphics.PreferredBackBufferWidth = 1600;
             _graphics.PreferredBackBufferHeight = 900;
             _graphics.ApplyChanges();
             Window.AllowUserResizing = true;
+
             base.Initialize();
         }
 
@@ -45,10 +48,11 @@ namespace ConsoleAdventure
         
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(new Color(25, 25, 25));
 
             _spriteBatch.Begin();
-            _spriteBatch.DrawString(font, display.Show(world), new Vector2(0, 0), Color.Black);
+            _spriteBatch.DrawString(font, display.DisplayInfo() + display.DisplayGame(), new Vector2(10, 10), Color.White);
+            _spriteBatch.DrawString(font, display.DisplayInventory(), new Vector2(_graphics.PreferredBackBufferWidth - 300, 10), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);

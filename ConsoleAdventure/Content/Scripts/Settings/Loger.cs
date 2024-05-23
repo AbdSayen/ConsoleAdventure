@@ -23,9 +23,13 @@ namespace ConsoleAdventure.Settings
         public static string GetLogs()
         {
             string output = string.Empty;
+            if (logs.Count > 0)
+            {
+                output += "Logs:\n";
+            }
             for (int i = 0; i < logs.Count; i++)
             {
-                output += $"\n {logs[logs.Count - i - 1]}";
+                output += $"{logs[logs.Count - i - 1]}\n";
             }
             return output;
         }

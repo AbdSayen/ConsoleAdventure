@@ -4,6 +4,7 @@
         empty,
         player,
         wall,
+        loot,
         tree,
         floor,
         door,

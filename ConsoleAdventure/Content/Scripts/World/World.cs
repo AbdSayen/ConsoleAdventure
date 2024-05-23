@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine.Generate;
+﻿using ConsoleAdventure.Settings;
+using ConsoleAdventure.WorldEngine.Generate;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -6,7 +7,8 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class World
     {
-        private int worldSize = 300;
+        static public Language language = Language.russian;
+        private int worldSize = 500;
 
         // [Z][Y][X]
         public List<List<List<Field>>> fields = new List<List<List<Field>>>();
@@ -21,28 +23,28 @@ namespace ConsoleAdventure.WorldEngine
         public static int CountOfLayers = 4;
         public static int FloorLayerId = 0;
         public static int BlocksLayerId = 1;
-        public static int MobsLayerId = 2;
-        public static int ItemsLayerId = 3;
+        public static int ItemsLayerId = 2;
+        public static int MobsLayerId = 3;
 
         public World()
         {
             generator = new Generator(this, worldSize);
             renderer = new Renderer(fields);
-            ConnectPlayer();
             generator.Generate(seed);
+            ConnectPlayer();
         }
 
         public void ConnectPlayer()
         {
-            players.Add(new Player(players.Count, this, new Position(0, 0), World.MobsLayerId));
+            players.Add(new Player(players.Count, this, new Position(100, 100)));
         }
-
+        
         public void ListenEvents()
         {
             timer.Start();
-            for (int i = 0; i < players.Count && timer.Elapsed.TotalMilliseconds > 25; i++)
+            for (int i = 0; i < players.Count && timer.Elapsed.TotalMilliseconds > 35; i++)
             {
-                players[i].CheckMove();
+                players[i].InteractWithWord();
                 timer.Restart();
             }
         }
@@ -50,7 +52,11 @@ namespace ConsoleAdventure.WorldEngine
         public string Render()
         {
             return $"{renderer.Render(players[0])}";
-            //return $"{renderer.PrimitiveRender()}";
+        }
+
+        public void RemoveSubject(Transform subject, int worldLayer)
+        {
+            fields[worldLayer][subject.position.y][subject.position.x].content = null;
         }
 
         public void MoveSubject(Transform subject, int worldLayer, int stepSize, Rotation rotation)

@@ -60,8 +60,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     if (y == size - 1 || y == 0 || x == size - 1 || x == 0)
                     {
                         Field field = world.fields[World.BlocksLayerId][x][y];
-                        field.content = new Wall(world, new Position(x, y), World.BlocksLayerId);
-                        field.content.renderFieldType = RenderFieldType.wall;
+                        new Wall(world, new Position(x, y));
                     }
                 }
             }
