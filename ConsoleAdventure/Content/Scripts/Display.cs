@@ -1,13 +1,12 @@
 ﻿using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
-using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure
 {
-    internal class Display
+    public class Display
     {
-        private WorldEngine.World world;
-        public Display(WorldEngine.World world)
+        private World world;
+        public Display(World world)
         {
             this.world = world;
         }

@@ -1,18 +1,17 @@
-﻿using ConsoleAdventure.Settings;
-using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.WorldEngine;
 
 namespace ConsoleAdventure
 {
-    abstract public class Transform
+    public abstract class Transform
     {
-        public WorldEngine.World world { get; protected set; }
+        public World world { get; protected set; }
         public int worldLayer { get; protected set; }
         
         public Position position;
         public RenderFieldType renderFieldType;
         public bool isObstacle;
 
-        protected Transform(WorldEngine.World world, Position position = null)
+        protected Transform(World world, Position position = null)
         {
             if (position != null) this.position = position;
             else this.position = new Position(0, 0);

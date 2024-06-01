@@ -9,7 +9,7 @@
             description = GetDescription();
         }
 
-        public string GetDescription()
+        public new string GetDescription()
         {
             switch (WorldEngine.World.language)
             {

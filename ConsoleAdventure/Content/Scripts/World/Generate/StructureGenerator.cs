@@ -3,11 +3,11 @@ using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
 
-namespace ConsoleAdventure.World.Generate
+namespace ConsoleAdventure.WorldEngine.Generate
 {
-    internal class StructureGenerator
+    public class StructureGenerator
     {
-        private WorldEngine.World world;
+        private World world;
         private Random random;
 
         private int minHouseSizeY = 10;
@@ -15,7 +15,7 @@ namespace ConsoleAdventure.World.Generate
         private int minHouseSizeX = 10;
         private int maxHouseSizeX = 25;
 
-        public void Generate(WorldEngine.World world, Random random) 
+        public void Generate(World world, Random random) 
         {
             this.world = world;
             this.random = random;
@@ -25,7 +25,7 @@ namespace ConsoleAdventure.World.Generate
 
         private void GenerateHouses()
         {
-            List<List<Field>> fields = world.fields[WorldEngine.World.BlocksLayerId];
+            List<List<Field>> fields = world.fields[World.BlocksLayerId];
 
             for (int y = 0; y < fields.Count; y++)
             {
