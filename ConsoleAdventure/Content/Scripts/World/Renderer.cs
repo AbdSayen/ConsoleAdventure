@@ -1,10 +1,9 @@
-﻿using ConsoleAdventure.Settings;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    internal class Renderer
+    public class Renderer
     {
         List<List<List<Field>>> fields;
         private int viewDistanceY = 30;

@@ -1,4 +1,5 @@
 ﻿using ConsoleAdventure.Settings;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -7,10 +8,10 @@ namespace ConsoleAdventure
     public class ConsoleAdventure : Game
     {
         private GraphicsDeviceManager _graphics;
-        private Microsoft.Xna.Framework.Graphics.SpriteBatch _spriteBatch;
+        private SpriteBatch _spriteBatch;
         SpriteFont font;
 
-        WorldEngine.World world = new WorldEngine.World();
+        World world = new World();
         Display display;
 
         public ConsoleAdventure()

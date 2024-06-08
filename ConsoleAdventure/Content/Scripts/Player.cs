@@ -1,5 +1,4 @@
-﻿using ConsoleAdventure.Settings;
-using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework.Input;
 
 namespace ConsoleAdventure
@@ -13,16 +12,16 @@ namespace ConsoleAdventure
         private int speed = 1;
         public Inventory inventory;
 
-        public Player(int id, WorldEngine.World world, Position position = null, int worldLayer = -1) : base(world, position)
+        public Player(int id, World world, Position position = null, int worldLayer = -1) : base(world, position)
         {
-            if (worldLayer == -1) this.worldLayer = WorldEngine.World.MobsLayerId;
+            if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
             else this.worldLayer = worldLayer;
             if (position != null) this.position = position;
             else this.position = new Position(0, 0);
 
             this.id = id;
             this.world = world;
-            renderFieldType = WorldEngine.RenderFieldType.player;
+            renderFieldType = RenderFieldType.player;
 
             inventory = new Inventory(this);
             Initialize();
@@ -57,7 +56,7 @@ namespace ConsoleAdventure
 
         private void CheckPickUpItems()
         {
-            Field itemField = world.fields[WorldEngine.World.ItemsLayerId][position.y][position.x];
+            Field itemField = world.fields[World.ItemsLayerId][position.y][position.x];
 
             if (Keyboard.GetState().IsKeyDown(Keys.P) && itemField.content != null)
             {

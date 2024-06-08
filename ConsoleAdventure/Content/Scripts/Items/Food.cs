@@ -2,7 +2,7 @@
 
 namespace ConsoleAdventure
 {
-    abstract public class Food : Item
+    public abstract class Food : Item
     {
         public int satiety { get; protected set; } = 1;
         public void Eat()
@@ -10,7 +10,7 @@ namespace ConsoleAdventure
             Loger.AddLog($"{name} было съедено");
         }
 
-        protected string GetDescription()
+        protected new string GetDescription()
         {
             switch (WorldEngine.World.language)
             {

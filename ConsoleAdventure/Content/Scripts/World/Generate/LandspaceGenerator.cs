@@ -2,14 +2,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace ConsoleAdventure.World.Generate
+namespace ConsoleAdventure.WorldEngine.Generate
 {
-    internal class LandspaceGenerator
+    public class LandspaceGenerator
     {
-        private WorldEngine.World world;
+        private World world;
         private Random random;
 
-        public void Generate(WorldEngine.World world, Random random) 
+        public void Generate(World world, Random random) 
         {
             this.world = world;
             this.random = random;
@@ -19,16 +19,16 @@ namespace ConsoleAdventure.World.Generate
 
         private void GenerateTrees()
         {
-            for (int y = 0; y < world.fields[WorldEngine.World.BlocksLayerId].Count; y++)
+            for (int y = 0; y < world.fields[World.BlocksLayerId].Count; y++)
             {
-                for (int x = 0; x < world.fields[WorldEngine.World.BlocksLayerId][y].Count; x++)
+                for (int x = 0; x < world.fields[World.BlocksLayerId][y].Count; x++)
                 {
-                    Field field = world.fields[WorldEngine.World.BlocksLayerId][y][x];
+                    Field field = world.fields[World.BlocksLayerId][y][x];
                     Position position = new Position(x, y);
 
                     if (random.Next(0, 150) == 0 && field.content == null && field.isStructure == false)
                     {
-                        new Tree(world, position, WorldEngine.World.BlocksLayerId);
+                        new Tree(world, position, World.BlocksLayerId);
                         
                         
                     }

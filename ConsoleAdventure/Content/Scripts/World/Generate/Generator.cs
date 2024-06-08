@@ -1,11 +1,9 @@
-﻿using ConsoleAdventure.World;
-using ConsoleAdventure.World.Generate;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {
-    internal class Generator
+    public class Generator
     {
         private Random random;
         private readonly int size;

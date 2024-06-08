@@ -1,13 +1,11 @@
-﻿using ConsoleAdventure.Settings;
-using ConsoleAdventure.World;
-using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.WorldEngine;
 using System;
 
 namespace ConsoleAdventure.Generate.Structures
 {
-    internal class House : Structure
+    public class House : Structure
     {
-        public static void Build(WorldEngine.World world, Position startPosition, int sizeX, int sizeY, Rotation rotation, Random random)
+        public static void Build(World world, Position startPosition, int sizeX, int sizeY, Rotation rotation, Random random)
         {
             int doorPosition = 0;
 
@@ -24,8 +22,8 @@ namespace ConsoleAdventure.Generate.Structures
             {
                 for (int x = startPosition.x; x < startPosition.x + sizeX; x++)
                 {
-                    Field field = world.fields[WorldEngine.World.BlocksLayerId][y][x];
-                    new Floor(world, new Position(x, y), WorldEngine.World.FloorLayerId);
+                    Field field = world.fields[World.BlocksLayerId][y][x];
+                    new Floor(world, new Position(x, y), World.FloorLayerId);
                     if (x == startPosition.x || y == startPosition.y || x == startPosition.x + sizeX - 1 || y == startPosition.y + sizeY - 1)
                     {
 
@@ -34,12 +32,12 @@ namespace ConsoleAdventure.Generate.Structures
                             new Wall(world, new Position(x, y));
                             if(random.Next(0, 15) == 0)
                             {
-                                new Ruine(world, new Position(x, y), WorldEngine.World.BlocksLayerId);
+                                new Ruine(world, new Position(x, y), World.BlocksLayerId);
                             }
                         }
                         else
                         {
-                            new Door(world, new Position(x, y), WorldEngine.World.BlocksLayerId);
+                            new Door(world, new Position(x, y), World.BlocksLayerId);
                         }
                     }
                     field.structureName = $"House #{startPosition.x + startPosition.y}";

@@ -2,7 +2,7 @@
 
 namespace ConsoleAdventure.Settings
 {
-    static internal class Docs
+    public static class Docs
     {
         public static string version = "0.2v";
         private static string info;

@@ -2,7 +2,7 @@
 
 namespace ConsoleAdventure.Settings
 {
-    static public class Loger
+    public static class Loger
     {
         static List<string> logs = new List<string>();
 

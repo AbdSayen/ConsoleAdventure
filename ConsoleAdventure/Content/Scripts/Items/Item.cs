@@ -1,6 +1,6 @@
 ﻿namespace ConsoleAdventure
 {
-    abstract public class Item
+    public abstract class Item
     {
         public string name = "Name missing";
         public string description = "Description missing";
