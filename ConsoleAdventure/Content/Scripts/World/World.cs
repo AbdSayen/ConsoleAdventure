@@ -42,16 +42,16 @@ namespace ConsoleAdventure.WorldEngine
         public void ListenEvents()
         {
             timer.Start();
-            for (int i = 0; i < players.Count && timer.Elapsed.TotalMilliseconds > 35; i++)
+            for (int i = 0; i < players.Count && timer.Elapsed.TotalMilliseconds > 15; i++)
             {
                 players[i].InteractWithWord();
                 timer.Restart();
             }
         }
 
-        public string Render()
+        public string Render(int layer)
         {
-            return $"{renderer.Render(players[0])}";
+            return $"{renderer.Render(players[0], layer)}";
         }
 
         public void RemoveSubject(Transform subject, int worldLayer)

@@ -3,7 +3,7 @@ using ConsoleAdventure.WorldEngine;
 
 namespace ConsoleAdventure
 {
-    public class Display
+    internal class Display
     {
         private World world;
         public Display(World world)
@@ -13,18 +13,39 @@ namespace ConsoleAdventure
 
         public string DisplayInfo()
         {
-            return 
+            return
                 $"{Docs.GetInfo()}\n" +
-                $"{world.time.GetTime()}\n"
+                $"{world.time.GetTime()}\n" +
+                $"X:{world.players[0].position.x} Y:{world.players[0].position.y}\n" +
+                $"Structure: {world.fields[WorldEngine.World.BlocksLayerId][world.players[0].position.y][world.players[0].position.x].structureName}\n\n"
                 ;
         }
 
-        public string DisplayGame()
+        public string DisplayBlocksLayer()
         {
             return
-                $"X:{world.players[0].position.x} Y:{world.players[0].position.y}\n" +
-                $"Structure: {world.fields[WorldEngine.World.BlocksLayerId][world.players[0].position.y][world.players[0].position.x].structureName}\n\n" +
-                $"{world.Render()}\n"
+                $"{world.Render(World.BlocksLayerId)}\n"
+                ;
+        }
+
+        public string DisplayMobsLayer()
+        {
+            return
+                $"{world.Render(World.MobsLayerId)}\n"
+                ;
+        }
+
+        public string DisplayItemsLayer()
+        {
+            return
+                $"{world.Render(World.ItemsLayerId)}\n"
+                ;
+        }
+
+        public string DisplayFloorLayer()
+        {
+            return
+                $"{world.Render(World.FloorLayerId)}\n"
                 ;
         }
 

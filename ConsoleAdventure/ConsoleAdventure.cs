@@ -52,7 +52,11 @@ namespace ConsoleAdventure
             GraphicsDevice.Clear(new Color(25, 25, 25));
 
             _spriteBatch.Begin();
-            _spriteBatch.DrawString(font, display.DisplayInfo() + display.DisplayGame(), new Vector2(10, 10), Color.White);
+            _spriteBatch.DrawString(font, display.DisplayInfo(), new Vector2(10, 10), Color.Gray);
+            _spriteBatch.DrawString(font, display.DisplayFloorLayer(), new Vector2(10, 150), Color.Gray);
+            _spriteBatch.DrawString(font, display.DisplayBlocksLayer(), new Vector2(10, 150), Color.White);
+            _spriteBatch.DrawString(font, display.DisplayItemsLayer(), new Vector2(10, 150), Color.Yellow);
+            _spriteBatch.DrawString(font, display.DisplayMobsLayer(), new Vector2(10, 150), Color.Yellow);
             _spriteBatch.DrawString(font, display.DisplayInventory(), new Vector2(_graphics.PreferredBackBufferWidth - 300, 10), Color.White);
             _spriteBatch.End();
 

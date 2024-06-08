@@ -12,7 +12,7 @@ namespace ConsoleAdventure.WorldEngine
             this.fields = fields;
         }
 
-        public string Render(Transform observer)
+        public string Render(Transform observer, int layer)
         {
             string output = "";
             for (int y = observer.position.y - viewDistanceY / 2; y < observer.position.y + viewDistanceY / 2; y++)
@@ -23,19 +23,19 @@ namespace ConsoleAdventure.WorldEngine
                     {
                         if (x <= fields[World.FloorLayerId][y].Count - 1 && x >= 0)
                         {
-                            if (fields[World.MobsLayerId][y][x].content != null)
+                            if (fields[World.MobsLayerId][y][x] != null && layer == World.MobsLayerId)
                             {
                                 output += fields[World.MobsLayerId][y][x].GetSymbol();
                             }
-                            else if (fields[World.ItemsLayerId][y][x].content != null)
+                            else if (fields[World.ItemsLayerId][y][x] != null && layer == World.ItemsLayerId)
                             {
                                 output += fields[World.ItemsLayerId][y][x].GetSymbol();
                             }
-                            else if (fields[World.BlocksLayerId][y][x].content != null)
+                            else if (fields[World.BlocksLayerId][y][x] != null && layer == World.BlocksLayerId)
                             {
                                 output += fields[World.BlocksLayerId][y][x].GetSymbol();
                             }
-                            else if (fields[World.FloorLayerId][y][x] != null)
+                            else if (fields[World.FloorLayerId][y][x] != null && layer == World.FloorLayerId)
                             {
                                 output += fields[World.FloorLayerId][y][x].GetSymbol();
                             }
