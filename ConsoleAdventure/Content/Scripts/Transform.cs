@@ -21,7 +21,10 @@ namespace ConsoleAdventure
 
         public void Initialize()
         {
-            world.fields[worldLayer][position.y][position.x].content = this;
+            if (world.GetField(position.x, position.y, worldLayer) != null)
+            {
+                world.GetField(position.x, position.y, worldLayer).content = this;
+            }
         }
 
         public virtual void Move(int stepSize, Rotation rotation)

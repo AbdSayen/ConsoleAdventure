@@ -17,7 +17,7 @@ namespace ConsoleAdventure
         public ConsoleAdventure()
         {
             _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = "";
             IsMouseVisible = true;
         }
 

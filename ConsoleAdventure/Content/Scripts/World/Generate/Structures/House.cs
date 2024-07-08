@@ -22,22 +22,39 @@ namespace ConsoleAdventure.Generate.Structures
             {
                 for (int x = startPosition.x; x < startPosition.x + sizeX; x++)
                 {
-                    Field field = world.fields[World.BlocksLayerId][y][x];
+                    Field field = world.GetField(x, y, World.BlocksLayerId);
                     new Floor(world, new Position(x, y), World.FloorLayerId);
                     if (x == startPosition.x || y == startPosition.y || x == startPosition.x + sizeX - 1 || y == startPosition.y + sizeY - 1)
                     {
-
-                        if (x != doorPosition)
+                        if (rotation == Rotation.left || rotation == Rotation.right)
                         {
-                            new Wall(world, new Position(x, y));
-                            if(random.Next(0, 15) == 0)
+                            if (y != doorPosition)
                             {
-                                new Ruine(world, new Position(x, y), World.BlocksLayerId);
+                                new Wall(world, new Position(x, y));
+                                if (random.Next(0, 15) == 0)
+                                {
+                                    new Ruine(world, new Position(x, y), World.BlocksLayerId);
+                                }
+                            }
+                            else
+                            {
+                                new Door(world, new Position(x, y), World.BlocksLayerId);
                             }
                         }
                         else
                         {
-                            new Door(world, new Position(x, y), World.BlocksLayerId);
+                            if (x != doorPosition)
+                            {
+                                new Wall(world, new Position(x, y));
+                                if (random.Next(0, 15) == 0)
+                                {
+                                    new Ruine(world, new Position(x, y), World.BlocksLayerId);
+                                }
+                            }
+                            else
+                            {
+                                new Door(world, new Position(x, y), World.BlocksLayerId);
+                            }
                         }
                     }
                     field.structureName = $"House #{startPosition.x + startPosition.y}";
@@ -45,6 +62,5 @@ namespace ConsoleAdventure.Generate.Structures
                 }
             }
         }
-
     }
 }

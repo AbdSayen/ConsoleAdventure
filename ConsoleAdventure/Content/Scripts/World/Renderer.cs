@@ -5,73 +5,76 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Renderer
     {
-        List<List<List<Field>>> fields;
+        List<List<Chunk>> chunks;
         private int viewDistanceY = 30;
         private int viewDistanceX = 60;
-        public Renderer(List<List<List<Field>>> fields) {
-            this.fields = fields;
+        public Renderer(List<List<Chunk>> chunks)
+        {
+            this.chunks = chunks;
         }
 
         public string Render(Transform observer, int layer)
         {
-            string output = "";
+            StringBuilder output = new StringBuilder();
             for (int y = observer.position.y - viewDistanceY / 2; y < observer.position.y + viewDistanceY / 2; y++)
             {
-                if (y <= fields[World.FloorLayerId].Count - 1 && y >= 0)
+                if (y >= 0 && y < chunks.Count * Chunk.Size)
                 {
                     for (int x = observer.position.x - viewDistanceX / 2; x < observer.position.x + viewDistanceX / 2; x++)
                     {
-                        if (x <= fields[World.FloorLayerId][y].Count - 1 && x >= 0)
+                        if (x >= 0 && x < chunks[0].Count * Chunk.Size)
                         {
-                            if (fields[World.MobsLayerId][y][x] != null && layer == World.MobsLayerId)
+                            var chunk = GetChunk(x, y);
+                            var field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, layer);
+                            if (field != null)
                             {
-                                output += fields[World.MobsLayerId][y][x].GetSymbol();
+                                output.Append(field.GetSymbol());
                             }
-                            else if (fields[World.ItemsLayerId][y][x] != null && layer == World.ItemsLayerId)
+                            else
                             {
-                                output += fields[World.ItemsLayerId][y][x].GetSymbol();
-                            }
-                            else if (fields[World.BlocksLayerId][y][x] != null && layer == World.BlocksLayerId)
-                            {
-                                output += fields[World.BlocksLayerId][y][x].GetSymbol();
-                            }
-                            else if (fields[World.FloorLayerId][y][x] != null && layer == World.FloorLayerId)
-                            {
-                                output += fields[World.FloorLayerId][y][x].GetSymbol();
+                                output.Append("  ");
                             }
                         }
                         else
                         {
-                            output += " `";
+                            output.Append("  ");
                         }
                     }
-                    output += "\n";
+                    output.AppendLine();
                 }
                 else
                 {
-                    string outputX = "";
-                    for (int x = 0; x < viewDistanceX; x++)
-                    {
-                        outputX += " `";
-                    }
-                    output += outputX + "\n";
+                    output.Append(' ', viewDistanceX).AppendLine();
                 }
             }
-            return output;
+            return output.ToString();
         }
 
         public string PrimitiveRender()
         {
             StringBuilder output = new StringBuilder();
-            for (int y = 0; y < fields[World.FloorLayerId].Count; y++)
+            for (int y = 0; y < chunks.Count * Chunk.Size; y++)
             {
-                for (int x = 0; x < fields[World.FloorLayerId][y].Count; x++)
+                for (int x = 0; x < chunks[0].Count * Chunk.Size; x++)
                 {
-                    output.Append(fields[World.BlocksLayerId][y][x].GetSymbol());
+                    var chunk = GetChunk(x, y);
+                    var field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, World.BlocksLayerId);
+                    output.Append(field?.GetSymbol() ?? " ");
                 }
                 output.AppendLine();
             }
             return output.ToString();
+        }
+
+        private Chunk GetChunk(int x, int y)
+        {
+            int chunkX = x / Chunk.Size;
+            int chunkY = y / Chunk.Size;
+            if (chunkX >= 0 && chunkX < chunks.Count && chunkY >= 0 && chunkY < chunks[chunkX].Count)
+            {
+                return chunks[chunkX][chunkY];
+            }
+            return null;
         }
     }
 }

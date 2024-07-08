@@ -1,5 +1,4 @@
-﻿using ConsoleAdventure.Settings;
-using ConsoleAdventure.WorldEngine.Generate;
+﻿using ConsoleAdventure.WorldEngine.Generate;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -8,10 +7,9 @@ namespace ConsoleAdventure.WorldEngine
     public class World
     {
         static public Language language = Language.russian;
-        private int worldSize = 500;
+        private int worldSize = 128;
 
-        // [Z][Y][X]
-        public List<List<List<Field>>> fields = new List<List<List<Field>>>();
+        private List<List<Chunk>> chunks = new List<List<Chunk>>();
         public List<Player> players = new List<Player>();
         private Stopwatch timer = new Stopwatch();
 
@@ -29,22 +27,22 @@ namespace ConsoleAdventure.WorldEngine
         public World()
         {
             generator = new Generator(this, worldSize);
-            renderer = new Renderer(fields);
+            renderer = new Renderer(chunks);
             generator.Generate(seed);
             ConnectPlayer();
         }
 
         public void ConnectPlayer()
         {
-            players.Add(new Player(players.Count, this, new Position(100, 100)));
+            players.Add(new Player(players.Count, this, new Position(5, 5)));
         }
-        
+
         public void ListenEvents()
         {
             timer.Start();
             for (int i = 0; i < players.Count && timer.Elapsed.TotalMilliseconds > 15; i++)
             {
-                players[i].InteractWithWord();
+                players[i].InteractWithWorld();  // Исправлено
                 timer.Restart();
             }
         }
@@ -52,11 +50,12 @@ namespace ConsoleAdventure.WorldEngine
         public string Render(int layer)
         {
             return $"{renderer.Render(players[0], layer)}";
+            return $"{renderer.PrimitiveRender()}";
         }
 
         public void RemoveSubject(Transform subject, int worldLayer)
         {
-            fields[worldLayer][subject.position.y][subject.position.x].content = null;
+            GetField(subject.position.x, subject.position.y, worldLayer).content = null;
         }
 
         public void MoveSubject(Transform subject, int worldLayer, int stepSize, Rotation rotation)
@@ -84,18 +83,99 @@ namespace ConsoleAdventure.WorldEngine
 
             if (IsValidMove(worldLayer, newX, newY))
             {
-                fields[worldLayer][subject.position.y][subject.position.x].content = null;
+                GetField(subject.position.x, subject.position.y, worldLayer).content = null;
                 subject.position.SetPosition(newX, newY);
-                fields[worldLayer][newY][newX].content = subject;
+                GetField(newX, newY, worldLayer).content = subject;
                 time.PassTime(3);
             }
 
             bool IsValidMove(int worldLayer, int newX, int newY)
             {
-                return newX >= 0 && newX < fields[worldLayer].Count &&
-                       newY >= 0 && newY < fields[worldLayer][newX].Count &&
-                       (fields[worldLayer][newY][newX].content == null && (fields[BlocksLayerId][newY][newX].content == null ||
-                       !fields[BlocksLayerId][newY][newX].content.isObstacle));
+                return newX >= 0 && newX < worldSize &&
+                       newY >= 0 && newY < worldSize &&
+                       (GetField(newX, newY, worldLayer).content == null &&
+                       (GetField(newX, newY, BlocksLayerId).content == null ||
+                       !GetField(newX, newY, BlocksLayerId).content.isObstacle));
+            }
+        }
+
+        public Field GetField(int x, int y, int layer)
+        {
+            int chunkX = x / Chunk.Size;
+            int chunkY = y / Chunk.Size;
+            int localX = x % Chunk.Size;
+            int localY = y % Chunk.Size;
+
+            if (chunkX >= 0 && chunkX < chunks.Count && chunkY >= 0 && chunkY < chunks[chunkX].Count)
+            {
+                return chunks[chunkX][chunkY].GetField(localX, localY, layer);
+            }
+
+            return null;
+        }
+
+        public List<List<Field>> GetFields(int y, int layer)
+        {
+            int chunkY = y / Chunk.Size;
+            int localY = y % Chunk.Size;
+
+            if (chunkY >= 0 && chunkY < chunks.Count)
+            {
+                var result = new List<List<Field>>();
+                foreach (var chunkRow in chunks)
+                {
+                    foreach (var chunk in chunkRow)
+                    {
+                        result.Add(chunk.GetFields(layer)[localY]);
+                    }
+                }
+                return result;
+            }
+
+            return null;
+        }
+
+        public List<List<Field>> GetFields(int layer)
+        {
+            var result = new List<List<Field>>();
+            foreach (var chunkRow in chunks)
+            {
+                foreach (var chunk in chunkRow)
+                {
+                    result.AddRange(chunk.GetFields(layer));
+                }
+            }
+            return result;
+        }
+
+        public List<List<List<Field>>> GetFields()
+        {
+            var result = new List<List<List<Field>>>();
+            foreach (var chunkRow in chunks)
+            {
+                foreach (var chunk in chunkRow)
+                {
+                    result.AddRange(chunk.GetFields());
+                }
+            }
+            return result;
+        }
+
+        public List<List<Chunk>> GetChunks()
+        {
+            return chunks;
+        }
+
+        public void InitializeChunks()
+        {
+            int chunkCount = (worldSize + Chunk.Size - 1) / Chunk.Size;
+            for (int y = 0; y < chunkCount; y++)
+            {
+                chunks.Add(new List<Chunk>());
+                for (int x = 0; x < chunkCount; x++)
+                {
+                    chunks[y].Add(new Chunk());
+                }
             }
         }
     }

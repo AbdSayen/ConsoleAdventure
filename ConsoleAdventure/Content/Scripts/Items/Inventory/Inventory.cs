@@ -12,7 +12,6 @@ namespace ConsoleAdventure
         public Inventory(Player player) 
         {
             this.player = player;
-            Drop(new List<Stack> { new Stack(new Apple(), 150)});
         }
 
         public void PickUpItems(List<Stack> items)

@@ -27,7 +27,7 @@ namespace ConsoleAdventure
             Initialize();
         }
 
-        public void InteractWithWord()
+        public void InteractWithWorld()
         {
             CheckMove();
             CheckPickUpItems();
@@ -56,7 +56,7 @@ namespace ConsoleAdventure
 
         private void CheckPickUpItems()
         {
-            Field itemField = world.fields[World.ItemsLayerId][position.y][position.x];
+            Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);
 
             if (Keyboard.GetState().IsKeyDown(Keys.P) && itemField.content != null)
             {

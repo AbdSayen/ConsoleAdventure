@@ -17,7 +17,7 @@ namespace ConsoleAdventure
                 $"{Docs.GetInfo()}\n" +
                 $"{world.time.GetTime()}\n" +
                 $"X:{world.players[0].position.x} Y:{world.players[0].position.y}\n" +
-                $"Structure: {world.fields[WorldEngine.World.BlocksLayerId][world.players[0].position.y][world.players[0].position.x].structureName}\n\n"
+                $"Structure: {world.GetField(world.players[0].position.x, world.players[0].position.y, World.BlocksLayerId)}\n\n"
                 ;
         }
 

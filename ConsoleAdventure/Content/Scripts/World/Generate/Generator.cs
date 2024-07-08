@@ -27,26 +27,10 @@ namespace ConsoleAdventure.WorldEngine.Generate
         public void Generate()
         {
             random = new Random();
-            GenerateSpace();
+            world.InitializeChunks();
             GenerateBarriers();
-            structureGenerator.Generate(world, random);
-            landspaceGenerator.Generate(world, random);
-        }
-
-        private void GenerateSpace()
-        {
-            for (int z = 0; z < World.CountOfLayers; z++)
-            {
-                world.fields.Add(new List<List<Field>>());
-                for (int y = 0; y < size; y++)
-                {
-                    world.fields[z].Add(new List<Field>());
-                    for (int x = 0; x < size; x++)
-                    {
-                        world.fields[z][y].Add(new Field());
-                    }
-                }
-            }
+            //structureGenerator.Generate(world, random);
+            //landspaceGenerator.Generate(world, random);
         }
 
         private void GenerateBarriers()
@@ -57,7 +41,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 {
                     if (y == size - 1 || y == 0 || x == size - 1 || x == 0)
                     {
-                        Field field = world.fields[World.BlocksLayerId][x][y];
+                        Field field = world.GetField(x, y, World.BlocksLayerId);
                         new Wall(world, new Position(x, y));
                     }
                 }
