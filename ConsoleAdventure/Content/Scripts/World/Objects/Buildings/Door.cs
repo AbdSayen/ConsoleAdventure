@@ -1,4 +1,6 @@
-﻿namespace ConsoleAdventure.WorldEngine
+﻿using Microsoft.Xna.Framework;
+
+namespace ConsoleAdventure.WorldEngine
 {
     public class Door : Transform
     {
@@ -10,6 +12,7 @@
             else this.worldLayer = worldLayer;
 
             renderFieldType = RenderFieldType.door;
+            //color = Color.Brown;
             isObstacle = false;
             Initialize();
         }

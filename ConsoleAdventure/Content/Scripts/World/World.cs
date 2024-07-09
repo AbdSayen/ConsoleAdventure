@@ -1,6 +1,9 @@
 ﻿using ConsoleAdventure.WorldEngine.Generate;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -18,11 +21,11 @@ namespace ConsoleAdventure.WorldEngine
         private Renderer renderer;
         private int seed = 1234;
 
-        public static int CountOfLayers = 4;
+        public static int CountOfLayers = 3;
         public static int FloorLayerId = 0;
         public static int BlocksLayerId = 1;
-        public static int ItemsLayerId = 2;
-        public static int MobsLayerId = 3;
+        //public static int ItemsLayerId = 2;
+        public static int MobsLayerId = 2;
 
         public World()
         {
@@ -36,21 +39,21 @@ namespace ConsoleAdventure.WorldEngine
         {
             players.Add(new Player(players.Count, this, new Position(5, 5)));
         }
-
+        
         public void ListenEvents()
         {
             timer.Start();
             for (int i = 0; i < players.Count && timer.Elapsed.TotalMilliseconds > 15; i++)
             {
-                players[i].InteractWithWorld();  // Исправлено
+                players[i].InteractWithWorld(); // Исправлено
                 timer.Restart();
             }
         }
 
-        public string Render(int layer)
+        public void Render()
         {
-            return $"{renderer.Render(players[0], layer)}";
-            return $"{renderer.PrimitiveRender()}";
+            renderer.Render(players[0]);
+            //return $"{renderer.PrimitiveRender()}";
         }
 
         public void RemoveSubject(Transform subject, int worldLayer)
@@ -86,7 +89,8 @@ namespace ConsoleAdventure.WorldEngine
                 GetField(subject.position.x, subject.position.y, worldLayer).content = null;
                 subject.position.SetPosition(newX, newY);
                 GetField(newX, newY, worldLayer).content = subject;
-                time.PassTime(3);
+                GetField(newX, newY, worldLayer).color = subject.GetColor();
+                //time.PassTime(3);
             }
 
             bool IsValidMove(int worldLayer, int newX, int newY)

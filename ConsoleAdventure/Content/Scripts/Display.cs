@@ -1,5 +1,7 @@
 ﻿using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
+using Microsoft.Xna.Framework.Graphics;
+using SharpDX.Direct3D9;
 
 namespace ConsoleAdventure
 {
@@ -21,32 +23,9 @@ namespace ConsoleAdventure
                 ;
         }
 
-        public string DisplayBlocksLayer()
+        public void DrawWorld()
         {
-            return
-                $"{world.Render(World.BlocksLayerId)}\n"
-                ;
-        }
-
-        public string DisplayMobsLayer()
-        {
-            return
-                $"{world.Render(World.MobsLayerId)}\n"
-                ;
-        }
-
-        public string DisplayItemsLayer()
-        {
-            return
-                $"{world.Render(World.ItemsLayerId)}\n"
-                ;
-        }
-
-        public string DisplayFloorLayer()
-        {
-            return
-                $"{world.Render(World.FloorLayerId)}\n"
-                ;
+            world.Render();
         }
 
         public string DisplayInventory()

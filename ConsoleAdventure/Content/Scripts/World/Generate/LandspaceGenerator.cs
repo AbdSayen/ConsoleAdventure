@@ -28,13 +28,24 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     if (random.Next(0, 150) == 0 && field.content == null && field.isStructure == false)
                     {
                         new Tree(world, position, World.BlocksLayerId);
-
-
+                        
+                        
                     }
                     //TEMP TO REMOVE
                     else if (random.Next(0, 300) == 0)
                     {
                         new Loot(world, position, items: new List<Stack> { new Stack(new Apple(), 45) });
+                    }
+
+                    if (random.Next(0, 500) == 0 && field.content == null && field.isStructure == false)
+                    {
+                        for (int i = 0; i < random.Next(1, 3); i++)
+                        {
+                            for (int j = 0; j < random.Next(1, 3); j++)
+                            {
+                                new Water(world, position + new Position(i, j), World.BlocksLayerId);
+                            }
+                        }                      
                     }
                 }
             }

@@ -9,5 +9,6 @@
         floor,
         door,
         ruine,
+        water,
     }
 }

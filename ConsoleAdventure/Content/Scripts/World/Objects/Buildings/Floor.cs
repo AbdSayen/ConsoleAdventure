@@ -1,4 +1,6 @@
-﻿namespace ConsoleAdventure.WorldEngine
+﻿using Microsoft.Xna.Framework;
+
+namespace ConsoleAdventure.WorldEngine
 {
     public class Floor : Transform
     {
@@ -10,6 +12,7 @@
             else this.worldLayer = worldLayer;
 
             renderFieldType = RenderFieldType.floor;
+            //color = Color.Gray;
             isObstacle = false;
             Initialize();
         }

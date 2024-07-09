@@ -2,7 +2,7 @@
 <XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
 	<Asset Type="Graphics:FontDescription">
 		<FontName>Consolas</FontName>
-		<Size>12</Size>
+		<Size>24</Size>
 		<Spacing>0</Spacing>
 		<UseKerning>true</UseKerning>
 		<Style>Regular</Style>
@@ -40,7 +40,7 @@
 			<!-- Символы рамки -->
 			<CharacterRegion>
 				<Start>&#9472;</Start>
-				<End>&#9608;</End>
+				<End>&#9580;</End>
 			</CharacterRegion>
 			<CharacterRegion>
 				<Start>&#9829;</Start>
@@ -53,7 +53,7 @@
 			</CharacterRegion>
 			<CharacterRegion>
 				<Start>&#8211;</Start>
-				<End>&#8776;</End> <!-- &#8226; -->
+				<End>&#8226;</End>
 			</CharacterRegion>
 		</CharacterRegions>
 	</Asset>

@@ -15,7 +15,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
         private int minHouseSizeX = 10;
         private int maxHouseSizeX = 25;
 
-        public void Generate(World world, Random random)
+        public void Generate(World world, Random random) 
         {
             this.world = world;
             this.random = random;
@@ -44,7 +44,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         private bool CheckGeneratePossibility(Position startPosition, int sizeX, int sizeY)
         {
-            var layer = world.GetFields(World.BlocksLayerId);
+            var layer = world.GetFields(WorldEngine.World.BlocksLayerId);
             int layerHeight = layer.Count;
             int layerWidth = layer[0].Count;
 
