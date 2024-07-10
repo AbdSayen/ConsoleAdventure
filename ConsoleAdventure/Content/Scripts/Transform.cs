@@ -1,4 +1,5 @@
 ﻿using ConsoleAdventure.WorldEngine;
+using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure
 {
@@ -24,6 +25,7 @@ namespace ConsoleAdventure
             if (world.GetField(position.x, position.y, worldLayer) != null)
             {
                 world.GetField(position.x, position.y, worldLayer).content = this;
+                world.GetField(position.x, position.y, worldLayer).color = GetColor();
             }
         }
 
@@ -52,10 +54,39 @@ namespace ConsoleAdventure
                     return "[]";
                 case RenderFieldType.loot:
                     return " $";
+                case RenderFieldType.water:
+                    return "≈≈";
                 default:
                     return "??";
             }
 
+        }
+
+        public Color GetColor()
+        {
+            switch (renderFieldType)
+            {
+                case RenderFieldType.empty:
+                    return Color.Black;
+                case RenderFieldType.player:
+                    return Color.Yellow;
+                case RenderFieldType.ruine:
+                    return Color.Gray;
+                case RenderFieldType.wall:
+                    return Color.White;
+                case RenderFieldType.tree:
+                    return new(13, 152, 20);
+                case RenderFieldType.floor:
+                    return Color.Gray;
+                case RenderFieldType.door:
+                    return new(94, 61, 38);
+                case RenderFieldType.loot:
+                    return Color.Yellow;
+                case RenderFieldType.water:
+                    return new(16, 29, 211);
+                default:
+                    return Color.Purple;
+            }
         }
     }
 }

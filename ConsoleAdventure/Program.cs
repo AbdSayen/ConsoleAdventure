@@ -1,3 +1,11 @@
-﻿
-var game = new ConsoleAdventure.ConsoleAdventure();
-game.Run();
+﻿namespace ConsoleAdventure
+{
+    public class Program
+    {
+        public static void Main()
+        {
+            var game = new ConsoleAdventure();
+            game.Run();
+        }
+    }
+}

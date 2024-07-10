@@ -1,4 +1,8 @@
-﻿namespace ConsoleAdventure
+﻿using Microsoft.Xna.Framework;
+using System;
+using System.Drawing;
+
+namespace ConsoleAdventure
 {
     public class Position
     {
@@ -10,10 +14,36 @@
             this.y = y;
         }
 
+        public Position()
+        {
+            x = 0;
+            y = 0;
+        }
+
         public void SetPosition(int x, int y)
         {
             this.x = x;
             this.y = y;
+        }
+
+        public static Position operator +(Position left, Position right)
+        {
+            return new(left.x + right.x, left.y + right.y);
+        }
+
+        public static Position operator -(Position left, Position right)
+        {
+            return new(left.x - right.x, left.y - right.y);
+        }
+
+        public static Position operator *(Position left, Position right)
+        {
+            return new(left.x * right.x, left.y * right.y);
+        }
+
+        public static Position operator /(Position left, Position right)
+        {
+            return new(left.x / right.x, left.y / right.y);
         }
     }
 }

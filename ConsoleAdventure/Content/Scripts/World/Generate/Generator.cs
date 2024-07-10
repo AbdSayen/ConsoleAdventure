@@ -26,7 +26,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         public void Generate()
         {
-            random = new Random();
+            //random = new Random();
             world.InitializeChunks();
             GenerateBarriers();
             structureGenerator.Generate(world, random);
@@ -42,7 +42,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     if (y == size - 1 || y == 0 || x == size - 1 || x == 0)
                     {
                         Field field = world.GetField(x, y, World.BlocksLayerId);
-                        new Wall(world, new Position(x, y));
+                        new Tree(world, new Position(x, y));
                     }
                 }
             }

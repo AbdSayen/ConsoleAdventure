@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+	<Asset Type="Graphics:FontDescription">
+		<FontName>Consolas</FontName>
+		<Size>24</Size>
+		<Spacing>0</Spacing>
+		<UseKerning>true</UseKerning>
+		<Style>Regular</Style>
+		<CharacterRegions>
+			<!-- Диапазон ASCII символов от 32 (пробел) до 180 (знак ударения)--> <!-- 126 (тильда) -->
+			<CharacterRegion>
+				<Start>&#32;</Start>
+				<End>&#180;</End>
+			</CharacterRegion>
+			<!-- Диапазон символов кириллицы (русские буквы) от 1040 до 1103 -->
+			<CharacterRegion>
+				<Start>&#1040;</Start>
+				<End>&#1103;</End>
+			</CharacterRegion>
+			<!-- Дополнительные символы (например, ё) -->
+			<CharacterRegion>
+				<Start>&#1025;</Start>
+				<End>&#1105;</End>
+			</CharacterRegion>
+			<!-- Символы стрелок -->
+			<CharacterRegion>
+				<Start>&#8592;</Start>
+				<End>&#8601;</End>
+			</CharacterRegion>
+			<!-- Геометрические фигуры -->
+			<CharacterRegion>
+				<Start>&#9632;</Start>
+				<End>&#9679;</End>
+			</CharacterRegion>
+			<!-- Символы, такие как звёздочки, палочки, сердечки -->
+			<CharacterRegion>
+				<Start>&#9733;</Start>
+				<End>&#9734;</End>
+			</CharacterRegion>
+			<!-- Символы рамки -->
+			<CharacterRegion>
+				<Start>&#9472;</Start>
+				<End>&#9580;</End>
+			</CharacterRegion>
+			<CharacterRegion>
+				<Start>&#9829;</Start>
+				<End>&#9830;</End>
+			</CharacterRegion>
+			<!-- Различные специальные символы -->
+			<CharacterRegion>
+				<Start>&#10003;</Start>
+				<End>&#10007;</End>
+			</CharacterRegion>
+			<CharacterRegion>
+				<Start>&#8211;</Start>
+				<End>&#8226;</End>
+			</CharacterRegion>
+		</CharacterRegions>
+	</Asset>
+</XnaContent>

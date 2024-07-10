@@ -33,6 +33,7 @@ namespace ConsoleAdventure.Generate.Structures
                     new Floor(world, new Position(x, y), World.FloorLayerId);
                     if (x == startPosition.x || y == startPosition.y || x == startPosition.x + sizeX - 1 || y == startPosition.y + sizeY - 1)
                     {
+
                         if (rotation == Rotation.left || rotation == Rotation.right)
                         {
                             if (y != doorPosition)
@@ -43,11 +44,13 @@ namespace ConsoleAdventure.Generate.Structures
                                     new Ruine(world, new Position(x, y), World.BlocksLayerId);
                                 }
                             }
+
                             else
                             {
                                 new Door(world, new Position(x, y), World.BlocksLayerId);
                             }
                         }
+
                         else
                         {
                             if (x != doorPosition)
@@ -69,5 +72,6 @@ namespace ConsoleAdventure.Generate.Structures
                 }
             }
         }
+
     }
 }

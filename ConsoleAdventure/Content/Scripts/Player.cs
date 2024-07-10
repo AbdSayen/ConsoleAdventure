@@ -1,5 +1,7 @@
 ﻿using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework.Input;
+using System;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace ConsoleAdventure
 {
@@ -27,36 +29,53 @@ namespace ConsoleAdventure
             Initialize();
         }
 
+        int timer = 10;
         public void InteractWithWorld()
         {
-            CheckMove();
+            if (timer >= 2)
+            {
+                CheckMove();
+                timer = 0;
+            }
+            
             CheckPickUpItems();
+            timer++;
         }
 
         private void CheckMove()
         {
+            bool isMove = false;
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 Move(speed, Rotation.up);
+                isMove = true;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 Move(speed, Rotation.down);
+                isMove = true;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 Move(speed, Rotation.left);
+                isMove = true;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                Move(speed, Rotation.right);
+                Move(speed, Rotation.right); 
+                isMove = true;
+            }
+
+            if (isMove)
+            {
+                world.time.PassTime(3);
             }
         }
 
         private void CheckPickUpItems()
         {
-            Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);
+            Field itemField = world.GetField(position.x, position.y, World.BlocksLayerId);
 
             if (Keyboard.GetState().IsKeyDown(Keys.P) && itemField.content != null)
             {

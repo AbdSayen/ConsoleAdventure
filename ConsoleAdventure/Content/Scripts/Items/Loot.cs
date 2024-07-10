@@ -12,7 +12,7 @@ namespace ConsoleAdventure
             isObstacle = true;
             renderFieldType = WorldEngine.RenderFieldType.loot;
 
-            if (worldLayer == -1) this.worldLayer = WorldEngine.World.ItemsLayerId;
+            if (worldLayer == -1) this.worldLayer = WorldEngine.World.BlocksLayerId;
             else this.worldLayer = worldLayer;
             Initialize();
         }
@@ -20,7 +20,7 @@ namespace ConsoleAdventure
         public void PickUpAll(Inventory inventory)
         {
             inventory.PickUpItems(items);
-            world.RemoveSubject(this, WorldEngine.World.ItemsLayerId);
+            world.RemoveSubject(this, WorldEngine.World.BlocksLayerId);
         }
 
         public string GetItemsInfo()

@@ -1,8 +1,12 @@
-﻿namespace ConsoleAdventure.WorldEngine
+﻿using Microsoft.Xna.Framework;
+
+namespace ConsoleAdventure.WorldEngine
 {
     public class Field
     {
         public bool isStructure = false;
+        public Color color = Color.White;
+
         public string structureName { get; set; } = "None";
         public Transform content;
 
