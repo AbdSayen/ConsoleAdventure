@@ -9,7 +9,7 @@ namespace ConsoleAdventure
         public Loot(WorldEngine.World world, Position position, List<Stack> items, int worldLayer = -1) : base(world, position)
         {
             this.items = items;
-            isObstacle = true;
+            isObstacle = false;
             renderFieldType = WorldEngine.RenderFieldType.loot;
 
             if (worldLayer == -1) this.worldLayer = WorldEngine.World.BlocksLayerId;

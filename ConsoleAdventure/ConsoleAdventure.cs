@@ -3,15 +3,8 @@ using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-<<<<<<< HEAD
-using System;
-=======
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.IO;
-
-using System.Linq;
->>>>>>> 0fa11a56c7e1c5ef353e7fb61295202e73c7eac4
 
 namespace ConsoleAdventure
 {
@@ -35,7 +28,7 @@ namespace ConsoleAdventure
         public static int screenWidth = 1602;
         public static int screenHeight = 912;
 
-        private Color bg = Color.Black; //new Color(25, 25, 25);
+        private Color bg = Color.Black; 
 
         public static KeyboardState prekstate;
         public static KeyboardState kstate;
@@ -53,41 +46,27 @@ namespace ConsoleAdventure
         public ConsoleAdventure()
         {
             _graphics = new GraphicsDeviceManager(this);
-<<<<<<< HEAD
-=======
-            Content.RootDirectory = "Content";
             IsMouseVisible = true;
->>>>>>> 0fa11a56c7e1c5ef353e7fb61295202e73c7eac4
         }
 
         protected override void Initialize()
         {
-<<<<<<< HEAD
             display = new Display(world);
 
-            Content.RootDirectory = "";
+            Content.RootDirectory = "Content";
             IsMouseVisible = true;
             IsFixedTimeStep = false; 
             _graphics.SynchronizeWithVerticalRetrace = false;
 
             Window.Title = $"Console Adventure {Docs.version}. By Bonds";
             
-            _graphics.PreferredBackBufferWidth = 1600;
-            _graphics.PreferredBackBufferHeight = 900;
-=======
-            _graphics.PreferredBackBufferHeight = 64;
-            Window.Title = $"Console Adventure {Docs.version}. By Bonds";
             _graphics.PreferredBackBufferWidth = screenWidth;
             _graphics.PreferredBackBufferHeight = screenHeight;
->>>>>>> 0fa11a56c7e1c5ef353e7fb61295202e73c7eac4
             _graphics.ApplyChanges();
 
-<<<<<<< HEAD
             Window.AllowUserResizing = true;
-=======
             _renderTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, SurfaceFormat.Color, DepthFormat.None);
 
->>>>>>> 0fa11a56c7e1c5ef353e7fb61295202e73c7eac4
             base.Initialize();
         }
 
@@ -131,7 +110,6 @@ namespace ConsoleAdventure
 
         protected override void Update(GameTime gameTime)
         {
-<<<<<<< HEAD
             elapsedTime += gameTime.ElapsedGameTime;
             if (elapsedTime > TimeSpan.FromSeconds(1))
             {
@@ -142,7 +120,6 @@ namespace ConsoleAdventure
             frameCounter++;
 
             world.ListenEvents();
-=======
             prekstate = kstate;
             kstate = Keyboard.GetState();
 
@@ -156,7 +133,6 @@ namespace ConsoleAdventure
                 MenuUpdate();
             }
             
->>>>>>> 0fa11a56c7e1c5ef353e7fb61295202e73c7eac4
             base.Update(gameTime);
         }
 
@@ -220,22 +196,11 @@ namespace ConsoleAdventure
         {
             GraphicsDevice.Clear(bg);
 
-<<<<<<< HEAD
-            _spriteBatch.Begin();
-            _spriteBatch.DrawString(font, $"FPS: {(int)frameRate}", new Vector2(10, _graphics.PreferredBackBufferHeight - 30), Color.White);
-
-            _spriteBatch.DrawString(font, display.DisplayInfo(), new Vector2(10, 10), Color.Gray);
-            _spriteBatch.DrawString(font, display.DisplayFloorLayer(), new Vector2(10, 150), Color.Gray);
-            _spriteBatch.DrawString(font, display.DisplayBlocksLayer(), new Vector2(10, 150), Color.White);
-            _spriteBatch.DrawString(font, display.DisplayItemsLayer(), new Vector2(10, 150), Color.Yellow);
-            _spriteBatch.DrawString(font, display.DisplayMobsLayer(), new Vector2(10, 150), Color.Yellow);
-            _spriteBatch.DrawString(font, display.DisplayInventory(), new Vector2(_graphics.PreferredBackBufferWidth - 300, 10), Color.White);
-            _spriteBatch.End();
-=======
             if (InWorld)
             {
                 _spriteBatch.Begin();
 
+                _spriteBatch.DrawString(font, $"FPS: {(int)frameRate}", new Vector2(10, _graphics.PreferredBackBufferHeight - 30), Color.White);
                 _spriteBatch.DrawString(font, display.DisplayInfo(), new Vector2(10, 10), Color.Gray);
                 _spriteBatch.DrawString(font, display.DisplayInventory(), new Vector2(_graphics.PreferredBackBufferWidth - 300, 10), Color.White);
                 display.DrawWorld();
@@ -250,7 +215,6 @@ namespace ConsoleAdventure
                 _spriteBatch.DrawString(font, Docs.GetInfo(), new Vector2(10, _graphics.PreferredBackBufferHeight - 25), Color.White);
                 _spriteBatch.DrawString(font, TextAssets.navigHelp, new Vector2(_graphics.PreferredBackBufferWidth - (font.MeasureString(TextAssets.navigHelp).X + 10), _graphics.PreferredBackBufferHeight - 25), Color.Gray);
 
-                //_spriteBatch.DrawString(font, TextAssets.WorldPanel, new Vector2(0, 0), Color.White);
 
                 for (int i = 0; i < menuButtons.Length; i++)
                 {
@@ -259,7 +223,6 @@ namespace ConsoleAdventure
                 
                 _spriteBatch.End();
             }
->>>>>>> 0fa11a56c7e1c5ef353e7fb61295202e73c7eac4
 
             base.Draw(gameTime);
         }
