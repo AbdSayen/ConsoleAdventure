@@ -29,8 +29,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
             random = new Random();
             world.InitializeChunks();
             GenerateBarriers();
-            //structureGenerator.Generate(world, random);
-            //landspaceGenerator.Generate(world, random);
+            structureGenerator.Generate(world, random);
+            landspaceGenerator.Generate(world, random);
         }
 
         private void GenerateBarriers()

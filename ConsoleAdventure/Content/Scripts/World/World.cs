@@ -7,7 +7,7 @@ namespace ConsoleAdventure.WorldEngine
     public class World
     {
         static public Language language = Language.russian;
-        private int worldSize = 128;
+        public int worldSize { get; private set; } = 256;
 
         private List<List<Chunk>> chunks = new List<List<Chunk>>();
         public List<Player> players = new List<Player>();
@@ -142,7 +142,11 @@ namespace ConsoleAdventure.WorldEngine
             {
                 foreach (var chunk in chunkRow)
                 {
-                    result.AddRange(chunk.GetFields(layer));
+                    var fields = chunk.GetFields(layer);
+                    foreach (var row in fields)
+                    {
+                        result.Add(row);
+                    }
                 }
             }
             return result;
@@ -159,6 +163,19 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
             return result;
+        }
+
+        public void SetField(int x, int y, int layer, Field field)
+        {
+            int chunkX = x / Chunk.Size;
+            int chunkY = y / Chunk.Size;
+            int localX = x % Chunk.Size;
+            int localY = y % Chunk.Size;
+
+            if (chunkX >= 0 && chunkX < chunks.Count && chunkY >= 0 && chunkY < chunks[chunkX].Count)
+            {
+                chunks[chunkX][chunkY].SetField(localX, localY, layer, field);
+            }
         }
 
         public List<List<Chunk>> GetChunks()

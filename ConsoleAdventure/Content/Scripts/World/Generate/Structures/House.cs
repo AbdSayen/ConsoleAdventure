@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Settings;
+using ConsoleAdventure.WorldEngine;
 using System;
 
 namespace ConsoleAdventure.Generate.Structures
@@ -23,6 +24,12 @@ namespace ConsoleAdventure.Generate.Structures
                 for (int x = startPosition.x; x < startPosition.x + sizeX; x++)
                 {
                     Field field = world.GetField(x, y, World.BlocksLayerId);
+                    if (field == null)
+                    {
+                        field = new Field();
+                        world.SetField(x, y, World.BlocksLayerId, field);
+                    }
+
                     new Floor(world, new Position(x, y), World.FloorLayerId);
                     if (x == startPosition.x || y == startPosition.y || x == startPosition.x + sizeX - 1 || y == startPosition.y + sizeY - 1)
                     {

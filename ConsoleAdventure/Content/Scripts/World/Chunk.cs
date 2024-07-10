@@ -52,6 +52,14 @@ namespace ConsoleAdventure.WorldEngine
             return null;
         }
 
+        public void SetField(int x, int y, int layer, Field field)
+        {
+            if (IsValidCoordinate(x, y, layer))
+            {
+                fields[layer][y][x] = field;
+            }
+        }
+
         public string GetBiome()
         {
             return biome ?? "none";

@@ -1,5 +1,5 @@
 ﻿using ConsoleAdventure.Generate.Structures;
-using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.Settings;
 using System;
 using System.Collections.Generic;
 
@@ -25,18 +25,21 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         private void GenerateHouses()
         {
-            List<List<Field>> fields = world.GetFields(World.BlocksLayerId);
+            int worldSize = world.worldSize;
 
-            for (int y = 0; y < fields.Count; y++)
+            for (int y = 0; y < worldSize; y++)
             {
-                for (int x = 0; x < fields[y].Count; x++)
+                for (int x = 0; x < worldSize; x++)
                 {
-                    int sizeX = random.Next(minHouseSizeX, maxHouseSizeX + 1);
-                    int sizeY = random.Next(minHouseSizeY, maxHouseSizeY + 1);
-
-                    if (random.Next(0, 1000) == 0 && CheckGeneratePossibility(new Position(x, y), sizeX, sizeY))
+                    if (random.Next(0, 1000) == 0)
                     {
-                        House.Build(world, new Position(x, y), sizeX, sizeY, Rotation.left, random);
+                        int sizeX = random.Next(minHouseSizeX, maxHouseSizeX + 1);
+                        int sizeY = random.Next(minHouseSizeY, maxHouseSizeY + 1);
+                        
+                        if (CheckGeneratePossibility(new Position(x, y), sizeX, sizeY))
+                        {
+                            House.Build(world, new Position(x, y), sizeX, sizeY, Rotation.left, random);
+                        }
                     }
                 }
             }
@@ -44,19 +47,19 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         private bool CheckGeneratePossibility(Position startPosition, int sizeX, int sizeY)
         {
-            var layer = world.GetFields(World.BlocksLayerId);
-            int layerHeight = layer.Count;
-            int layerWidth = layer[0].Count;
+            int worldSize = world.worldSize;
 
             for (int y = startPosition.y; y < startPosition.y + sizeY; y++)
             {
-                if (y >= layerHeight || y < 0)
+                if (y >= worldSize || y < 0)
                 {
                     return false;
                 }
                 for (int x = startPosition.x; x < startPosition.x + sizeX; x++)
                 {
-                    if (x >= layerWidth || x < 0 || layer[y][x] == null || layer[y][x].isStructure)
+                    if (x >= worldSize || x < 0 || 
+                        world.GetField(x, y, World.BlocksLayerId) == null || 
+                        world.GetField(x, y, World.BlocksLayerId).isStructure)
                     {
                         return false;
                     }
