@@ -27,8 +27,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             if (isHover)
             {
-                spriteBatch.DrawString(ConsoleAdventure.FontBig, "<", Position - new Vector2(20 * size.X, 0), cursorColor, rotation, Vector2.Zero, size, 0, 0);
-                spriteBatch.DrawString(ConsoleAdventure.FontBig, ">", Position + new Vector2(rectangle.Width + 6, 0), cursorColor, rotation, Vector2.Zero, size, 0, 0);
+                spriteBatch.DrawString(ConsoleAdventure.Font, "<", Position - new Vector2(10 * size.X, 0), cursorColor, rotation, Vector2.Zero, size, 0, 0);
+                spriteBatch.DrawString(ConsoleAdventure.Font, ">", Position + new Vector2(rectangle.Width + 2, 0), cursorColor, rotation, Vector2.Zero, size, 0, 0);
             }       
         }
     }

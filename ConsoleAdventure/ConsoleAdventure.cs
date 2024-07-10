@@ -91,11 +91,11 @@ namespace ConsoleAdventure
                         text = "Exit";
                         break;
                 }
-                int startPos = 250;
+                int startPos = 220;
                 int indent = 100;
 
-                menuButtons[i] = new MenuButton(Vector2.Zero, text, 1.5f, 2, new Color(230, 230, 230), menuButtonTypes[i]);
-                menuButtons[i].Center = new Vector2((_graphics.PreferredBackBufferWidth / 2), startPos + (indent * i));
+                menuButtons[i] = new MenuButton(Vector2.Zero, text, 1f, 1, new Color(230, 230, 230), menuButtonTypes[i]);
+                menuButtons[i].Center = new Vector2((_graphics.PreferredBackBufferWidth / 2) + (indent * (i - 1)), startPos);
             }
 
             menuButtons[0].isHover = true;
@@ -127,7 +127,7 @@ namespace ConsoleAdventure
             {
                 int waitTime = 20;
 
-                if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Down) && timer >= waitTime)
+                if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Right) && timer >= waitTime)
                 {
                     if (menuButtons[i].isHover)
                     {
@@ -142,7 +142,7 @@ namespace ConsoleAdventure
                     }
                 }
 
-                if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Up) && timer >= waitTime)
+                if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Left) && timer >= waitTime)
                 {
                     if (menuButtons[i].isHover)
                     {
@@ -196,6 +196,8 @@ namespace ConsoleAdventure
                 _spriteBatch.DrawString(font, TextAssets.logo, new Vector2((_graphics.PreferredBackBufferWidth / 2) - (621 / 2), 20), Color.White);
                 _spriteBatch.DrawString(font, Docs.GetInfo(), new Vector2(10, _graphics.PreferredBackBufferHeight - 25), Color.White);
                 _spriteBatch.DrawString(font, TextAssets.navigHelp, new Vector2(_graphics.PreferredBackBufferWidth - (font.MeasureString(TextAssets.navigHelp).X + 10), _graphics.PreferredBackBufferHeight - 25), Color.Gray);
+
+                //_spriteBatch.DrawString(font, TextAssets.WorldPanel, new Vector2(0, 0), Color.White);
 
                 for (int i = 0; i < menuButtons.Length; i++)
                 {
