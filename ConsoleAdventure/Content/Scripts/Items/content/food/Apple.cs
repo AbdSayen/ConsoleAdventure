@@ -5,21 +5,13 @@
         public Apple()
         {
             satiety = 1;
-            name = "Яблоко";
+            name = Localization.GetTranslation("Items", GetType().Name);
             description = GetDescription();
         }
 
         public new string GetDescription()
         {
-            switch (WorldEngine.World.language)
-            {
-                case Language.english:
-                    return $"Apple fruit, {base.GetDescription()}";
-                case Language.russian:
-                    return $"Плод яблони, {base.GetDescription()}";
-                default:
-                    goto case Language.english;
-            }
+            return " " + Localization.GetTranslation("ItemDescs", GetType().Name) + "\n " + base.GetDescription();
         }
     }
 }

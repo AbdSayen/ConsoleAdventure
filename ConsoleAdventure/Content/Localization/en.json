@@ -1,0 +1,14 @@
+{
+  "Items": {
+    "Apple": "Apple"
+  },
+
+  "ItemDescs": {
+    "BaseFood": "Can be eaten",
+    "Apple": "Apple fruit"
+  },
+
+  "Events": {
+    "Eating": "was eaten"
+  }
+}

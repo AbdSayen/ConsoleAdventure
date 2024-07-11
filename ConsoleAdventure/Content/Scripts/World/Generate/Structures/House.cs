@@ -1,5 +1,4 @@
-﻿using ConsoleAdventure.Settings;
-using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.WorldEngine;
 using System;
 
 namespace ConsoleAdventure.Generate.Structures

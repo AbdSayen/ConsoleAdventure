@@ -6,10 +6,12 @@ namespace ConsoleAdventure.Settings
     {
         static List<string> logs = new List<string>();
 
+        public static int buffer = 50; 
+
         public static void AddLog(string log)
         {
             logs.Add(log);
-            if (logs.Count > 10)
+            if (logs.Count > buffer)
             {
                 logs.RemoveAt(0);
             }

@@ -29,15 +29,16 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     if (random.Next(0, 150) == 0 && field.content == null && field.isStructure == false)
                     {
                         new Tree(world, position, World.BlocksLayerId);
+                        
+                        
                     }
-
-                    // REMOVE
+                    //TEMP TO REMOVE
                     else if (random.Next(0, 300) == 0)
                     {
                         new Loot(world, position, items: new List<Stack> { new Stack(new Apple(), 5) });
                     }
 
-                    if (random.Next(0, 500) == 0 && field.content == null && field.isStructure == false)
+                    /*if (random.Next(0, 500) == 0 && field.content == null && field.isStructure == false)
                     {
                         for (int i = 0; i < random.Next(1, 3); i++)
                         {
@@ -46,7 +47,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                                 new Water(world, position + new Position(i, j), World.BlocksLayerId);
                             }
                         }                      
-                    }
+                    }*/
                 }
             }
         }

@@ -28,7 +28,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 //Vector2 textSize = ConsoleAdventure.Font.MeasureString(text);
                 //Vector2 scale = new(size.X + (fontSize == 2 ? 2 : 1), size.Y + (fontSize == 2 ? 2 : 1));
                 //rectangle = new Rectangle(position.ToPoint(), (textSize * scale).ToPoint());
-                SpriteFont font = fontSize == 2 ? ConsoleAdventure.FontBig : ConsoleAdventure.Font;
+                SpriteFont font = ConsoleAdventure.Font;
                 Vector2 textSize = font.MeasureString(text);
                 rectangle = new Rectangle(position.ToPoint(), (textSize * size).ToPoint());
             }
@@ -63,9 +63,16 @@ namespace ConsoleAdventure.Content.Scripts.UI
             Position = position;
         }
 
+        public BaseUI(Vector2 position, string text, Color color)
+        {
+            this.text = text;
+            this.color = color;
+            Position = position;
+        }
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            SpriteFont font = fontSize == 2 ? ConsoleAdventure.FontBig : ConsoleAdventure.Font;
+            SpriteFont font = ConsoleAdventure.Font;
 
             spriteBatch.DrawString(font, text, position, color, rotation, Vector2.Zero, size, 0, 0);
         }

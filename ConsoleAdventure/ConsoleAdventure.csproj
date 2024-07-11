@@ -12,9 +12,22 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Content\Localization\en.json" />
+    <None Remove="Content\Localization\ru.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Localization\en.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Localization\ru.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
 		<PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Effects\" />

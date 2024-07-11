@@ -1,5 +1,7 @@
 ﻿using ConsoleAdventure.Generate.Structures;
+using ConsoleAdventure.WorldEngine;
 using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {
@@ -29,11 +31,11 @@ namespace ConsoleAdventure.WorldEngine.Generate
             {
                 for (int x = 0; x < worldSize; x++)
                 {
-                    if (random.Next(0, 1000) == 0)
+                    if (random.Next(0, 1000) == 0) 
                     {
                         int sizeX = random.Next(minHouseSizeX, maxHouseSizeX + 1);
                         int sizeY = random.Next(minHouseSizeY, maxHouseSizeY + 1);
-                        
+
                         if (CheckGeneratePossibility(new Position(x, y), sizeX, sizeY))
                         {
                             House.Build(world, new Position(x, y), sizeX, sizeY, Rotation.left, random);
@@ -45,6 +47,9 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         private bool CheckGeneratePossibility(Position startPosition, int sizeX, int sizeY)
         {
+            var layer = world.GetFields(WorldEngine.World.BlocksLayerId);
+            int layerHeight = layer.Count;
+            int layerWidth = layer[0].Count;
             int worldSize = world.worldSize;
 
             for (int y = startPosition.y; y < startPosition.y + sizeY; y++)
@@ -55,8 +60,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 }
                 for (int x = startPosition.x; x < startPosition.x + sizeX; x++)
                 {
-                    if (x >= worldSize || x < 0 || 
-                        world.GetField(x, y, World.BlocksLayerId) == null || 
+                    if (x >= worldSize || x < 0 ||
+                        world.GetField(x, y, World.BlocksLayerId) == null ||
                         world.GetField(x, y, World.BlocksLayerId).isStructure)
                     {
                         return false;
