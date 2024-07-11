@@ -1,18 +1,21 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Settings;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework.Input;
-using System;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using System.Diagnostics;
 
 namespace ConsoleAdventure
 {
     public class Player : Transform
     {
         public int id;
-        public string name = "Abdurrsss";
-
-        //characteristics
-        private int speed = 1;
+        public string name = "William";
         public Inventory inventory;
+        public Position cursorPosition = new Position();
+
+        private Stopwatch timer = new Stopwatch();
+        private int speed = 1;
+        private bool isBuilding = false;
+        private bool isDestroying = false;
 
         public Player(int id, World world, Position position = null, int worldLayer = -1) : base(world, position)
         {
@@ -29,42 +32,46 @@ namespace ConsoleAdventure
             Initialize();
         }
 
-        int timer = 10;
         public void InteractWithWorld()
         {
-            if (timer >= 2)
+            timer.Start();
+            if (timer.Elapsed.TotalMilliseconds > 50)
             {
-                CheckMove();
-                timer = 0;
+                Move();
+                Build();
+                Destroy();
+                timer.Restart();
             }
-            
+
             CheckPickUpItems();
-            timer++;
         }
 
-        private void CheckMove()
+        private void Move()
         {
             bool isMove = false;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            if (!isBuilding && !isDestroying)
             {
-                Move(speed, Rotation.up);
-                isMove = true;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                Move(speed, Rotation.down);
-                isMove = true;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                Move(speed, Rotation.left);
-                isMove = true;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-            {
-                Move(speed, Rotation.right); 
-                isMove = true;
+                if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                {
+                    Move(speed, Rotation.up);
+                    isMove = true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                {
+                    Move(speed, Rotation.down);
+                    isMove = true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                {
+                    Move(speed, Rotation.left);
+                    isMove = true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                {
+                    Move(speed, Rotation.right);
+                    isMove = true;
+                }
             }
 
             if (isMove)
@@ -73,9 +80,80 @@ namespace ConsoleAdventure
             }
         }
 
+        private void CursorMovement()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Up) && cursorPosition.y > -2)
+            {
+                cursorPosition.SetPosition(cursorPosition.x, cursorPosition.y - 1);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down) && cursorPosition.y < 2)
+            {
+                cursorPosition.SetPosition(cursorPosition.x, cursorPosition.y + 1);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Left) && cursorPosition.x > -2)
+            {
+                cursorPosition.SetPosition(cursorPosition.x - 1, cursorPosition.y);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Right) && cursorPosition.x < 2)
+            {
+                cursorPosition.SetPosition(cursorPosition.x + 1, cursorPosition.y);
+            }
+        }
+
+        private void Build()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.B))
+            {
+                isBuilding = true;
+            }
+            if (isBuilding)
+            {
+                CursorMovement();
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    Position pos = new Position(position.x + cursorPosition.x, position.y + cursorPosition.y);
+
+                    if (pos.x > 0 && pos.x < world.size && pos.y > 0 && pos.y < world.size &&
+                        world.GetField(pos.x, pos.y, World.BlocksLayerId).content == null)
+                    {
+                        new Wall(world, pos);
+                        cursorPosition = new Position();
+                        isBuilding = false;
+                        world.time.PassTime(120);
+                    }
+                }
+            }
+        }
+
+        private void Destroy()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                isDestroying = true;
+            }
+            if (isDestroying)
+            {
+                CursorMovement();
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    Position pos = new Position(position.x + cursorPosition.x, position.y + cursorPosition.y);
+
+                    if (pos.x > 0 && pos.x < world.size && pos.y > 0 && pos.y < world.size &&
+                        world.GetField(pos.x, pos.y, World.BlocksLayerId).content != null)
+                    {
+                        world.RemoveSubject(world.GetField(pos.x, pos.y, World.BlocksLayerId).content, World.BlocksLayerId);
+                        cursorPosition = new Position();
+                        isDestroying = false;
+                        world.time.PassTime(60);
+                    }
+                }
+            }
+        }
         private void CheckPickUpItems()
         {
-            Field itemField = world.GetField(position.x, position.y, World.BlocksLayerId);
+            Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);
 
             if (Keyboard.GetState().IsKeyDown(Keys.P) && itemField.content != null)
             {

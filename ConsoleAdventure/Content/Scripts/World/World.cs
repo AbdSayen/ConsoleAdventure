@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine.Generate;
+﻿using ConsoleAdventure.Settings;
+using ConsoleAdventure.WorldEngine.Generate;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,26 +10,25 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class World
     {
-        public int worldSize { get; private set; } = 256;
+        public int size { get; private set; } = 256;
 
         private List<List<Chunk>> chunks = new List<List<Chunk>>();
         public List<Player> players = new List<Player>();
-        private Stopwatch timer = new Stopwatch();
 
         public Time time = new Time();
         private Generator generator;
         private Renderer renderer;
         private int seed = 1234;
 
-        public static int CountOfLayers = 3;
+        public static int CountOfLayers = 4;
         public static int FloorLayerId = 0;
         public static int BlocksLayerId = 1;
-        //public static int ItemsLayerId = 2;
-        public static int MobsLayerId = 2;
+        public static int ItemsLayerId = 2;
+        public static int MobsLayerId = 3;
 
         public World()
         {
-            generator = new Generator(this, worldSize);
+            generator = new Generator(this, size);
             renderer = new Renderer(chunks);
             generator.Generate(seed);
             ConnectPlayer();
@@ -41,18 +41,15 @@ namespace ConsoleAdventure.WorldEngine
         
         public void ListenEvents()
         {
-            timer.Start();
-            for (int i = 0; i < players.Count && timer.Elapsed.TotalMilliseconds > 15; i++)
+            for (int i = 0; i < players.Count; i++)
             {
-                players[i].InteractWithWorld(); // Исправлено
-                timer.Restart();
+                players[i].InteractWithWorld();
             }
         }
 
         public void Render()
         {
-            renderer.Render(players[0]);
-            //return $"{renderer.PrimitiveRender()}";
+            renderer.Render(players[0], players[0].cursorPosition);
         }
 
         public void RemoveSubject(Transform subject, int worldLayer)
@@ -89,13 +86,12 @@ namespace ConsoleAdventure.WorldEngine
                 subject.position.SetPosition(newX, newY);
                 GetField(newX, newY, worldLayer).content = subject;
                 GetField(newX, newY, worldLayer).color = subject.GetColor();
-                //time.PassTime(3);
             }
 
             bool IsValidMove(int worldLayer, int newX, int newY)
             {
-                return newX >= 0 && newX < worldSize &&
-                       newY >= 0 && newY < worldSize &&
+                return newX >= 0 && newX < size &&
+                       newY >= 0 && newY < size &&
                        (GetField(newX, newY, worldLayer).content == null &&
                        (GetField(newX, newY, BlocksLayerId).content == null ||
                        !GetField(newX, newY, BlocksLayerId).content.isObstacle));
@@ -188,7 +184,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public void InitializeChunks()
         {
-            int chunkCount = (worldSize + Chunk.Size - 1) / Chunk.Size;
+            int chunkCount = (size + Chunk.Size - 1) / Chunk.Size;
             for (int y = 0; y < chunkCount; y++)
             {
                 chunks.Add(new List<Chunk>());

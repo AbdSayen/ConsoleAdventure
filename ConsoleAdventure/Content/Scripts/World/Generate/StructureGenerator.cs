@@ -25,7 +25,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         private void GenerateHouses()
         {
-            int worldSize = world.worldSize;
+            int worldSize = world.size;
 
             for (int y = 0; y < worldSize; y++)
             {
@@ -50,7 +50,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             var layer = world.GetFields(WorldEngine.World.BlocksLayerId);
             int layerHeight = layer.Count;
             int layerWidth = layer[0].Count;
-            int worldSize = world.worldSize;
+            int worldSize = world.size;
 
             for (int y = startPosition.y; y < startPosition.y + sizeY; y++)
             {

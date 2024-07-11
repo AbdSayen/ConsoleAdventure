@@ -6,9 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.IO;
-
-using System.Linq;
 
 namespace ConsoleAdventure
 {
@@ -30,10 +27,11 @@ namespace ConsoleAdventure
 
         public static bool InWorld = false;
 
+        public static int cellSize = 20;
         public static int screenWidth = 1602;
         public static int screenHeight = 912;
 
-        private Color bg = Color.Black; //new Color(25, 25, 25);
+        private Color bg = Color.Black;
 
         public static KeyboardState prekstate;
         public static KeyboardState kstate;
@@ -62,7 +60,7 @@ namespace ConsoleAdventure
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            IsFixedTimeStep = false;
+            IsFixedTimeStep = true;
             _graphics.SynchronizeWithVerticalRetrace = false;
 
             Window.Title = $"Console Adventure {Docs.version}. By Bonds";
@@ -135,7 +133,7 @@ namespace ConsoleAdventure
             {
                 world.ListenEvents();
 
-                if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+                if (kstate.IsKeyDown(Keys.Escape))
                 {
                     InWorld = false;
                 }
@@ -159,7 +157,7 @@ namespace ConsoleAdventure
 
                 if (State == 0)
                 {
-                    if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Right) && timer >= waitTime)
+                    if (kstate.IsKeyDown(Keys.Right) && timer >= waitTime)
                     {
                         if (menuButtons[i].isHover)
                         {
@@ -174,7 +172,7 @@ namespace ConsoleAdventure
                         }
                     }
 
-                    if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Left) && timer >= waitTime)
+                    if (kstate.IsKeyDown(Keys.Left) && timer >= waitTime)
                     {
                         if (menuButtons[i].isHover)
                         {
@@ -189,7 +187,7 @@ namespace ConsoleAdventure
                         }
                     }
 
-                    if (menuButtons[i].isHover && kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter))
+                    if (menuButtons[i].isHover && kstate.IsKeyDown(Keys.Enter))
                     {
                         if (menuButtons[i].type == 0)
                         {
@@ -213,7 +211,7 @@ namespace ConsoleAdventure
                 {
                     int waitTime = 10 * (frameRate / 60);
 
-                    if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Up) && timer >= waitTime && (i - 1) != -1)
+                    if (kstate.IsKeyDown(Keys.Up) && timer >= waitTime && (i - 1) != -1)
                     {
                         if (worldPanels[i].isHover)
                         {
@@ -232,7 +230,7 @@ namespace ConsoleAdventure
                         }
                     }
 
-                    if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Down) && timer >= waitTime && i < worldPanels.Count - 1)
+                    if (kstate.IsKeyDown(Keys.Down) && timer >= waitTime && i < worldPanels.Count - 1)
                     {
                         if (worldPanels[i].isHover)
                         {
@@ -251,7 +249,7 @@ namespace ConsoleAdventure
                         }
                     }
 
-                    if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter) && timer >= 30 * (frameRate / 60))
+                    if (kstate.IsKeyDown(Keys.Enter) && timer >= 30 * (frameRate / 60))
                     {
                         if (worldPanels[i].curssor == 0)
                         {
@@ -261,7 +259,7 @@ namespace ConsoleAdventure
                     }
                 }
 
-                if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Left) && timer >= 15 * (frameRate / 60))
+                if (kstate.IsKeyDown(Keys.Left) && timer >= 15 * (frameRate / 60))
                 {
                     for (int i = 0; i < worldPanels.Count; i++)
                     {
@@ -270,7 +268,7 @@ namespace ConsoleAdventure
                     timer = 0;
                 }
 
-                if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Right) && timer >= 15 * (frameRate / 60))
+                if (kstate.IsKeyDown(Keys.Right) && timer >= 15 * (frameRate / 60))
                 {
                     for (int i = 0; i < worldPanels.Count; i++)
                     {
@@ -280,7 +278,7 @@ namespace ConsoleAdventure
                 }
             }
 
-            if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape) && timer >= 20 * (frameRate / 60))
+            if (kstate.IsKeyDown(Keys.Escape) && timer >= 20 * (frameRate / 60))
             {
                 State = 0;
                 for (int i = 0; i < menuButtons.Length; i++)

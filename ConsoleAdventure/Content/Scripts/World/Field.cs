@@ -5,7 +5,7 @@ namespace ConsoleAdventure.WorldEngine
     public class Field
     {
         public bool isStructure = false;
-        public Color color = Color.White;
+        public Color color { get; set; } = Color.White;
 
         public string structureName { get; set; } = "None";
         public Transform content;
