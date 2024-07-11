@@ -45,5 +45,15 @@ namespace ConsoleAdventure
         {
             return new(left.x / right.x, left.y / right.y);
         }
+
+        public static Position operator *(Position left, int right)
+        {
+            return new(left.x * right, left.y * right);
+        }
+
+        public static Position operator /(Position left, int right)
+        {
+            return new(left.x / right, left.y / right);
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 {
     internal class MenuButton : BaseUI
     {
-        private Color cursorColor = Color.Yellow;
+        public Color cursorColor = Color.Yellow;
 
         public bool isHover;
 

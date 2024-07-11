@@ -9,7 +9,6 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class World
     {
-        static public Language language = Language.russian;
         public int worldSize { get; private set; } = 256;
 
         private List<List<Chunk>> chunks = new List<List<Chunk>>();

@@ -25,7 +25,7 @@ namespace ConsoleAdventure.WorldEngine
                     var row = new List<Field>(Size);
                     for (int x = 0; x < Size; x++)
                     {
-                        row.Add(new Field()); 
+                        row.Add(new Field());
                     }
                     layer.Add(row);
                 }
