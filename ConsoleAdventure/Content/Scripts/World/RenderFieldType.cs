@@ -10,5 +10,6 @@
         door,
         ruine,
         water,
+        log,
     }
 }

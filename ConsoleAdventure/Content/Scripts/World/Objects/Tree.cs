@@ -1,4 +1,6 @@
-﻿namespace ConsoleAdventure.WorldEngine
+﻿using System.Collections.Generic;
+
+namespace ConsoleAdventure.WorldEngine
 {
     public class Tree : Transform
     {
@@ -12,6 +14,11 @@
             renderFieldType = RenderFieldType.tree;
             isObstacle = true;
             Initialize();
+        }
+
+        public override void Collapse()
+        {
+            new Loot(world, position, new List<Stack> { new Stack(new Log(), 3), new Stack(new Apple(), 1) });
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure
 {
@@ -34,6 +35,8 @@ namespace ConsoleAdventure
             world.MoveSubject(this, worldLayer, stepSize, rotation);
         }
 
+        public virtual void Collapse() { }
+
         public string GetSymbol()
         {
             switch (renderFieldType)
@@ -45,6 +48,8 @@ namespace ConsoleAdventure
                 case RenderFieldType.ruine:
                     return "::";
                 case RenderFieldType.wall:
+                    return "##";
+                case RenderFieldType.log:
                     return "##";
                 case RenderFieldType.tree:
                     return " *";
@@ -84,6 +89,8 @@ namespace ConsoleAdventure
                     return Color.Yellow;
                 case RenderFieldType.water:
                     return new(16, 29, 211);
+                case RenderFieldType.log:
+                    return new(94, 61, 38);
                 default:
                     return Color.Purple;
             }

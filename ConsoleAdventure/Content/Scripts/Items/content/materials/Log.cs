@@ -1,17 +1,16 @@
 ﻿namespace ConsoleAdventure
 {
-    public class Apple : Food
+    public class Log : Item
     {
-        public Apple()
+        public Log()
         {
-            satiety = 1;
             name = Localization.GetTranslation("Items", GetType().Name);
             description = GetDescription();
         }
 
         public new string GetDescription()
         {
-            return " " + Localization.GetTranslation("ItemDescription", GetType().Name) + "\n " + base.GetDescription();
+            return "" + Localization.GetTranslation("ItemDescription", "Log");
         }
     }
 }

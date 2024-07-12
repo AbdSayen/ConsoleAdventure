@@ -35,15 +35,25 @@ namespace ConsoleAdventure
         public void InteractWithWorld()
         {
             timer.Start();
-            if (timer.Elapsed.TotalMilliseconds > 50)
+
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && timer.Elapsed.TotalMilliseconds > 15)
+            {
+                PerformActions();
+            }
+            else if (timer.Elapsed.TotalMilliseconds > 50)
+            {
+                PerformActions();
+            }
+
+
+            void PerformActions()
             {
                 Move();
                 Build();
                 Destroy();
+                CheckPickUpItems();
                 timer.Restart();
             }
-
-            CheckPickUpItems();
         }
 
         private void Move()
@@ -86,15 +96,15 @@ namespace ConsoleAdventure
             {
                 cursorPosition.SetPosition(cursorPosition.x, cursorPosition.y - 1);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down) && cursorPosition.y < 2)
+            if (Keyboard.GetState().IsKeyDown(Keys.Down) && cursorPosition.y < 2)
             {
                 cursorPosition.SetPosition(cursorPosition.x, cursorPosition.y + 1);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Left) && cursorPosition.x > -2)
+            if (Keyboard.GetState().IsKeyDown(Keys.Left) && cursorPosition.x > -2)
             {
                 cursorPosition.SetPosition(cursorPosition.x - 1, cursorPosition.y);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Right) && cursorPosition.x < 2)
+            if (Keyboard.GetState().IsKeyDown(Keys.Right) && cursorPosition.x < 2)
             {
                 cursorPosition.SetPosition(cursorPosition.x + 1, cursorPosition.y);
             }
@@ -102,7 +112,7 @@ namespace ConsoleAdventure
 
         private void Build()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.B))
+            if (Keyboard.GetState().IsKeyDown(Keys.B) && inventory.HasItem(new Log(), 1))
             {
                 isBuilding = true;
             }
@@ -117,7 +127,8 @@ namespace ConsoleAdventure
                     if (pos.x > 0 && pos.x < world.size && pos.y > 0 && pos.y < world.size &&
                         world.GetField(pos.x, pos.y, World.BlocksLayerId).content == null)
                     {
-                        new Wall(world, pos);
+                        new Plank(world, pos);
+                        inventory.RemoveItems(new Log(), 1);
                         cursorPosition = new Position();
                         isBuilding = false;
                         world.time.PassTime(120);
@@ -151,6 +162,7 @@ namespace ConsoleAdventure
                 }
             }
         }
+
         private void CheckPickUpItems()
         {
             Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);

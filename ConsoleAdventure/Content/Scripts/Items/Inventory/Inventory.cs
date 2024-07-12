@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace ConsoleAdventure
 {
@@ -9,10 +10,9 @@ namespace ConsoleAdventure
         private List<Stack> slots = new List<Stack>();
         private int maxCount = 10;
 
-        public Inventory(Player player) 
+        public Inventory(Player player)
         {
             this.player = player;
-            //Drop(new List<Stack> { new Stack(new Apple(), 150)});
         }
 
         public void PickUpItems(List<Stack> items)
@@ -21,7 +21,6 @@ namespace ConsoleAdventure
             {
                 bool itemAdded = false;
 
-                // Попробуем добавить предметы в существующие слоты
                 for (int j = 0; j < slots.Count; j++)
                 {
                     if (slots[j].item.name == items[i].item.name && slots[j].count < slots[j].maxStackCount)
@@ -40,7 +39,6 @@ namespace ConsoleAdventure
                     }
                 }
 
-                // Если есть остатки предметов, пробуем добавить в новые слоты
                 while (!itemAdded && items[i].count > 0)
                 {
                     if (slots.Count < maxCount)
@@ -56,14 +54,12 @@ namespace ConsoleAdventure
                     }
                     else
                     {
-                        // Нет свободных слотов, выбрасываем остаток
                         Drop(new List<Stack> { new Stack(items[i].item, items[i].count) });
                         break;
                     }
                 }
             }
 
-            // Убедимся, что ни один слот не превышает maxStackCount
             for (int i = 0; i < slots.Count; i++)
             {
                 if (slots[i].count > slots[i].maxStackCount)
@@ -88,6 +84,50 @@ namespace ConsoleAdventure
                 output += $"{slots[i].GetInfo()}\n";
             }
             return output;
+        }
+
+        public bool HasItem(Item item, int count)
+        {
+            int total = 0;
+            foreach (var slot in slots)
+            {
+                if (slot.item.name == item.name)
+                {
+                    total += slot.count;
+                    if (total >= count)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void RemoveItems(Item item, int count)
+        {
+            int total = 0;
+
+            if (HasItem(item, count))
+            {
+                int itemsToRemove = count;
+                for (int i = 0; i < slots.Count; i++)
+                {
+                    if (slots[i].item.name == item.name)
+                    {
+                        if (slots[i].count <= itemsToRemove)
+                        {
+                            itemsToRemove -= slots[i].count;
+                            slots.RemoveAt(i);
+                            i--; // Уменьшаем индекс, так как элемент был удален
+                        }
+                        else
+                        {
+                            slots[i].count -= itemsToRemove;
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

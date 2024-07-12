@@ -54,6 +54,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public void RemoveSubject(Transform subject, int worldLayer)
         {
+            GetField(subject.position.x, subject.position.y, worldLayer).content.Collapse();
             GetField(subject.position.x, subject.position.y, worldLayer).content = null;
         }
 

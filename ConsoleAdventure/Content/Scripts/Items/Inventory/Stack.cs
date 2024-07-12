@@ -1,6 +1,4 @@
-﻿using ConsoleAdventure.Settings;
-
-namespace ConsoleAdventure
+﻿namespace ConsoleAdventure
 {
     public class Stack
     {

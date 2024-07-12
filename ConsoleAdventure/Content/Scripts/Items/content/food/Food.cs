@@ -12,7 +12,7 @@ namespace ConsoleAdventure
 
         protected new string GetDescription()
         {
-            return Localization.GetTranslation("ItemDescs", "BaseFood");
+            return Localization.GetTranslation("ItemDescription", "BaseFood");
         }
     }
 }

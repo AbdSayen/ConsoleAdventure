@@ -32,7 +32,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     }
                     else if (random.Next(0, 300) == 0)
                     {
-                        new Loot(world, position, items: new List<Stack> { new Stack(new Apple(), 5) });
+                        new Loot(world, position, new List<Stack> { new Stack(new Apple(), 5) });
                     }
 
                     if (random.Next(0, 1500) == 0 && field.content == null && field.isStructure == false)

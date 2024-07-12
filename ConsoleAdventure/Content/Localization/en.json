@@ -1,11 +1,13 @@
 {
   "Items": {
-    "Apple": "Apple"
+    "Apple": "Apple",
+    "Log": "Log"
   },
 
-  "ItemDescs": {
+  "ItemDescription": {
     "BaseFood": "Can be eaten",
-    "Apple": "Apple fruit"
+    "Apple": "Apple fruit",
+    "Log": "Can be placed"
   },
 
   "Events": {

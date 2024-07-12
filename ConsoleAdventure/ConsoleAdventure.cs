@@ -16,7 +16,7 @@ namespace ConsoleAdventure
 
         private static SpriteFont font;
 
-        World world = new World();
+        public static World world = new World();
         Display display;
 
         int frameRate = 0;
