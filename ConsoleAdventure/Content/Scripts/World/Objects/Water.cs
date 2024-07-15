@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public class Water : Transform
     {
         public Water(World world, Position position, int worldLayer = -1) : base(world, position)

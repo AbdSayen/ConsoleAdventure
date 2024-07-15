@@ -72,8 +72,8 @@ namespace ConsoleAdventure
 
         public static string GetTranslation(string type, string key)
         {
-            // Assuming ConsoleAdventure.language is a valid integer
-            return GetTranslation((int)ConsoleAdventure.language, type, key);
+            ConsoleAdventure.language = (int)Language.russian;
+            return GetTranslation(ConsoleAdventure.language, type, key);
         }
     }
 }

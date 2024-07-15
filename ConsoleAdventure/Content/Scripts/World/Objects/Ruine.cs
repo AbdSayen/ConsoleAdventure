@@ -1,5 +1,8 @@
-﻿namespace ConsoleAdventure.WorldEngine
+﻿using System;
+
+namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public class Ruine : Transform
     {
         public Ruine(World world, Position position = null, int worldLayer = -1) : base(world, position)

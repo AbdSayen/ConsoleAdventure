@@ -1,9 +1,11 @@
 ﻿using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace ConsoleAdventure
 {
+    [Serializable]
     public abstract class Transform
     {
         public World world { get; protected set; }
@@ -49,8 +51,6 @@ namespace ConsoleAdventure
                     return "::";
                 case RenderFieldType.wall:
                     return "##";
-                case RenderFieldType.log:
-                    return "##";
                 case RenderFieldType.tree:
                     return " *";
                 case RenderFieldType.floor:
@@ -61,6 +61,8 @@ namespace ConsoleAdventure
                     return " $";
                 case RenderFieldType.water:
                     return "≈≈";
+                case RenderFieldType.log:
+                    return "≡≡";
                 default:
                     return "??";
             }
@@ -93,6 +95,45 @@ namespace ConsoleAdventure
                     return new(94, 61, 38);
                 default:
                     return Color.Purple;
+            }
+        }
+
+        public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null)
+        {
+            switch (type)
+            {
+                case (int)RenderFieldType.empty:
+                    ConsoleAdventure.world.RemoveSubject(ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId).content, layer, false);
+                    return;
+                case (int)RenderFieldType.player:
+                    //new Player(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.ruine:
+                    new Ruine(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.wall:
+                    new Wall(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.tree:
+                    new Tree(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.floor:
+                    new Floor(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.door:
+                    new Door(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.loot:
+                    new Loot(ConsoleAdventure.world, position, items);
+                    return;
+                case (int)RenderFieldType.water:
+                    new Water(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.log:
+                    new Plank(ConsoleAdventure.world, position);
+                    return;
+                default:
+                    return;
             }
         }
     }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public class Floor : Transform
     {
         public Floor(World world, Position position = null, int worldLayer = -1) : base(world, position)

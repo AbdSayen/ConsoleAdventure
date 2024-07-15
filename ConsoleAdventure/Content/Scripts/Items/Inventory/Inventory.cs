@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace ConsoleAdventure
 {
+    [Serializable]
     public class Inventory
     {
         private Player player;
@@ -85,7 +85,6 @@ namespace ConsoleAdventure
             }
             return output;
         }
-
         public bool HasItem(Item item, int count)
         {
             int total = 0;

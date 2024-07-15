@@ -9,7 +9,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
         private World world;
         private Random random;
 
-        public void Generate(World world, Random random) 
+        public void Generate(World world, Random random)
         {
             this.world = world;
             this.random = random;

@@ -4,6 +4,7 @@ using System.Drawing;
 
 namespace ConsoleAdventure
 {
+    [Serializable]
     public class Position
     {
         public int x { get; private set; }

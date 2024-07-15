@@ -1,10 +1,12 @@
 ﻿using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Diagnostics;
 
 namespace ConsoleAdventure
 {
+    [Serializable]
     public class Player : Transform
     {
         public int id;
@@ -12,7 +14,9 @@ namespace ConsoleAdventure
         public Inventory inventory;
         public Position cursorPosition = new Position();
 
-        private Stopwatch timer = new Stopwatch();
+        [NonSerialized]
+        public Stopwatch timer = new Stopwatch();
+
         private int speed = 1;
         private bool isBuilding = false;
         private bool isDestroying = false;
@@ -35,7 +39,6 @@ namespace ConsoleAdventure
         public void InteractWithWorld()
         {
             timer.Start();
-
             if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && timer.Elapsed.TotalMilliseconds > 15)
             {
                 PerformActions();
@@ -162,7 +165,6 @@ namespace ConsoleAdventure
                 }
             }
         }
-
         private void CheckPickUpItems()
         {
             Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);

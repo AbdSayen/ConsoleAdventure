@@ -1,24 +1,32 @@
 ﻿using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine.Generate;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 
 namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public class World
     {
-        public int size { get; private set; } = 256;
+        public int size { get; internal set; } = 256;
 
-        private List<List<Chunk>> chunks = new List<List<Chunk>>();
+        public List<List<Chunk>> chunks = new List<List<Chunk>>();
         public List<Player> players = new List<Player>();
 
         public Time time = new Time();
+
+        [NonSerialized]
         private Generator generator;
+
+        [NonSerialized]
         private Renderer renderer;
-        private int seed = 1234;
+
+        public int seed = 1234;
 
         public static int CountOfLayers = 4;
         public static int FloorLayerId = 0;
@@ -32,6 +40,11 @@ namespace ConsoleAdventure.WorldEngine
             renderer = new Renderer(chunks);
             generator.Generate(seed);
             ConnectPlayer();
+        }
+
+        public Point GetCunkCounts()
+        {
+            return new(chunks[0].Count, chunks.Count);
         }
 
         public void ConnectPlayer()
@@ -52,10 +65,12 @@ namespace ConsoleAdventure.WorldEngine
             renderer.Render(players[0], players[0].cursorPosition);
         }
 
-        public void RemoveSubject(Transform subject, int worldLayer)
+        public void RemoveSubject(Transform subject, int worldLayer, bool isDroped = true)
         {
-            GetField(subject.position.x, subject.position.y, worldLayer).content.Collapse();
-            GetField(subject.position.x, subject.position.y, worldLayer).content = null;
+            if (isDroped)
+                GetField(subject.position.x, subject.position.y, worldLayer).content.Collapse();       
+            if(subject != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
+                GetField(subject.position.x, subject.position.y, worldLayer).content = null;  
         }
 
         public void MoveSubject(Transform subject, int worldLayer, int stepSize, Rotation rotation)
@@ -87,6 +102,7 @@ namespace ConsoleAdventure.WorldEngine
                 subject.position.SetPosition(newX, newY);
                 GetField(newX, newY, worldLayer).content = subject;
                 GetField(newX, newY, worldLayer).color = subject.GetColor();
+                //time.PassTime(3);
             }
 
             bool IsValidMove(int worldLayer, int newX, int newY)

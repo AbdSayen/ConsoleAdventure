@@ -1,5 +1,8 @@
-﻿namespace ConsoleAdventure.WorldEngine
+﻿using System;
+
+namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public class Wall : Transform
     {
         public Wall(World world, Position position, int worldLayer = -1) : base(world, position)

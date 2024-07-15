@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure
 {
+    [Serializable]
     public class Loot : Transform
     {
         private List<Stack> items { get; set; }
@@ -21,6 +23,11 @@ namespace ConsoleAdventure
         {
             inventory.PickUpItems(items);
             world.RemoveSubject(this, WorldEngine.World.ItemsLayerId);
+        }
+
+        public List<Stack> GetItems()
+        {
+            return items;
         }
 
         public string GetItemsInfo()

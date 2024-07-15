@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public class Chunk
     {
         private readonly List<List<List<Field>>> fields;

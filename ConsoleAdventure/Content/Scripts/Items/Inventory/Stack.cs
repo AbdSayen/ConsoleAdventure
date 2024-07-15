@@ -1,5 +1,9 @@
-﻿namespace ConsoleAdventure
+﻿using ConsoleAdventure.Settings;
+using System;
+
+namespace ConsoleAdventure
 {
+    [Serializable]
     public class Stack
     {
         public Item item { get; private set; }

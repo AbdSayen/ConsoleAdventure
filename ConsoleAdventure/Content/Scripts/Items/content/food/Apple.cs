@@ -1,5 +1,8 @@
-﻿namespace ConsoleAdventure
+﻿using System;
+
+namespace ConsoleAdventure
 {
+    [Serializable]
     public class Apple : Food
     {
         public Apple()

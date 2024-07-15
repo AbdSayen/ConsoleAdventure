@@ -1,5 +1,8 @@
-﻿namespace ConsoleAdventure
+﻿using System;
+
+namespace ConsoleAdventure
 {
+    [Serializable]
     public class Log : Item
     {
         public Log()
@@ -10,7 +13,7 @@
 
         public new string GetDescription()
         {
-            return "" + Localization.GetTranslation("ItemDescription", "Log");
+            return " " + Localization.GetTranslation("ItemDescription", "Log");
         }
     }
 }

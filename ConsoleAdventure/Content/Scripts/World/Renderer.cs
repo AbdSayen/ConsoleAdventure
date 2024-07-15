@@ -27,7 +27,7 @@ namespace ConsoleAdventure.WorldEngine
                         if (x >= 0 && x < chunks[0].Count * Chunk.Size)
                         {
                             var chunk = GetChunk(x, y);
-                            for(int z = 0; z < World.CountOfLayers; z++)
+                            for (int z = 0; z < World.CountOfLayers; z++)
                             {
                                 var field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, z);
 
@@ -35,9 +35,9 @@ namespace ConsoleAdventure.WorldEngine
                                 {
                                     ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2(X * ConsoleAdventure.cellSize, (Y * ConsoleAdventure.cellSize) + 150), field.color);
                                 }
-                            }                            
+                            }
                         }
-                        X++;    
+                        X++;
                     }
                 }
                 Y++;
@@ -46,8 +46,8 @@ namespace ConsoleAdventure.WorldEngine
 
             if (cursorPosition.x != 0 || cursorPosition.y != 0)
             {
-                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "[]", new Vector2((viewDistanceX * ConsoleAdventure.cellSize / 2) 
-                    + cursorPosition.x * ConsoleAdventure.cellSize, (viewDistanceY * ConsoleAdventure.cellSize / 2) + 150 
+                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "[]", new Vector2((viewDistanceX * ConsoleAdventure.cellSize / 2)
+                    + cursorPosition.x * ConsoleAdventure.cellSize, (viewDistanceY * ConsoleAdventure.cellSize / 2) + 150
                     + cursorPosition.y * ConsoleAdventure.cellSize), Color.Gray);
             }
         }

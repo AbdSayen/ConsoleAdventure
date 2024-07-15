@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.VisualBasic.Logging;
+using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public class Tree : Transform
     {
         public Tree(World world, Position position = null, int worldLayer = -1) : base(world, position)

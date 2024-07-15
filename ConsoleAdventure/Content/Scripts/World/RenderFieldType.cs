@@ -1,5 +1,8 @@
-﻿namespace ConsoleAdventure.WorldEngine
+﻿using System;
+
+namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public enum RenderFieldType { 
         empty,
         player,
