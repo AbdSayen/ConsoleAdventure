@@ -4,7 +4,7 @@ namespace ConsoleAdventure.Settings
 {
     public static class Docs
     {
-        public static string version = "0.2.3v";
+        public static string version = "0.2.4v";
         private static string info;
         private static List<string> messages = new List<string>();
         public static string GetInfo()
