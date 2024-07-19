@@ -44,7 +44,7 @@ namespace ConsoleAdventure.WorldEngine
                 X = 0;
             }
 
-            if (cursorPosition.x != 0 || cursorPosition.y != 0)
+            if (cursorPosition != null)
             {
                 ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "[]", new Vector2((viewDistanceX * ConsoleAdventure.cellSize / 2)
                     + cursorPosition.x * ConsoleAdventure.cellSize, (viewDistanceY * ConsoleAdventure.cellSize / 2) + 150
