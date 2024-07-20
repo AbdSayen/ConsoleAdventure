@@ -14,6 +14,15 @@ public static class InputConfig
 
     #endregion
 
+    #region Building
+
+    public static Keys Building = Keys.B;
+    public static Keys Destroying = Keys.V;
+
+    #endregion
+    
     public static Keys PickUp = Keys.P;
-    public static Keys C = Keys.C;
+    public static Keys Clear = Keys.C;
+    public static Keys Enter = Keys.Enter;
+
 }

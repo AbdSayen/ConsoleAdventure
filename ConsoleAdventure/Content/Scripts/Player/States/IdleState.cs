@@ -1,3 +1,4 @@
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using Microsoft.Xna.Framework.Input;
 
 namespace ConsoleAdventure.Content.Scripts.Player.States;
@@ -13,11 +14,11 @@ public class IdleState : IPlayerState
 
     public void HandleInput()
     {
-        if (Keyboard.GetState().IsKeyDown(Keys.B) && player.inventory.HasItem(new Log(), 1))
+        if (Input.IsKeyDown(InputConfig.Building) && player.inventory.HasItem(new Log(), 1))
         {
             player.ChangeState(new BuildingState(player));
         }
-        else if (Keyboard.GetState().IsKeyDown(Keys.V))
+        else if (Input.IsKeyDown(InputConfig.Destroying))
         {
             player.ChangeState(new DestroyingState(player));
         }

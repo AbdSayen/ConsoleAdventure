@@ -74,7 +74,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 world.time.PassTime(3);
             }
 
-            if (Input.IsKeyDown(InputConfig.C))
+            if (Input.IsKeyDown(InputConfig.Clear))
             {
                 currentState = new IdleState(this);
                 cursorPosition = null;

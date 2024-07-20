@@ -1,3 +1,4 @@
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework.Input;
 
@@ -16,7 +17,7 @@ public class BuildingState : IPlayerState
     {
         player.Cursor.CursorMovement();
 
-        if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+        if (Input.IsKeyDown(InputConfig.Enter))
         {
             Position pos = new Position(player.position.x + player.cursorPosition.x, player.position.y + player.cursorPosition.y);
 
