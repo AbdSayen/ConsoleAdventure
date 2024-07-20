@@ -22,7 +22,7 @@ public class PlayerMovement
         target.Move(Speed, GetDirection());
     }
     
-    public Position GetDirection()
+    private Position GetDirection()
     {
         x = 0;
         y = 0;
@@ -34,7 +34,6 @@ public class PlayerMovement
         {
             IsMoving = true;
         }
-
         
         return new Position(x ,y);
     }

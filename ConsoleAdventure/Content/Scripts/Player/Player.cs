@@ -65,7 +65,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public void Walk()
         {
-            Move(speed, _movement.GetDirection());
+            _movement.Move(this);
             
             if (Input.IsKeyDown(InputConfig.Clear))
             {
