@@ -34,7 +34,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             this.world = world;
             renderFieldType = RenderFieldType.player;
 
-            _movement = new PlayerMovement();
+            _movement = new PlayerMovement(this, speed);
             inventory = new Inventory(this);
             currentState = new IdleState(this);
             Cursor = new Cursor();
@@ -66,8 +66,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public void Walk()
         {
-            Move(speed, _movement.GetDirection());
-
+            _movement.Move();
+            
             if (Input.IsKeyDown(InputConfig.Clear))
             {
                 currentState = new IdleState(this);
