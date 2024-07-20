@@ -68,11 +68,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             Move(speed, _movement.GetDirection());
 
-            if (_movement.IsMoving)
-            {
-                world.time.PassTime(3);
-            }
-
             if (Input.IsKeyDown(InputConfig.Clear))
             {
                 currentState = new IdleState(this);
