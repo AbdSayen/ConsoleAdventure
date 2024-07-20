@@ -32,9 +32,9 @@ namespace ConsoleAdventure
             }
         }
 
-        public virtual void Move(int stepSize, Rotation rotation)
+        public virtual void Move(int stepSize, Position direction)
         {
-            world.MoveSubject(this, worldLayer, stepSize, rotation);
+            world.MoveSubject(this, worldLayer, stepSize, direction);
         }
 
         public virtual void Collapse() { }

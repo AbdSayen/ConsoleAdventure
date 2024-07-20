@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using ConsoleAdventure.Content.Scripts.Player;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 
@@ -73,27 +74,26 @@ namespace ConsoleAdventure.WorldEngine
                 GetField(subject.position.x, subject.position.y, worldLayer).content = null;  
         }
 
-        public void MoveSubject(Transform subject, int worldLayer, int stepSize, Rotation rotation)
+        public void MoveSubject(Transform subject, int worldLayer, int stepSize, Position direction)
         {
             int newX = subject.position.x;
             int newY = subject.position.y;
 
-            switch (rotation)
+            if (direction.y > 0)
             {
-                case Rotation.up:
-                    newY -= stepSize;
-                    break;
-                case Rotation.right:
-                    newX += stepSize;
-                    break;
-                case Rotation.down:
-                    newY += stepSize;
-                    break;
-                case Rotation.left:
-                    newX -= stepSize;
-                    break;
-                default:
-                    break;
+                newY -= stepSize;
+            }
+            if (direction.y < 0)
+            {
+                newY += stepSize;
+            }
+            if (direction.x > 0)
+            {
+                newX += stepSize;
+            }
+            if (direction.x < 0)
+            {
+                newX -= stepSize;
             }
 
             if (IsValidMove(worldLayer, newX, newY))
