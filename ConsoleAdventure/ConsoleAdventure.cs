@@ -41,6 +41,8 @@ namespace ConsoleAdventure
         public static KeyboardState prekstate;
         public static KeyboardState kstate;
 
+        public static Random rand = new Random();
+
         private Menu menu;
 
         internal static bool isExit;

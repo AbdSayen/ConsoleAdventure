@@ -56,5 +56,15 @@ namespace ConsoleAdventure
         {
             return new(left.x / right, left.y / right);
         }
+
+        /*public static bool operator !=(Position left, Position right)
+        {
+            return left.x != right.x && left.y != right.y;
+        }
+
+        public static bool operator ==(Position left, Position right)
+        {
+            return left.x == right.x && left.y == right.y;
+        }*/
     }
 }

@@ -14,5 +14,7 @@ namespace ConsoleAdventure.WorldEngine
         ruine,
         water,
         log,
+        entity,
+        cat,
     }
 }

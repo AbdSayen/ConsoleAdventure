@@ -13,6 +13,9 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Content\Scripts\BaseE.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Content\Localization\en.json" />
     <None Remove="Content\Localization\ru.json" />
   </ItemGroup>

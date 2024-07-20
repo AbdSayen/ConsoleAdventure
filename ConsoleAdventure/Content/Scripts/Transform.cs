@@ -37,6 +37,11 @@ namespace ConsoleAdventure
             world.MoveSubject(this, worldLayer, stepSize, rotation);
         }
 
+        public virtual void SetPosition(Position newPos)
+        {
+            world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y);
+        }
+
         public virtual void Collapse() { }
 
         public string GetSymbol()
@@ -63,6 +68,10 @@ namespace ConsoleAdventure
                     return "≈≈";
                 case RenderFieldType.log:
                     return "≡≡";
+                case RenderFieldType.entity:
+                    return "AE";
+                case RenderFieldType.cat:
+                    return " c";
                 default:
                     return "??";
             }
@@ -93,6 +102,10 @@ namespace ConsoleAdventure
                     return new(16, 29, 211);
                 case RenderFieldType.log:
                     return new(94, 61, 38);
+                case RenderFieldType.entity:
+                    return Color.Yellow;
+                case RenderFieldType.cat:
+                    return Color.Azure;
                 default:
                     return Color.Purple;
             }

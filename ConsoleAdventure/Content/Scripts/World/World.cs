@@ -1,4 +1,6 @@
-﻿using ConsoleAdventure.Settings;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.Entitys;
+using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine.Generate;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -17,6 +19,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public List<List<Chunk>> chunks = new List<List<Chunk>>();
         public List<Player> players = new List<Player>();
+        public List<Entity> entitys = new List<Entity>();
 
         public Time time = new Time();
 
@@ -36,10 +39,29 @@ namespace ConsoleAdventure.WorldEngine
 
         public World()
         {
+            ConsoleAdventure.rand = new Random();
+
             generator = new Generator(this, size);
             renderer = new Renderer(chunks);
             generator.Generate(seed);
             ConnectPlayer();
+
+            entitys.Add(new Cat(this, new(6, 6)));
+            entitys.Add(new Cat(this, new(6, 7)));
+            entitys.Add(new Cat(this, new(6, 8)));
+            entitys.Add(new Cat(this, new(6, 9)));
+            entitys.Add(new Cat(this, new(7, 6)));
+            entitys.Add(new Cat(this, new(7, 7)));
+            entitys.Add(new Cat(this, new(7, 8)));
+            entitys.Add(new Cat(this, new(7, 9)));
+            entitys.Add(new Cat(this, new(8, 6)));
+            entitys.Add(new Cat(this, new(8, 7)));
+            entitys.Add(new Cat(this, new(8, 8)));
+            entitys.Add(new Cat(this, new(8, 9)));
+            entitys.Add(new Cat(this, new(9, 6)));
+            entitys.Add(new Cat(this, new(9, 7)));
+            entitys.Add(new Cat(this, new(9, 8)));
+            entitys.Add(new Cat(this, new(9, 9)));
         }
 
         public Point GetCunkCounts()
@@ -62,6 +84,11 @@ namespace ConsoleAdventure.WorldEngine
                 {
                     players[i].InteractWithWorld();
                 }
+
+                for (int i = 0; i < entitys.Count; i++)
+                {
+                    entitys[i].InteractWithWorld();
+                }
             }         
         }
 
@@ -72,7 +99,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public void RemoveSubject(Transform subject, int worldLayer, bool isDroped = true)
         {
-            if (isDroped)
+            if (isDroped && subject != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
                 GetField(subject.position.x, subject.position.y, worldLayer).content.Collapse();       
             if(subject != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
                 GetField(subject.position.x, subject.position.y, worldLayer).content = null;  
@@ -101,6 +128,11 @@ namespace ConsoleAdventure.WorldEngine
                     break;
             }
 
+            SetSubjectPosition(subject, worldLayer, newX, newY);
+        }
+
+        public void SetSubjectPosition(Transform subject, int worldLayer, int newX, int newY)
+        {
             if (IsValidMove(worldLayer, newX, newY))
             {
                 GetField(subject.position.x, subject.position.y, worldLayer).content = null;
