@@ -66,7 +66,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public void Walk()
         {
-            Console.WriteLine("walk");
             Move(speed, _movement.GetDirection());
 
             if (_movement.IsMoving)

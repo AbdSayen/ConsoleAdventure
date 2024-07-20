@@ -31,8 +31,6 @@ public class PlayerMovement
         {
             IsMoving = true;
         }
-
-        //Console.WriteLine($"{_direction.x} {_direction.y} | {_direction.Magnitude()} | {_direction.Normalize().x} {_direction.Normalize().y}");
         
         return _direction;
     }
