@@ -1,3 +1,4 @@
+using System;
 using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 
@@ -8,38 +9,33 @@ public class PlayerMovement
     public bool IsMoving { get; private set; }
     public int Speed { get; set; }
     
-    private readonly Position _direction;
-    private readonly Player _player;
-    
     private int x;
     private int y;
     
-    public PlayerMovement(Transform player, int speed = 1)
+    public PlayerMovement(int speed = 1)
     {
-        _direction = new Position();
         Speed = speed;
     }
 
-    public void Move()
+    public void Move(Transform target)
     {
-        _player.Move(Speed, GetDirection());
+        target.Move(Speed, GetDirection());
     }
     
-    private Position GetDirection()
+    public Position GetDirection()
     {
-        x = Input.GetHorizontalMovement();
-        y = Input.GetVerticalMovement();
-        
-        _direction.SetPosition(x, y);
-        
         x = 0;
         y = 0;
+        
+        x = Input.GetHorizontalMovement();
+        y = Input.GetVerticalMovement();
 
-        if (_direction.x != 0 || _direction.y != 0)
+        if (x != 0 || y != 0)
         {
             IsMoving = true;
         }
+
         
-        return _direction;
+        return new Position(x ,y);
     }
 }

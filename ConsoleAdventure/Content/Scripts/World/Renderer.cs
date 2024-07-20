@@ -47,9 +47,12 @@ namespace ConsoleAdventure.WorldEngine
                 X = 0;
             }
             
-            if (cursorPosition == Position.Zero())
-                return;
-            
+            DrawCursor(cursorPosition);
+
+        }
+
+        private void DrawCursor(Position cursorPosition)
+        {
             ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "><", new Vector2((viewDistanceX * ConsoleAdventure.cellSize.X / 2) + ConsoleAdventure.worldPos.X
                 + cursorPosition.x * ConsoleAdventure.cellSize.X, (viewDistanceY * ConsoleAdventure.cellSize.Y / 2) + ConsoleAdventure.worldPos.Y
                 + cursorPosition.y * ConsoleAdventure.cellSize.Y), Color.Gray);

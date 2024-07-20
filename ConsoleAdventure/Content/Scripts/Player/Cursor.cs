@@ -1,36 +1,37 @@
 using ConsoleAdventure.Content.Scripts.Abstracts;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using Microsoft.Xna.Framework.Input;
 
 namespace ConsoleAdventure.Content.Scripts.Player;
 
 public class Cursor
 {
-    public Position _cursorPosition;
+    public Position CursorPosition;
 
     public Cursor()
     {
-        _cursorPosition = new Position(0, 0);
+        CursorPosition = Position.Zero();
     }
     
     public void CursorMovement()
     {
-        _cursorPosition = Position.Zero();
+        CursorPosition = Position.Zero();
 
-        if (Keyboard.GetState().IsKeyDown(Keys.Up) && _cursorPosition.y > -2)
+        if (Input.IsKeyDown(InputConfig.Up) && CursorPosition.y > -2)
         {
-            _cursorPosition.SetPosition(_cursorPosition.x, _cursorPosition.y - 1);
+            CursorPosition.SetPosition(CursorPosition.x, CursorPosition.y - 1);
         }
-        if (Keyboard.GetState().IsKeyDown(Keys.Down) && _cursorPosition.y < 2)
+        if (Input.IsKeyDown(InputConfig.Down) && CursorPosition.y < 2)
         {
-            _cursorPosition.SetPosition(_cursorPosition.x, _cursorPosition.y + 1);
+            CursorPosition.SetPosition(CursorPosition.x, CursorPosition.y + 1);
         }
-        if (Keyboard.GetState().IsKeyDown(Keys.Left) && _cursorPosition.x > -2)
+        if (Input.IsKeyDown(InputConfig.Left) && CursorPosition.x > -2)
         {
-            _cursorPosition.SetPosition(_cursorPosition.x - 1, _cursorPosition.y);
+            CursorPosition.SetPosition(CursorPosition.x - 1, CursorPosition.y);
         }
-        if (Keyboard.GetState().IsKeyDown(Keys.Right) && _cursorPosition.x < 2)
+        if (Input.IsKeyDown(InputConfig.Right) && CursorPosition.x < 2)
         {
-            _cursorPosition.SetPosition(_cursorPosition.x + 1, _cursorPosition.y);
+            CursorPosition.SetPosition(CursorPosition.x + 1, CursorPosition.y);
         }
     }
 }

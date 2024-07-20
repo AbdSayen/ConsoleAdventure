@@ -19,7 +19,7 @@ public class DestroyingState : IPlayerState
 
         if (Keyboard.GetState().IsKeyDown(Keys.Enter))
         {
-            Position pos = new Position(player.position.x + player.cursorPosition.x, player.position.y + player.cursorPosition.y);
+            Position pos = new Position(player.position.x + player.Cursor.CursorPosition.x, player.position.y + player.Cursor.CursorPosition.y);
 
             if (pos.x > 0 && pos.x < player.world.size && pos.y > 0 && pos.y < player.world.size &&
                 player.world.GetField(pos.x, pos.y, World.BlocksLayerId).content != null)

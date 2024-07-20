@@ -13,7 +13,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
         public int id;
         public string name = "William";
         public Inventory inventory;
-        public Position cursorPosition;
         public readonly Cursor Cursor;
 
         [NonSerialized]
@@ -34,7 +33,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             this.world = world;
             renderFieldType = RenderFieldType.player;
 
-            _movement = new PlayerMovement(this, speed);
+            _movement = new PlayerMovement(speed);
             inventory = new Inventory(this);
             currentState = new IdleState(this);
             Cursor = new Cursor();
@@ -66,12 +65,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public void Walk()
         {
-            _movement.Move();
+            Move(speed, _movement.GetDirection());
             
             if (Input.IsKeyDown(InputConfig.Clear))
             {
                 currentState = new IdleState(this);
-                cursorPosition = Position.Zero();
+                Cursor.CursorPosition = Position.Zero();
             }
         }
 
