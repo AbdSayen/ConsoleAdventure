@@ -1,7 +1,6 @@
 ﻿using ConsoleAdventure.WorldEngine;
-using ConsoleAdventure.WorldEngine.Generate;
 using System;
-using Microsoft.Xna.Framework;
+using ConsoleAdventure.Content.Scripts.Abstracts;
 
 namespace ConsoleAdventure.Generate.Structures
 {

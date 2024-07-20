@@ -5,7 +5,7 @@ namespace ConsoleAdventure.Content.Scripts.Player;
 
 public class Cursor
 {
-    private Position _cursorPosition;
+    public Position _cursorPosition;
 
     public Cursor()
     {
@@ -14,7 +14,7 @@ public class Cursor
     
     public void CursorMovement()
     {
-        _cursorPosition = new Position(0, 0);
+        _cursorPosition = Position.Zero();
 
         if (Keyboard.GetState().IsKeyDown(Keys.Up) && _cursorPosition.y > -2)
         {

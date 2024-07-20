@@ -3,7 +3,7 @@
 namespace ConsoleAdventure.Content.Scripts.Abstracts
 {
     [Serializable]
-    public struct Position
+    public class Position
     {
         public int x { get; private set; }
         public int y { get; private set; }

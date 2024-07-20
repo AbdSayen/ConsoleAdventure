@@ -4,7 +4,6 @@ using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.Player.States;
 using ConsoleAdventure.WorldEngine;
-using Microsoft.Xna.Framework.Input;
 
 namespace ConsoleAdventure.Content.Scripts.Player
 {
@@ -67,6 +66,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public void Walk()
         {
+            Console.WriteLine("walk");
             Move(speed, _movement.GetDirection());
 
             if (_movement.IsMoving)
@@ -77,7 +77,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (Input.IsKeyDown(InputConfig.Clear))
             {
                 currentState = new IdleState(this);
-                cursorPosition = new Position();
+                cursorPosition = Position.Zero();
             }
         }
 

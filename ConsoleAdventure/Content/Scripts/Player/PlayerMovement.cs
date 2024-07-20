@@ -1,3 +1,4 @@
+using System;
 using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 

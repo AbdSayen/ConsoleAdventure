@@ -69,7 +69,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public void Render()
         {
-            renderer.Render(players[0], players[0].cursorPosition);
+            renderer.Render(players[0], players[0].Cursor._cursorPosition);
         }
 
         public void RemoveSubject(Transform subject, int worldLayer, bool isDroped = true)
