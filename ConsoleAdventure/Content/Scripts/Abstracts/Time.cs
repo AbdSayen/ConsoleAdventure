@@ -20,7 +20,7 @@ namespace ConsoleAdventure
 
         public string GetTime()
         {
-            return $"Day: {day} Time: {hour}:{minute.ToString("D2")}";
+            return $"{TextAssets.Day + day} {TextAssets.Time} {hour}:{minute.ToString("D2")}";
         }
 
         private void Stack()

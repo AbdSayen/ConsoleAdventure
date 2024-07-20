@@ -19,7 +19,8 @@ namespace ConsoleAdventure
                 $"{Docs.GetInfo()}\n" +
                 $"{world.time.GetTime()}\n" +
                 $"X:{world.players[0].position.x} Y:{world.players[0].position.y}\n" +
-                $"Structure: {world.GetField(world.players[0].position.x, world.players[0].position.y, World.BlocksLayerId)}\n\n"
+                $"{TextAssets.Structure} {world.GetField(world.players[0].position.x, world.players[0].position.y, World.BlocksLayerId)}\n" +
+                (ConsoleAdventure.isPause ? TextAssets.Paused : "") + "\n\n"
                 ;
         }
 
@@ -31,7 +32,7 @@ namespace ConsoleAdventure
         public string DisplayInventory()
         {
             return
-                $"Inventory:\n" +
+                $"{TextAssets.Inventory}\n" +
                 $"{world.players[0].inventory.GetInfo()}\n" +
                 $"{Loger.GetLogs()}"
                 ;

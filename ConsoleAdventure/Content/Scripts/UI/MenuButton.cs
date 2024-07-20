@@ -16,7 +16,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public byte type;
 
-        public MenuButton(Vector2 position, string text, float size, byte fontSize, Color color, byte type) : base(position, text, size, fontSize, color)
+        public MenuButton(Vector2 position, string kay, Color color, byte type) : base(position, color, kay)
         {
             this.type = type;
         }
@@ -27,8 +27,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             if (isHover)
             {
-                spriteBatch.DrawString(ConsoleAdventure.Font, "<", Position - new Vector2(10 * size.X, 0), cursorColor, rotation, Vector2.Zero, size, 0, 0);
-                spriteBatch.DrawString(ConsoleAdventure.Font, ">", Position + new Vector2(rectangle.Width + 2, 0), cursorColor, rotation, Vector2.Zero, size, 0, 0);
+                spriteBatch.DrawString(ConsoleAdventure.Font, "<", Position - new Vector2(10, 0), cursorColor, 0, Vector2.Zero, 1, 0, 0);
+                spriteBatch.DrawString(ConsoleAdventure.Font, ">", Position + new Vector2(rectangle.Width + 2, 0), cursorColor, 0, Vector2.Zero, 1, 0, 0);
             }       
         }
     }

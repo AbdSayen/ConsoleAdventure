@@ -46,7 +46,7 @@ namespace ConsoleAdventure
             else if (timer.Elapsed.TotalMilliseconds > 50)
             {
                 PerformActions();
-            }
+            } 
 
             void PerformActions()
             {
@@ -78,11 +78,6 @@ namespace ConsoleAdventure
             {
                 Move(speed, Rotation.right);
                 isMove = true;
-            }
-
-            if (isMove)
-            {
-                world.time.PassTime(3);
             }
         }
 

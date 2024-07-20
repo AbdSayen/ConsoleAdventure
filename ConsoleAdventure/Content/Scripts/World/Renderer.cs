@@ -18,6 +18,8 @@ namespace ConsoleAdventure.WorldEngine
         {
             int X = 0, Y = 0;
 
+            ConsoleAdventure._spriteBatch.DrawFrame(ConsoleAdventure.Font, Utils.GetPanel(new(122, 32)), new(ConsoleAdventure.worldPos.X - (ConsoleAdventure.cellSize.X / 2) + 4, ConsoleAdventure.worldPos.Y - ConsoleAdventure.cellSize.Y), new Color(50, 50, 50));
+
             for (int y = observer.position.y - viewDistanceY / 2; y < observer.position.y + viewDistanceY / 2; y++)
             {
                 if (y >= 0 && y < chunks.Count * Chunk.Size)
@@ -33,7 +35,7 @@ namespace ConsoleAdventure.WorldEngine
 
                                 if (field != null)
                                 {
-                                    ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2(X * ConsoleAdventure.cellSize, (Y * ConsoleAdventure.cellSize) + 150), field.color);
+                                    ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), field.color);
                                 }
                             }
                         }
@@ -46,9 +48,9 @@ namespace ConsoleAdventure.WorldEngine
 
             if (cursorPosition != null)
             {
-                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "[]", new Vector2((viewDistanceX * ConsoleAdventure.cellSize / 2)
-                    + cursorPosition.x * ConsoleAdventure.cellSize, (viewDistanceY * ConsoleAdventure.cellSize / 2) + 150
-                    + cursorPosition.y * ConsoleAdventure.cellSize), Color.Gray);
+                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "><", new Vector2((viewDistanceX * ConsoleAdventure.cellSize.X / 2) + ConsoleAdventure.worldPos.X
+                    + cursorPosition.x * ConsoleAdventure.cellSize.X, (viewDistanceY * ConsoleAdventure.cellSize.Y / 2) + ConsoleAdventure.worldPos.Y
+                    + cursorPosition.y * ConsoleAdventure.cellSize.Y), Color.Gray);
             }
         }
 

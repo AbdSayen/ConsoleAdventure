@@ -12,5 +12,21 @@
 
   "Events": {
     "Eating": "was eaten"
+  },
+
+  "UI": {
+    "Navigation": "for navigation use: \"←→↑↓\". And to select \"Enter\"",
+    "NavigationBack": "press \"Escape\" to return to main menu",
+    "Play": "Play",
+    "Settings": "Settings",
+    "Exit": "Exit",
+    "Name": "Name:",
+    "Seed": "Seed:",
+    "Version": "version:",
+    "Inventory": "Inventory:",
+    "Day": "Day:",
+    "Time": "Time:",
+    "Structure": "Structure:",
+    "Paused": "*Paused*"
   }
 }

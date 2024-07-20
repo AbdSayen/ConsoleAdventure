@@ -54,10 +54,15 @@ namespace ConsoleAdventure.WorldEngine
         
         public void ListenEvents()
         {
-            for (int i = 0; i < players.Count; i++)
+            if (!ConsoleAdventure.isPause)
             {
-                players[i].InteractWithWorld();
-            }
+                time.PassTime(1);
+
+                for (int i = 0; i < players.Count; i++)
+                {
+                    players[i].InteractWithWorld();
+                }
+            }         
         }
 
         public void Render()
