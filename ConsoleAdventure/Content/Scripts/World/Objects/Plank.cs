@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.Logging;
 using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.Abstracts;
 
 namespace ConsoleAdventure.WorldEngine
 {

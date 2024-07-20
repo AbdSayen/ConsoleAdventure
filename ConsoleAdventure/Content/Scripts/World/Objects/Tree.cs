@@ -1,16 +1,16 @@
 ﻿using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.Abstracts;
 
 namespace ConsoleAdventure.WorldEngine
 {
     [Serializable]
     public class Tree : Transform
     {
-        public Tree(World world, Position position = null, int worldLayer = -1) : base(world, position)
+        public Tree(World world, Position position, int worldLayer = -1) : base(world, position)
         {
-            if (position != null) this.position = position;
-            else this.position = new Position(0, 0);
+            this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;
 

@@ -2,6 +2,7 @@
 using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.Abstracts;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {

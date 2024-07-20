@@ -1,3 +1,4 @@
+using ConsoleAdventure.Content.Scripts.Abstracts;
 using Microsoft.Xna.Framework.Input;
 
 namespace ConsoleAdventure.Content.Scripts.Player;
@@ -5,11 +6,15 @@ namespace ConsoleAdventure.Content.Scripts.Player;
 public class Cursor
 {
     private Position _cursorPosition;
+
+    public Cursor()
+    {
+        _cursorPosition = new Position(0, 0);
+    }
     
     public void CursorMovement()
     {
-        if (_cursorPosition == null) 
-            _cursorPosition = new Position(0, 0);
+        _cursorPosition = new Position(0, 0);
 
         if (Keyboard.GetState().IsKeyDown(Keys.Up) && _cursorPosition.y > -2)
         {

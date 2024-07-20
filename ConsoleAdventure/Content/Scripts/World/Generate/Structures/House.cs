@@ -1,5 +1,6 @@
 ﻿using ConsoleAdventure.WorldEngine;
 using System;
+using ConsoleAdventure.Content.Scripts.Abstracts;
 
 namespace ConsoleAdventure.Generate.Structures
 {

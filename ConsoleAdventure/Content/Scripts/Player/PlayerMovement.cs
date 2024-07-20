@@ -1,3 +1,4 @@
+using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 
 namespace ConsoleAdventure.Content.Scripts.Player;
@@ -29,6 +30,8 @@ public class PlayerMovement
         {
             IsMoving = true;
         }
+
+        //Console.WriteLine($"{_direction.x} {_direction.y} | {_direction.Magnitude()} | {_direction.Normalize().x} {_direction.Normalize().y}");
         
         return _direction;
     }

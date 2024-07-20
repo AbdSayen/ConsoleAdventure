@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.Abstracts;
 
 namespace ConsoleAdventure
 {
@@ -15,10 +16,9 @@ namespace ConsoleAdventure
         public RenderFieldType renderFieldType;
         public bool isObstacle;
 
-        protected Transform(World world, Position position = null)
+        protected Transform(World world, Position position)
         {
-            if (position != null) this.position = position;
-            else this.position = new Position(0, 0);
+            this.position = position;
 
             this.world = world;
         }

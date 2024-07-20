@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.Player.States;
 using ConsoleAdventure.WorldEngine;
@@ -13,7 +14,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         public int id;
         public string name = "William";
         public Inventory inventory;
-        public Position cursorPosition = null;
+        public Position cursorPosition;
         public readonly Cursor Cursor;
 
         [NonSerialized]
@@ -24,12 +25,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
         private IPlayerState currentState;
         private PlayerMovement _movement;
 
-        public Player(int id, World world, Position position = null, int worldLayer = -1) : base(world, position)
+        public Player(int id, World world, Position position, int worldLayer = -1) : base(world, position)
         {
             if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
             else this.worldLayer = worldLayer;
-            if (position != null) this.position = position;
-            else this.position = new Position(0, 0);
+            this.position = position;
 
             this.id = id;
             this.world = world;
@@ -77,7 +77,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (Input.IsKeyDown(InputConfig.Clear))
             {
                 currentState = new IdleState(this);
-                cursorPosition = null;
+                cursorPosition = new Position();
             }
         }
 

@@ -1,3 +1,4 @@
+using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework.Input;
