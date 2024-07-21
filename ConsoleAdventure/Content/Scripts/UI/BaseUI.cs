@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ConsoleAdventure.Content.Scripts.UI
@@ -11,13 +12,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public Rectangle rectangle = new();
 
-        public Vector2 size;
-
-        public float rotation;
-
         public Color color;
-
-        public byte fontSize;
 
         public Vector2 Position
         {
@@ -25,12 +20,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             set
             {
                 position = value;
-                //Vector2 textSize = ConsoleAdventure.Font.MeasureString(text);
-                //Vector2 scale = new(size.X + (fontSize == 2 ? 2 : 1), size.Y + (fontSize == 2 ? 2 : 1));
-                //rectangle = new Rectangle(position.ToPoint(), (textSize * scale).ToPoint());
-                SpriteFont font = ConsoleAdventure.Font;
-                Vector2 textSize = font.MeasureString(text);
-                rectangle = new Rectangle(position.ToPoint(), (textSize * size).ToPoint());
+                UpdateRectToTextSize();
             }
         }
 
@@ -45,36 +35,39 @@ namespace ConsoleAdventure.Content.Scripts.UI
             }
         }
 
-        public BaseUI(Vector2 position, string text, Vector2 size, byte fontSize, Color color)
-        {      
-            this.text = text;
-            this.size = size;
-            this.color = color;
-            this.fontSize = fontSize;
-            Position = position;
-        }
-
-        public BaseUI(Vector2 position, string text, float size, byte fontSize, Color color)
-        {
-            this.text = text;
-            this.size = new(size, size);
-            this.color = color;
-            this.fontSize = fontSize;
-            Position = position;
-        }
-
-        public BaseUI(Vector2 position, string text, Color color)
+        public BaseUI(Vector2 center, string text, Color color)
         {
             this.text = text;
             this.color = color;
-            Position = position;
+            Position = Vector2.Zero;
+            Center = center;
+        }
+
+        public BaseUI(Vector2 center, Color color, string localization)
+        {
+            text = Localization.GetTranslation("UI", localization);
+            this.color = color;
+            Position = Vector2.Zero;
+            Center = center;
+        }
+
+        public BaseUI(Rectangle rectangle, Color color)
+        {   
+            Position = Vector2.Zero;
+            rectangle.Size = rectangle.Size;
+            Center = rectangle.Location.ToVector2();
+            this.color = color;        
+        }
+
+        public void UpdateRectToTextSize()
+        {
+            Vector2 textSize = ConsoleAdventure.Font.MeasureString(text);
+            rectangle = new Rectangle(position.ToPoint(), textSize.ToPoint());
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            SpriteFont font = ConsoleAdventure.Font;
-
-            spriteBatch.DrawString(font, text, position, color, rotation, Vector2.Zero, size, 0, 0);
+            spriteBatch.DrawString(ConsoleAdventure.Font, text, position, color, 0, Vector2.Zero, 1f, 0, 0);
         }
     }
 }
