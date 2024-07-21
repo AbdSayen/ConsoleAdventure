@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -10,14 +8,17 @@ namespace ConsoleAdventure.WorldEngine
         List<List<Chunk>> chunks;
         private int viewDistanceY = 30;
         private int viewDistanceX = 60;
+
         public Renderer(List<List<Chunk>> chunks)
         {
             this.chunks = chunks;
         }
 
-        public void Render(Transform observer)
+        public void Render(Transform observer, Position cursorPosition = null)
         {
             int X = 0, Y = 0;
+
+            ConsoleAdventure._spriteBatch.DrawFrame(ConsoleAdventure.Font, Utils.GetPanel(new(122, 32)), new(ConsoleAdventure.worldPos.X - (ConsoleAdventure.cellSize.X / 2) + 4, ConsoleAdventure.worldPos.Y - ConsoleAdventure.cellSize.Y), new Color(50, 50, 50));
 
             for (int y = observer.position.y - viewDistanceY / 2; y < observer.position.y + viewDistanceY / 2; y++)
             {
@@ -28,15 +29,15 @@ namespace ConsoleAdventure.WorldEngine
                         if (x >= 0 && x < chunks[0].Count * Chunk.Size)
                         {
                             var chunk = GetChunk(x, y);
-                            for(int z = 0; z < World.CountOfLayers; z++)
+                            for (int z = 0; z < World.CountOfLayers; z++)
                             {
                                 var field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, z);
 
                                 if (field != null)
                                 {
-                                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2(X * 18, (Y * 19) + 155), field.color);
+                                    ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), field.color);
                                 }
-                            }                            
+                            }
                         }
                         X++;
                     }
@@ -44,22 +45,13 @@ namespace ConsoleAdventure.WorldEngine
                 Y++;
                 X = 0;
             }
-        }
 
-        public string PrimitiveRender()
-        {
-            StringBuilder output = new StringBuilder();
-            for (int y = 0; y < chunks.Count * Chunk.Size; y++)
+            if (cursorPosition != null)
             {
-                for (int x = 0; x < chunks[0].Count * Chunk.Size; x++)
-                {
-                    var chunk = GetChunk(x, y);
-                    var field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, World.BlocksLayerId);
-                    output.Append(field?.GetSymbol() ?? " ");
-                }
-                output.AppendLine();
+                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "><", new Vector2((viewDistanceX * ConsoleAdventure.cellSize.X / 2) + ConsoleAdventure.worldPos.X
+                    + cursorPosition.x * ConsoleAdventure.cellSize.X, (viewDistanceY * ConsoleAdventure.cellSize.Y / 2) + ConsoleAdventure.worldPos.Y
+                    + cursorPosition.y * ConsoleAdventure.cellSize.Y), Color.Gray);
             }
-            return output.ToString();
         }
 
         private Chunk GetChunk(int x, int y)
@@ -72,73 +64,5 @@ namespace ConsoleAdventure.WorldEngine
             }
             return null;
         }
-
-        /*public string Render(Transform observer, int layer)
-        {
-            string output = "";
-
-            int x = 0, y = 0;
-            for (int i = observer.position.y - viewDistanceY / 2; i < observer.position.y + viewDistanceY / 2; i++) //y
-            {
-                if (i <= fields[World.FloorLayerId].Count - 1 && i >= 0)
-                {
-                    for (int j = observer.position.x - viewDistanceX / 2; j < observer.position.x + viewDistanceX / 2; j++) //x
-                    {
-                        if (j <= fields[World.FloorLayerId][i].Count - 1 && j >= 0)
-                        {
-                            if (fields[World.MobsLayerId][i][j] != null && layer == World.MobsLayerId)
-                            {
-                                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, fields[World.MobsLayerId][i][j].GetSymbol(), new Vector2(x * 18, (y * 19) + 155), Color.Yellow);
-                            }
-                            else if (fields[World.ItemsLayerId][i][j] != null && layer == World.ItemsLayerId)
-                            {
-                                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, fields[World.ItemsLayerId][i][j].GetSymbol(), new Vector2(x * 18, (y * 19) + 155), fields[World.ItemsLayerId][i][j].color);
-                            }
-                            else if (fields[World.BlocksLayerId][i][j] != null && layer == World.BlocksLayerId)
-                            {
-                                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, fields[World.BlocksLayerId][i][j].GetSymbol(), new Vector2(x * 18, (y * 19) + 155), fields[World.BlocksLayerId][i][j].color);
-                            }
-                            else if (fields[World.FloorLayerId][i][j] != null && layer == World.FloorLayerId)
-                            {
-                                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, fields[World.FloorLayerId][i][j].GetSymbol(), new Vector2(x * 18, (y * 19) + 155), fields[World.FloorLayerId][i][j].color);
-                            }
-                        }
-                        else
-                        {
-                            ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, " `", new Vector2(x * 18, (y * 19) + 155), Color.Yellow);
-                        }
-                        x++;
-                    }
-                }
-                else
-                {
-                    for (int k = 0; k < viewDistanceX; k++)
-                    {
-                        ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, " `", new Vector2(x * 18, (y * 19) + 155), Color.Yellow);
-                        x++;
-                    }
-
-                }
-
-                y++;
-                x = 0;
-            }
-
-            return output;
-        }
-
-        public string PrimitiveRender()
-        {
-            StringBuilder output = new StringBuilder();
-            for (int y = 0; y < fields[World.FloorLayerId].Count; y++)
-            {
-                for (int x = 0; x < fields[World.FloorLayerId][y].Count; x++)
-                {
-                    output.Append(fields[World.BlocksLayerId][y][x].GetSymbol());
-                }
-                output.AppendLine();
-            }
-            return output.ToString();
-        }*/
     }
 }

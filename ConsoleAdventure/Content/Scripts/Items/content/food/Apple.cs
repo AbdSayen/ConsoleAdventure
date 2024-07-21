@@ -1,5 +1,8 @@
-﻿namespace ConsoleAdventure
+﻿using System;
+
+namespace ConsoleAdventure
 {
+    [Serializable]
     public class Apple : Food
     {
         public Apple()
@@ -11,7 +14,7 @@
 
         public new string GetDescription()
         {
-            return " " + Localization.GetTranslation("ItemDescs", GetType().Name) + "\n " + base.GetDescription();
+            return " " + Localization.GetTranslation("ItemDescription", GetType().Name) + "\n " + base.GetDescription();
         }
     }
 }

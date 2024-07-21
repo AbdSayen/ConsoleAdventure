@@ -1,10 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public class Field
     {
         public bool isStructure = false;
+
+        [NonSerialized]
         public Color color = Color.White;
 
         public string structureName { get; set; } = "None";

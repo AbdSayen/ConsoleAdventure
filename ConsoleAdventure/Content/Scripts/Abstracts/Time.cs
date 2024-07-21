@@ -1,5 +1,8 @@
-﻿namespace ConsoleAdventure
+﻿using System;
+
+namespace ConsoleAdventure
 {
+    [Serializable]
     public class Time
     {
         public int day { get; private set; } = 1;
@@ -17,7 +20,7 @@
 
         public string GetTime()
         {
-            return $"Day: {day} Time: {hour}:{minute.ToString("D2")}";
+            return $"{TextAssets.Day + day} {TextAssets.Time} {hour}:{minute.ToString("D2")}";
         }
 
         private void Stack()

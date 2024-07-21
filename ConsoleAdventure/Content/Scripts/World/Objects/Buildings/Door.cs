@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace ConsoleAdventure.WorldEngine
 {
+    [Serializable]
     public class Door : Transform
     {
         public Door(World world, Position position = null, int worldLayer = 1) : base(world, position)

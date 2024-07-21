@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure
 {
+    [Serializable]
     public class Loot : Transform
     {
         private List<Stack> items { get; set; }
@@ -12,7 +14,7 @@ namespace ConsoleAdventure
             isObstacle = false;
             renderFieldType = WorldEngine.RenderFieldType.loot;
 
-            if (worldLayer == -1) this.worldLayer = WorldEngine.World.BlocksLayerId;
+            if (worldLayer == -1) this.worldLayer = WorldEngine.World.ItemsLayerId;
             else this.worldLayer = worldLayer;
             Initialize();
         }
@@ -20,7 +22,12 @@ namespace ConsoleAdventure
         public void PickUpAll(Inventory inventory)
         {
             inventory.PickUpItems(items);
-            world.RemoveSubject(this, WorldEngine.World.BlocksLayerId);
+            world.RemoveSubject(this, WorldEngine.World.ItemsLayerId);
+        }
+
+        public List<Stack> GetItems()
+        {
+            return items;
         }
 
         public string GetItemsInfo()
