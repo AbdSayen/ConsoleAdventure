@@ -1,8 +1,12 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure
 {
+    [Serializable]
     public abstract class Transform
     {
         public World world { get; protected set; }
@@ -34,6 +38,13 @@ namespace ConsoleAdventure
             world.MoveSubject(this, worldLayer, stepSize, rotation);
         }
 
+        public virtual void SetPosition(Position newPos)
+        {
+            world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y);
+        }
+
+        public virtual void Collapse() { }
+
         public string GetSymbol()
         {
             switch (renderFieldType)
@@ -56,6 +67,12 @@ namespace ConsoleAdventure
                     return " $";
                 case RenderFieldType.water:
                     return "≈≈";
+                case RenderFieldType.log:
+                    return "≡≡";
+                case RenderFieldType.entity:
+                    return "AE";
+                case RenderFieldType.cat:
+                    return " c";
                 default:
                     return "??";
             }
@@ -84,8 +101,59 @@ namespace ConsoleAdventure
                     return Color.Yellow;
                 case RenderFieldType.water:
                     return new(16, 29, 211);
+                case RenderFieldType.log:
+                    return new(94, 61, 38);
+                case RenderFieldType.entity:
+                    return Color.Yellow;
+                case RenderFieldType.cat:
+                    return Color.White;
                 default:
                     return Color.Purple;
+            }
+        }
+
+        public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
+        {
+            switch (type)
+            {
+                case (int)RenderFieldType.empty:
+                    ConsoleAdventure.world.RemoveSubject(ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId).content, layer, false);
+                    return;
+                case (int)RenderFieldType.player:
+                    //new Player(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.ruine:
+                    new Ruine(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.wall:
+                    new Wall(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.tree:
+                    new Tree(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.floor:
+                    new Floor(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.door:
+                    new Door(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.loot:
+                    new Loot(ConsoleAdventure.world, position, items);
+                    return;
+                case (int)RenderFieldType.water:
+                    new Water(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.log:
+                    new Plank(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.entity:
+                    ConsoleAdventure.world.entitys.Add(new Entity(ConsoleAdventure.world, position, parameters));
+                    return;
+                case (int)RenderFieldType.cat:
+                    ConsoleAdventure.world.entitys.Add(new Cat(ConsoleAdventure.world, position, parameters));
+                    return;
+                default:
+                    return;
             }
         }
     }

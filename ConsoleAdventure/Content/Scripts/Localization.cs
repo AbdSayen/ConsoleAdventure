@@ -24,6 +24,13 @@ namespace ConsoleAdventure
             }
         }
 
+        public static string GetLanguageName(int id)
+        {
+            return id == 0 ? GetTranslation("UI", "English")
+                   : id == 1 ? GetTranslation("UI", "Russian")
+                   : "None";
+        }
+
         public static string GetTranslation(int language, string type, string key)
         {
             string languageName = language == 0 ? "English"
@@ -72,8 +79,7 @@ namespace ConsoleAdventure
 
         public static string GetTranslation(string type, string key)
         {
-            // Assuming ConsoleAdventure.language is a valid integer
-            return GetTranslation((int)ConsoleAdventure.language, type, key);
+            return GetTranslation(ConsoleAdventure.language, type, key);
         }
     }
 }

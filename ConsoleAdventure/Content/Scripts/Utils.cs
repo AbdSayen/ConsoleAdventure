@@ -10,18 +10,31 @@ namespace ConsoleAdventure
 {
     public static class Utils
     {
+        public static class TimeConverter
+        {
+            public static int SecondsToTicks(float seconds)
+            {
+                return (int)(seconds * 60);
+            }
+
+            public static float TicksToSeconds(int ticks)
+            {
+                return ((float)ticks / 60f);
+            }
+        }
+
         private static readonly char[] baseFrameChars = new char[6] {'│', '─', '┌', '┐', '└', '┘'};
 
         /// <summary>
-        /// Creates a frame
+        /// Создаёт рамку из символов
         /// </summary>
-        /// <param name="panel">Frame size: width and height</param>
-        /// <param name="style">Frame style</param>
-        /// <returns>An "image" of a frame that you can draw</returns>
+        /// <param name="panel">Размер рамки</param>
+        /// <param name="style">Стиль рамки</param>
+        /// <returns>Две строки, которые являются изображением рамки</returns>
         public static string[] GetPanel(Point panel, byte style = 0)
         {
-            StringBuilder TB = new StringBuilder(); //Top and Bottom
-            StringBuilder LR = new StringBuilder(); //Left and Right
+            StringBuilder TB = new StringBuilder(); //Верх и низ
+            StringBuilder LR = new StringBuilder(); //Лево и право
 
             char[] chars = baseFrameChars;
 
@@ -29,7 +42,7 @@ namespace ConsoleAdventure
             {
                 for (int j = 0; j < panel.X; j++)
                 {
-                    if (i == 0) // Top
+                    if (i == 0) //Верх
                     {
                         if (j == 0) 
                         { 
@@ -47,7 +60,7 @@ namespace ConsoleAdventure
                             LR.Append(' ');
                         }
                     }
-                    else if (i == panel.Y - 1) // Bottom 
+                    else if (i == panel.Y - 1) //Низ
                     {
                         if (j == 0)
                         {
@@ -65,7 +78,7 @@ namespace ConsoleAdventure
                             LR.Append(' ');
                         }
                     }
-                    else // Middle
+                    else //Середина
                     {
                         if (j == 0 || j == panel.X - 1)
                         {
@@ -85,11 +98,35 @@ namespace ConsoleAdventure
 
             return new string[2] { TB.ToString(), LR.ToString(), };
         }
-
+        /// <summary>
+        /// Ресует рамку из символов (Разширение ConsoleAdventure)
+        /// </summary>
+        /// <param name="font">Шрифт рамки</param>
+        /// <param name="panel">Строки рамки</param>
+        /// <param name="position">Позиция рамки</param>
+        /// <param name="color">Цвет рамки</param>
         public static void DrawFrame(this SpriteBatch spriteBatch, SpriteFont font, string[] panel, Vector2 position, Color color)
         {
             spriteBatch.DrawString(font, panel[0], position - new Vector2(4, 0), color);
-            spriteBatch.DrawString(font, panel[1], position, color);
+            spriteBatch.DrawString(font, panel[1], position, color);         
+        }
+
+        /// <summary>
+        /// Используется для исключения искажений времени таймера, при разном fps
+        /// </summary>
+        /// <param name="ticks">Время в тиках, которое нужно стабилизировать</param>
+        public static int StabilizeTicks(int ticks)
+        {
+            return (int)(ticks * (ConsoleAdventure.FPS / 60)); //Тут, мы умножаем тики на отношение реального фпс, и ожидаемого.
+        }
+
+        /// <summary>
+        /// Используется для исключения искажений времени таймера, при разном fps
+        /// </summary>
+        /// <param name="seconds">Время в секундах, которое нужно стабилизировать</param>
+        public static int StabilizeSeconds(float seconds)
+        {
+            return StabilizeTicks((int)(seconds * 60));
         }
     }
 }
