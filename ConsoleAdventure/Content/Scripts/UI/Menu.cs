@@ -285,7 +285,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         {
                             menuSettingsButtons[i].isHover = false;
 
-                            if (i < menuSettingsButtons.Length)
+                            if (i < menuSettingsButtons.Length - 1)
                                 menuSettingsButtons[i + 1].isHover = true;
                             else
                                 menuSettingsButtons[0].isHover = true;
