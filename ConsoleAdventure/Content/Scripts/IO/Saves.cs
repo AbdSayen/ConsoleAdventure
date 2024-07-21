@@ -15,14 +15,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
         {
             Console.WriteLine("Saving on account");
 
-            CreateTags();
+            CreateTags(); //Создаём теги и храним в них данные о мире
 
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            byte[] bytes = SerializeData.Serialize(ConsoleAdventure.tags.Data);
+            byte[] bytes = SerializeData.Serialize(ConsoleAdventure.tags.Data); //Переводим теги в массив байтов
 
             string fileName = path + name + ".wld";
 
@@ -54,7 +54,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             {
                 byte[] bytes = File.ReadAllBytes(fileName);
 
-                ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytes);
+                ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytes); //Переводим байты в теги
             }
             else
             {
@@ -62,7 +62,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 return;
             }
 
-            LoadTags();
+            LoadTags(); //Загружам данные из тегов в мир
 
             Console.WriteLine("The world was successfully loaded!");
         }
@@ -85,7 +85,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
 
             int lootCount = 0;
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < size; i++) //поик количества лута
             {
                 for (int j = 0; j < size; j++)
                 {
@@ -109,7 +109,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                     for (int k = 0; k < 4; k++)
                     {
                         byte type = 0;
-                        if (world.GetField(i, j, k).content != null)
+                        if (world.GetField(i, j, k).content != null) //Поиск ячеяк мира
                         {
                             type = (byte)world.GetField(i, j, k).content.renderFieldType;
                         }
@@ -117,7 +117,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                         fields[i, j, k] = type;
                     }
 
-                    if (world.GetField(i, j, World.ItemsLayerId).content != null)
+                    if (world.GetField(i, j, World.ItemsLayerId).content != null) //Поиск лута
                     {
                         loots[curLoot] = ((Loot)world.GetField(i, j, World.ItemsLayerId).content).GetItems();
                         lootX[curLoot] = i;
@@ -132,7 +132,29 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["LootCount"] = lootCount;
             tags["Loots"] = loots;
             tags["LootX"] = lootX;
-            tags["LootY"] = lootY; 
+            tags["LootY"] = lootY;
+
+            int EntityCount = world.entitys.Count;
+            int[] EntityX = new int[EntityCount];
+            int[] EntityY = new int[EntityCount];
+            byte[] EntityTypes = new byte[EntityCount];
+            List<object>[] EntityParams = new List<object>[EntityCount];
+
+            for (int i = 0; i < EntityCount; i++)
+            {
+                Entity entity = world.entitys[i];
+
+                EntityX[i] = entity.position.x;
+                EntityY[i] = entity.position.y;
+                EntityTypes[i] = (byte)entity.renderFieldType;
+                EntityParams[i] = entity.GetParams();
+            }
+
+            tags["EntityCount"] = EntityCount;
+            tags["EntityX"] = EntityX;
+            tags["EntityY"] = EntityY;
+            tags["EntityTypes"] = EntityTypes;
+            tags["EntityParams"] = EntityParams;
 
             ConsoleAdventure.tags = tags;
         }
@@ -156,30 +178,57 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 {
                     for (int k = 0; k < 4; k++)
                     {
-                        byte type = ((byte[,,])tags.SafelyGet("Fields"))[i, j, k];
-                        if (type != (byte)RenderFieldType.loot)
+                        if (k != World.MobsLayerId)
                         {
-                            Transform.SetObject(type, new(i, j), k);
-                        }
-
-                        else
-                        {
-                            List<Stack> items = new List<Stack>();
-
-                            for (int l = 0; l < (int)tags.SafelyGet("LootCount"); l++)
+                            byte type = ((byte[,,])tags.SafelyGet("Fields"))[i, j, k];
+                            if (type != (byte)RenderFieldType.loot)
                             {
-                                Position position = new Position(((int[])tags.SafelyGet("LootX"))[l], ((int[])tags.SafelyGet("LootY"))[l]);
-                                if (position.x == i && position.y == j)
-                                {
-                                    items = ((List<Stack>[])tags.SafelyGet("Loots"))[l]; 
-                                    break;
-                                }
+                                Transform.SetObject(type, new(i, j), k); //загружаем ячейки из тега
                             }
 
-                            Transform.SetObject(type, new(i, j), items: items);
+                            else
+                            {
+                                List<Stack> items = new List<Stack>();
+
+                                for (int l = 0; l < (int)tags.SafelyGet("LootCount"); l++)
+                                {
+                                    Position position = new Position(((int[])tags.SafelyGet("LootX"))[l], ((int[])tags.SafelyGet("LootY"))[l]);
+                                    if (position.x == i && position.y == j)
+                                    {
+                                        items = ((List<Stack>[])tags.SafelyGet("Loots"))[l];
+                                        break;
+                                    }
+                                }
+
+                                Transform.SetObject(type, new(i, j), items: items); //Загружам лут из мира
+                            }
                         }
                     }
                 }
+            }
+
+            int EntityCount = (int)tags.SafelyGet("EntityCount");
+            int[] EntityX = (int[])tags.SafelyGet("EntityX");
+            int[] EntityY = (int[])tags.SafelyGet("EntityY");
+            byte[] EntityTypes = (byte[])tags.SafelyGet("EntityTypes");
+            List<object>[] EntityParams = (List<object>[])tags.SafelyGet("EntityParams");
+
+            for (int i = 0; i < world.entitys.Count; i++)
+            {
+                world.entitys[i].Kill();
+            }
+
+            world.entitys.Clear();
+
+            for (int i = 0; i < EntityCount; i++)
+            {
+                if (EntityX[i] == 5 && EntityY[i] == 5)
+                {
+                    EntityX[i] = 0;
+                    EntityY[i] = 0;
+                }
+
+                Transform.SetObject(EntityTypes[i], new Position(EntityX[i], EntityY[i]), parameters: EntityParams[i]);
             }
         }
     }

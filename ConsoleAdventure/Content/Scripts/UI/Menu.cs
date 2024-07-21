@@ -160,7 +160,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     {
                         if (worldPanels[i].curssor == 0)
                         {
-                            //Saves.Load("World");
+                            Saves.Load("World");
                             ConsoleAdventure.InWorld = true;
                         }
                         timer = 0;

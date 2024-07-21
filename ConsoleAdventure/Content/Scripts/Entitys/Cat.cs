@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace ConsoleAdventure.Content.Scripts.Entitys
+namespace ConsoleAdventure.Content.Scripts
 {
     [Serializable]
     public class Cat : Entity
@@ -25,16 +26,16 @@ namespace ConsoleAdventure.Content.Scripts.Entitys
             new Color(240, 210, 80),
         };
 
-        int index = 0;
+        int index = -1;
 
-        public Cat(World world, Position position = null) : base(world, position)
+        public Cat(World world, Position position = null, List<object> parameters = null) : base(world, position, parameters)
         {
             renderFieldType = RenderFieldType.cat;
             SetMaxLife(9);
             Initialize();
 
-            index = ConsoleAdventure.rand.Next(0, colors.Length);
-            СhooseColor(colors, this.position, index);
+            this.index = index == -1 ? ConsoleAdventure.rand.Next(0, colors.Length) : index;
+            СhooseColor(colors, this.position, this.index);
         }
 
         bool isFree = true;
@@ -86,6 +87,24 @@ namespace ConsoleAdventure.Content.Scripts.Entitys
             }
 
             timer++;
+        }
+
+        public override List<object> GetParams()
+        {
+            List<object> parameters = new()
+            {
+                index
+            };
+
+            return parameters;
+        }
+
+        public override void SetParams(List <object> p)
+        {
+            if (p == null)
+                return;
+
+            index = (int)p[0];
         }
     }
 }

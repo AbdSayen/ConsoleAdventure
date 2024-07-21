@@ -1,5 +1,4 @@
 ﻿using ConsoleAdventure.Content.Scripts;
-using ConsoleAdventure.Content.Scripts.Entitys;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine.Generate;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,22 +45,13 @@ namespace ConsoleAdventure.WorldEngine
             generator.Generate(seed);
             ConnectPlayer();
 
-            entitys.Add(new Cat(this, new(6, 6)));
-            entitys.Add(new Cat(this, new(6, 7)));
-            entitys.Add(new Cat(this, new(6, 8)));
-            entitys.Add(new Cat(this, new(6, 9)));
-            entitys.Add(new Cat(this, new(7, 6)));
-            entitys.Add(new Cat(this, new(7, 7)));
-            entitys.Add(new Cat(this, new(7, 8)));
-            entitys.Add(new Cat(this, new(7, 9)));
-            entitys.Add(new Cat(this, new(8, 6)));
-            entitys.Add(new Cat(this, new(8, 7)));
-            entitys.Add(new Cat(this, new(8, 8)));
-            entitys.Add(new Cat(this, new(8, 9)));
-            entitys.Add(new Cat(this, new(9, 6)));
-            entitys.Add(new Cat(this, new(9, 7)));
-            entitys.Add(new Cat(this, new(9, 8)));
-            entitys.Add(new Cat(this, new(9, 9)));
+            for (int i = 0; i < 15; i++)
+            {
+                for (int j = 0; j < 15; j++)
+                {
+                    entitys.Add(new Cat(this, new(6 + i, 6 + j)));
+                }
+            }
         }
 
         public Point GetCunkCounts()
@@ -99,10 +89,12 @@ namespace ConsoleAdventure.WorldEngine
 
         public void RemoveSubject(Transform subject, int worldLayer, bool isDroped = true)
         {
-            if (isDroped && subject != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
-                GetField(subject.position.x, subject.position.y, worldLayer).content.Collapse();       
-            if(subject != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
-                GetField(subject.position.x, subject.position.y, worldLayer).content = null;  
+            Field field = subject != null ? GetField(subject.position.x, subject.position.y, worldLayer) : null;
+
+            if (isDroped && field != null && field.content != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
+                field.content.Collapse();       
+            if(field != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
+                field.content = null;  
         }
 
         public void MoveSubject(Transform subject, int worldLayer, int stepSize, Rotation rotation)

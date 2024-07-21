@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -105,13 +106,13 @@ namespace ConsoleAdventure
                 case RenderFieldType.entity:
                     return Color.Yellow;
                 case RenderFieldType.cat:
-                    return Color.Azure;
+                    return Color.White;
                 default:
                     return Color.Purple;
             }
         }
 
-        public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null)
+        public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
         {
             switch (type)
             {
@@ -144,6 +145,12 @@ namespace ConsoleAdventure
                     return;
                 case (int)RenderFieldType.log:
                     new Plank(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.entity:
+                    ConsoleAdventure.world.entitys.Add(new Entity(ConsoleAdventure.world, position, parameters));
+                    return;
+                case (int)RenderFieldType.cat:
+                    ConsoleAdventure.world.entitys.Add(new Cat(ConsoleAdventure.world, position, parameters));
                     return;
                 default:
                     return;
