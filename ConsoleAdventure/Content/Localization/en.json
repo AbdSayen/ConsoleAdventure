@@ -1,14 +1,42 @@
 {
   "Items": {
-    "Apple": "Apple"
+    "Apple": "Apple",
+    "Log": "Log"
   },
 
-  "ItemDescs": {
+  "ItemDescription": {
     "BaseFood": "Can be eaten",
-    "Apple": "Apple fruit"
+    "Apple": "Apple fruit",
+    "Log": "Can be placed"
   },
 
   "Events": {
     "Eating": "was eaten"
+  },
+
+  "UI": {
+    "English": "English",
+    "Russian": "Russian",
+    "Navigation": "for navigation use: \"←→↑↓\". And to select \"Enter\"",
+    "NavigationBack": "press \"Escape\" to return to main menu",
+    "Play": "Play",
+    "Settings": "Settings",
+    "Exit": "Exit",
+    "Language": "Language: ",
+    "About": "About Game",
+    "Control": "Control",
+    "Name": "Name:",
+    "Seed": "Seed:",
+    "Version": "version:",
+    "Inventory": "Inventory:",
+    "Day": "Day:",
+    "Time": "Time:",
+    "Structure": "Structure:",
+    "Paused": "*Paused*"
+  },
+
+  "About": {
+    "Game": "This game was made by the author \nof the YouTube channel named @bondscreators.\nDevelopment started at 05.19.2024.\nGenre of this game is RPG. \nThe main feature of this game is console graphics.",
+    "Control": "W - Walk Up\nS - Walk Down\nA - Walk Left\nD - Walk Right\n\n← - Move Cursor Left\n→ - Move Cursor Right\n↑ - Move Cursor UP\n↓ - Move Cursor Down\n\nSpace - Pause Game\nEnter - Execute current mode action\n\nB - Enable build mode\nV - Enable block destruction mode\nC - Disable active mode"
   }
 }
