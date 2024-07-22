@@ -17,7 +17,7 @@ namespace ConsoleAdventure
 
         public string GetInfo()
         {
-            return $"{item.name} x{count}\n{item.description}";
+            return $"{((Item)item).name} x{count}\n{((Item)item).description}";
         }
 
         public void AddItems(int count = 1)

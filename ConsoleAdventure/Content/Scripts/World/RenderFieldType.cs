@@ -16,5 +16,6 @@ namespace ConsoleAdventure.WorldEngine
         log,
         entity,
         cat,
+        chest,
     }
 }

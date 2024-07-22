@@ -73,6 +73,8 @@ namespace ConsoleAdventure
                     return "AE";
                 case RenderFieldType.cat:
                     return " c";
+                case RenderFieldType.chest:
+                    return "<>";
                 default:
                     return "??";
             }
@@ -107,6 +109,8 @@ namespace ConsoleAdventure
                     return Color.Yellow;
                 case RenderFieldType.cat:
                     return Color.White;
+                case RenderFieldType.chest:
+                    return new(94, 61, 38);
                 default:
                     return Color.Purple;
             }
@@ -151,6 +155,9 @@ namespace ConsoleAdventure
                     return;
                 case (int)RenderFieldType.cat:
                     ConsoleAdventure.world.entitys.Add(new Cat(ConsoleAdventure.world, position, parameters));
+                    return;
+                case (int)RenderFieldType.chest:
+                    new Chest(ConsoleAdventure.world, position, items);
                     return;
                 default:
                     return;

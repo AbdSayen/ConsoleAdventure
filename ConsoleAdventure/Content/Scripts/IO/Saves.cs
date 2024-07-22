@@ -85,7 +85,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
 
             int lootCount = 0;
-            for (int i = 0; i < size; i++) //поик количества лута
+            for (int i = 0; i < size; i++) //поик количества лута и сундуков
             {
                 for (int j = 0; j < size; j++)
                 {
@@ -99,6 +99,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             List<Stack>[] loots = new List<Stack>[lootCount];
             int[] lootX = new int[lootCount];
             int[] lootY = new int[lootCount];
+            byte[] lootTypes = new byte[lootCount]; //Тип объекта: лут или один из сундуков
 
             int curLoot = 0;
 
@@ -117,11 +118,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
                         fields[i, j, k] = type;
                     }
 
-                    if (world.GetField(i, j, World.ItemsLayerId).content != null) //Поиск лута
+                    Field field = world.GetField(i, j, World.ItemsLayerId);
+
+                    if (field.content != null) //Поиск лута и сундуков
                     {
-                        loots[curLoot] = ((Loot)world.GetField(i, j, World.ItemsLayerId).content).GetItems();
+                        loots[curLoot] = ((Storage)field.content).GetItems();
                         lootX[curLoot] = i;
                         lootY[curLoot] = j;
+                        lootTypes[curLoot] = (byte)field.content.renderFieldType;
                         curLoot++;
                     }
                 }
@@ -133,6 +137,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["Loots"] = loots;
             tags["LootX"] = lootX;
             tags["LootY"] = lootY;
+            //tags["LootTypes"] = lootTypes;
 
             int EntityCount = world.entitys.Count;
             int[] EntityX = new int[EntityCount];
@@ -181,7 +186,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                         if (k != World.MobsLayerId)
                         {
                             byte type = ((byte[,,])tags.SafelyGet("Fields"))[i, j, k];
-                            if (type != (byte)RenderFieldType.loot)
+                            if (type != (byte)RenderFieldType.loot || type != (byte)RenderFieldType.chest)
                             {
                                 Transform.SetObject(type, new(i, j), k); //загружаем ячейки из тега
                             }
