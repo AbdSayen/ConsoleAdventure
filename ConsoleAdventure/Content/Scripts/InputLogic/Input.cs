@@ -1,6 +1,7 @@
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using Microsoft.Xna.Framework.Input;
 
-namespace ConsoleAdventure.Content.Scripts.InputLogic;
+namespace ConsoleAdventure.Content.Scripts.Input;
 
 public static class Input
 {

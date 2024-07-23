@@ -13,21 +13,19 @@ public class Cursor
     
     public void CursorMovement()
     {
-        CursorPosition = Position.Zero();
-
-        if (Input.IsKeyDown(InputConfig.Up) && CursorPosition.y > -2)
+        if (Input.IsKeyDown(InputConfig.BuildingUp) && CursorPosition.y > -2)
         {
             CursorPosition.SetPosition(CursorPosition.x, CursorPosition.y - 1);
         }
-        if (Input.IsKeyDown(InputConfig.Down) && CursorPosition.y < 2)
+        if (Input.IsKeyDown(InputConfig.BuildingDown) && CursorPosition.y < 2)
         {
             CursorPosition.SetPosition(CursorPosition.x, CursorPosition.y + 1);
         }
-        if (Input.IsKeyDown(InputConfig.Left) && CursorPosition.x > -2)
+        if (Input.IsKeyDown(InputConfig.BuildingLeft) && CursorPosition.x > -2)
         {
             CursorPosition.SetPosition(CursorPosition.x - 1, CursorPosition.y);
         }
-        if (Input.IsKeyDown(InputConfig.Right) && CursorPosition.x < 2)
+        if (Input.IsKeyDown(InputConfig.BuildingRight) && CursorPosition.x < 2)
         {
             CursorPosition.SetPosition(CursorPosition.x + 1, CursorPosition.y);
         }

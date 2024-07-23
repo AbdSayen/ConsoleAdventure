@@ -23,4 +23,14 @@ public class IdleState : IPlayerState
             player.ChangeState(new DestroyingState(player));
         }
     }
+
+    public void Enter()
+    {
+        
+    }
+
+    public void Exit()
+    {
+        
+    }
 }
