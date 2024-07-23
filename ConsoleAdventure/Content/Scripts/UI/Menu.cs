@@ -1,6 +1,5 @@
 ﻿using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Settings;
-using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,15 +14,66 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private MenuButton[] menuButtons = new MenuButton[3];
 
+        private MenuButton[] menuSettingsButtons = new MenuButton[3];
+
         private List<WorldPanel> worldPanels = new List<WorldPanel>();
+
+        private InfoPanel aboutGamePanel = null;
+
+        private InfoPanel aboutControlPanel = null;
 
         private static int worldDrawBuffer = 6;
 
         private int startWList, endWList = worldDrawBuffer;
 
+        private int selectedLanguage = SettingsSystem.GetSetting("Options", "Language"); // Получить сохраненный язык
+
         public Menu()
         {
+            MenuInit();
+        }
+
+        public void MenuInit()
+        {
             byte[] menuButtonTypes = new byte[3] { 0, 1, 2 };
+
+            byte[] menuSettingsButtonTypes = new byte[3] { 0, 1, 2 };
+
+            aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);
+
+            aboutControlPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Control, TextAssets.AboutControl);
+
+            for (int i = 0; i < menuSettingsButtons.Length; i++)
+            {
+                string text = "";
+
+                switch (menuSettingsButtonTypes[i])
+                {
+                    case 0:
+                        text = "Language";
+                        break;
+                    case 1:
+                        text = "About";
+                        break;
+                    case 2:
+                        text = "Control";
+                        break;
+                }
+                int startPos = 320;
+                int indent = 25;
+
+                Vector2 SettingButtonPos = new Vector2((ConsoleAdventure.Width / 2), startPos + (indent * i));
+
+                menuSettingsButtons[i] = new MenuButton(SettingButtonPos, text, new Color(230, 230, 230), menuSettingsButtonTypes[i]);
+                
+                if(menuSettingsButtonTypes[i] == 0)
+                {
+                    menuSettingsButtons[i].text += Localization.GetLanguageName(selectedLanguage);
+                    menuSettingsButtons[i].Position = SettingButtonPos;
+                    menuSettingsButtons[i].Center = SettingButtonPos;
+                }
+            }
+
             for (int i = 0; i < menuButtons.Length; i++)
             {
                 string text = "";
@@ -47,6 +97,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             }
 
             menuButtons[0].isHover = true;
+
+            menuSettingsButtons[0].isHover = true;
 
             for (int i = 0; i < 40; i++)
             {
@@ -103,7 +155,12 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             menuButtons[i].cursorColor = Color.Red;
                             timer = 0;
                         }
-
+                        if (menuButtons[i].type == 1)
+                        {
+                            menuButtons[i].cursorColor = Color.Red;
+                            State = 2;
+                            timer = 0;
+                        }
                         if (menuButtons[i].type == 2)
                         {
                             ConsoleAdventure.isExit = true;
@@ -160,8 +217,106 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     {
                         if (worldPanels[i].curssor == 0)
                         {
-                            //Saves.Load("World");
+                            ConsoleAdventure.CreateWorld();
+                            Saves.Load("World");
                             ConsoleAdventure.InWorld = true;
+                        }
+                        timer = 0;
+                    }
+                }
+
+                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && timer >= Utils.StabilizeTicks(15)) //прокрутка кнопок мира
+                {
+                    for (int i = 0; i < worldPanels.Count; i++)
+                    {
+                        worldPanels[i].curssor = (worldPanels[i].curssor - 1 + 3) % 3;
+                    }
+                    timer = 0;
+                }
+
+                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && timer >= Utils.StabilizeTicks(15))
+                {
+                    for (int i = 0; i < worldPanels.Count; i++)
+                    {
+                        worldPanels[i].curssor = (worldPanels[i].curssor + 1) % 3;
+                    }
+                    timer = 0;
+                }
+            }
+
+            if (State == 2)
+            {
+                for (int i = 0; i < menuSettingsButtons.Length; i++)
+                {
+                    int waitTime = Utils.StabilizeTicks(10);
+
+                    if (menuSettingsButtons[i].isHover && i == 0)
+                    {
+                        
+                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && timer >= waitTime)
+                        {
+                            if (selectedLanguage < 1)
+                                selectedLanguage += 1;
+
+                            ReLocalize();
+                            menuSettingsButtons[i].text += Localization.GetLanguageName(selectedLanguage);
+
+                            timer = 0;
+                        }
+                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && timer >= waitTime)
+                        {
+                            if (selectedLanguage > 0)
+                                selectedLanguage -= 1;
+
+                            ReLocalize();
+                            menuSettingsButtons[i].text += Localization.GetLanguageName(selectedLanguage);
+
+                            timer = 0;
+                        }
+                        menuSettingsButtons[i].text = Localization.GetTranslation("UI", "Language") + Localization.GetLanguageName(selectedLanguage);
+                        menuSettingsButtons[i].UpdateRectToTextSize();
+                    }
+
+                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && timer >= waitTime)
+                    {
+                        if (menuSettingsButtons[i].isHover)
+                        {
+                            menuSettingsButtons[i].isHover = false;
+
+                            if (i != 0)
+                                menuSettingsButtons[i - 1].isHover = true;
+                            else
+                                menuSettingsButtons[menuSettingsButtons.Length - 1].isHover = true;
+
+                            timer = 0;
+                        }
+                    }
+
+                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && timer >= waitTime)
+                    {
+                        if (menuSettingsButtons[i].isHover)
+                        {
+                            menuSettingsButtons[i].isHover = false;
+
+                            if (i < menuSettingsButtons.Length - 1)
+                                menuSettingsButtons[i + 1].isHover = true;
+                            else
+                                menuSettingsButtons[0].isHover = true;
+
+                            timer = 0;
+                        }
+                    }
+
+                    if (menuSettingsButtons[i].isHover && ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= Utils.StabilizeTicks(30))
+                    {
+                        if (menuSettingsButtons[i].type == 1)
+                        {
+                            State = 3;
+                        }
+
+                        if (menuSettingsButtons[i].type == 2)
+                        {
+                            State = 4;
                         }
                         timer = 0;
                     }
@@ -198,6 +353,16 @@ namespace ConsoleAdventure.Content.Scripts.UI
             timer++;
         }
 
+        private void ReLocalize()
+        {
+            SettingsSystem.SetSetting("Options", "Language", selectedLanguage); // Сохранить выбранный язык
+            TextAssets.UpdateLabels();
+            MenuInit();
+            menuButtons[1].isHover = true;
+            menuButtons[1].cursorColor = Color.Red;
+            menuButtons[0].isHover = false;
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
@@ -225,6 +390,24 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         number++;
                     }
                 }
+            }
+
+            if (State == 2 || State == 3 || State == 4)
+            {
+                for (int i = 0; i < menuSettingsButtons.Length; i++)
+                {
+                    menuSettingsButtons[i].Draw(spriteBatch);
+                }
+            }
+
+            if (State == 3)
+            {
+                aboutGamePanel.Draw(spriteBatch);
+            }
+
+            if (State == 4)
+            {
+                aboutControlPanel.Draw(spriteBatch);
             }
 
             spriteBatch.End();

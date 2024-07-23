@@ -23,5 +23,31 @@
         public static string Structure = Localization.GetTranslation("UI", "Structure");
 
         public static string Paused = Localization.GetTranslation("UI", "Paused");
+
+        public static string About = Localization.GetTranslation("UI", "About");
+
+        public static string AboutGame = Localization.GetTranslation("About", "Game");
+
+        public static string Control = Localization.GetTranslation("UI", "Control");
+
+        public static string AboutControl = Localization.GetTranslation("About", "Control");
+
+        public static void UpdateLabels()
+        {
+            navigHelp = Localization.GetTranslation("UI", "Navigation");
+            navigHelpBack = Localization.GetTranslation("UI", "NavigationBack");
+            Name = Localization.GetTranslation("UI", "Name");
+            Seed = Localization.GetTranslation("UI", "Seed");
+            Version = Localization.GetTranslation("UI", "Version");
+            Inventory = Localization.GetTranslation("UI", "Inventory");
+            Day = Localization.GetTranslation("UI", "Day");
+            Time = Localization.GetTranslation("UI", "Time");
+            Structure = Localization.GetTranslation("UI", "Structure");
+            Paused = Localization.GetTranslation("UI", "Paused");
+            About = Localization.GetTranslation("UI", "About");
+            AboutGame = Localization.GetTranslation("About", "Game");
+            Control = Localization.GetTranslation("UI", "Control");
+            AboutControl = Localization.GetTranslation("About", "Control");
+        }
     }
 }

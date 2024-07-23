@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.Content.Scripts.IO;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
@@ -6,15 +7,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+
 
 namespace ConsoleAdventure
 {
     public class ConsoleAdventure : Game
     {
-        private static GraphicsDeviceManager _graphics;
+        public static GraphicsDeviceManager _graphics;
         public static SpriteBatch _spriteBatch;
         private static SpriteFont font;
 
@@ -25,7 +25,7 @@ namespace ConsoleAdventure
         int frameCounter = 0;
         TimeSpan elapsedTime = TimeSpan.Zero;
 
-        public static int language = 1;
+        //public static int language = 0;
 
         public static bool InWorld;
         public static bool isPause;
@@ -40,6 +40,8 @@ namespace ConsoleAdventure
 
         public static KeyboardState prekstate;
         public static KeyboardState kstate;
+
+        public static Random rand = new Random();
 
         private Menu menu;
 
@@ -57,8 +59,29 @@ namespace ConsoleAdventure
 
         public ConsoleAdventure()
         {
+            if (File.Exists(Program.savePath + "settings.json")) // Если файл существует
+                SettingsSystem.LoadSettings(); // Загружаем сохраненные настройки
+
+            // Инициализируем тут все настройки
+            // (Не нужно бояться что это перезапишет сохраненные данные,
+            // инициализация только создаст значения которые не определены,
+            // это может случится в следующих случаях: Первый запуск приложения или
+            // Вышло обновление приложения где добавлена новая настройка)
+            SettingsSystem.InitSetting("Options", "Language");
+            //                          ^^^^         ^^^^
+            //                     Тип настроек     Ключ настройки
+
+            //  Тут такая же система как в локализации
+            
+            
             _graphics = new GraphicsDeviceManager(this);
             Localization.Load();
+        }
+
+        public static void CreateWorld()
+        {
+            world = new World();
+            display = new Display(world);
         }
 
         protected override void Initialize()
@@ -126,7 +149,11 @@ namespace ConsoleAdventure
             else
             {
                 menu.MenuUpdate();
-                if (isExit) Exit();
+                if (isExit)
+                {
+                    SettingsSystem.SaveSettings(); // Перед выходом нужно сохранить значения настроек
+                    Exit();
+                }
             }
             
             base.Update(gameTime);

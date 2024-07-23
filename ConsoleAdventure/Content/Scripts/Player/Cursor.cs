@@ -1,6 +1,4 @@
-using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.InputLogic;
-using Microsoft.Xna.Framework.Input;
 
 namespace ConsoleAdventure.Content.Scripts.Player;
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using ConsoleAdventure.Content.Scripts.Abstracts;
 
 namespace ConsoleAdventure.WorldEngine
 {

@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using ConsoleAdventure.Content.Scripts.Abstracts;
 
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class Loot : Transform
+    public class Loot : Storage
     {
-        private List<Stack> items { get; set; }
-
-        public Loot(WorldEngine.World world, Position position, List<Stack> items, int worldLayer = -1) : base(world, position)
+        public Loot(WorldEngine.World world, Position position, List<Stack> items, int worldLayer = -1) : base(world, position, items)
         {
-            this.items = items;
-            isObstacle = false;
             renderFieldType = WorldEngine.RenderFieldType.loot;
-
-            if (worldLayer == -1) this.worldLayer = WorldEngine.World.ItemsLayerId;
-            else this.worldLayer = worldLayer;
             Initialize();
         }
 
@@ -24,23 +16,6 @@ namespace ConsoleAdventure
         {
             inventory.PickUpItems(items);
             world.RemoveSubject(this, WorldEngine.World.ItemsLayerId);
-        }
-
-        public List<Stack> GetItems()
-        {
-            return items;
-        }
-
-        public string GetItemsInfo()
-        {
-            string output = string.Empty;
-
-            for (int i = 0; i < items.Count; i++)
-            {
-                output += $"{items[i].item.name} {items[i].count}\n";
-            }
-
-            return output;
         }
     }
 }

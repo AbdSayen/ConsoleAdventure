@@ -1,8 +1,9 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using ConsoleAdventure.Content.Scripts.Abstracts;
+using ConsoleAdventure.Content.Scripts.Player;
 
 namespace ConsoleAdventure
 {
@@ -32,9 +33,19 @@ namespace ConsoleAdventure
             }
         }
 
-        public virtual void Move(int stepSize, Position direction)
+        public virtual void Move(int stepSize, Rotation rotation)
         {
-            world.MoveSubject(this, worldLayer, stepSize, direction);
+            world.MoveSubject(this, worldLayer, stepSize, rotation);
+        }
+
+        public virtual void Move(int stepSize, Position position)
+        {
+            world.MoveSubject(this, worldLayer, stepSize, position);
+        }
+        
+        public virtual void SetPosition(Position newPos)
+        {
+            world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y);
         }
 
         public virtual void Collapse() { }
@@ -63,6 +74,12 @@ namespace ConsoleAdventure
                     return "≈≈";
                 case RenderFieldType.log:
                     return "≡≡";
+                case RenderFieldType.entity:
+                    return "AE";
+                case RenderFieldType.cat:
+                    return " c";
+                case RenderFieldType.chest:
+                    return "<>";
                 default:
                     return "??";
             }
@@ -93,12 +110,18 @@ namespace ConsoleAdventure
                     return new(16, 29, 211);
                 case RenderFieldType.log:
                     return new(94, 61, 38);
+                case RenderFieldType.entity:
+                    return Color.Yellow;
+                case RenderFieldType.cat:
+                    return Color.White;
+                case RenderFieldType.chest:
+                    return new(94, 61, 38);
                 default:
                     return Color.Purple;
             }
         }
 
-        public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null)
+        public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
         {
             switch (type)
             {
@@ -106,7 +129,7 @@ namespace ConsoleAdventure
                     ConsoleAdventure.world.RemoveSubject(ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId).content, layer, false);
                     return;
                 case (int)RenderFieldType.player:
-                    //new Player(ConsoleAdventure.world, position);
+                    new Player(1, ConsoleAdventure.world, position);
                     return;
                 case (int)RenderFieldType.ruine:
                     new Ruine(ConsoleAdventure.world, position);
@@ -131,6 +154,15 @@ namespace ConsoleAdventure
                     return;
                 case (int)RenderFieldType.log:
                     new Plank(ConsoleAdventure.world, position);
+                    return;
+                case (int)RenderFieldType.entity:
+                    ConsoleAdventure.world.entitys.Add(new Entity(ConsoleAdventure.world, position, parameters));
+                    return;
+                case (int)RenderFieldType.cat:
+                    ConsoleAdventure.world.entitys.Add(new Cat(ConsoleAdventure.world, position, parameters));
+                    return;
+                case (int)RenderFieldType.chest:
+                    new Chest(ConsoleAdventure.world, position, items);
                     return;
                 default:
                     return;

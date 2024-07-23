@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.Player.States;
 using ConsoleAdventure.WorldEngine;

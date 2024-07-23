@@ -1,5 +1,4 @@
 ﻿using System;
-using ConsoleAdventure.Content.Scripts.Abstracts;
 
 namespace ConsoleAdventure.WorldEngine
 {

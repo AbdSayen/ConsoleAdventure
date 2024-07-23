@@ -1,5 +1,5 @@
-﻿using System;
-using ConsoleAdventure.Content.Scripts.Abstracts;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace ConsoleAdventure.WorldEngine
 {

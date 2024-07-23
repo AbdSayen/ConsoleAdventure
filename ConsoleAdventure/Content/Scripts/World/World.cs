@@ -1,13 +1,9 @@
-﻿using ConsoleAdventure.Settings;
+﻿using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.WorldEngine.Generate;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.Player;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 
 namespace ConsoleAdventure.WorldEngine
@@ -19,11 +15,12 @@ namespace ConsoleAdventure.WorldEngine
 
         public List<List<Chunk>> chunks = new List<List<Chunk>>();
         public List<Player> players = new List<Player>();
+        public List<Entity> entitys = new List<Entity>();
 
         public Time time = new Time();
 
         [NonSerialized]
-        private Generator generator;
+        public Generator generator;
 
         [NonSerialized]
         private Renderer renderer;
@@ -38,10 +35,20 @@ namespace ConsoleAdventure.WorldEngine
 
         public World()
         {
+            ConsoleAdventure.rand = new Random();
+
             generator = new Generator(this, size);
             renderer = new Renderer(chunks);
             generator.Generate(seed);
             ConnectPlayer();
+
+            for (int i = 0; i < 15; i++)
+            {
+                for (int j = 0; j < 15; j++)
+                {
+                    entitys.Add(new Cat(this, new(6 + i, 6 + j)));
+                }
+            }
         }
 
         public Point GetCunkCounts()
@@ -64,6 +71,11 @@ namespace ConsoleAdventure.WorldEngine
                 {
                     players[i].InteractWithWorld();
                 }
+
+                for (int i = 0; i < entitys.Count; i++)
+                {
+                    entitys[i].InteractWithWorld();
+                }
             }         
         }
 
@@ -74,34 +86,67 @@ namespace ConsoleAdventure.WorldEngine
 
         public void RemoveSubject(Transform subject, int worldLayer, bool isDroped = true)
         {
-            if (isDroped)
-                GetField(subject.position.x, subject.position.y, worldLayer).content.Collapse();       
-            if(subject != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
-                GetField(subject.position.x, subject.position.y, worldLayer).content = null;  
+            Field field = subject != null ? GetField(subject.position.x, subject.position.y, worldLayer) : null;
+
+            if (isDroped && field != null && field.content != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
+                field.content.Collapse();       
+            if(field != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
+                field.content = null;  
         }
 
-        public void MoveSubject(Transform subject, int worldLayer, int stepSize, Position direction)
+        public void MoveSubject(Transform subject, int worldLayer, int stepSize, Rotation rotation)
         {
             int newX = subject.position.x;
             int newY = subject.position.y;
 
-            if (direction.y > 0)
+            switch (rotation)
+            {
+                case Rotation.up:
+                    newY -= stepSize;
+                    break;
+                case Rotation.right:
+                    newX += stepSize;
+                    break;
+                case Rotation.down:
+                    newY += stepSize;
+                    break;
+                case Rotation.left:
+                    newX -= stepSize;
+                    break;
+                default:
+                    break;
+            }
+
+            SetSubjectPosition(subject, worldLayer, newX, newY);
+        }
+
+        public void MoveSubject(Transform subject, int worldLayer, int stepSize, Position position)
+        {
+            int newX = subject.position.x;
+            int newY = subject.position.y;
+
+            if (position.y > 0)
             {
                 newY -= stepSize;
             }
-            if (direction.y < 0)
+            if (position.y < 0)
             {
                 newY += stepSize;
             }
-            if (direction.x > 0)
+            if (position.x > 0)
             {
                 newX += stepSize;
             }
-            if (direction.x < 0)
+            if (position.x < 0)
             {
                 newX -= stepSize;
             }
 
+            SetSubjectPosition(subject, worldLayer, newX, newY);
+        }
+
+        public void SetSubjectPosition(Transform subject, int worldLayer, int newX, int newY)
+        {
             if (IsValidMove(worldLayer, newX, newY))
             {
                 GetField(subject.position.x, subject.position.y, worldLayer).content = null;
@@ -133,7 +178,7 @@ namespace ConsoleAdventure.WorldEngine
                 return chunks[chunkX][chunkY].GetField(localX, localY, layer);
             }
 
-            return null;
+            return new();
         }
 
         public List<List<Field>> GetFields(int y, int layer)

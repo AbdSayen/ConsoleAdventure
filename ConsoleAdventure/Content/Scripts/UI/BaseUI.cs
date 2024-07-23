@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ConsoleAdventure.Content.Scripts.UI
@@ -19,8 +20,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             set
             {
                 position = value;
-                Vector2 textSize = ConsoleAdventure.Font.MeasureString(text);
-                rectangle = new Rectangle(position.ToPoint(), textSize.ToPoint());
+                UpdateRectToTextSize();
             }
         }
 
@@ -57,6 +57,12 @@ namespace ConsoleAdventure.Content.Scripts.UI
             rectangle.Size = rectangle.Size;
             Center = rectangle.Location.ToVector2();
             this.color = color;        
+        }
+
+        public void UpdateRectToTextSize()
+        {
+            Vector2 textSize = ConsoleAdventure.Font.MeasureString(text);
+            rectangle = new Rectangle(position.ToPoint(), textSize.ToPoint());
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

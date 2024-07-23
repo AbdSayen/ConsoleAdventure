@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-//using Newtonsoft.Json;
 using System.Text.Json;
 
 namespace ConsoleAdventure
@@ -22,6 +21,13 @@ namespace ConsoleAdventure
             {
                 //Localizations[i] = JsonSerializer.Deserialize<LocalizationStruct>(localizeFiles[i]);
             }
+        }
+
+        public static string GetLanguageName(int id)
+        {
+            return id == 0 ? GetTranslation("UI", "English")
+                   : id == 1 ? GetTranslation("UI", "Russian")
+                   : "None";
         }
 
         public static string GetTranslation(int language, string type, string key)
@@ -72,8 +78,7 @@ namespace ConsoleAdventure
 
         public static string GetTranslation(string type, string key)
         {
-            ConsoleAdventure.language = (int)Language.russian;
-            return GetTranslation(ConsoleAdventure.language, type, key);
+            return GetTranslation(SettingsSystem.GetSetting("Options", "Language"), type, key);
         }
     }
 }

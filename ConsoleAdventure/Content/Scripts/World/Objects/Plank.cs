@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic.Logging;
-using System.Collections.Generic;
-using ConsoleAdventure.Content.Scripts.Abstracts;
+﻿using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {

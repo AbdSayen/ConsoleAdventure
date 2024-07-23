@@ -1,5 +1,3 @@
-using System;
-using ConsoleAdventure.Content.Scripts.Abstracts;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 
 namespace ConsoleAdventure.Content.Scripts.Player;
@@ -22,7 +20,7 @@ public class PlayerMovement
         target.Move(Speed, GetDirection());
     }
     
-    private Position GetDirection()
+    public Position GetDirection()
     {
         x = 0;
         y = 0;
