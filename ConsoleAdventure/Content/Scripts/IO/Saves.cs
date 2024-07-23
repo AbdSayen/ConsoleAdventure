@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ConsoleAdventure.Content.Scripts.Entities;
 
 namespace ConsoleAdventure.Content.Scripts.IO
 {

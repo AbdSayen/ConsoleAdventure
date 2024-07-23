@@ -3,6 +3,7 @@ using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.Player;
 
 namespace ConsoleAdventure

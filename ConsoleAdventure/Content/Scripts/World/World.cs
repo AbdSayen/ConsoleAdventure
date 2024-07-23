@@ -3,6 +3,7 @@ using ConsoleAdventure.WorldEngine.Generate;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.Player;
 
 
