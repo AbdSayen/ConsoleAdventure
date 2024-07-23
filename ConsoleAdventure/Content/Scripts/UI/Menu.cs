@@ -1,7 +1,5 @@
 ﻿using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Settings;
-using ConsoleAdventure.WorldEngine;
-using ConsoleAdventure.WorldEngine.Generate;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -28,7 +26,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private int startWList, endWList = worldDrawBuffer;
 
-        private int selectedLanguage = ConsoleAdventure.language;
+        private int selectedLanguage = SettingsSystem.GetSetting("Options", "Language"); // Получить сохраненный язык
 
         public Menu()
         {
@@ -41,9 +39,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             byte[] menuSettingsButtonTypes = new byte[3] { 0, 1, 2 };
 
-            aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 15 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);
+            aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);
 
-            aboutControlPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 15 * 18, 64, 30), TextAssets.Control, TextAssets.AboutControl);
+            aboutControlPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Control, TextAssets.AboutControl);
 
             for (int i = 0; i < menuSettingsButtons.Length; i++)
             {
@@ -357,7 +355,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private void ReLocalize()
         {
-            ConsoleAdventure.language = selectedLanguage;
+            SettingsSystem.SetSetting("Options", "Language", selectedLanguage); // Сохранить выбранный язык
             TextAssets.UpdateLabels();
             MenuInit();
             menuButtons[1].isHover = true;

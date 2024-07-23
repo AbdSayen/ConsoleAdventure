@@ -78,7 +78,7 @@ namespace ConsoleAdventure
 
         public static string GetTranslation(string type, string key)
         {
-            return GetTranslation(ConsoleAdventure.language, type, key);
+            return GetTranslation(SettingsSystem.GetSetting("Options", "Language"), type, key);
         }
     }
 }
