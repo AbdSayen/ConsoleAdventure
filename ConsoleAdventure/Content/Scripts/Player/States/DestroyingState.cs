@@ -36,6 +36,6 @@ public class DestroyingState : IPlayerState
 
     public void Exit()
     {
-        
+        player.Cursor.CursorPosition = Position.Zero();
     }
 }
