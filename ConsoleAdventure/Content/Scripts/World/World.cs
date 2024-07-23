@@ -23,7 +23,7 @@ namespace ConsoleAdventure.WorldEngine
         public Time time = new Time();
 
         [NonSerialized]
-        private Generator generator;
+        public Generator generator;
 
         [NonSerialized]
         private Renderer renderer;
@@ -156,7 +156,7 @@ namespace ConsoleAdventure.WorldEngine
                 return chunks[chunkX][chunkY].GetField(localX, localY, layer);
             }
 
-            return null;
+            return new();
         }
 
         public List<List<Field>> GetFields(int y, int layer)

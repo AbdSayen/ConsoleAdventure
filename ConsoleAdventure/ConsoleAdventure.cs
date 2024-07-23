@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.Content.Scripts.IO;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
@@ -14,7 +15,7 @@ namespace ConsoleAdventure
 {
     public class ConsoleAdventure : Game
     {
-        private static GraphicsDeviceManager _graphics;
+        public static GraphicsDeviceManager _graphics;
         public static SpriteBatch _spriteBatch;
         private static SpriteFont font;
 
@@ -25,7 +26,7 @@ namespace ConsoleAdventure
         int frameCounter = 0;
         TimeSpan elapsedTime = TimeSpan.Zero;
 
-        public static int language = 1;
+        public static int language = 0;
 
         public static bool InWorld;
         public static bool isPause;
@@ -61,6 +62,12 @@ namespace ConsoleAdventure
         {
             _graphics = new GraphicsDeviceManager(this);
             Localization.Load();
+        }
+
+        public static void CreateWorld()
+        {
+            world = new World();
+            display = new Display(world);
         }
 
         protected override void Initialize()

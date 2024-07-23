@@ -1,8 +1,6 @@
 ﻿using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 
 namespace ConsoleAdventure.Content.Scripts.IO
@@ -137,7 +135,6 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["Loots"] = loots;
             tags["LootX"] = lootX;
             tags["LootY"] = lootY;
-            //tags["LootTypes"] = lootTypes;
 
             int EntityCount = world.entitys.Count;
             int[] EntityX = new int[EntityCount];

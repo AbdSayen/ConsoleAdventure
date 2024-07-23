@@ -34,7 +34,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 return value;
             }
 
-            return null;
+            return new();
         }
     }
 }

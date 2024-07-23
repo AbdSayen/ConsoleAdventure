@@ -124,7 +124,7 @@ namespace ConsoleAdventure
                     ConsoleAdventure.world.RemoveSubject(ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId).content, layer, false);
                     return;
                 case (int)RenderFieldType.player:
-                    //new Player(ConsoleAdventure.world, position);
+                    new Player(1, ConsoleAdventure.world, position);
                     return;
                 case (int)RenderFieldType.ruine:
                     new Ruine(ConsoleAdventure.world, position);

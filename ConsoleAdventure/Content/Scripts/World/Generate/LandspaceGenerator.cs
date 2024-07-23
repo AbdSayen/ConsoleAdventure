@@ -15,7 +15,6 @@ namespace ConsoleAdventure.WorldEngine.Generate
             this.random = random;
 
             new Chest(world, new(0, 0), new List<Stack>() { new Stack(new Apple(), 50) });
-
             GenerateTrees();
         }
 
