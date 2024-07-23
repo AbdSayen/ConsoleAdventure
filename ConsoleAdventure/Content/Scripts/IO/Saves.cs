@@ -209,7 +209,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 }
             }
 
-            int EntityCount = Convert.ToInt32(tags.SafelyGet("EntityCount"));
+            int EntityCount = (int)tags.SafelyGet("EntityCount");
             int[] EntityX = (int[])tags.SafelyGet("EntityX");
             int[] EntityY = (int[])tags.SafelyGet("EntityY");
             byte[] EntityTypes = (byte[])tags.SafelyGet("EntityTypes");
