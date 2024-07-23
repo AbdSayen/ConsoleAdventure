@@ -29,4 +29,14 @@ public class BuildingState : IPlayerState
             }
         }
     }
+
+    public void Enter()
+    {
+        
+    }
+
+    public void Exit()
+    {
+        player.Cursor.CursorPosition = Position.Zero();
+    }
 }
