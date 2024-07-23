@@ -9,6 +9,8 @@ public class PlayerMovement
     
     private int x;
     private int y;
+
+    private Position _direction;
     
     public PlayerMovement(int speed = 1)
     {
@@ -20,19 +22,21 @@ public class PlayerMovement
         target.Move(Speed, GetDirection());
     }
     
-    public Position GetDirection()
+    private Position GetDirection()
     {
         x = 0;
         y = 0;
         
-        x = Input.GetHorizontalMovement();
-        y = Input.GetVerticalMovement();
+        _direction = Position.Zero();
+        
+        _direction.x = Input.GetHorizontalMovement();
+        _direction.y = Input.GetVerticalMovement();
 
         if (x != 0 || y != 0)
         {
             IsMoving = true;
         }
         
-        return new Position(x ,y);
+        return _direction;
     }
 }

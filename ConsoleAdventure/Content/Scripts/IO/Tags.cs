@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,14 +28,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
         }
 
-        public object SafelyGet(string key)
+        public T? SafelyGet<T>(string key)
         {
             if (Data.TryGetValue(key, out var value))
             {
-                return value;
+                return (T)value;
             }
 
-            return new();
+            return default;
         }
     }
 }
