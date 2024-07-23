@@ -26,7 +26,7 @@ public class IdleState : IPlayerState
 
     public void Enter()
     {
-        
+        Cursor.Instance.IsVisible = false;
     }
 
     public void Exit()

@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.Player;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -45,9 +47,13 @@ namespace ConsoleAdventure.WorldEngine
                 Y++;
                 X = 0;
             }
-            
-            DrawCursor(cursorPosition);
 
+            Console.WriteLine(Cursor.Instance.IsVisible);
+
+            if (Cursor.Instance != null && Cursor.Instance.IsVisible)
+            {
+                DrawCursor(cursorPosition);
+            }
         }
 
         private void DrawCursor(Position cursorPosition)
