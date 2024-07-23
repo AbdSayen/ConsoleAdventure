@@ -9,10 +9,9 @@ namespace ConsoleAdventure.Content.Scripts.Player
     [Serializable]
     public class Player : Transform
     {
-        public int id;
-        public string name = "William";
-        public Inventory inventory;
+        public readonly PlayerInfo Info;
         public readonly Cursor Cursor;
+        public readonly Inventory Inventory;
 
         [NonSerialized]
         public Stopwatch timer = new Stopwatch();
@@ -28,12 +27,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
             else this.worldLayer = worldLayer;
             this.position = position;
 
-            this.id = id;
+            Info.Id = id;
             this.world = world;
             renderFieldType = RenderFieldType.player;
 
             _movement = new PlayerMovement(speed);
-            inventory = new Inventory(this);
+            Inventory = new Inventory(this);
             currentState = new IdleState(this);
             Cursor = new Cursor();
             
@@ -79,7 +78,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null)
             {
-                ((Loot)itemField.content).PickUpAll(inventory);
+                ((Loot)itemField.content).PickUpAll(Inventory);
             }
         }
 

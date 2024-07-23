@@ -14,7 +14,7 @@ public class IdleState : IPlayerState
 
     public void HandleInput()
     {
-        if (Input.IsKeyDown(InputConfig.Building) && player.inventory.HasItem(new Log(), 1))
+        if (Input.IsKeyDown(InputConfig.Building) && player.Inventory.HasItem(new Log(), 1))
         {
             player.ChangeState(new BuildingState(player));
         }

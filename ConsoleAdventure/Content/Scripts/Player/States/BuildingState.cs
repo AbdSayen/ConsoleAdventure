@@ -24,7 +24,7 @@ public class BuildingState : IPlayerState
                 player.world.GetField(pos.x, pos.y, World.BlocksLayerId).content == null)
             {
                 new Plank(player.world, pos);
-                player.inventory.RemoveItems(new Log(), 1);
+                player.Inventory.RemoveItems(new Log(), 1);
                 player.world.time.PassTime(120);
             }
         }
