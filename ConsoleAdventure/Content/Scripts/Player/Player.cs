@@ -27,14 +27,15 @@ namespace ConsoleAdventure.Content.Scripts.Player
             else this.worldLayer = worldLayer;
             this.position = position;
 
-            Info.Id = id;
-            this.world = world;
-            renderFieldType = RenderFieldType.player;
-
+            Info = new PlayerInfo();
             _movement = new PlayerMovement(speed);
             Inventory = new Inventory(this);
             currentState = new IdleState(this);
             Cursor = new Cursor();
+            
+            Info.Id = id;
+            this.world = world;
+            renderFieldType = RenderFieldType.player;
             
             Initialize();
         }
