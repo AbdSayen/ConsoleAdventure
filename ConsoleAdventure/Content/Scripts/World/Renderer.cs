@@ -14,7 +14,7 @@ namespace ConsoleAdventure.WorldEngine
             this.chunks = chunks;
         }
 
-        public void Render(Transform observer, Position cursorPosition = null)
+        public void Render(Transform observer, Position cursorPosition)
         {
             int X = 0, Y = 0;
 
@@ -45,13 +45,16 @@ namespace ConsoleAdventure.WorldEngine
                 Y++;
                 X = 0;
             }
+            
+            DrawCursor(cursorPosition);
 
-            if (cursorPosition != null)
-            {
-                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "><", new Vector2((viewDistanceX * ConsoleAdventure.cellSize.X / 2) + ConsoleAdventure.worldPos.X
-                    + cursorPosition.x * ConsoleAdventure.cellSize.X, (viewDistanceY * ConsoleAdventure.cellSize.Y / 2) + ConsoleAdventure.worldPos.Y
-                    + cursorPosition.y * ConsoleAdventure.cellSize.Y), Color.Gray);
-            }
+        }
+
+        private void DrawCursor(Position cursorPosition)
+        {
+            ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "><", new Vector2((viewDistanceX * ConsoleAdventure.cellSize.X / 2) + ConsoleAdventure.worldPos.X
+                + cursorPosition.x * ConsoleAdventure.cellSize.X, (viewDistanceY * ConsoleAdventure.cellSize.Y / 2) + ConsoleAdventure.worldPos.Y
+                + cursorPosition.y * ConsoleAdventure.cellSize.Y), Color.Gray);
         }
 
         private Chunk GetChunk(int x, int y)

@@ -1,12 +1,7 @@
 ﻿using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
-using SharpDX.DirectWrite;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ConsoleAdventure.Content.Scripts
 {
@@ -28,7 +23,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         int index = -1;
 
-        public Cat(World world, Position position = null, List<object> parameters = null) : base(world, position, parameters)
+        public Cat(World world, Position position, List<object> parameters = null) : base(world, position, parameters)
         {
             renderFieldType = RenderFieldType.cat;
             SetMaxLife(9);

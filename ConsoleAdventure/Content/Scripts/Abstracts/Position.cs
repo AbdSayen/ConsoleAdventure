@@ -5,10 +5,10 @@ using System.Drawing;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class Position
+    public struct Position
     {
-        public int x { get; private set; }
-        public int y { get; private set; }
+        public int x { get; set; }
+        public int y { get; set; }
         public Position(int x, int y)
         {
             this.x = x;
@@ -26,6 +26,13 @@ namespace ConsoleAdventure
             this.x = x;
             this.y = y;
         }
+
+        public static Position Zero()
+        {
+            return new Position(0, 0);
+        }
+        
+        #region Operators
 
         public static Position operator +(Position left, Position right)
         {
@@ -57,7 +64,7 @@ namespace ConsoleAdventure
             return new(left.x / right, left.y / right);
         }
 
-        /*public static bool operator !=(Position left, Position right)
+        public static bool operator !=(Position left, Position right)
         {
             return left.x != right.x && left.y != right.y;
         }
@@ -65,6 +72,8 @@ namespace ConsoleAdventure
         public static bool operator ==(Position left, Position right)
         {
             return left.x == right.x && left.y == right.y;
-        }*/
+        }
+
+        #endregion
     }
 }

@@ -1,12 +1,9 @@
 ﻿using ConsoleAdventure.Content.Scripts;
-using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine.Generate;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using ConsoleAdventure.Content.Scripts.Player;
 
 
 namespace ConsoleAdventure.WorldEngine
@@ -84,7 +81,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public void Render()
         {
-            renderer.Render(players[0], players[0].cursorPosition);
+            renderer.Render(players[0], players[0].Cursor.CursorPosition);
         }
 
         public void RemoveSubject(Transform subject, int worldLayer, bool isDroped = true)
@@ -118,6 +115,31 @@ namespace ConsoleAdventure.WorldEngine
                     break;
                 default:
                     break;
+            }
+
+            SetSubjectPosition(subject, worldLayer, newX, newY);
+        }
+
+        public void MoveSubject(Transform subject, int worldLayer, int stepSize, Position position)
+        {
+            int newX = subject.position.x;
+            int newY = subject.position.y;
+
+            if (position.y > 0)
+            {
+                newY -= stepSize;
+            }
+            if (position.y < 0)
+            {
+                newY += stepSize;
+            }
+            if (position.x > 0)
+            {
+                newX += stepSize;
+            }
+            if (position.x < 0)
+            {
+                newX -= stepSize;
             }
 
             SetSubjectPosition(subject, worldLayer, newX, newY);

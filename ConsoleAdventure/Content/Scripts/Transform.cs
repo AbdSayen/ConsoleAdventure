@@ -3,6 +3,7 @@ using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.Player;
 
 namespace ConsoleAdventure
 {
@@ -16,10 +17,9 @@ namespace ConsoleAdventure
         public RenderFieldType renderFieldType;
         public bool isObstacle;
 
-        protected Transform(World world, Position position = null)
+        protected Transform(World world, Position position)
         {
-            if (position != null) this.position = position;
-            else this.position = new Position(0, 0);
+            this.position = position;
 
             this.world = world;
         }
@@ -38,6 +38,11 @@ namespace ConsoleAdventure
             world.MoveSubject(this, worldLayer, stepSize, rotation);
         }
 
+        public virtual void Move(int stepSize, Position position)
+        {
+            world.MoveSubject(this, worldLayer, stepSize, position);
+        }
+        
         public virtual void SetPosition(Position newPos)
         {
             world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y);

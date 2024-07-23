@@ -12,7 +12,7 @@ namespace ConsoleAdventure.Content.Scripts
         public int maxLife;
         public int damage;
 
-        public Entity(World world, Position position = null, List<object> parameters = null) : base(world, position)
+        public Entity(World world, Position position, List<object> parameters = null) : base(world, position)
         {
             worldLayer = World.MobsLayerId;
             renderFieldType = RenderFieldType.entity;
