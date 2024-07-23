@@ -14,11 +14,11 @@ public class BuildingState : IPlayerState
 
     public void HandleInput()
     {
-        player.Cursor.CursorMovement();
+        Cursor.Instance.CursorMovement();
 
         if (Input.IsKeyDown(InputConfig.Enter))
         {
-            Position pos = new Position(player.position.x + player.Cursor.CursorPosition.x, player.position.y + player.Cursor.CursorPosition.y);
+            Position pos = new Position(player.position.x + Cursor.Instance.CursorPosition.x, player.position.y + Cursor.Instance.CursorPosition.y);
 
             if (pos.x > 0 && pos.x < player.world.size && pos.y > 0 && pos.y < player.world.size &&
                 player.world.GetField(pos.x, pos.y, World.BlocksLayerId).content == null)
@@ -28,5 +28,15 @@ public class BuildingState : IPlayerState
                 player.world.time.PassTime(120);
             }
         }
+    }
+
+    public void Enter()
+    {
+        Cursor.Instance.IsVisible = true;
+    }
+
+    public void Exit()
+    {
+        Cursor.Instance.CursorPosition = Position.Zero();
     }
 }

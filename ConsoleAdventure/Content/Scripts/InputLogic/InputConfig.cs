@@ -16,6 +16,11 @@ public static class InputConfig
 
     #region Building
 
+    public static Keys CursorUp = Keys.Up;
+    public static Keys CursorDown = Keys.Down;
+    public static Keys CursorLeft = Keys.Left;
+    public static Keys CursorRight = Keys.Right;
+    
     public static Keys Building = Keys.B;
     public static Keys Destroying = Keys.V;
 

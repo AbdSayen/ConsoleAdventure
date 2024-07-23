@@ -43,6 +43,8 @@ namespace ConsoleAdventure.WorldEngine
             generator.Generate(seed);
             ConnectPlayer();
 
+            new Cursor();
+            
             for (int i = 0; i < 15; i++)
             {
                 for (int j = 0; j < 15; j++)
@@ -82,7 +84,8 @@ namespace ConsoleAdventure.WorldEngine
 
         public void Render()
         {
-            renderer.Render(players[0], players[0].Cursor.CursorPosition);
+            //renderer.Render(players[0], players[0].Cursor.CursorPosition);
+            renderer.Render(players[0], Cursor.Instance.CursorPosition);
         }
 
         public void RemoveSubject(Transform subject, int worldLayer, bool isDroped = true)

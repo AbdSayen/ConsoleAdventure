@@ -10,7 +10,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
     public class Player : Transform
     {
         public readonly PlayerInfo Info;
-        public readonly Cursor Cursor;
         public readonly Inventory Inventory;
 
         [NonSerialized]
@@ -31,7 +30,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
             _movement = new PlayerMovement(speed);
             Inventory = new Inventory(this);
             currentState = new IdleState(this);
-            Cursor = new Cursor();
             
             Info.Id = id;
             this.world = world;
@@ -68,8 +66,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             
             if (Input.IsKeyDown(InputConfig.Clear))
             {
-                currentState = new IdleState(this);
-                Cursor.CursorPosition = Position.Zero();
+                ChangeState(new IdleState(this));
             }
         }
 
@@ -85,7 +82,9 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public void ChangeState(IPlayerState newState)
         {
+            currentState?.Exit();
             currentState = newState;
+            currentState.Enter();
         }
     }
 }
