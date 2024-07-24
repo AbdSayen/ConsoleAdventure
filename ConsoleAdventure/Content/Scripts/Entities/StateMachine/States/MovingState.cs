@@ -17,7 +17,7 @@ public class MovingState : IState
     public void InteractWithWorld()
     {
         _entity.Move(1, new Position(ConsoleAdventure.rand.Next(-15, 15), ConsoleAdventure.rand.Next(-15, 15)));
-        _entity.ChooseColor();
+        _entity.Color.ChooseColor(_entity.position);
         
         if (ConsoleAdventure.rand.Next(-100, 100) == 0)
         {

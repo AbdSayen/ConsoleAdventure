@@ -1,4 +1,6 @@
 ﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine.Generate;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,8 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class World
     {
+        public static World Instance { get; private set; }
+
         public Action Start;
         
         public int size { get; internal set; } = 256;
@@ -30,27 +34,29 @@ namespace ConsoleAdventure.WorldEngine
 
         public int seed = 1234;
 
+        public string name;
+
         public static int CountOfLayers = 4;
         public static int FloorLayerId = 0;
         public static int BlocksLayerId = 1;
         public static int ItemsLayerId = 2;
         public static int MobsLayerId = 3;
 
-        public static World instance => world;
-        private static World world;
-
-        public World()
+        public World(string name, int seed, bool isfullGenerate = true)
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                world = this;
+                Instance = this;
             }
             
+            this.name = name;
+            this.seed = seed;
+
             ConsoleAdventure.rand = new Random();
 
             generator = new Generator(this, size);
             renderer = new Renderer(chunks);
-            generator.Generate(seed);
+            generator.Generate(seed, isfullGenerate);
             ConnectPlayer();
 
             new Cursor();
@@ -61,10 +67,11 @@ namespace ConsoleAdventure.WorldEngine
             {
                 for (int j = 0; j < 15; j++)
                 {
-                    entities.Add(new Cat(this, new(6 + i, 6 + j)));
-                    //entities.Add(Spawner.Spawn(cat, new Position(6 + i, 6 + j)));
+                    entities.Add(Spawner.Spawn(cat, new(6 + i, 6 + j)));
                 }
             }
+
+            CaModLoader.WorldLoadedMods(this);
         }
 
         public Point GetCunkCounts()
@@ -76,7 +83,8 @@ namespace ConsoleAdventure.WorldEngine
         {
             players.Add(new Player(players.Count, this, new Position(5, 5)));
         }
-        
+
+        int timer;
         public void ListenEvents()
         {
             if (!ConsoleAdventure.isPause)
@@ -92,12 +100,20 @@ namespace ConsoleAdventure.WorldEngine
                 {
                     entities[i].InteractWithWorld();
                 }
-            }         
+            }
+
+            if (timer > (1 * 60 * 60))
+            {
+                Saves.Save("World");
+
+                timer = 0;
+            }
+
+            timer++;
         }
 
         public void Render()
         {
-            //renderer.Render(players[0], players[0].Cursor.CursorPosition);
             renderer.Render(players[0], Cursor.Instance.CursorPosition);
         }
 
@@ -109,6 +125,32 @@ namespace ConsoleAdventure.WorldEngine
                 field.content.Collapse();       
             if(field != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
                 field.content = null;  
+        }
+
+        public void MoveSubject(Transform subject, int worldLayer, int stepSize, Rotation rotation)
+        {
+            int newX = subject.position.x;
+            int newY = subject.position.y;
+
+            switch (rotation)
+            {
+                case Rotation.up:
+                    newY -= stepSize;
+                    break;
+                case Rotation.right:
+                    newX += stepSize;
+                    break;
+                case Rotation.down:
+                    newY += stepSize;
+                    break;
+                case Rotation.left:
+                    newX -= stepSize;
+                    break;
+                default:
+                    break;
+            }
+
+            SetSubjectPosition(subject, worldLayer, newX, newY);
         }
 
         public void MoveSubject(Transform subject, int worldLayer, int stepSize, Position position)
@@ -147,8 +189,6 @@ namespace ConsoleAdventure.WorldEngine
                 //time.PassTime(3);
             }
 
-            subject.onMoveEnded?.Invoke();
-            
             bool IsValidMove(int worldLayer, int newX, int newY)
             {
                 return newX >= 0 && newX < size &&

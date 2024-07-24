@@ -8,6 +8,8 @@
 
         public static string navigHelpBack = Localization.GetTranslation("UI", "NavigationBack");
 
+        public static string navigHelpWorld = Localization.GetTranslation("UI", "NavigationWorld");
+
         public static string Name = Localization.GetTranslation("UI", "Name");
 
         public static string Seed = Localization.GetTranslation("UI", "Seed");
@@ -32,10 +34,17 @@
 
         public static string AboutControl = Localization.GetTranslation("About", "Control");
 
+        public static string HelpWorldCreate = Localization.GetTranslation("UI", "HelpWorldCreate");
+
+        public static string Mods = Localization.GetTranslation("UI", "Mods");
+
+        public static string navigModFolderHelp = Localization.GetTranslation("UI", "NavigationModFolder");
+
         public static void UpdateLabels()
         {
             navigHelp = Localization.GetTranslation("UI", "Navigation");
             navigHelpBack = Localization.GetTranslation("UI", "NavigationBack");
+            navigHelpWorld = Localization.GetTranslation("UI", "NavigationWorld");
             Name = Localization.GetTranslation("UI", "Name");
             Seed = Localization.GetTranslation("UI", "Seed");
             Version = Localization.GetTranslation("UI", "Version");
@@ -48,6 +57,8 @@
             AboutGame = Localization.GetTranslation("About", "Game");
             Control = Localization.GetTranslation("UI", "Control");
             AboutControl = Localization.GetTranslation("About", "Control");
+            HelpWorldCreate = Localization.GetTranslation("UI", "HelpWorldCreate");
+            Mods = Localization.GetTranslation("UI", "Mods");
         }
     }
 }

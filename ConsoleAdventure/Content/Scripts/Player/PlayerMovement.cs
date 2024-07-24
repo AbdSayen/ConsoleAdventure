@@ -4,8 +4,8 @@ namespace ConsoleAdventure.Content.Scripts.Player;
 
 public class PlayerMovement
 {
-    public bool IsMoving { get; private set; }
-    public int Speed { get; set; }
+    public bool isMoving { get; private set; }
+    public int speed { get; set; }
     
     private int x;
     private int y;
@@ -14,12 +14,12 @@ public class PlayerMovement
     
     public PlayerMovement(int speed = 1)
     {
-        Speed = speed;
+        this.speed = speed;
     }
 
     public void Move(Transform target)
     {
-        target.Move(Speed, GetDirection());
+        target.Move(speed, GetDirection());
     }
     
     private Position GetDirection()
@@ -34,7 +34,7 @@ public class PlayerMovement
 
         if (x != 0 || y != 0)
         {
-            IsMoving = true;
+            isMoving = true;
         }
         
         return _direction;

@@ -20,5 +20,10 @@ namespace ConsoleAdventure.WorldEngine
 
             else return content.GetSymbol();
         }
+
+        internal void Deconstruct()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

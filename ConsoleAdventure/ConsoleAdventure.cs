@@ -1,4 +1,4 @@
-﻿using ConsoleAdventure.Content.Scripts;
+﻿using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
@@ -80,10 +80,10 @@ namespace ConsoleAdventure
             Localization.Load();
         }
 
-        public static void CreateWorld()
+        public static void CreateWorld(string name, int seed, bool isfullGenerate = true)
         {
-            world = new World();
-            display = new Display(World.instance);
+            world = new World(name, seed, isfullGenerate);
+            display = new Display(world);
         }
 
         protected override void Initialize()
@@ -96,6 +96,7 @@ namespace ConsoleAdventure
             _graphics.SynchronizeWithVerticalRetrace = false;
 
             Window.Title = $"Console Adventure {Docs.version}. By Bonds";
+            
 
             _graphics.PreferredBackBufferWidth = screenWidth;
             _graphics.PreferredBackBufferHeight = screenHeight;
@@ -104,6 +105,10 @@ namespace ConsoleAdventure
             Window.AllowUserResizing = true;
 
             base.Initialize();
+            
+            CaModLoader.InitializeMods();
+            menu = new Menu();
+            CaModLoader.RunMods();
         }
 
         protected override void LoadContent()
@@ -111,7 +116,8 @@ namespace ConsoleAdventure
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/font");
 
-            menu = new Menu();
+            CaModLoader.PreLoadMods();
+            CaModLoader.LoadMods();
         }
 
         protected override void Update(GameTime gameTime)
@@ -131,22 +137,15 @@ namespace ConsoleAdventure
 
             if (InWorld)
             {
-                if (_isFirstUpdate)
-                {
-                    world.Start?.Invoke();
-                    _isFirstUpdate = false;
-                    Console.WriteLine("Invoke start");
-                }
-                
                 world.ListenEvents();
 
                 if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 {
-                    Saves.Save("World");
+                    Saves.Save(world.name);
                     InWorld = false;
                 }
 
-                if (!kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Space) && prekstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Space))
+                if (!kstate.IsKeyDown(InputConfig.Pause) && prekstate.IsKeyDown(InputConfig.Pause))
                 {
                     if (!isPause) 
                         isPause = true;
@@ -174,6 +173,12 @@ namespace ConsoleAdventure
 
             if (InWorld)
             {
+                if (_isFirstUpdate)
+                {
+                    world.Start?.Invoke();
+                    _isFirstUpdate = false;
+                }
+                
                 _spriteBatch.Begin();
 
                 _spriteBatch.DrawString(font, $"FPS: {(int)frameRate}", new Vector2(10, _graphics.PreferredBackBufferHeight - 30), Color.White);

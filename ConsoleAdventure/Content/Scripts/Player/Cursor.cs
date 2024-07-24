@@ -5,7 +5,7 @@ namespace ConsoleAdventure.Content.Scripts.Player;
 public class Cursor
 {
     public Position CursorPosition;
-    public bool IsVisible { get; set; }
+    public bool IsActive { get; set; }
     
     public static Cursor Instance => _instance;
 
@@ -19,6 +19,12 @@ public class Cursor
         {
             _instance = this;
         }
+    }
+
+    public void Toggle()
+    {
+        if (IsActive) IsActive = false;
+        else IsActive = true;
     }
 
     public void CursorMovement()

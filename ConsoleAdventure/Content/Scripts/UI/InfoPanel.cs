@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ConsoleAdventure.Content.Scripts.UI
 {
-    internal class InfoPanel : BaseUI
+    public class InfoPanel : BaseUI
     {
         string name = "";
 

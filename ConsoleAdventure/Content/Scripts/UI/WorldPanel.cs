@@ -17,9 +17,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public bool isHover;
 
-        string name = "";
+        internal string name = "";
 
-        string seed = "";
+        internal string seed = "";
 
         public WorldPanel(Rectangle rectangle, string name, string seed) : base(rectangle, Color.White)
         {

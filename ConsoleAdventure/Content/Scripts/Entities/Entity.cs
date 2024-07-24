@@ -1,76 +1,61 @@
 ﻿using System.Collections.Generic;
 using ConsoleAdventure.WorldEngine;
-using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure.Content.Scripts.Entities
 {
     public class Entity : Transform
     {
-        protected int colorIndex;
-        
-        public Color[] colors = new Color[9]
-        {
-            new Color(50, 50, 50),
-            new Color(131, 105, 44),
-            new Color(193, 138, 45),
-            new Color(243, 171, 51),
-            new Color(140, 147, 153),
-            new Color(255, 255, 255),
-            new Color(196, 207, 211),
-            new Color(250, 194, 45),
-            new Color(240, 210, 80),
-        };
+        public StateMachine.StateMachine StateMachine { get; private set; }
+        public EntityColor Color { get; private set; }
         
         //public List<object> Parameters { get; set; } = new List<object>();
-        public readonly StateMachine.StateMachine StateMachine;
-        
-        protected int life;
-        protected int maxLife;
-        protected int damage;
 
+        public int life;
+        public int maxLife;
+        public int damage;
+        
         public Entity(World world, Position position, List<object> parameters = null) : base(world, position)
         {
             worldLayer = World.MobsLayerId;
             renderFieldType = RenderFieldType.entity;
             isObstacle = false;
 
-            StateMachine = new StateMachine.StateMachine(this);
-            colorIndex = ConsoleAdventure.rand.Next(0, colors.Length);
-
-            if(parameters != null)
+            Color = new EntityColor();
+            
+            if (parameters != null)
             {
                 SetParams(parameters);
             }
             
-            World.instance.Start += Start;
+            world.Start += Start;
         }
 
         protected virtual void Start()
         {
-            
+            StateMachine = new StateMachine.StateMachine(this);
         }
 
+        public override string GetSymbol()
+        {
+            return "AE";
+        }
+        
         /// <summary>
         /// Обновление сущьности в мире
         /// </summary>
-        public void InteractWithWorld()
+        public virtual void InteractWithWorld()
         {
             StateMachine?.CurrentState?.InteractWithWorld();
             //if(life <= 0) Kill();
         }
 
-        public void ChooseColor()
-        {
-            SetColor(colors[colorIndex], position);
-        }
-        
         /// <summary>
         /// Убивает сущьность 
         /// </summary>
         public void Kill()
         {
+            world.Start -= Start;
             ConsoleAdventure.world.RemoveSubject(this, worldLayer);
-            World.instance.Start -= Start;
         }
 
         public void SetMaxLife(int life)
@@ -79,19 +64,11 @@ namespace ConsoleAdventure.Content.Scripts.Entities
             maxLife = life;
         }
 
-        public void SetColor(Color color, Position position)
+        public virtual void SetParams(List<object> p) { }
+
+        public virtual List<object> GetParams()
         {
-            world.GetField(position.x, position.y, World.MobsLayerId).color = color;
-        }
-
-        public virtual void SetParams(List<object> p)
-        { 
-
-        }
-
-        public virtual List<object> GetParams() 
-        { 
-            return new(); 
+            return new();
         }
     }
 }

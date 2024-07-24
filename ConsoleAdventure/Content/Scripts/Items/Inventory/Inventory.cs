@@ -86,7 +86,7 @@ namespace ConsoleAdventure
             }
             return output;
         }
-        public bool HasItem(Item item, int count)
+        public bool HasItems(Item item, int count)
         {
             int total = 0;
             foreach (var slot in slots)
@@ -107,7 +107,7 @@ namespace ConsoleAdventure
         {
             int total = 0;
 
-            if (HasItem(item, count))
+            if (HasItems(item, count))
             {
                 int itemsToRemove = count;
                 for (int i = 0; i < slots.Count; i++)

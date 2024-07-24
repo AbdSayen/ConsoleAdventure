@@ -1,5 +1,4 @@
 using ConsoleAdventure.Content.Scripts.Entities.StateMachine.States;
-using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure.Content.Scripts.Entities.StateMachine;
 

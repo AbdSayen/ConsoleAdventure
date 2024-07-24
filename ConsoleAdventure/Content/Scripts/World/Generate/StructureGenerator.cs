@@ -1,5 +1,7 @@
 ﻿using ConsoleAdventure.Generate.Structures;
+using ConsoleAdventure.WorldEngine;
 using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {

@@ -17,5 +17,15 @@ namespace ConsoleAdventure.WorldEngine
             isObstacle = false;
             Initialize();
         }
+
+        public override string GetSymbol()
+        {
+            return "[]";
+        }
+
+        public override Color GetColor()
+        {
+            return new(94, 61, 38);
+        }
     }
 }
