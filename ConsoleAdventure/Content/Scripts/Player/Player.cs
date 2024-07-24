@@ -48,8 +48,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             return Microsoft.Xna.Framework.Color.Yellow;
         }
-
-
+        
         public override void InteractWithWorld()
         {
             timer.Start();

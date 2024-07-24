@@ -1,3 +1,5 @@
+using System;
+
 namespace ConsoleAdventure.Content.Scripts.Entities.StateMachine.States;
 
 public class MovingState : IState

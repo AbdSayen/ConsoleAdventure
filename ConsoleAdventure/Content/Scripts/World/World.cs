@@ -67,7 +67,7 @@ namespace ConsoleAdventure.WorldEngine
             {
                 for (int j = 0; j < 15; j++)
                 {
-                    entities.Add(Spawner.Spawn(cat, new(6 + i, 6 + j)));
+                    entities.Add(Spawner.Spawn(cat, new Position(6 + i, 6 + j)));
                 }
             }
 

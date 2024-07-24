@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using ConsoleAdventure.Content.Scripts.Player;
-using System.Reflection;
 using ConsoleAdventure.Content.Scripts.Entities;
 
 namespace ConsoleAdventure

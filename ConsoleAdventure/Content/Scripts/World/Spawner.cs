@@ -6,11 +6,11 @@ public static class Spawner
 {
     public static Entity Spawn(Entity entity, Position position = default)
     {
-        Entity spawnedEntity = new Entity(World.Instance, Position.Zero());
-        spawnedEntity = (Entity)entity.Copy();
-        spawnedEntity.Color.ChooseColor(position);
-        World.Instance.SetSubjectPosition(spawnedEntity, entity.worldLayer, position.x, position.y);
+        Entity spawnEntity = new Entity(World.Instance, Position.Zero());
+        spawnEntity = (Entity)entity.Copy();
+        spawnEntity.Color.ChooseColor(position);
+        World.Instance.SetSubjectPosition(spawnEntity, entity.worldLayer, position.x, position.y);
 
-        return spawnedEntity;
+        return spawnEntity;
     }
 }

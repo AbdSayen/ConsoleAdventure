@@ -22,7 +22,7 @@ namespace ConsoleAdventure.Content.Scripts
         protected override void Start()
         {
             base.Start();
-            StateMachine.ChangeState(StatesEnum.Moving);
+            StateMachine?.ChangeState(StatesEnum.Moving);
         }
 
         public override string GetSymbol()
