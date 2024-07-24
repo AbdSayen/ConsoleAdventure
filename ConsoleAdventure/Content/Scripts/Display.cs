@@ -33,7 +33,7 @@ namespace ConsoleAdventure
         {
             return
                 $"{TextAssets.Inventory}\n" +
-                $"{world.players[0].Inventory.GetInfo()}\n" +
+                $"{world.players[0].inventory.GetInfo()}\n" +
                 $"{Loger.GetLogs()}"
                 ;
         }

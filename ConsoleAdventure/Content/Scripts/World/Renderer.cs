@@ -48,9 +48,9 @@ namespace ConsoleAdventure.WorldEngine
                 X = 0;
             }
 
-            Console.WriteLine(Cursor.Instance.IsVisible);
+            Console.WriteLine(Cursor.Instance.IsActive);
 
-            if (Cursor.Instance != null && Cursor.Instance.IsVisible)
+            if (Cursor.Instance != null && Cursor.Instance.IsActive)
             {
                 DrawCursor(cursorPosition);
             }

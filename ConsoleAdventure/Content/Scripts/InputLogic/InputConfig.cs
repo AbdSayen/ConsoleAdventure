@@ -26,8 +26,7 @@ public static class InputConfig
 
     #endregion
     
-    public static Keys PickUp = Keys.P;
-    public static Keys Clear = Keys.C;
-    public static Keys Enter = Keys.Enter;
-
+    public static Keys PickUp = Keys.L;
+    public static Keys Cursor = Keys.Space;
+    public static Keys Pause = Keys.P;
 }

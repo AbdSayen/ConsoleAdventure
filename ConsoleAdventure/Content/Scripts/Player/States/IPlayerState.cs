@@ -1,8 +1,8 @@
-namespace ConsoleAdventure.Content.Scripts.Player.States;
+//namespace ConsoleAdventure.Content.Scripts.Player.States;
 
-public interface IPlayerState
-{
-    void HandleInput();
-    void Enter();
-    void Exit();
-}
+//public interface IPlayerState
+//{
+//    void HandleInput();
+//    void Enter();
+//    void Exit();
+//}

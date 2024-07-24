@@ -27,7 +27,7 @@ namespace ConsoleAdventure.Content.Scripts
         /// <summary>
         /// Обновление сущьности в мире
         /// </summary>
-        public void InteractWithWorld()
+        public virtual void InteractWithWorld()
         {
             AI();
             //if(life <= 0) Kill();
@@ -44,10 +44,7 @@ namespace ConsoleAdventure.Content.Scripts
         /// <summary>
         /// Искуственный интелект сущьности. 
         /// </summary>
-        public virtual void AI()
-        {
-
-        }
+        public virtual void AI() { }
 
         public void SetMaxLife(int life)
         {
@@ -65,10 +62,7 @@ namespace ConsoleAdventure.Content.Scripts
             world.GetField(position.x, position.y, World.MobsLayerId).color = color;
         }
 
-        public virtual void SetParams(List<object> p)
-        {
-
-        }
+        public virtual void SetParams(List<object> p) { }
 
         public virtual List<object> GetParams()
         {

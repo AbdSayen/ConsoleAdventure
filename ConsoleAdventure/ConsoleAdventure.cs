@@ -1,4 +1,5 @@
 ﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
@@ -94,6 +95,7 @@ namespace ConsoleAdventure
             _graphics.SynchronizeWithVerticalRetrace = false;
 
             Window.Title = $"Console Adventure {Docs.version}. By Bonds";
+            
 
             _graphics.PreferredBackBufferWidth = screenWidth;
             _graphics.PreferredBackBufferHeight = screenHeight;
@@ -137,7 +139,7 @@ namespace ConsoleAdventure
                     InWorld = false;
                 }
 
-                if (!kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Space) && prekstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Space))
+                if (!kstate.IsKeyDown(InputConfig.Pause) && prekstate.IsKeyDown(InputConfig.Pause))
                 {
                     if (!isPause) 
                         isPause = true;
