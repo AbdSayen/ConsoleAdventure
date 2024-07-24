@@ -19,6 +19,7 @@
     "Russian": "Russian",
     "Navigation": "for navigation use: \"←→↑↓\". And to select \"Enter\"",
     "NavigationBack": "press \"Escape\" to return to main menu",
+    "NavigationWorld": "        press '►' for play\n      press '≡' for rename\npress 'Ս' for delete world",
     "Play": "Play",
     "Settings": "Settings",
     "Exit": "Exit",

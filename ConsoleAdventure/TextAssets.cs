@@ -8,6 +8,8 @@
 
         public static string navigHelpBack = Localization.GetTranslation("UI", "NavigationBack");
 
+        public static string navigHelpWorld = Localization.GetTranslation("UI", "NavigationWorld");
+
         public static string Name = Localization.GetTranslation("UI", "Name");
 
         public static string Seed = Localization.GetTranslation("UI", "Seed");
@@ -36,6 +38,7 @@
         {
             navigHelp = Localization.GetTranslation("UI", "Navigation");
             navigHelpBack = Localization.GetTranslation("UI", "NavigationBack");
+            navigHelpWorld = Localization.GetTranslation("UI", "NavigationWorld");
             Name = Localization.GetTranslation("UI", "Name");
             Seed = Localization.GetTranslation("UI", "Seed");
             Version = Localization.GetTranslation("UI", "Version");

@@ -1,5 +1,6 @@
 ﻿using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Settings;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -32,6 +33,21 @@ namespace ConsoleAdventure.Content.Scripts.UI
         public Menu()
         {
             MenuInit();
+            WorldMenuInit();
+        }
+
+        public void WorldMenuInit()
+        {
+            var worlds = Saves.GetWorlds();
+
+
+            for (int i = 0; i < worlds.names.Length; i++)
+            {
+                worldPanels.Add(new WorldPanel(new Rectangle(), worlds.names[i], worlds.seeds[i].ToString()));
+            }
+
+            if (worldPanels.Count > 0)
+                worldPanels[0].isHover = true;
         }
 
         public void MenuInit()
@@ -112,16 +128,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 menuButtons[0].isHover = true;
 
             menuSettingsButtons[0].isHover = true;
-
-            var worlds = Saves.GetWorlds();
-
-            for (int i = 0; i < worlds.names.Length; i++)
-            {
-                worldPanels.Add(new WorldPanel(new Rectangle(), worlds.names[i], worlds.seeds[i].ToString()));
-            }
-
-            if(worldPanels.Count > 0)
-                worldPanels[0].isHover = true;
         }
 
         int timer;
@@ -276,7 +282,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     ConsoleAdventure.CreateWorld("World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000));
                     Saves.Save(ConsoleAdventure.world.name);
                     worldPanels.Clear();
-                    MenuInit();
+                    WorldMenuInit();
                 }
             }
 
@@ -410,7 +416,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             {
                 spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigHelpBack, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(TextAssets.navigHelpBack).X + 10), ConsoleAdventure.Height - 50), Color.Gray);
             }
-            
+
             for (int i = 0; i < menuButtons.Length; i++)
             {
                 menuButtons[i].Draw(spriteBatch);
@@ -428,6 +434,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         number++;
                     }
                 }
+
+                spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigHelpWorld, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(TextAssets.navigHelpBack).X + 10) + 9 * 12, ConsoleAdventure.Height - 114), Color.Gray);
             }
 
             if (State == 2 || State == 3 || State == 4)
