@@ -106,6 +106,7 @@ namespace ConsoleAdventure
             
             CaModLoader.InitializeMods();
             menu = new Menu();
+            CaModLoader.RunMods();
         }
 
         protected override void LoadContent()
