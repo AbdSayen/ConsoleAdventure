@@ -270,10 +270,10 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             for (int i = 0; i < world.entities.Count; i++)
             {
-                //world.entities[i].Kill();
+                world.entities[i].Kill();
             }
 
-            //world.entities.Clear();
+            world.entities.Clear();
 
             for (int i = 0; i < EntityCount; i++)
             {

@@ -30,7 +30,7 @@ public class EntityColor
         SetColor(Colors[ColorIndex], position);
     }
         
-    public void SetColor(Color color, Position position)
+    private void SetColor(Color color, Position position)
     {
         World.Instance.GetField(position.x, position.y, World.MobsLayerId).color = color;
     }
