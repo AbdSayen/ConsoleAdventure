@@ -11,6 +11,8 @@ namespace ConsoleAdventure
     [Serializable]
     public abstract class Transform
     {
+        public Action onMoveEnded;
+        
         public World world { get; protected set; }
         public int worldLayer { get; protected set; }
         

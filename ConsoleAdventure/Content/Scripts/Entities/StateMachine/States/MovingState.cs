@@ -1,3 +1,5 @@
+using Microsoft.Xna.Framework;
+
 namespace ConsoleAdventure.Content.Scripts.Entities.StateMachine.States;
 
 public class MovingState : IState
@@ -14,20 +16,27 @@ public class MovingState : IState
     
     public void Enter()
     {
+        _entity.onMoveEnded += OnMoveEnded;
+        
         if(rotation > -1)
         {
             _entity.Move(1, (Rotation)(rotation * 2));
-            if (rotation1 > -1)
-            {
-                _entity.Move(1, (Rotation)(rotation1 * 2));
-            }
-
-            //_entity.СhooseColor(colors, _entity.position, index);
         }
+        else
+        {
+            _entity.Move(1, (Rotation)(rotation1 * 2));
+        }
+
+        _entity.ChooseColor();
+    }
+
+    private void OnMoveEnded()
+    {
+        _entity.StateMachine.ChangeState(StatesEnum.Rotation);
     }
 
     public void Exit()
     {
-        
+        _entity.onMoveEnded -= OnMoveEnded;
     }
 }

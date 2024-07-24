@@ -6,6 +6,21 @@ namespace ConsoleAdventure.Content.Scripts.Entities
 {
     public class Entity : Transform
     {
+        protected int colorIndex;
+        
+        public Color[] colors = new Color[9]
+        {
+            new Color(50, 50, 50),
+            new Color(131, 105, 44),
+            new Color(193, 138, 45),
+            new Color(243, 171, 51),
+            new Color(140, 147, 153),
+            new Color(255, 255, 255),
+            new Color(196, 207, 211),
+            new Color(250, 194, 45),
+            new Color(240, 210, 80),
+        };
+        
         //public List<object> Parameters { get; set; } = new List<object>();
         public readonly StateMachine.StateMachine StateMachine;
         
@@ -20,6 +35,7 @@ namespace ConsoleAdventure.Content.Scripts.Entities
             isObstacle = false;
 
             StateMachine = new StateMachine.StateMachine(this);
+            colorIndex = ConsoleAdventure.rand.Next(0, colors.Length);
 
             if(parameters != null)
             {
@@ -32,7 +48,18 @@ namespace ConsoleAdventure.Content.Scripts.Entities
         /// </summary>
         public void InteractWithWorld()
         {
+            AI();
             //if(life <= 0) Kill();
+        }
+
+        protected virtual void AI()
+        {
+            
+        }
+
+        public void ChooseColor()
+        {
+            SetColor(colors[colorIndex], position);
         }
         
         /// <summary>
@@ -47,11 +74,6 @@ namespace ConsoleAdventure.Content.Scripts.Entities
         {
             this.life = life;
             maxLife = life;
-        }
-
-        public void СhooseColor(Color[] colors, Position position, int index)
-        {
-            SetColor(colors[index], position);
         }
 
         public void SetColor(Color color, Position position)

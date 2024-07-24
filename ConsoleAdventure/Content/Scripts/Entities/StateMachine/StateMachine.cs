@@ -1,4 +1,5 @@
 using ConsoleAdventure.Content.Scripts.Entities.StateMachine.States;
+using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure.Content.Scripts.Entities.StateMachine;
 
@@ -15,7 +16,7 @@ public class StateMachine
     {
         _owner = owner;
         _movingState = new MovingState(_owner);
-        _rotationState = new RotationState();
+        _rotationState = new RotationState(_owner);
     }
     
     public void ChangeState(StatesEnum state)

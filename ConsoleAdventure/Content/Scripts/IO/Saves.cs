@@ -221,7 +221,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 world.entitys[i].Kill();
             }
 
-            world.entitys.Clear();
+            //world.entitys.Clear();
 
             for (int i = 0; i < EntityCount; i++)
             {

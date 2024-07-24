@@ -9,31 +9,15 @@ namespace ConsoleAdventure.Content.Scripts.Entities
     [Serializable]
     public class Cat : Entity
     {
-        static Color[] colors = new Color[9]
-        {
-            new Color(50, 50, 50),
-            new Color(131, 105, 44),
-            new Color(193, 138, 45),
-            new Color(243, 171, 51),
-            new Color(140, 147, 153),
-            new Color(255, 255, 255),
-            new Color(196, 207, 211),
-            new Color(250, 194, 45),
-            new Color(240, 210, 80),
-        };
-
-        int index = -1;
-
         public Cat(World world, Position position, List<object> parameters = null) : base(world, position, parameters)
         {
             renderFieldType = RenderFieldType.cat;
             SetMaxLife(9);
             Initialize();
-
-            this.index = index == -1 ? ConsoleAdventure.rand.Next(0, colors.Length) : index;
-            СhooseColor(colors, this.position, this.index);
-            StateMachine.ChangeState(StatesEnum.Moving);
             
+            ChooseColor();
+            world.SetSubjectPosition(this, 1, position.x + 1, position.y + 1);
+            //StateMachine.ChangeState(StatesEnum.Moving);
         }
 
         bool isFree = true;
@@ -42,9 +26,11 @@ namespace ConsoleAdventure.Content.Scripts.Entities
         int rotation = -1;
         int rotation1 = -1;
 
-        /*public override void AI()
+        protected override void AI()
         {
-            if (isFree)
+            ChooseColor();
+            Console.WriteLine("cat choose color");
+            /*if (isFree)
             {
                 randomTime = Utils.StabilizeTicks(ConsoleAdventure.rand.Next(0, 180));
                 rotation = ConsoleAdventure.rand.Next(-1, 4);
@@ -84,14 +70,14 @@ namespace ConsoleAdventure.Content.Scripts.Entities
                 timer = 0;
             }
 
-            timer++;
-        }*/
+            timer++;*/
+        }
 
         public override List<object> GetParams()
         {
             List<object> parameters = new()
             {
-                index
+                colorIndex
             };
 
             return parameters;
@@ -102,7 +88,7 @@ namespace ConsoleAdventure.Content.Scripts.Entities
             if (p == null)
                 return;
 
-            index = (int)p[0];
+            colorIndex = (int)p[0];
         }
     }
 }

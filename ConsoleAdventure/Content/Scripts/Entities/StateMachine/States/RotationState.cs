@@ -6,24 +6,20 @@ public class RotationState : IState
     int randomTime = 0;
     int rotation = -1;
     int rotation1 = -1;
+
+    private Entity entity;
+
+    public RotationState(Entity entity)
+    {
+        this.entity = entity;
+    }
     
     public void Enter()
     {
-        randomTime = Utils.StabilizeTicks(ConsoleAdventure.rand.Next(0, 180));
         rotation = ConsoleAdventure.rand.Next(-1, 4);
         rotation1 = ConsoleAdventure.rand.Next(-3, 4);
-
-        while (true)
-        {
-            if(rotation1 == rotation)
-            {
-                rotation1 = ConsoleAdventure.rand.Next(-3, 4);
-            }
-            else
-            {
-                break;
-            }
-        }
+        
+        entity.StateMachine.ChangeState(StatesEnum.Moving);
     }
 
     public void Exit()
