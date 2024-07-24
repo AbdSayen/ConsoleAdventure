@@ -10,7 +10,7 @@ namespace ConsoleAdventure
 {
     public static class CaModLoader
     {
-        private static readonly string modsDirPath = Directory.GetCurrentDirectory() + @"\Content\mods";
+        public static readonly string modsDirPath = Directory.GetCurrentDirectory() + @"\Content\mods";
 
         private static List<string> libs = new List<string> { "" };
         private static string[] modsPath;

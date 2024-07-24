@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -98,8 +99,30 @@ namespace ConsoleAdventure
 
             return new string[2] { TB.ToString(), LR.ToString(), };
         }
+
         /// <summary>
-        /// Ресует рамку из символов (Разширение ConsoleAdventure)
+        /// Открывает проводник по указанному пути
+        /// </summary>
+        /// <param name="absolutePath">Полный путь к папке</param>
+        public static void OpenExplorerAtFolder(string absolutePath)
+        {
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = "cmd.exe";
+            cmd.StartInfo.RedirectStandardInput = true;
+            cmd.StartInfo.RedirectStandardOutput = true;
+            cmd.StartInfo.CreateNoWindow = true;
+            cmd.StartInfo.UseShellExecute = false;
+            cmd.Start();
+
+            cmd.StandardInput.WriteLine("explorer " + absolutePath);
+            cmd.StandardInput.Flush();
+            cmd.StandardInput.Close();
+            cmd.WaitForExit();
+            Console.WriteLine(cmd.StandardOutput.ReadToEnd());
+        }
+
+        /// <summary>
+        /// Рисует рамку из символов
         /// </summary>
         /// <param name="font">Шрифт рамки</param>
         /// <param name="panel">Строки рамки</param>

@@ -215,6 +215,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         if (menuButtons[i].type == 3)
                         {
                             State = 5;
+                            timer = 0;
                         }
                         if (menuButtons[i].type == 2)
                         {
@@ -415,6 +416,15 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 }
             }
 
+            if (State == 5)
+            {
+                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= Utils.StabilizeTicks(30))
+                {
+                    Utils.OpenExplorerAtFolder(CaModLoader.modsDirPath);
+                    timer = 0;
+                }
+            }
+
             if (ConsoleAdventure.kstate.IsKeyDown(Keys.Escape) && timer >= Utils.StabilizeTicks(20))
             {
                 State = 0;
@@ -426,6 +436,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             }
             timer++;
         }
+        
 
         private void ReLocalize()
         {
@@ -499,6 +510,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             if (State == 5)
             {
                 modListPanel.Draw(spriteBatch);
+                spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigModFolderHelp, new Vector2(ConsoleAdventure.Width/2 - ConsoleAdventure.Font.MeasureString(TextAssets.navigHelp).X, ConsoleAdventure.Height - 25), Color.Gray);
             }
 
             spriteBatch.End();

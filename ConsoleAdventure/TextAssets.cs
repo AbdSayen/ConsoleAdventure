@@ -38,6 +38,8 @@
 
         public static string Mods = Localization.GetTranslation("UI", "Mods");
 
+        public static string navigModFolderHelp = Localization.GetTranslation("UI", "NavigationModFolder");
+
         public static void UpdateLabels()
         {
             navigHelp = Localization.GetTranslation("UI", "Navigation");
