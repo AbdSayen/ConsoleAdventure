@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {
@@ -17,19 +18,23 @@ namespace ConsoleAdventure.WorldEngine.Generate
             this.world = world;
         }
 
-        public void Generate(int seed)
+        public void Generate(int seed, bool isfullGenerate = true)
         {
             random = new Random(seed);
-            Generate();
+            Generate(isfullGenerate);
         }
 
-        public void Generate()
+        public void Generate(bool isfullGenerate = true)
         {
             //random = new Random();
             world.InitializeChunks();
             GenerateBarriers();
-            structureGenerator.Generate(world, random);
-            landspaceGenerator.Generate(world, random);
+
+            if(isfullGenerate)
+            {
+                structureGenerator.Generate(world, random);
+                landspaceGenerator.Generate(world, random);
+            }
         }
 
         private void GenerateBarriers()

@@ -1,4 +1,5 @@
 ﻿using ConsoleAdventure.WorldEngine;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -60,9 +61,60 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 return;
             }
 
+            ConsoleAdventure.world.name = name;
             LoadTags(); //Загружам данные из тегов в мир
 
             Console.WriteLine("The world was successfully loaded!");
+        }
+
+        public static void Delete(string name)
+        {
+            string worldPath = path + name + ".wld";
+            try
+            {
+                if (File.Exists(worldPath))
+                {
+                    FileSystem.DeleteFile(worldPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+                    Console.WriteLine("File moved to recycle bin successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("File not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+        public static (string[] names, int[] seeds) GetWorlds()
+        {
+            string fileType = "*.wld";
+
+            string[] names = new string[1];
+            int[] seeds = new int[1];
+
+            try
+            {
+                names = Directory.GetFiles(path, fileType);
+                seeds = new int[names.Length];
+
+                Console.WriteLine($"Found {names.Length} file(s) with extension {fileType}:");
+
+                for (int i = 0; i < names.Length; i++) 
+                {
+                    names[i] = Path.GetFileNameWithoutExtension(names[i]);
+
+                    Console.WriteLine(names[i]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            return (names, seeds);
         }
 
         private static void CreateTags()
@@ -166,13 +218,13 @@ namespace ConsoleAdventure.Content.Scripts.IO
             World world = ConsoleAdventure.world;
             Tags tags = ConsoleAdventure.tags;
 
-            world.seed = tags.SafelyGet<int>("Seed");
+            world.seed = (int)tags.SafelyGet("Seed");
 
-            world.size = tags.SafelyGet<int>("Size");
+            world.size = (int)tags.SafelyGet("Size");
             //world.seed = (int)tags.SafelyGet("Seed");
             //world.seed = (int)tags.SafelyGet("Seed");
 
-            world.time = tags.SafelyGet<Time>("Time");
+            world.time = (Time)tags.SafelyGet("Time");
 
             for (int i = 0; i < world.size; i++)
             {
@@ -182,8 +234,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
                     {
                         if (k != World.MobsLayerId)
                         {
-                            byte type = (tags.SafelyGet<byte[,,]>("Fields"))[i, j, k];
-                            if (type != (byte)RenderFieldType.loot || type != (byte)RenderFieldType.chest)
+                            byte type = ((byte[,,])tags.SafelyGet("Fields"))[i, j, k];
+                            if (type != (byte)RenderFieldType.loot && type != (byte)RenderFieldType.chest)
                             {
                                 Transform.SetObject(type, new(i, j), k); //загружаем ячейки из тега
                             }
@@ -192,12 +244,12 @@ namespace ConsoleAdventure.Content.Scripts.IO
                             {
                                 List<Stack> items = new List<Stack>();
 
-                                for (int l = 0; l < tags.SafelyGet<int>("LootCount"); l++)
+                                for (int l = 0; l < (int)tags.SafelyGet("LootCount"); l++)
                                 {
-                                    Position position = new Position((tags.SafelyGet<int[]>("LootX"))[l], (tags.SafelyGet<int[]>("LootY"))[l]);
+                                    Position position = new Position(((int[])tags.SafelyGet("LootX"))[l], ((int[])tags.SafelyGet("LootY"))[l]);
                                     if (position.x == i && position.y == j)
                                     {
-                                        items = (tags.SafelyGet<List<Stack>[]>("Loots"))[l];
+                                        items = ((List<Stack>[])tags.SafelyGet("Loots"))[l];
                                         break;
                                     }
                                 }
@@ -209,11 +261,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 }
             }
 
-            int EntityCount = tags.SafelyGet<int>("EntityCount");
-            int[] EntityX = tags.SafelyGet<int[]>("EntityX");
-            int[] EntityY = tags.SafelyGet<int[]>("EntityY");
-            byte[] EntityTypes = tags.SafelyGet<byte[]>("EntityTypes");
-            List<object>[] EntityParams = tags.SafelyGet<List<object>[]>("EntityParams");
+            int EntityCount = (int)tags.SafelyGet("EntityCount");
+            int[] EntityX = (int[])tags.SafelyGet("EntityX");
+            int[] EntityY = (int[])tags.SafelyGet("EntityY");
+            byte[] EntityTypes = (byte[])tags.SafelyGet("EntityTypes");
+            List<object>[] EntityParams = (List<object>[])tags.SafelyGet("EntityParams");
 
             for (int i = 0; i < world.entitys.Count; i++)
             {

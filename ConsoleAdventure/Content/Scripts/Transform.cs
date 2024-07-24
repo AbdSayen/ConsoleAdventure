@@ -12,7 +12,7 @@ namespace ConsoleAdventure
     {
         public World world { get; protected set; }
         public int worldLayer { get; protected set; }
-        
+
         public Position position;
         public RenderFieldType renderFieldType;
         public bool isObstacle;
@@ -42,7 +42,7 @@ namespace ConsoleAdventure
         {
             world.MoveSubject(this, worldLayer, stepSize, position);
         }
-        
+
         public virtual void SetPosition(Position newPos)
         {
             world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y);

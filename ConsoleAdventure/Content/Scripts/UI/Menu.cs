@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace ConsoleAdventure.Content.Scripts.UI
 {
@@ -73,6 +74,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     menuSettingsButtons[i].Center = SettingButtonPos;
                 }
             }
+            int curentMenuBatton = -1;
 
             for (int i = 0; i < menuButtons.Length; i++)
             {
@@ -93,18 +95,33 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 int startPos = 220;
                 int indent = 100;
 
+                if (menuButtons[i] != null && menuButtons[i].isHover)
+                    curentMenuBatton = i;
+
                 menuButtons[i] = new MenuButton(new Vector2((ConsoleAdventure.Width / 2) + (indent * (i - 1)), startPos), text, new Color(230, 230, 230), menuButtonTypes[i]);
+
+                if (curentMenuBatton == i)
+                {
+                    if(State > 0)
+                        menuButtons[i].cursorColor = Color.Red;
+                    menuButtons[i].isHover = true;
+                }
             }
 
-            menuButtons[0].isHover = true;
+            if (curentMenuBatton == -1)
+                menuButtons[0].isHover = true;
 
             menuSettingsButtons[0].isHover = true;
 
-            for (int i = 0; i < 40; i++)
+            var worlds = Saves.GetWorlds();
+
+            for (int i = 0; i < worlds.names.Length; i++)
             {
-                worldPanels.Add(new WorldPanel(new Rectangle(), $"World{i}", "1234"));
+                worldPanels.Add(new WorldPanel(new Rectangle(), worlds.names[i], worlds.seeds[i].ToString()));
             }
-            worldPanels[0].isHover = true;
+
+            if(worldPanels.Count > 0)
+                worldPanels[0].isHover = true;
         }
 
         int timer;
@@ -171,76 +188,95 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             if (State == 1)
             {
-                for (int i = 0; i < worldPanels.Count; i++)
+                if (worldPanels.Count > 0)
                 {
-                    int waitTime = Utils.StabilizeTicks(10);
-
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && timer >= waitTime && (i - 1) != -1) //прокрутка
+                    for (int i = 0; i < worldPanels.Count; i++)
                     {
-                        if (worldPanels[i].isHover)
-                        {
-                            worldPanels[i].isHover = false;
-                            int newIndex = (i - 1 + worldPanels.Count) % worldPanels.Count; //находим следующий мир
-                            worldPanels[newIndex].isHover = true;
+                        int waitTime = Utils.StabilizeTicks(10);
 
-                            if (newIndex < startWList) //прокручиваем область видимого списка
+                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && timer >= waitTime && (i - 1) != -1) //прокрутка
+                        {
+                            if (worldPanels[i].isHover)
                             {
-                                startWList = newIndex;
-                                endWList = Math.Min(startWList + worldDrawBuffer, worldPanels.Count);
+                                worldPanels[i].isHover = false;
+                                int newIndex = (i - 1 + worldPanels.Count) % worldPanels.Count; //находим следующий мир
+                                worldPanels[newIndex].isHover = true;
+
+                                if (newIndex < startWList) //прокручиваем область видимого списка
+                                {
+                                    startWList = newIndex;
+                                    endWList = Math.Min(startWList + worldDrawBuffer, worldPanels.Count);
+                                }
+
+                                timer = 0;
+                                break;
+                            }
+                        }
+
+                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && timer >= waitTime && i < worldPanels.Count - 1)
+                        {
+                            if (worldPanels[i].isHover)
+                            {
+                                worldPanels[i].isHover = false;
+                                int newIndex = (i + 1) % worldPanels.Count;
+                                worldPanels[newIndex].isHover = true;
+
+                                if (newIndex >= endWList)
+                                {
+                                    startWList = (startWList + 1) % worldPanels.Count;
+                                    endWList = Math.Min(startWList + worldDrawBuffer, worldPanels.Count);
+                                }
+
+                                timer = 0;
+                                break;
+                            }
+                        }
+
+                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= Utils.StabilizeTicks(30))
+                        {
+                            if (worldPanels[i].curssor == 0 && worldPanels[i].isHover)
+                            {
+                                ConsoleAdventure.CreateWorld(worldPanels[i].name, 1234, false);
+                                Saves.Load(worldPanels[i].name);
+                                ConsoleAdventure.InWorld = true;
+                                timer = 0;
                             }
 
-                            timer = 0;
-                            break;
+                            if (worldPanels[i].curssor == 2 && worldPanels[i].isHover)
+                            {
+                                Saves.Delete(worldPanels[i].name);
+                                worldPanels.Clear();
+                                MenuInit();
+                                timer = 0;
+                            }                      
                         }
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && timer >= waitTime && i < worldPanels.Count - 1)
+                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && timer >= Utils.StabilizeTicks(15)) //прокрутка кнопок мира
                     {
-                        if (worldPanels[i].isHover)
+                        for (int i = 0; i < worldPanels.Count; i++)
                         {
-                            worldPanels[i].isHover = false;
-                            int newIndex = (i + 1) % worldPanels.Count;
-                            worldPanels[newIndex].isHover = true;
-
-                            if (newIndex >= endWList)
-                            {
-                                startWList = (startWList + 1) % worldPanels.Count;
-                                endWList = Math.Min(startWList + worldDrawBuffer, worldPanels.Count);
-                            }
-
-                            timer = 0;
-                            break;
+                            worldPanels[i].curssor = (worldPanels[i].curssor - 1 + 3) % 3;
                         }
+                        timer = 0;
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= Utils.StabilizeTicks(30))
+                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && timer >= Utils.StabilizeTicks(15))
                     {
-                        if (worldPanels[i].curssor == 0)
+                        for (int i = 0; i < worldPanels.Count; i++)
                         {
-                            ConsoleAdventure.CreateWorld();
-                            Saves.Load("World");
-                            ConsoleAdventure.InWorld = true;
+                            worldPanels[i].curssor = (worldPanels[i].curssor + 1) % 3;
                         }
                         timer = 0;
                     }
                 }
 
-                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && timer >= Utils.StabilizeTicks(15)) //прокрутка кнопок мира
+                if(!ConsoleAdventure.kstate.IsKeyDown(Keys.N) && ConsoleAdventure.prekstate.IsKeyDown(Keys.N))
                 {
-                    for (int i = 0; i < worldPanels.Count; i++)
-                    {
-                        worldPanels[i].curssor = (worldPanels[i].curssor - 1 + 3) % 3;
-                    }
-                    timer = 0;
-                }
-
-                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && timer >= Utils.StabilizeTicks(15))
-                {
-                    for (int i = 0; i < worldPanels.Count; i++)
-                    {
-                        worldPanels[i].curssor = (worldPanels[i].curssor + 1) % 3;
-                    }
-                    timer = 0;
+                    ConsoleAdventure.CreateWorld("World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000));
+                    Saves.Save(ConsoleAdventure.world.name);
+                    worldPanels.Clear();
+                    MenuInit();
                 }
             }
 
@@ -369,16 +405,18 @@ namespace ConsoleAdventure.Content.Scripts.UI
             spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.logo, new Vector2((ConsoleAdventure.Width / 2) - (621 / 2), 20), Color.White);
             spriteBatch.DrawString(ConsoleAdventure.Font, Docs.GetInfo(), new Vector2(10, ConsoleAdventure.Height - 25), Color.White);
             spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(TextAssets.navigHelp).X + 10), ConsoleAdventure.Height - 25), Color.Gray);
+            
             if (State > 0)
             {
                 spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigHelpBack, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(TextAssets.navigHelpBack).X + 10), ConsoleAdventure.Height - 50), Color.Gray);
             }
+            
             for (int i = 0; i < menuButtons.Length; i++)
             {
                 menuButtons[i].Draw(spriteBatch);
             }
 
-            if (State == 1)
+            if (State == 1 && worldPanels.Count > 0)
             {
                 int number = 0;
                 for (int i = startWList; i < endWList; i++)

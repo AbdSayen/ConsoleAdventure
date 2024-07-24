@@ -50,7 +50,7 @@ namespace ConsoleAdventure.Content.Scripts
 
                 while (true)
                 {
-                    if(rotation1 == rotation)
+                    if (rotation1 == rotation)
                     {
                         rotation1 = ConsoleAdventure.rand.Next(-3, 4);
                     }
@@ -60,10 +60,10 @@ namespace ConsoleAdventure.Content.Scripts
                     }
                 }
             }
-            
-            if (timer < randomTime) 
-            { 
-                if(rotation > -1 && timer % 10 == 0)
+
+            if (timer < randomTime)
+            {
+                if (rotation > -1 && timer % 10 == 0)
                 {
                     Move(1, (Rotation)(rotation * 2));
                     if (rotation1 > -1)
@@ -94,7 +94,7 @@ namespace ConsoleAdventure.Content.Scripts
             return parameters;
         }
 
-        public override void SetParams(List <object> p)
+        public override void SetParams(List<object> p)
         {
             if (p == null)
                 return;

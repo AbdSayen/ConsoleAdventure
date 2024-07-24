@@ -1,4 +1,6 @@
 ﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine.Generate;
 using System;
 using System.Collections.Generic;
@@ -27,23 +29,28 @@ namespace ConsoleAdventure.WorldEngine
 
         public int seed = 1234;
 
+        public string name;
+
         public static int CountOfLayers = 4;
         public static int FloorLayerId = 0;
         public static int BlocksLayerId = 1;
         public static int ItemsLayerId = 2;
         public static int MobsLayerId = 3;
 
-        public World()
+        public World(string name, int seed, bool isfullGenerate = true)
         {
+            this.name = name;
+            this.seed = seed;
+
             ConsoleAdventure.rand = new Random();
 
             generator = new Generator(this, size);
             renderer = new Renderer(chunks);
-            generator.Generate(seed);
+            generator.Generate(seed, isfullGenerate);
             ConnectPlayer();
 
             new Cursor();
-            
+
             for (int i = 0; i < 15; i++)
             {
                 for (int j = 0; j < 15; j++)
@@ -62,7 +69,8 @@ namespace ConsoleAdventure.WorldEngine
         {
             players.Add(new Player(players.Count, this, new Position(5, 5)));
         }
-        
+
+        int timer;
         public void ListenEvents()
         {
             if (!ConsoleAdventure.isPause)
@@ -78,12 +86,20 @@ namespace ConsoleAdventure.WorldEngine
                 {
                     entitys[i].InteractWithWorld();
                 }
-            }         
+            }
+
+            if (timer > (1 * 60 * 60))
+            {
+                Saves.Save("World");
+
+                timer = 0;
+            }
+
+            timer++;
         }
 
         public void Render()
         {
-            //renderer.Render(players[0], players[0].Cursor.CursorPosition);
             renderer.Render(players[0], Cursor.Instance.CursorPosition);
         }
 

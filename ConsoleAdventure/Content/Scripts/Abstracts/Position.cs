@@ -31,7 +31,7 @@ namespace ConsoleAdventure
         {
             return new Position(0, 0);
         }
-        
+
         #region Operators
 
         public static Position operator +(Position left, Position right)

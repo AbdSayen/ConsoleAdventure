@@ -18,10 +18,10 @@ namespace ConsoleAdventure.Content.Scripts
             renderFieldType = RenderFieldType.entity;
             isObstacle = false;
 
-            if(parameters != null)
+            if (parameters != null)
             {
                 SetParams(parameters);
-            }    
+            }
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace ConsoleAdventure.Content.Scripts
             AI();
             //if(life <= 0) Kill();
         }
-        
+
         /// <summary>
         /// Убивает сущьность 
         /// </summary>
@@ -66,13 +66,13 @@ namespace ConsoleAdventure.Content.Scripts
         }
 
         public virtual void SetParams(List<object> p)
-        { 
+        {
 
         }
 
-        public virtual List<object> GetParams() 
-        { 
-            return new(); 
+        public virtual List<object> GetParams()
+        {
+            return new();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace ConsoleAdventure
         public static SpriteBatch _spriteBatch;
         private static SpriteFont font;
 
-        internal static World world = new World();
+        internal static World world;
         internal static Display display;
 
         static int frameRate = 0;
@@ -78,9 +78,9 @@ namespace ConsoleAdventure
             Localization.Load();
         }
 
-        public static void CreateWorld()
+        public static void CreateWorld(string name, int seed, bool isfullGenerate = true)
         {
-            world = new World();
+            world = new World(name, seed, isfullGenerate);
             display = new Display(world);
         }
 
@@ -133,7 +133,7 @@ namespace ConsoleAdventure
 
                 if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 {
-                    Saves.Save("World");
+                    Saves.Save(world.name);
                     InWorld = false;
                 }
 

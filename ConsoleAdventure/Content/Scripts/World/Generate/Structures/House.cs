@@ -1,5 +1,7 @@
 ﻿using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.WorldEngine.Generate;
 using System;
+using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure.Generate.Structures
 {
