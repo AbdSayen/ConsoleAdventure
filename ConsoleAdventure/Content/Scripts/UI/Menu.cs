@@ -76,7 +76,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     }
                     newDescription += word + " ";
                 }
-                modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "\n    " + newDescription + "\n";
+                modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "\n    " + newDescription + "\n\n";
             }
 
             aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);

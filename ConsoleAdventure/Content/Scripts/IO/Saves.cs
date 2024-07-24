@@ -188,7 +188,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["LootX"] = lootX;
             tags["LootY"] = lootY;
 
-            int EntityCount = world.entites.Count;
+            int EntityCount = world.entities.Count;
             int[] EntityX = new int[EntityCount];
             int[] EntityY = new int[EntityCount];
             byte[] EntityTypes = new byte[EntityCount];
@@ -196,7 +196,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             for (int i = 0; i < EntityCount; i++)
             {
-                Entity entity = world.entites[i];
+                Entity entity = world.entities[i];
 
                 EntityX[i] = entity.position.x;
                 EntityY[i] = entity.position.y;
@@ -267,12 +267,12 @@ namespace ConsoleAdventure.Content.Scripts.IO
             byte[] EntityTypes = (byte[])tags.SafelyGet("EntityTypes");
             List<object>[] EntityParams = (List<object>[])tags.SafelyGet("EntityParams");
 
-            for (int i = 0; i < world.entites.Count; i++)
+            for (int i = 0; i < world.entities.Count; i++)
             {
-                world.entites[i].Kill();
+                world.entities[i].Kill();
             }
 
-            world.entites.Clear();
+            world.entities.Clear();
 
             for (int i = 0; i < EntityCount; i++)
             {

@@ -96,10 +96,10 @@ namespace ConsoleAdventure
                     new Plank(ConsoleAdventure.world, position);
                     return;
                 case (int)RenderFieldType.entity:
-                    ConsoleAdventure.world.entites.Add(new Entity(ConsoleAdventure.world, position, parameters));
+                    ConsoleAdventure.world.entities.Add(new Entity(ConsoleAdventure.world, position, parameters));
                     return;
                 case (int)RenderFieldType.cat:
-                    ConsoleAdventure.world.entites.Add(new Cat(ConsoleAdventure.world, position, parameters));
+                    ConsoleAdventure.world.entities.Add(new Cat(ConsoleAdventure.world, position, parameters));
                     return;
                 case (int)RenderFieldType.chest:
                     new Chest(ConsoleAdventure.world, position, items);

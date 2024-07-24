@@ -20,6 +20,9 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/font.spritefont
 
+#begin mods/SecondMod.dll
+/copy:mods/SecondMod.dll
+
 #begin mods/TestMod.dll
 /copy:mods/TestMod.dll
 
