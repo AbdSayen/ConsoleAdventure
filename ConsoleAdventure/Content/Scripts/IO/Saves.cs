@@ -40,6 +40,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
         public static void Load(string name)
         {
+            Console.WriteLine("load");
             Console.WriteLine("Loading on account");
 
             if (!Directory.Exists(path))
@@ -137,7 +138,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["LootX"] = lootX;
             tags["LootY"] = lootY;
 
-            int EntityCount = world.entitys.Count;
+            int EntityCount = world.entities.Count;
             int[] EntityX = new int[EntityCount];
             int[] EntityY = new int[EntityCount];
             byte[] EntityTypes = new byte[EntityCount];
@@ -145,7 +146,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             for (int i = 0; i < EntityCount; i++)
             {
-                Entity entity = world.entitys[i];
+                Entity entity = world.entities[i];
 
                 EntityX[i] = entity.position.x;
                 EntityY[i] = entity.position.y;
@@ -216,9 +217,9 @@ namespace ConsoleAdventure.Content.Scripts.IO
             byte[] EntityTypes = tags.SafelyGet<byte[]>("EntityTypes");
             List<object>[] EntityParams = tags.SafelyGet<List<object>[]>("EntityParams");
 
-            for (int i = 0; i < world.entitys.Count; i++)
+            for (int i = 0; i < world.entities.Count; i++)
             {
-                world.entitys[i].Kill();
+                //world.entitys[i].Kill();
             }
 
             //world.entitys.Clear();

@@ -12,11 +12,13 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class World
     {
+        public Action Start;
+        
         public int size { get; internal set; } = 256;
 
         public List<List<Chunk>> chunks = new List<List<Chunk>>();
         public List<Player> players = new List<Player>();
-        public List<Entity> entitys = new List<Entity>();
+        public List<Entity> entities = new List<Entity>();
 
         public Time time = new Time();
 
@@ -34,8 +36,16 @@ namespace ConsoleAdventure.WorldEngine
         public static int ItemsLayerId = 2;
         public static int MobsLayerId = 3;
 
+        public static World instance => world;
+        private static World world;
+
         public World()
         {
+            if (instance == null)
+            {
+                world = this;
+            }
+            
             ConsoleAdventure.rand = new Random();
 
             generator = new Generator(this, size);
@@ -44,12 +54,14 @@ namespace ConsoleAdventure.WorldEngine
             ConnectPlayer();
 
             new Cursor();
-            
+
+            Cat cat = new Cat(this, Position.Zero());
             for (int i = 0; i < 15; i++)
             {
                 for (int j = 0; j < 15; j++)
                 {
-                    entitys.Add(new Cat(this, new(6 + i, 6 + j)));
+                    entities.Add(new Cat(this, new(6 + i, 6 + j)));
+                    //entitys.Add(Spawner.Spawn(cat, new Position(6 + i, 6 + j)));
                 }
             }
         }
@@ -75,9 +87,9 @@ namespace ConsoleAdventure.WorldEngine
                     players[i].InteractWithWorld();
                 }
 
-                for (int i = 0; i < entitys.Count; i++)
+                for (int i = 0; i < entities.Count; i++)
                 {
-                    entitys[i].InteractWithWorld();
+                    entities[i].InteractWithWorld();
                 }
             }         
         }
@@ -96,32 +108,6 @@ namespace ConsoleAdventure.WorldEngine
                 field.content.Collapse();       
             if(field != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
                 field.content = null;  
-        }
-
-        public void MoveSubject(Transform subject, int worldLayer, int stepSize, Rotation rotation)
-        {
-            int newX = subject.position.x;
-            int newY = subject.position.y;
-
-            switch (rotation)
-            {
-                case Rotation.up:
-                    newY -= stepSize;
-                    break;
-                case Rotation.right:
-                    newX += stepSize;
-                    break;
-                case Rotation.down:
-                    newY += stepSize;
-                    break;
-                case Rotation.left:
-                    newX -= stepSize;
-                    break;
-                default:
-                    break;
-            }
-
-            SetSubjectPosition(subject, worldLayer, newX, newY);
         }
 
         public void MoveSubject(Transform subject, int worldLayer, int stepSize, Position position)
@@ -160,6 +146,8 @@ namespace ConsoleAdventure.WorldEngine
                 //time.PassTime(3);
             }
 
+            subject.onMoveEnded?.Invoke();
+            
             bool IsValidMove(int worldLayer, int newX, int newY)
             {
                 return newX >= 0 && newX < size &&

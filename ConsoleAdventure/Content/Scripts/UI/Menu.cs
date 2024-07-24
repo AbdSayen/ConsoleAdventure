@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using ConsoleAdventure.WorldEngine;
 
 namespace ConsoleAdventure.Content.Scripts.UI
 {
@@ -220,6 +221,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             ConsoleAdventure.CreateWorld();
                             Saves.Load("World");
                             ConsoleAdventure.InWorld = true;
+                            World.instance.Start?.Invoke();
                         }
                         timer = 0;
                     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 
@@ -49,6 +50,7 @@ namespace ConsoleAdventure.Content.Scripts.Entities
         public void InteractWithWorld()
         {
             AI();
+            StateMachine?.CurrentState?.InteractWithWorld();
             //if(life <= 0) Kill();
         }
 

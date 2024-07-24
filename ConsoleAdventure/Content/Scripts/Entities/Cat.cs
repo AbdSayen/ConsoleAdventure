@@ -16,63 +16,16 @@ namespace ConsoleAdventure.Content.Scripts.Entities
             Initialize();
             
             ChooseColor();
-            world.SetSubjectPosition(this, 1, position.x + 1, position.y + 1);
-            //StateMachine.ChangeState(StatesEnum.Moving);
+            //world.SetSubjectPosition(this, 1, position.x + 1, position.y + 1);
+            World.instance.Start += Start;
         }
 
-        bool isFree = true;
-        int timer;
-        int randomTime = 0;
-        int rotation = -1;
-        int rotation1 = -1;
-
-        protected override void AI()
+        private void Start()
         {
-            ChooseColor();
-            Console.WriteLine("cat choose color");
-            /*if (isFree)
-            {
-                randomTime = Utils.StabilizeTicks(ConsoleAdventure.rand.Next(0, 180));
-                rotation = ConsoleAdventure.rand.Next(-1, 4);
-                rotation1 = ConsoleAdventure.rand.Next(-3, 4);
-                isFree = false;
-
-                while (true)
-                {
-                    if(rotation1 == rotation)
-                    {
-                        rotation1 = ConsoleAdventure.rand.Next(-3, 4);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            
-            if (timer < randomTime) 
-            { 
-                if(rotation > -1 && timer % 10 == 0)
-                {
-                    Move(1, (Rotation)(rotation * 2));
-                    if (rotation1 > -1)
-                    {
-                        Move(1, (Rotation)(rotation1 * 2));
-                    }
-
-                    СhooseColor(colors, this.position, index);
-                }
-            }
-
-            else
-            {
-                isFree = true;
-                timer = 0;
-            }
-
-            timer++;*/
+            StateMachine.ChangeState(StatesEnum.Moving);
+            Console.WriteLine("start");
         }
-
+        
         public override List<object> GetParams()
         {
             List<object> parameters = new()

@@ -36,11 +36,6 @@ namespace ConsoleAdventure
             }
         }
 
-        public virtual void Move(int stepSize, Rotation rotation)
-        {
-            world.MoveSubject(this, worldLayer, stepSize, rotation);
-        }
-
         public virtual void Move(int stepSize, Position position)
         {
             world.MoveSubject(this, worldLayer, stepSize, position);
@@ -159,10 +154,10 @@ namespace ConsoleAdventure
                     new Plank(ConsoleAdventure.world, position);
                     return;
                 case (int)RenderFieldType.entity:
-                    ConsoleAdventure.world.entitys.Add(new Entity(ConsoleAdventure.world, position, parameters));
+                    ConsoleAdventure.world.entities.Add(new Entity(ConsoleAdventure.world, position, parameters));
                     return;
                 case (int)RenderFieldType.cat:
-                    ConsoleAdventure.world.entitys.Add(new Cat(ConsoleAdventure.world, position, parameters));
+                    ConsoleAdventure.world.entities.Add(new Cat(ConsoleAdventure.world, position, parameters));
                     return;
                 case (int)RenderFieldType.chest:
                     new Chest(ConsoleAdventure.world, position, items);
