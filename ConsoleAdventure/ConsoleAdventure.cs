@@ -1,5 +1,4 @@
-﻿using ConsoleAdventure.Content.Scripts;
-using ConsoleAdventure.Content.Scripts.InputLogic;
+﻿using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
@@ -104,6 +103,9 @@ namespace ConsoleAdventure
             Window.AllowUserResizing = true;
 
             base.Initialize();
+            
+            CaModLoader.InitializeMods();
+            menu = new Menu();
         }
 
         protected override void LoadContent()
@@ -111,7 +113,8 @@ namespace ConsoleAdventure
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/font");
 
-            menu = new Menu();
+            CaModLoader.PreLoadMods();
+            CaModLoader.LoadMods();
         }
 
         protected override void Update(GameTime gameTime)

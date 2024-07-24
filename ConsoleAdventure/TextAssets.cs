@@ -36,6 +36,8 @@
 
         public static string HelpWorldCreate = Localization.GetTranslation("UI", "HelpWorldCreate");
 
+        public static string Mods = Localization.GetTranslation("UI", "Mods");
+
         public static void UpdateLabels()
         {
             navigHelp = Localization.GetTranslation("UI", "Navigation");
@@ -54,6 +56,7 @@
             Control = Localization.GetTranslation("UI", "Control");
             AboutControl = Localization.GetTranslation("About", "Control");
             HelpWorldCreate = Localization.GetTranslation("UI", "HelpWorldCreate");
+            Mods = Localization.GetTranslation("UI", "Mods");
         }
     }
 }

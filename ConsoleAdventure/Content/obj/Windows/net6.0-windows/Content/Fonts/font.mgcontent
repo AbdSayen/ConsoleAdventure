@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/User/Desktop/Новая сжатая ZIP-папка (2)/ConsoleAdventure/ConsoleAdventure/Content/Fonts/font.spritefont</SourceFile>
-  <SourceTime>2024-07-24T16:42:36+03:00</SourceTime>
-  <DestFile>C:/Users/User/Desktop/Новая сжатая ZIP-папка (2)/ConsoleAdventure/ConsoleAdventure/Content/bin/Windows/Content/Fonts/font.xnb</DestFile>
-  <DestTime>2024-07-24T20:23:42.6007163+03:00</DestTime>
+  <SourceFile>C:/Users/User/Desktop/ConsoleAdventure/ConsoleAdventure/Content/Fonts/font.spritefont</SourceFile>
+  <SourceTime>2024-07-23T22:07:41.7457973+03:00</SourceTime>
+  <DestFile>C:/Users/User/Desktop/ConsoleAdventure/ConsoleAdventure/Content/bin/Windows/Content/Fonts/font.xnb</DestFile>
+  <DestTime>2024-07-24T21:49:47.1463839+03:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2022-07-26T14:44:56+03:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.Content.Scripts.IO;
+﻿using CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
@@ -14,7 +15,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
     {
         public int State { get; private set; }
 
-        private MenuButton[] menuButtons = new MenuButton[3];
+        private MenuButton[] menuButtons = new MenuButton[4];
 
         private MenuButton[] menuSettingsButtons = new MenuButton[3];
 
@@ -24,11 +25,15 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private InfoPanel aboutControlPanel = null;
 
+        private InfoPanel modListPanel = null;
+
         private static int worldDrawBuffer = 6;
 
         private int startWList, endWList = worldDrawBuffer;
 
         private int selectedLanguage = SettingsSystem.GetSetting("Options", "Language"); // Получить сохраненный язык
+
+        private string modsListText = "";
 
         public Menu()
         {
@@ -52,13 +57,33 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public void MenuInit()
         {
-            byte[] menuButtonTypes = new byte[3] { 0, 1, 2 };
+            byte[] menuButtonTypes = new byte[4] { 0, 1, 3, 2 };
 
             byte[] menuSettingsButtonTypes = new byte[3] { 0, 1, 2 };
+
+            modsListText = String.Empty;
+            foreach (Mod mod in CaModLoader.GetActiveMods())
+            {
+                string newDescription = String.Empty;
+                int symbolsThreshold = 50;
+                int currentThreshold = symbolsThreshold;
+                foreach (string word in mod.modDescription.Split(" "))
+                {
+                    if ((newDescription + word).Length > currentThreshold)
+                    {
+                        newDescription += "\n    ";
+                        currentThreshold += symbolsThreshold;
+                    }
+                    newDescription += word + " ";
+                }
+                modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "\n    " + newDescription + "\n";
+            }
 
             aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);
 
             aboutControlPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Control, TextAssets.AboutControl);
+
+            modListPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Mods, modsListText);
 
             for (int i = 0; i < menuSettingsButtons.Length; i++)
             {
@@ -107,6 +132,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     case 2:
                         text = "Exit";
                         break;
+                    case 3:
+                        text = "Mods";
+                        break;
                 }
                 int startPos = 220;
                 int indent = 100;
@@ -114,7 +142,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 if (menuButtons[i] != null && menuButtons[i].isHover)
                     curentMenuBatton = i;
 
-                menuButtons[i] = new MenuButton(new Vector2((ConsoleAdventure.Width / 2) + (indent * (i - 1)), startPos), text, new Color(230, 230, 230), menuButtonTypes[i]);
+                menuButtons[i] = new MenuButton(new Vector2((ConsoleAdventure.Width / 2) + (indent * (i - 1.5f)), startPos), text, new Color(230, 230, 230), menuButtonTypes[i]);
 
                 if (curentMenuBatton == i)
                 {
@@ -183,6 +211,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             menuButtons[i].cursorColor = Color.Red;
                             State = 2;
                             timer = 0;
+                        }
+                        if (menuButtons[i].type == 3)
+                        {
+                            State = 5;
                         }
                         if (menuButtons[i].type == 2)
                         {
@@ -462,6 +494,11 @@ namespace ConsoleAdventure.Content.Scripts.UI
             if (State == 4)
             {
                 aboutControlPanel.Draw(spriteBatch);
+            }
+
+            if (State == 5)
+            {
+                modListPanel.Draw(spriteBatch);
             }
 
             spriteBatch.End();

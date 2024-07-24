@@ -58,6 +58,8 @@ namespace ConsoleAdventure.WorldEngine
                     entites.Add(new Cat(this, new(6 + i, 6 + j)));
                 }
             }
+
+            CaModLoader.WorldLoadedMods(this);
         }
 
         public Point GetCunkCounts()
