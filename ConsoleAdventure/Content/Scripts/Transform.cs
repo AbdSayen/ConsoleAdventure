@@ -166,5 +166,10 @@ namespace ConsoleAdventure
                     return;
             }
         }
+        
+        public object Copy()
+        {
+            return MemberwiseClone();
+        }
     }
 }

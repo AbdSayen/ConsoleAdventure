@@ -56,12 +56,13 @@ namespace ConsoleAdventure.WorldEngine
             new Cursor();
 
             Cat cat = new Cat(this, Position.Zero());
+            
             for (int i = 0; i < 15; i++)
             {
                 for (int j = 0; j < 15; j++)
                 {
                     entities.Add(new Cat(this, new(6 + i, 6 + j)));
-                    //entitys.Add(Spawner.Spawn(cat, new Position(6 + i, 6 + j)));
+                    //entities.Add(Spawner.Spawn(cat, new Position(6 + i, 6 + j)));
                 }
             }
         }

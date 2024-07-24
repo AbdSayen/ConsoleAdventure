@@ -23,7 +23,6 @@ namespace ConsoleAdventure.Content.Scripts.Entities
         private void Start()
         {
             StateMachine.ChangeState(StatesEnum.Moving);
-            Console.WriteLine("start");
         }
         
         public override List<object> GetParams()

@@ -41,7 +41,7 @@ namespace ConsoleAdventure.Content.Scripts.Entities
             if(parameters != null)
             {
                 SetParams(parameters);
-            }    
+            }
         }
 
         /// <summary>

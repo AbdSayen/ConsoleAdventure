@@ -18,7 +18,7 @@ namespace ConsoleAdventure
         public static SpriteBatch _spriteBatch;
         private static SpriteFont font;
 
-        internal static World world = new World();
+        internal static World world;
         internal static Display display;
 
         static int frameRate = 0;
@@ -57,6 +57,8 @@ namespace ConsoleAdventure
 
         public static int FPS => frameRate;
 
+        private bool _isFirstUpdate = true;
+
         public ConsoleAdventure()
         {
             if (File.Exists(Program.savePath + "settings.json")) // Если файл существует
@@ -81,7 +83,7 @@ namespace ConsoleAdventure
         public static void CreateWorld()
         {
             world = new World();
-            display = new Display(world);
+            display = new Display(World.instance);
         }
 
         protected override void Initialize()
@@ -129,6 +131,13 @@ namespace ConsoleAdventure
 
             if (InWorld)
             {
+                if (_isFirstUpdate)
+                {
+                    world.Start?.Invoke();
+                    _isFirstUpdate = false;
+                    Console.WriteLine("Invoke start");
+                }
+                
                 world.ListenEvents();
 
                 if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))

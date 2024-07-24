@@ -221,7 +221,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             ConsoleAdventure.CreateWorld();
                             Saves.Load("World");
                             ConsoleAdventure.InWorld = true;
-                            World.instance.Start?.Invoke();
+                            //World.instance.Start?.Invoke();
                         }
                         timer = 0;
                     }
