@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 
@@ -42,6 +41,13 @@ namespace ConsoleAdventure.Content.Scripts.Entities
             {
                 SetParams(parameters);
             }
+            
+            World.instance.Start += Start;
+        }
+
+        protected virtual void Start()
+        {
+            
         }
 
         /// <summary>
@@ -49,14 +55,8 @@ namespace ConsoleAdventure.Content.Scripts.Entities
         /// </summary>
         public void InteractWithWorld()
         {
-            AI();
             StateMachine?.CurrentState?.InteractWithWorld();
             //if(life <= 0) Kill();
-        }
-
-        protected virtual void AI()
-        {
-            
         }
 
         public void ChooseColor()
@@ -70,6 +70,7 @@ namespace ConsoleAdventure.Content.Scripts.Entities
         public void Kill()
         {
             ConsoleAdventure.world.RemoveSubject(this, worldLayer);
+            World.instance.Start -= Start;
         }
 
         public void SetMaxLife(int life)

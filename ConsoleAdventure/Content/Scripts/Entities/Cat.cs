@@ -17,11 +17,12 @@ namespace ConsoleAdventure.Content.Scripts.Entities
             
             ChooseColor();
             //world.SetSubjectPosition(this, 1, position.x + 1, position.y + 1);
-            World.instance.Start += Start;
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+            
             StateMachine.ChangeState(StatesEnum.Moving);
         }
         
