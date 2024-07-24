@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using ConsoleAdventure.Content.Scripts.Player;
+using System.Reflection;
 
 namespace ConsoleAdventure
 {
@@ -50,75 +51,14 @@ namespace ConsoleAdventure
 
         public virtual void Collapse() { }
 
-        public string GetSymbol()
+        public virtual string GetSymbol()
         {
-            switch (renderFieldType)
-            {
-                case RenderFieldType.empty:
-                    return "  ";
-                case RenderFieldType.player:
-                    return " ^";
-                case RenderFieldType.ruine:
-                    return "::";
-                case RenderFieldType.wall:
-                    return "##";
-                case RenderFieldType.tree:
-                    return " *";
-                case RenderFieldType.floor:
-                    return " .";
-                case RenderFieldType.door:
-                    return "[]";
-                case RenderFieldType.loot:
-                    return " $";
-                case RenderFieldType.water:
-                    return "≈≈";
-                case RenderFieldType.log:
-                    return "≡≡";
-                case RenderFieldType.entity:
-                    return "AE";
-                case RenderFieldType.cat:
-                    return " c";
-                case RenderFieldType.chest:
-                    return "<>";
-                default:
-                    return "??";
-            }
-
+            return "  ";   
         }
 
-        public Color GetColor()
+        public virtual Color GetColor()
         {
-            switch (renderFieldType)
-            {
-                case RenderFieldType.empty:
-                    return Color.Black;
-                case RenderFieldType.player:
-                    return Color.Yellow;
-                case RenderFieldType.ruine:
-                    return Color.Gray;
-                case RenderFieldType.wall:
-                    return Color.White;
-                case RenderFieldType.tree:
-                    return new(13, 152, 20);
-                case RenderFieldType.floor:
-                    return Color.Gray;
-                case RenderFieldType.door:
-                    return new(94, 61, 38);
-                case RenderFieldType.loot:
-                    return Color.Yellow;
-                case RenderFieldType.water:
-                    return new(16, 29, 211);
-                case RenderFieldType.log:
-                    return new(94, 61, 38);
-                case RenderFieldType.entity:
-                    return Color.Yellow;
-                case RenderFieldType.cat:
-                    return Color.White;
-                case RenderFieldType.chest:
-                    return new(94, 61, 38);
-                default:
-                    return Color.Purple;
-            }
+            return Color.Black;
         }
 
         public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
@@ -156,10 +96,10 @@ namespace ConsoleAdventure
                     new Plank(ConsoleAdventure.world, position);
                     return;
                 case (int)RenderFieldType.entity:
-                    ConsoleAdventure.world.entitys.Add(new Entity(ConsoleAdventure.world, position, parameters));
+                    ConsoleAdventure.world.entites.Add(new Entity(ConsoleAdventure.world, position, parameters));
                     return;
                 case (int)RenderFieldType.cat:
-                    ConsoleAdventure.world.entitys.Add(new Cat(ConsoleAdventure.world, position, parameters));
+                    ConsoleAdventure.world.entites.Add(new Cat(ConsoleAdventure.world, position, parameters));
                     return;
                 case (int)RenderFieldType.chest:
                     new Chest(ConsoleAdventure.world, position, items);
@@ -168,5 +108,49 @@ namespace ConsoleAdventure
                     return;
             }
         }
+
+        /*public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
+        {
+            if (typeMapping.TryGetValue(type, out Type objectType))
+            {
+                if (objectType == typeof(EmptyHandler))
+                {
+                    ConsoleAdventure.world.RemoveSubject(ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId).content, layer, false);
+                    return;
+                }
+
+                ConstructorInfo constructor = GetConstructor(objectType, items != null, parameters != null);
+                object[] args = BuildConstructorArgs(objectType, position, items, parameters);
+
+                if (objectType == typeof(Loot) || objectType == typeof(Chest))
+                {
+                    Activator.CreateInstance(objectType, args);
+                }
+                else
+                {
+                    ConsoleAdventure.world.entites.Add((Entity)Activator.CreateInstance(objectType, args));
+                }
+            }
+        }
+
+        private static ConstructorInfo GetConstructor(Type objectType, bool hasItems, bool hasParameters)
+        {
+            if (hasItems)
+                return objectType.GetConstructor(new Type[] { typeof(World), typeof(Position), typeof(List<Stack>) });
+            if (hasParameters)
+                return objectType.GetConstructor(new Type[] { typeof(World), typeof(Position), typeof(List<object>) });
+
+            return objectType.GetConstructor(new Type[] { typeof(World), typeof(Position) });
+        }
+
+        private static object[] BuildConstructorArgs(Type objectType, Position position, List<Stack> items, List<object> parameters)
+        {
+            if (objectType == typeof(Loot) || objectType == typeof(Chest))
+                return new object[] { ConsoleAdventure.world, position, items };
+            if (objectType == typeof(Entity) || objectType == typeof(Cat))
+                return new object[] { ConsoleAdventure.world, position, parameters };
+
+            return new object[] { ConsoleAdventure.world, position };
+        }*/
     }
 }

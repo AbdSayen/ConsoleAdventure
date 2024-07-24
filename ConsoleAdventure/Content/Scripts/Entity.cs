@@ -24,6 +24,17 @@ namespace ConsoleAdventure.Content.Scripts
             }
         }
 
+        public override string GetSymbol()
+        {
+            return "AE";
+        }
+
+        public override Color GetColor()
+        {
+            return Color.Yellow;
+        }
+
+
         /// <summary>
         /// Обновление сущьности в мире
         /// </summary>

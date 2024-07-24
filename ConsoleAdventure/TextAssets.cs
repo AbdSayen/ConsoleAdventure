@@ -34,6 +34,8 @@
 
         public static string AboutControl = Localization.GetTranslation("About", "Control");
 
+        public static string HelpWorldCreate = Localization.GetTranslation("UI", "HelpWorldCreate");
+
         public static void UpdateLabels()
         {
             navigHelp = Localization.GetTranslation("UI", "Navigation");
@@ -51,6 +53,7 @@
             AboutGame = Localization.GetTranslation("About", "Game");
             Control = Localization.GetTranslation("UI", "Control");
             AboutControl = Localization.GetTranslation("About", "Control");
+            HelpWorldCreate = Localization.GetTranslation("UI", "HelpWorldCreate");
         }
     }
 }

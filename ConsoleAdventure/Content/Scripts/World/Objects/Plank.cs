@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic.Logging;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
@@ -18,6 +19,16 @@ namespace ConsoleAdventure.WorldEngine
         public override void Collapse()
         {
             new Loot(world, position, new List<Stack>() { new Stack(new Log(), 1) });
+        }
+
+        public override string GetSymbol()
+        {
+            return "≡≡";
+        }
+
+        public override Color GetColor()
+        {
+            return new(94, 61, 38);
         }
     }
 }

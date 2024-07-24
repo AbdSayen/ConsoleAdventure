@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace ConsoleAdventure
@@ -16,6 +17,16 @@ namespace ConsoleAdventure
         {
             inventory.PickUpItems(items);
             world.RemoveSubject(this, WorldEngine.World.ItemsLayerId);
+        }
+
+        public override string GetSymbol()
+        {
+            return " $";
+        }
+
+        public override Color GetColor()
+        {
+            return Color.Yellow;
         }
     }
 }
