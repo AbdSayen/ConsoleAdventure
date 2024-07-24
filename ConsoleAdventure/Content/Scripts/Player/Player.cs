@@ -3,6 +3,7 @@ using System.Diagnostics;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
+using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure.Content.Scripts.Player
 {
@@ -36,6 +37,17 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             Initialize();
         }
+
+        public override string GetSymbol()
+        {
+            return " ^";
+        }
+
+        public override Color GetColor()
+        {
+            return Color.Yellow;
+        }
+
 
         public override void InteractWithWorld()
         {
@@ -125,7 +137,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);
 
-            if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null)
+            if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null && itemField.content is Loot)
             {
                 ((Loot)itemField.content).PickUpAll(inventory);
             }

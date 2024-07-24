@@ -17,7 +17,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public List<List<Chunk>> chunks = new List<List<Chunk>>();
         public List<Player> players = new List<Player>();
-        public List<Entity> entitys = new List<Entity>();
+        public List<Entity> entites = new List<Entity>();
 
         public Time time = new Time();
 
@@ -55,7 +55,7 @@ namespace ConsoleAdventure.WorldEngine
             {
                 for (int j = 0; j < 15; j++)
                 {
-                    entitys.Add(new Cat(this, new(6 + i, 6 + j)));
+                    entites.Add(new Cat(this, new(6 + i, 6 + j)));
                 }
             }
         }
@@ -82,9 +82,9 @@ namespace ConsoleAdventure.WorldEngine
                     players[i].InteractWithWorld();
                 }
 
-                for (int i = 0; i < entitys.Count; i++)
+                for (int i = 0; i < entites.Count; i++)
                 {
-                    entitys[i].InteractWithWorld();
+                    entites[i].InteractWithWorld();
                 }
             }
 

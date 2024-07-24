@@ -422,20 +422,28 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 menuButtons[i].Draw(spriteBatch);
             }
 
-            if (State == 1 && worldPanels.Count > 0)
+            if (State == 1)
             {
-                int number = 0;
-                for (int i = startWList; i < endWList; i++)
+                if (worldPanels.Count > 0)
                 {
-                    if (i < worldPanels.Count) //рисуем видемую оласть списка миров
+                    int number = 0;
+                    for (int i = startWList; i < endWList; i++)
                     {
-                        worldPanels[i].Center = new Vector2((ConsoleAdventure.Width / 2) - 207, (number * (19 * 4)) + 9 * 30);
-                        worldPanels[i].Draw(spriteBatch);
-                        number++;
+                        if (i < worldPanels.Count) //рисуем видемую оласть списка миров
+                        {
+                            worldPanels[i].Center = new Vector2((ConsoleAdventure.Width / 2) - 207, (number * (19 * 4)) + 9 * 30);
+                            worldPanels[i].Draw(spriteBatch);
+                            number++;
+                        }
                     }
+
+                    spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigHelpWorld, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(TextAssets.navigHelpBack).X + 10) + 9 * 12, ConsoleAdventure.Height - 114), Color.Gray);
                 }
 
-                spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigHelpWorld, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(TextAssets.navigHelpBack).X + 10) + 9 * 12, ConsoleAdventure.Height - 114), Color.Gray);
+                else
+                {
+                    spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.HelpWorldCreate, new Vector2(ConsoleAdventure.Width / 2 - (ConsoleAdventure.Font.MeasureString(TextAssets.HelpWorldCreate).X / 2), ConsoleAdventure.Height / 2 - 180), Color.Gray);
+                }
             }
 
             if (State == 2 || State == 3 || State == 4)

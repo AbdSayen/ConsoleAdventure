@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,16 @@ namespace ConsoleAdventure.WorldEngine
         {
             renderFieldType = RenderFieldType.chest;
             Initialize();
+        }
+
+        public override string GetSymbol()
+        {
+            return "<>";
+        }
+
+        public override Color GetColor()
+        {
+            return new(94, 61, 38);
         }
     }
 }

@@ -33,7 +33,8 @@
     "Day": "Day:",
     "Time": "Time:",
     "Structure": "Structure:",
-    "Paused": "*Paused*"
+    "Paused": "*Paused*",
+    "HelpWorldCreate": "press \"N\" to create a world."
   },
 
   "About": {

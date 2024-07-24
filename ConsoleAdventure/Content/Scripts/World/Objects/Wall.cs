@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -13,6 +14,16 @@ namespace ConsoleAdventure.WorldEngine
             renderFieldType = RenderFieldType.wall;
             isObstacle = true;
             Initialize();
+        }
+
+        public override string GetSymbol()
+        {
+            return "##";
+        }
+
+        public override Color GetColor()
+        {
+            return Color.White;
         }
     }
 }
