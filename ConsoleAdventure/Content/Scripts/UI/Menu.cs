@@ -285,7 +285,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             {
                                 Saves.Delete(worldPanels[i].name);
                                 worldPanels.Clear();
-                                MenuInit();
+                                WorldMenuInit();
                                 timer = 0;
                             }                      
                         }

@@ -89,9 +89,11 @@ namespace ConsoleAdventure
 
         internal static object[] BuildConstructorArgs(Type objectType, Position position, List<Stack> items, List<object> parameters)
         {
-            if (objectType == typeof(Loot) || objectType == typeof(Chest))
+            if (objectType.IsSubclassOf(typeof(Loot)) || objectType == typeof(Loot) ||
+                objectType.IsSubclassOf(typeof(Storage)) || objectType == typeof(Storage))
                 return new object[] { ConsoleAdventure.world, position, items, -1 };
-            if (objectType == typeof(Entity) || objectType == typeof(Cat))
+
+            if (objectType.IsSubclassOf(typeof(Entity)) || objectType == typeof(Entity))
                 return new object[] { ConsoleAdventure.world, position, parameters };
 
             return new object[] { ConsoleAdventure.world, position, -1 };
@@ -106,14 +108,10 @@ namespace ConsoleAdventure
 
             object[] args = BuildConstructorArgs(type, position, items, parameters);
 
-            if (type != typeof(Cat) && type != typeof(Entity))
-            {
-                Activator.CreateInstance(type, args);
-            }
-            else
-            {
+            if (type.IsSubclassOf(typeof(Entity)) || type == typeof(Entity))
                 ConsoleAdventure.world.entities.Add((Entity)Activator.CreateInstance(type, args));
-            }
+            else
+                Activator.CreateInstance(type, args);
         }
     }
 }
