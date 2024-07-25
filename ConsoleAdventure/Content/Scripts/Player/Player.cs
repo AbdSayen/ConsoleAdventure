@@ -139,9 +139,10 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);
 
-            if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null && itemField.content is Loot)
+            if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null)
             {
-                ((Loot)itemField.content).PickUpAll(inventory);
+                if (itemField.content is Loot)
+                    ((Loot)itemField.content).PickUpAll(inventory);
             }
         }
     }

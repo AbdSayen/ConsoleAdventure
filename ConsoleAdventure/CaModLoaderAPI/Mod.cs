@@ -2,7 +2,7 @@
 
 namespace CaModLoaderAPI
 {
-    public class Mod // Главный класс модификации
+    public abstract class Mod // Главный класс модификации
     {
         /// <summary>
         ///  Название мода

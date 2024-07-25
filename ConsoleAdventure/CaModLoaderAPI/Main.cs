@@ -1,8 +1,7 @@
 ﻿namespace CaModLoaderAPI
 {
-    public class Main
+    public static class Main
     {
-        public Main() {
-        }
+        
     }
 }

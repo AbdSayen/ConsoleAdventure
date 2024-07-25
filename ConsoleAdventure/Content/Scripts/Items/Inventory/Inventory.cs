@@ -20,6 +20,9 @@ namespace ConsoleAdventure
         {
             for (int i = 0; i < items.Count; i++)
             {
+                var item = items[i].item;
+                if (!item.CanBePickedUp()) continue; // Пропускаем если предмет нельзя поднять
+
                 bool itemAdded = false;
 
                 for (int j = 0; j < slots.Count; j++)

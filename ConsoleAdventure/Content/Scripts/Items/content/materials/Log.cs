@@ -13,7 +13,7 @@ namespace ConsoleAdventure
 
         public new string GetDescription()
         {
-            return " " + Localization.GetTranslation("ItemDescription", "Log");
+            return " " + Localization.GetTranslation("ItemDescription", GetType().Name);
         }
     }
 }

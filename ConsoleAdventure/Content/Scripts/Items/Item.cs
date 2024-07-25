@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleAdventure.CaModLoaderAPI;
+using System;
 
 namespace ConsoleAdventure
 {
@@ -10,7 +11,24 @@ namespace ConsoleAdventure
 
         protected string GetDescription()
         {
+            foreach (GlobalItem item in CaModLoader.modGlobalItems)
+            {
+                string customDescription = item.GetDescription(this);
+                if (customDescription != null)
+                    return customDescription;
+            }
             return description;
-        } 
+        }
+
+        public virtual bool CanBePickedUp()
+        {
+            foreach (GlobalItem item in CaModLoader.modGlobalItems)
+            {
+                bool? customPickUp = item.CanBePickedUp(this);
+                if (customPickUp != null)
+                    return (bool)customPickUp;
+            }
+            return true;
+        }
     }
 }

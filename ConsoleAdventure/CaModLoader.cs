@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CaModLoaderAPI;
+using ConsoleAdventure.CaModLoaderAPI;
 
 namespace ConsoleAdventure
 {
@@ -15,6 +16,9 @@ namespace ConsoleAdventure
         private static List<string> libs = new List<string> { "" };
         private static string[] modsPath;
         private static List<Mod> mods = new List<Mod>();
+
+        private static List<ModItem> modItems = new List<ModItem>();
+        public static List<GlobalItem> modGlobalItems = new List<GlobalItem>();
         
 
         public static void PreLoadMods()
@@ -38,7 +42,20 @@ namespace ConsoleAdventure
 
                 mods.Add((Mod)Activator.CreateInstance(type)); // Добавляем в список модов
 
-                SkipLoop: continue; // Метка для пропуска внешнего цикла
+                foreach (Type item in assembly.GetExportedTypes().Where(type => type == typeof(ModItem))) // Загружаем все предметы из модов
+                {
+                    ModItem mi = (ModItem)Activator.CreateInstance(item);
+                    mi.Init();
+                    modItems.Add(mi);
+                }
+
+                foreach (Type item in assembly.GetExportedTypes().Where(type => type == typeof(GlobalItem))) // Загружаем все глобальные предметы из модов
+                {
+                    GlobalItem gi = (GlobalItem)Activator.CreateInstance(item);
+                    modGlobalItems.Add(gi);
+                }
+
+            SkipLoop: continue; // Метка для пропуска внешнего цикла
             }
         }
 
