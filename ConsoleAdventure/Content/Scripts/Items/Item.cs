@@ -22,11 +22,13 @@ namespace ConsoleAdventure
 
         public virtual bool CanBePickedUp()
         {
-            foreach (GlobalItem item in CaModLoader.modGlobalItems)
+            foreach (GlobalItem glItem in CaModLoader.modGlobalItems)
             {
-                bool? customPickUp = item.CanBePickedUp(this);
+                bool? customPickUp = glItem.CanBePickedUp(this);
                 if (customPickUp != null)
+                {
                     return (bool)customPickUp;
+                }
             }
             return true;
         }

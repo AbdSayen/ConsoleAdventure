@@ -17,7 +17,7 @@ namespace ConsoleAdventure
         private static string[] modsPath;
         private static List<Mod> mods = new List<Mod>();
 
-        private static List<ModItem> modItems = new List<ModItem>();
+        private static List<Type> modItems = new List<Type>();
         public static List<GlobalItem> modGlobalItems = new List<GlobalItem>();
         
 
@@ -42,14 +42,14 @@ namespace ConsoleAdventure
 
                 mods.Add((Mod)Activator.CreateInstance(type)); // Добавляем в список модов
 
-                foreach (Type item in assembly.GetExportedTypes().Where(type => type == typeof(ModItem))) // Загружаем все предметы из модов
+                Type[] exportedTypes = assembly.GetExportedTypes();
+
+                foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(ModItem)))) // Загружаем все предметы из модов
                 {
-                    ModItem mi = (ModItem)Activator.CreateInstance(item);
-                    mi.Init();
-                    modItems.Add(mi);
+                    modItems.Add(item);
                 }
 
-                foreach (Type item in assembly.GetExportedTypes().Where(type => type == typeof(GlobalItem))) // Загружаем все глобальные предметы из модов
+                foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalItem)))) // Загружаем все глобальные предметы из модов
                 {
                     GlobalItem gi = (GlobalItem)Activator.CreateInstance(item);
                     modGlobalItems.Add(gi);

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using ConsoleAdventure.CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Player;
 
 namespace ConsoleAdventure
@@ -18,10 +20,18 @@ namespace ConsoleAdventure
 
         public void PickUpItems(List<Stack> items)
         {
+            Dictionary<Item, int> skippedItems = new Dictionary<Item, int>();
+
             for (int i = 0; i < items.Count; i++)
             {
-                var item = items[i].item;
-                if (!item.CanBePickedUp()) continue; // Пропускаем если предмет нельзя поднять
+                var item = items[i].item; 
+                if (!item.CanBePickedUp())  // Пропускаем если предмет нельзя поднять
+                {
+                    if (!skippedItems.Keys.Contains(item))
+                        skippedItems[item] = 0;
+                    skippedItems[item]++;
+                    continue;
+                }
 
                 bool itemAdded = false;
 
@@ -62,6 +72,11 @@ namespace ConsoleAdventure
                         break;
                     }
                 }
+            }
+
+            foreach (Item itm in skippedItems.Keys)
+            {
+                Drop(new List<Stack> { new Stack(itm, skippedItems[itm]) });
             }
 
             for (int i = 0; i < slots.Count; i++)

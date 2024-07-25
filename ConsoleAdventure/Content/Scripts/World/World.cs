@@ -51,9 +51,9 @@ namespace ConsoleAdventure.WorldEngine
 
             new Cursor();
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 2; i++)
             {
-                for (int j = 0; j < 15; j++)
+                for (int j = 0; j < 2; j++)
                 {
                     entities.Add(new Cat(this, new(6 + i, 6 + j)));
                 }

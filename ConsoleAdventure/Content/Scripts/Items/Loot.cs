@@ -19,8 +19,8 @@ namespace ConsoleAdventure
 
         public void PickUpAll(Inventory inventory)
         {
-            inventory.PickUpItems(items);
             world.RemoveSubject(this, World.ItemsLayerId);
+            inventory.PickUpItems(items);
         }
 
         public override string GetSymbol()
