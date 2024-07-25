@@ -11,8 +11,11 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;
 
-            renderFieldType = RenderFieldType.log;
+            type = (int)RenderFieldType.log;
             isObstacle = true;
+
+            AddTypeToMap<Plank>(type);
+
             Initialize();
         }
 

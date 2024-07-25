@@ -11,8 +11,11 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;
 
-            renderFieldType = RenderFieldType.water;
+            type = (int)RenderFieldType.water;
             isObstacle = true;
+
+            AddTypeToMap<Water>(type);
+
             Initialize();
         }
 

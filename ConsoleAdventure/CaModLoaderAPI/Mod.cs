@@ -8,14 +8,17 @@ namespace CaModLoaderAPI
         ///  Название мода
         /// </summary>
         public string modName = "undefined";
+
         /// <summary>
         /// Версия мода
         /// </summary>
         public string modVersion = "1.0.0";
+
         /// <summary>
         /// Описание мода
         /// </summary>
         public string modDescription = "No description";
+
         /// <summary>
         /// Автор мода
         /// </summary>

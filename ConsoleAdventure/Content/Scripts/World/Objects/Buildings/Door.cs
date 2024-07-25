@@ -12,9 +12,11 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;
 
-            renderFieldType = RenderFieldType.door;
-            //color = Color.Brown;
+            type = (int)RenderFieldType.door;
             isObstacle = false;
+
+            AddTypeToMap<Door>(type);
+
             Initialize();
         }
 

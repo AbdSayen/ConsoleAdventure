@@ -15,13 +15,15 @@ namespace ConsoleAdventure.Content.Scripts
         public Entity(World world, Position position, List<object> parameters = null) : base(world, position)
         {
             worldLayer = World.MobsLayerId;
-            renderFieldType = RenderFieldType.entity;
+            type = (int)RenderFieldType.entity;
             isObstacle = false;
 
             if (parameters != null)
             {
                 SetParams(parameters);
             }
+
+            AddTypeToMap<Entity>(type);
         }
 
         public override string GetSymbol()

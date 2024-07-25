@@ -11,11 +11,16 @@ namespace ConsoleAdventure
     [Serializable]
     public abstract class Transform
     {
+        private static Dictionary<int, Type> typeMapping = new Dictionary<int, Type>() 
+        {
+            { 0, typeof(Transform) },
+        };
+
         public World world { get; protected set; }
         public int worldLayer { get; protected set; }
 
         public Position position;
-        public RenderFieldType renderFieldType;
+        public byte type;
         public bool isObstacle;
 
         protected Transform(World world, Position position)
@@ -32,6 +37,12 @@ namespace ConsoleAdventure
                 world.GetField(position.x, position.y, worldLayer).content = this;
                 world.GetField(position.x, position.y, worldLayer).color = GetColor();
             }
+        }
+
+        public static void AddTypeToMap<T>(int type)
+        {
+            if(!typeMapping.ContainsKey(type))
+                typeMapping.Add(type, typeof(T));
         }
 
         public virtual void Move(int stepSize, Rotation rotation)
@@ -63,94 +74,46 @@ namespace ConsoleAdventure
 
         public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
         {
-            switch (type)
-            {
-                case (int)RenderFieldType.empty:
-                    ConsoleAdventure.world.RemoveSubject(ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId).content, layer, false);
-                    return;
-                case (int)RenderFieldType.player:
-                    new Player(1, ConsoleAdventure.world, position);
-                    return;
-                case (int)RenderFieldType.ruine:
-                    new Ruine(ConsoleAdventure.world, position);
-                    return;
-                case (int)RenderFieldType.wall:
-                    new Wall(ConsoleAdventure.world, position);
-                    return;
-                case (int)RenderFieldType.tree:
-                    new Tree(ConsoleAdventure.world, position);
-                    return;
-                case (int)RenderFieldType.floor:
-                    new Floor(ConsoleAdventure.world, position);
-                    return;
-                case (int)RenderFieldType.door:
-                    new Door(ConsoleAdventure.world, position);
-                    return;
-                case (int)RenderFieldType.loot:
-                    new Loot(ConsoleAdventure.world, position, items);
-                    return;
-                case (int)RenderFieldType.water:
-                    new Water(ConsoleAdventure.world, position);
-                    return;
-                case (int)RenderFieldType.log:
-                    new Plank(ConsoleAdventure.world, position);
-                    return;
-                case (int)RenderFieldType.entity:
-                    ConsoleAdventure.world.entities.Add(new Entity(ConsoleAdventure.world, position, parameters));
-                    return;
-                case (int)RenderFieldType.cat:
-                    ConsoleAdventure.world.entities.Add(new Cat(ConsoleAdventure.world, position, parameters));
-                    return;
-                case (int)RenderFieldType.chest:
-                    new Chest(ConsoleAdventure.world, position, items);
-                    return;
-                default:
-                    return;
-            }
-        }
-
-        /*public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
-        {
             if (typeMapping.TryGetValue(type, out Type objectType))
             {
-                if (objectType == typeof(EmptyHandler))
+                if (objectType == typeof(Transform))
                 {
                     ConsoleAdventure.world.RemoveSubject(ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId).content, layer, false);
                     return;
                 }
 
-                ConstructorInfo constructor = GetConstructor(objectType, items != null, parameters != null);
-                object[] args = BuildConstructorArgs(objectType, position, items, parameters);
-
-                if (objectType == typeof(Loot) || objectType == typeof(Chest))
-                {
-                    Activator.CreateInstance(objectType, args);
-                }
-                else
-                {
-                    ConsoleAdventure.world.entites.Add((Entity)Activator.CreateInstance(objectType, args));
-                }
+                //ConstructorInfo constructor = GetConstructor(objectType, items != null, parameters != null);
+                Init(objectType, position, items, parameters);
             }
         }
 
-        private static ConstructorInfo GetConstructor(Type objectType, bool hasItems, bool hasParameters)
-        {
-            if (hasItems)
-                return objectType.GetConstructor(new Type[] { typeof(World), typeof(Position), typeof(List<Stack>) });
-            if (hasParameters)
-                return objectType.GetConstructor(new Type[] { typeof(World), typeof(Position), typeof(List<object>) });
-
-            return objectType.GetConstructor(new Type[] { typeof(World), typeof(Position) });
-        }
-
-        private static object[] BuildConstructorArgs(Type objectType, Position position, List<Stack> items, List<object> parameters)
+        internal static object[] BuildConstructorArgs(Type objectType, Position position, List<Stack> items, List<object> parameters)
         {
             if (objectType == typeof(Loot) || objectType == typeof(Chest))
-                return new object[] { ConsoleAdventure.world, position, items };
+                return new object[] { ConsoleAdventure.world, position, items, -1 };
             if (objectType == typeof(Entity) || objectType == typeof(Cat))
                 return new object[] { ConsoleAdventure.world, position, parameters };
 
-            return new object[] { ConsoleAdventure.world, position };
-        }*/
+            return new object[] { ConsoleAdventure.world, position, -1 };
+        }
+
+        internal static void Init(Type type, Position position, List<Stack> items, List<object> parameters)
+        {
+            if(type == typeof(Storage) || type == typeof(Player))
+            {
+                return;
+            }
+
+            object[] args = BuildConstructorArgs(type, position, items, parameters);
+
+            if (type != typeof(Cat) && type != typeof(Entity))
+            {
+                Activator.CreateInstance(type, args);
+            }
+            else
+            {
+                ConsoleAdventure.world.entities.Add((Entity)Activator.CreateInstance(type, args));
+            }
+        }
     }
 }

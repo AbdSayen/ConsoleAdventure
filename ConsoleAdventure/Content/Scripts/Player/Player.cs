@@ -33,7 +33,9 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             info.Id = id;
             this.world = world;
-            renderFieldType = RenderFieldType.player;
+            type = (int)RenderFieldType.player;
+
+            AddTypeToMap<Player>(type);
 
             Initialize();
         }

@@ -1,8 +1,13 @@
 ﻿using ConsoleAdventure.WorldEngine;
 using Microsoft.VisualBasic.FileIO;
+using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Metadata;
+using System.Security.Cryptography;
 
 namespace ConsoleAdventure.Content.Scripts.IO
 {
@@ -162,7 +167,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                         byte type = 0;
                         if (world.GetField(i, j, k).content != null) //Поиск ячеяк мира
                         {
-                            type = (byte)world.GetField(i, j, k).content.renderFieldType;
+                            type = (byte)world.GetField(i, j, k).content.type;
                         }
 
                         fields[i, j, k] = type;
@@ -175,7 +180,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                         loots[curLoot] = ((Storage)field.content).GetItems();
                         lootX[curLoot] = i;
                         lootY[curLoot] = j;
-                        lootTypes[curLoot] = (byte)field.content.renderFieldType;
+                        lootTypes[curLoot] = field.content.type;
                         curLoot++;
                     }
                 }
@@ -200,7 +205,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 EntityX[i] = entity.position.x;
                 EntityY[i] = entity.position.y;
-                EntityTypes[i] = (byte)entity.renderFieldType;
+                EntityTypes[i] = entity.type;
                 EntityParams[i] = entity.GetParams();
             }
 
@@ -215,6 +220,13 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
         private static void LoadTags()
         {
+            Type baseType = typeof(Transform);
+            IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType));
+            foreach (Type type in list)
+            {
+                Transform.Init(type, Position.Zero(), null, null);
+            }
+
             World world = ConsoleAdventure.world;
             Tags tags = ConsoleAdventure.tags;
 

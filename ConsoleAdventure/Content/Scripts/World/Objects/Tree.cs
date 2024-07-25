@@ -13,8 +13,11 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;
 
-            renderFieldType = RenderFieldType.tree;
+            type = (int)RenderFieldType.tree;
             isObstacle = true;
+
+            AddTypeToMap<Tree>(type);
+
             Initialize();
         }
 

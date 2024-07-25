@@ -25,8 +25,11 @@ namespace ConsoleAdventure.Content.Scripts
 
         public Cat(World world, Position position, List<object> parameters = null) : base(world, position, parameters)
         {
-            renderFieldType = RenderFieldType.cat;
+            type = (int)RenderFieldType.cat;
             SetMaxLife(9);
+
+            AddTypeToMap<Cat>(type);
+
             Initialize();
 
             this.index = index == -1 ? ConsoleAdventure.rand.Next(0, colors.Length) : index;

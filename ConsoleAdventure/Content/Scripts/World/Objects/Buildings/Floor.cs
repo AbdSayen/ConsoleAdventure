@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.CodeDom;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -12,9 +13,11 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.FloorLayerId;
             else this.worldLayer = worldLayer;
 
-            renderFieldType = RenderFieldType.floor;
-            //color = Color.Gray;
+            type = (int)RenderFieldType.floor;
             isObstacle = false;
+
+            AddTypeToMap<Floor>(type);
+
             Initialize();
         }
 
