@@ -20,7 +20,10 @@ namespace ConsoleAdventure.Content.Scripts.IO
         {
             Console.WriteLine("Saving on account");
 
-            CreateTags(); //Создаём теги и храним в них данные о мире
+            if (ConsoleAdventure.world.isInitialized)
+            {
+                CreateTags(); //Создаём теги и храним в них данные о мире
+            }
 
             if (!Directory.Exists(path))
             {
@@ -67,7 +70,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
 
             ConsoleAdventure.world.name = name;
-            LoadTags(); //Загружам данные из тегов в мир
+            if (ConsoleAdventure.world.isInitialized)
+            {
+                LoadTags(); //Загружам данные из тегов в мир
+            }
+            else
+            {
+                ConsoleAdventure.world.Initialize();
+            }
 
             Console.WriteLine("The world was successfully loaded!");
         }

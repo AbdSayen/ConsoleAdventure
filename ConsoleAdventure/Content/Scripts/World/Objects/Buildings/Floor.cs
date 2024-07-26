@@ -7,7 +7,7 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Floor : Transform
     {
-        public Floor(World world, Position position, int worldLayer = -1) : base(world, position)
+        public Floor(Position position, int worldLayer = -1) : base(position)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.FloorLayerId;

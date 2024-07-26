@@ -27,9 +27,8 @@ namespace ConsoleAdventure.WorldEngine
         [NonSerialized]
         private Renderer renderer;
 
-        public int seed = 1234;
-
         public string name;
+        public int seed = 1234;
 
         public static int CountOfLayers = 4;
         public static int FloorLayerId = 0;
@@ -37,7 +36,9 @@ namespace ConsoleAdventure.WorldEngine
         public static int ItemsLayerId = 2;
         public static int MobsLayerId = 3;
 
-        public World(string name, int seed, bool isfullGenerate = true)
+        internal bool isInitialized = false;
+
+        public World(string name, int seed)
         {
             this.name = name;
             this.seed = seed;
@@ -46,20 +47,19 @@ namespace ConsoleAdventure.WorldEngine
 
             generator = new Generator(this, size);
             renderer = new Renderer(chunks);
-            generator.Generate(seed, isfullGenerate);
-            ConnectPlayer();
-
             new Cursor();
+        }
 
-            for (int i = 0; i < 2; i++)
+        public void Initialize(bool isfullGenerate = true)
+        {
+            if (!isInitialized)
             {
-                for (int j = 0; j < 2; j++)
-                {
-                    entities.Add(new Cat(this, new(6 + i, 6 + j)));
-                }
-            }
+                generator.Generate(seed, isfullGenerate);
+                ConnectPlayer();
 
-            CaModLoader.WorldLoadedMods(this);
+                //CaModLoader.WorldLoadedMods(this);
+                isInitialized = true;
+            }
         }
 
         public Point GetCunkCounts()
@@ -69,7 +69,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public void ConnectPlayer()
         {
-            players.Add(new Player(players.Count, this, new Position(5, 5)));
+            players.Add(new Player(players.Count, new Position(5, 5)));
         }
 
         int timer;

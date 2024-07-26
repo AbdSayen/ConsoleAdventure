@@ -23,7 +23,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         int index = -1;
 
-        public Cat(World world, Position position, List<object> parameters = null) : base(world, position, parameters)
+        public Cat(Position position, List<object> parameters = null) : base(position, parameters)
         {
             type = (int)RenderFieldType.cat;
             SetMaxLife(9);

@@ -11,7 +11,7 @@ namespace ConsoleAdventure
     {
         protected List<Stack> items { get; set; }
 
-        public Storage(WorldEngine.World world, Position position, List<Stack> items, int worldLayer = -1) : base(world, position)
+        public Storage(Position position, List<Stack> items, int worldLayer = -1) : base(position)
         {
             this.items = items;
             isObstacle = false;

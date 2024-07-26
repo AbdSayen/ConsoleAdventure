@@ -21,7 +21,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private bool wasCursorKeyPressedLastFrame;
 
-        public Player(int id, World world, Position position, int worldLayer = -1) : base(world, position)
+        public Player(int id, Position position, int worldLayer = -1) : base(position)
         {
             if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
             else this.worldLayer = worldLayer;
@@ -104,7 +104,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             {
                 if (inventory.HasItems(new Log(), 1))
                 {
-                    new Plank(world, targetPosition);
+                    new Plank(targetPosition);
                     inventory.RemoveItems(new Log(), 1);
                     world.time.PassTime(120);
                 }

@@ -6,7 +6,7 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Ruine : Transform
     {
-        public Ruine(World world, Position position, int worldLayer = -1) : base(world, position)
+        public Ruine(Position position, int worldLayer = -1) : base(position)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
