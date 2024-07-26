@@ -241,7 +241,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             world.time = (Time)tags.SafelyGet("Time");
 
-            Main.modTransformTypesOffset = (Dictionary<Type, short>)tags.SafelyGet("TransformTypesOffset");
+            Main.modTransformTypesOffset = (Dictionary<string, byte>)tags.SafelyGet("TransformTypesOffset");
 
             for (int i = 0; i < world.size; i++)
             {
