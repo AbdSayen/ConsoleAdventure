@@ -13,7 +13,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         {
             this.name = name;
             this.text = text;
-            this.isVisible = false;
+            this.isVisible = true;
 
             pixel = new Texture2D(ConsoleAdventure._graphics.GraphicsDevice, 1, 1);
             pixel.SetData(new Color[] { Color.Black });

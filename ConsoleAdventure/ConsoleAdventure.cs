@@ -78,6 +78,7 @@ namespace ConsoleAdventure
         public static void CreateWorld(string name, int seed, bool isfullGenerate = true)
         {
             world = new World(name, seed);
+            world.Initialize();
             display = new Display(world);
         }
 

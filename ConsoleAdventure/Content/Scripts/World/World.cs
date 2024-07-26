@@ -57,12 +57,12 @@ namespace ConsoleAdventure.WorldEngine
                 generator.Generate(seed, isfullGenerate);
                 ConnectPlayer();
 
-                //CaModLoader.WorldLoadedMods(this);
+                CaModLoader.WorldLoadedMods(this);
                 isInitialized = true;
             }
         }
 
-        public Point GetCunkCounts()
+        public Point GetChunkCounts()
         {
             return new(chunks[0].Count, chunks.Count);
         }

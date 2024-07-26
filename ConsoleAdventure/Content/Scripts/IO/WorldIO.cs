@@ -132,8 +132,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["Seed"] = world.seed;
 
             tags["Size"] = size;
-            tags["ChunksX"] = world.GetCunkCounts().X;
-            tags["ChunksY"] = world.GetCunkCounts().Y;
+            tags["ChunksX"] = world.GetChunkCounts().X;
+            tags["ChunksY"] = world.GetChunkCounts().Y;
 
             tags["Time"] = world.time;
 

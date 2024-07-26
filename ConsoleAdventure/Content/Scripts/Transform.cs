@@ -96,12 +96,12 @@ namespace ConsoleAdventure
         {
             if (objectType.IsSubclassOf(typeof(Loot)) || objectType == typeof(Loot) ||
                 objectType.IsSubclassOf(typeof(Storage)) || objectType == typeof(Storage))
-                return new object[] { ConsoleAdventure.world, position, items, -1 };
+                return new object[] { position, items, -1 };
 
             if (objectType.IsSubclassOf(typeof(Entity)) || objectType == typeof(Entity))
-                return new object[] { ConsoleAdventure.world, position, parameters };
+                return new object[] { position, parameters };
 
-            return new object[] { ConsoleAdventure.world, position, -1 };
+            return new object[] { position, -1 };
         }
 
         internal static void Init(Type type, Position position, List<Stack> items, List<object> parameters)
