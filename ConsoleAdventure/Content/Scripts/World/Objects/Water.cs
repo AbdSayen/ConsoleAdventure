@@ -6,13 +6,16 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Water : Transform
     {
-        public Water(World world, Position position, int worldLayer = -1) : base(world, position)
+        public Water(Position position, int worldLayer = -1) : base(position)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;
 
-            renderFieldType = RenderFieldType.water;
+            type = (int)RenderFieldType.water;
             isObstacle = true;
+
+            AddTypeToMap<Water>(type);
+
             Initialize();
         }
 

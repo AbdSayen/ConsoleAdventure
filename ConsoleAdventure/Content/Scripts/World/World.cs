@@ -5,7 +5,6 @@ using ConsoleAdventure.WorldEngine.Generate;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.Player;
 
 
@@ -14,8 +13,6 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class World
     {
-        public static World Instance { get; private set; }
-
         public Action Start;
         
         public int size { get; internal set; } = 256;
@@ -32,9 +29,8 @@ namespace ConsoleAdventure.WorldEngine
         [NonSerialized]
         private Renderer renderer;
 
-        public int seed = 1234;
-
         public string name;
+        public int seed = 1234;
 
         public static int CountOfLayers = 4;
         public static int FloorLayerId = 0;
@@ -42,13 +38,10 @@ namespace ConsoleAdventure.WorldEngine
         public static int ItemsLayerId = 2;
         public static int MobsLayerId = 3;
 
-        public World(string name, int seed, bool isfullGenerate = true)
+        internal bool isInitialized = false;
+
+        public World(string name, int seed)
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            
             this.name = name;
             this.seed = seed;
 
@@ -56,32 +49,29 @@ namespace ConsoleAdventure.WorldEngine
 
             generator = new Generator(this, size);
             renderer = new Renderer(chunks);
-            generator.Generate(seed, isfullGenerate);
-            ConnectPlayer();
-
             new Cursor();
-
-            Cat cat = new Cat(this, Position.Zero());
-            
-            for (int i = 0; i < 15; i++)
-            {
-                for (int j = 0; j < 15; j++)
-                {
-                    entities.Add(Spawner.Spawn(cat, new Position(6 + i, 6 + j)));
-                }
-            }
-
-            CaModLoader.WorldLoadedMods(this);
         }
 
-        public Point GetCunkCounts()
+        public void Initialize(bool isfullGenerate = true)
+        {
+            if (!isInitialized)
+            {
+                generator.Generate(seed, isfullGenerate);
+                ConnectPlayer();
+
+                CaModLoader.WorldLoadedMods(this);
+                isInitialized = true;
+            }
+        }
+
+        public Point GetChunkCounts()
         {
             return new(chunks[0].Count, chunks.Count);
         }
 
         public void ConnectPlayer()
         {
-            players.Add(new Player(players.Count, this, new Position(5, 5)));
+            players.Add(new Player(players.Count, new Position(5, 5)));
         }
 
         int timer;
@@ -104,7 +94,7 @@ namespace ConsoleAdventure.WorldEngine
 
             if (timer > (1 * 60 * 60))
             {
-                Saves.Save("World");
+                WorldIO.Save("World");
 
                 timer = 0;
             }

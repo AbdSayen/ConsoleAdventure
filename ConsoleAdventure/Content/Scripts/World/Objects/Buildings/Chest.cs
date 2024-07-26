@@ -9,9 +9,12 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Chest : Storage
     {
-        public Chest(World world, Position position, List<Stack> items, int worldLayer = -1) : base(world, position, items)
+        public Chest(Position position, List<Stack> items, int worldLayer = -1) : base(position, items)
         {
-            renderFieldType = RenderFieldType.chest;
+            type = (int)RenderFieldType.chest;
+
+            AddTypeToMap<Chest>(type);
+
             Initialize();
         }
 

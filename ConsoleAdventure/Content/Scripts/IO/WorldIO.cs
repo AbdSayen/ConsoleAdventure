@@ -1,14 +1,19 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using CaModLoaderAPI;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.VisualBasic.FileIO;
+using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Runtime.Serialization;
+using System.Security.Cryptography;
 
 namespace ConsoleAdventure.Content.Scripts.IO
 {
-    internal class Saves
+    internal class WorldIO
     {
         private static string path = Program.savePath + "Worlds\\";
 
@@ -16,10 +21,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
         {
             Console.WriteLine("Saving on account");
 
-            if (ConsoleAdventure.world.isInitialized)
-            {
-                CreateTags(); //Создаём теги и храним в них данные о мире
-            }
+            CreateTags(); //Создаём теги и храним в них данные о мире
 
             if (!Directory.Exists(path))
             {
@@ -66,14 +68,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
 
             ConsoleAdventure.world.name = name;
-            if (ConsoleAdventure.world.isInitialized)
-            {
-                LoadTags(); //Загружам данные из тегов в мир
-            }
-            else
-            {
-                ConsoleAdventure.world.Initialize();
-            }
+            LoadTags(); //Загружам данные из тегов в мир
 
             Console.WriteLine("The world was successfully loaded!");
         }
@@ -141,6 +136,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["ChunksY"] = world.GetChunkCounts().Y;
 
             tags["Time"] = world.time;
+
+            tags["TransformTypesOffset"] = Main.modTransformTypesOffset;
 
             byte[,,] fields = new byte[size, size, 4];
 
@@ -243,6 +240,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
             //world.seed = (int)tags.SafelyGet("Seed");
 
             world.time = tags.SafelyGet<Time>("Time");
+
+            Main.modTransformTypesOffset = tags.SafelyGet<Dictionary<string, byte>>("TransformTypesOffset");
 
             for (int i = 0; i < world.size; i++)
             {

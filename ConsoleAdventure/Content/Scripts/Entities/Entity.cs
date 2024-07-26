@@ -1,46 +1,57 @@
-﻿using System;
+﻿using ConsoleAdventure.WorldEngine;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.Content.Scripts.Entities;
+using ConsoleAdventure.Content.Scripts.Entities.StateMachine;
 
-namespace ConsoleAdventure.Content.Scripts.Entities
+namespace ConsoleAdventure.Content.Scripts
 {
     public class Entity : Transform
     {
-        public StateMachine.StateMachine StateMachine { get; private set; }
-        public EntityColor Color { get; private set; }
-        
         //public List<object> Parameters { get; set; } = new List<object>();
+
+        public StateMachine StateMachine { get; private set; }
+        public EntityColor EntityColor { get; private set; }
 
         public int life;
         public int maxLife;
         public int damage;
-        
-        public Entity(World world, Position position, List<object> parameters = null) : base(world, position)
+
+        public Entity(Position position, List<object> parameters = null) : base(position)
         {
             worldLayer = World.MobsLayerId;
-            renderFieldType = RenderFieldType.entity;
+            type = (int)RenderFieldType.entity;
             isObstacle = false;
 
-            Color = new EntityColor();
-            
             if (parameters != null)
             {
                 SetParams(parameters);
             }
+
+            StateMachine = new StateMachine(this);
+            EntityColor = new EntityColor();
+
+            AddTypeToMap<Entity>(type);
             
-            world.Start += Start;
+            ConsoleAdventure.world.Start += Start;
         }
 
-        protected virtual void Start()
+        protected void Start()
         {
-            StateMachine = new StateMachine.StateMachine(this);
+            StateMachine?.ChangeState(StatesEnum.Moving);
         }
 
         public override string GetSymbol()
         {
             return "AE";
         }
-        
+
+        public override Color GetColor()
+        {
+            return Color.Yellow;
+        }
+
+
         /// <summary>
         /// Обновление сущьности в мире
         /// </summary>
@@ -55,14 +66,23 @@ namespace ConsoleAdventure.Content.Scripts.Entities
         /// </summary>
         public void Kill()
         {
-            world.Start -= Start;
             ConsoleAdventure.world.RemoveSubject(this, worldLayer);
         }
-
+        
         public void SetMaxLife(int life)
         {
             this.life = life;
             maxLife = life;
+        }
+
+        public void СhooseColor(Color[] colors, Position position, int index)
+        {
+            SetColor(colors[index], position);
+        }
+
+        public void SetColor(Color color, Position position)
+        {
+            world.GetField(position.x, position.y, World.MobsLayerId).color = color;
         }
 
         public virtual void SetParams(List<object> p) { }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CaModLoaderAPI;
+using ConsoleAdventure.CaModLoaderAPI;
 
 namespace ConsoleAdventure
 {
@@ -15,7 +16,15 @@ namespace ConsoleAdventure
         private static List<string> libs = new List<string> { "" };
         private static string[] modsPath;
         private static List<Mod> mods = new List<Mod>();
-        
+
+        public static Dictionary<Type, int> modsIdsMap = new Dictionary<Type, int>();
+
+        public static List<Type> modItems = new List<Type>();
+        public static List<GlobalItem> modGlobalItems = new List<GlobalItem>();
+        public static List<Type> modTransforms = new List<Type>();
+
+        public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();  // [0] - items, [1] - blocks
+
 
         public static void PreLoadMods()
         {
@@ -24,6 +33,8 @@ namespace ConsoleAdventure
 
         public static void LoadMods()
         {
+            int transformsFromAllMods = 0;
+
             foreach (string path in modsPath)
             {
                 // Загрузка сборки DLL
@@ -35,10 +46,40 @@ namespace ConsoleAdventure
                     if (fileName == lib) goto SkipLoop;
 
                 Type type = assembly.GetType(fileName + "." + fileName); // Получение типа класса из загруженной сборки
+                Mod mod = (Mod)Activator.CreateInstance(type);
+                mods.Add(mod); // Добавляем в список модов
+                modsIdsMap.Add(type, mods.Count - 1);
 
-                mods.Add((Mod)Activator.CreateInstance(type)); // Добавляем в список модов
+                Main.modTypesInitialized.Add(fileName, new Dictionary<Type, int>());
 
-                SkipLoop: continue; // Метка для пропуска внешнего цикла
+                modLoadedContentCount.Add(type, new List<int> { 0, 0 }); // [0] - items [1] - transforms
+
+                Type[] exportedTypes = assembly.GetExportedTypes();
+
+                foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(ModItem)))) // Загружаем все предметы из модов
+                {
+                    modItems.Add(item);
+                    modLoadedContentCount[type][0]++;
+                }
+
+                foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalItem)))) // Загружаем все глобальные предметы из модов
+                {
+                    GlobalItem gi = (GlobalItem)Activator.CreateInstance(item);
+                    modGlobalItems.Add(gi);
+                }
+
+                foreach (Type block in exportedTypes.Where(type => type.IsSubclassOf(typeof(Transform)))) // Загружаем все трансформы из модов
+                {
+                    Main.modTypesInitialized[fileName].Add(block, Main.modTypesInitialized[fileName].Keys.Count);
+                    modTransforms.Add(block);
+                    modLoadedContentCount[type][1]++;
+                }
+
+                Main.modTransformTypesOffset.Add(fileName, (byte)transformsFromAllMods);
+
+                transformsFromAllMods += modLoadedContentCount[type][1];
+
+            SkipLoop: continue; // Метка для пропуска внешнего цикла
             }
         }
 

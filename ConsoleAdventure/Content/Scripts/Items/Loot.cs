@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.WorldEngine;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -7,16 +8,19 @@ namespace ConsoleAdventure
     [Serializable]
     public class Loot : Storage
     {
-        public Loot(WorldEngine.World world, Position position, List<Stack> items, int worldLayer = -1) : base(world, position, items)
+        public Loot(Position position, List<Stack> items, int worldLayer = -1) : base(position, items)
         {
-            renderFieldType = WorldEngine.RenderFieldType.loot;
+            type = (int)RenderFieldType.loot;
+
+            AddTypeToMap<Loot>(type);
+
             Initialize();
         }
 
         public void PickUpAll(Inventory inventory)
         {
+            world.RemoveSubject(this, World.ItemsLayerId);
             inventory.PickUpItems(items);
-            world.RemoveSubject(this, WorldEngine.World.ItemsLayerId);
         }
 
         public override string GetSymbol()

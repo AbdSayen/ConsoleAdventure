@@ -22,7 +22,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private bool wasCursorKeyPressedLastFrame;
 
-        public Player(int id, World world, Position position, int worldLayer = -1) : base(world, position)
+        public Player(int id, Position position, int worldLayer = -1) : base(position)
         {
             if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
             else this.worldLayer = worldLayer;
@@ -34,7 +34,9 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             info.Id = id;
             this.world = world;
-            renderFieldType = RenderFieldType.player;
+            type = (int)RenderFieldType.player;
+
+            AddTypeToMap<Player>(type);
 
             Initialize();
         }
@@ -102,7 +104,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             {
                 if (inventory.HasItems(new Log(), 1))
                 {
-                    new Plank(world, targetPosition);
+                    new Plank(targetPosition);
                     inventory.RemoveItems(new Log(), 1);
                     world.time.PassTime(120);
                 }
@@ -137,9 +139,10 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);
 
-            if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null && itemField.content is Loot)
+            if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null)
             {
-                ((Loot)itemField.content).PickUpAll(inventory);
+                if (itemField.content is Loot)
+                    ((Loot)itemField.content).PickUpAll(inventory);
             }
         }
     }

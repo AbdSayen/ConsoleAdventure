@@ -6,13 +6,14 @@ namespace ConsoleAdventure.Content.Scripts.UI
     public class InfoPanel : BaseUI
     {
         string name = "";
-
         Texture2D pixel;
+        public bool isVisible { get; set; }
 
         public InfoPanel(Rectangle rectangle, string name, string text) : base(rectangle, Color.White)
         {
             this.name = name;
             this.text = text;
+            this.isVisible = true;
 
             pixel = new Texture2D(ConsoleAdventure._graphics.GraphicsDevice, 1, 1);
             pixel.SetData(new Color[] { Color.Black });
@@ -20,6 +21,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (!isVisible) return;
+
             SpriteFont font = ConsoleAdventure.Font;
 
             spriteBatch.Draw(pixel, new Rectangle((int)Position.X, (int)Position.Y, 64 * 9, 30 * 19), Color.White);

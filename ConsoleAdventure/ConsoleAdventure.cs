@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.IO;
 
-
 namespace ConsoleAdventure
 {
     public class ConsoleAdventure : Game
@@ -24,8 +23,6 @@ namespace ConsoleAdventure
         static int frameRate = 0;
         int frameCounter = 0;
         TimeSpan elapsedTime = TimeSpan.Zero;
-
-        //public static int language = 0;
 
         public static bool InWorld;
         public static bool isPause;
@@ -74,15 +71,16 @@ namespace ConsoleAdventure
             //                     Тип настроек     Ключ настройки
 
             //  Тут такая же система как в локализации
-            
-            
+
+
             _graphics = new GraphicsDeviceManager(this);
             Localization.Load();
         }
 
         public static void CreateWorld(string name, int seed, bool isfullGenerate = true)
         {
-            world = new World(name, seed, isfullGenerate);
+            world = new World(name, seed);
+            world.Initialize();
             display = new Display(world);
         }
 
@@ -96,7 +94,7 @@ namespace ConsoleAdventure
             _graphics.SynchronizeWithVerticalRetrace = false;
 
             Window.Title = $"Console Adventure {Docs.version}. By Bonds";
-            
+
 
             _graphics.PreferredBackBufferWidth = screenWidth;
             _graphics.PreferredBackBufferHeight = screenHeight;
@@ -105,7 +103,7 @@ namespace ConsoleAdventure
             Window.AllowUserResizing = true;
 
             base.Initialize();
-            
+
             CaModLoader.InitializeMods();
             menu = new Menu();
             CaModLoader.RunMods();
@@ -128,7 +126,7 @@ namespace ConsoleAdventure
             elapsedTime += gameTime.ElapsedGameTime;
             if (elapsedTime > TimeSpan.FromSeconds(1))
             {
-                elapsedTime -= TimeSpan.FromSeconds(1);
+                elapsedTime = TimeSpan.Zero;
                 frameRate = frameCounter;
                 frameCounter = 0;
             }
@@ -139,20 +137,20 @@ namespace ConsoleAdventure
             {
                 world.ListenEvents();
 
-                if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+                if (kstate.IsKeyDown(Keys.Escape))
                 {
-                    Saves.Save(world.name);
+                    WorldIO.Save(world.name);
                     InWorld = false;
                 }
 
                 if (!kstate.IsKeyDown(InputConfig.Pause) && prekstate.IsKeyDown(InputConfig.Pause))
                 {
-                    if (!isPause) 
+                    if (!isPause)
                         isPause = true;
-                    else 
+                    else
                         isPause = false;
                 }
-            }       
+            }
 
             else
             {
@@ -163,7 +161,7 @@ namespace ConsoleAdventure
                     Exit();
                 }
             }
-            
+
             base.Update(gameTime);
         }
 

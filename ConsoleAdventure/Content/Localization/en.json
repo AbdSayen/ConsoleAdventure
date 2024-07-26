@@ -42,5 +42,16 @@
   "About": {
     "Game": "This game was made by the author \nof the YouTube channel named @bondscreators.\nDevelopment started at 05.19.2024.\nGenre of this game is RPG. \nThe main feature of this game is console graphics.",
     "Control": "W - Walk Up\nS - Walk Down\nA - Walk Left\nD - Walk Right\nLeft Shift - Run\n\n← - Move Cursor Left\n→ - Move Cursor Right\n↑ - Move Cursor Up\n↓ - Move Cursor Down\n\nSpace - Toggle Cursor\nP - Pause\n\nE - Interact\nB - Build\nV - Destroy\nL - Pick up item"
+  },
+
+  "Generic": {
+    "Items": "Items",
+    "Items-genitive": "Items",
+    "Item": "Item",
+    "Item-genitive": "Item",
+    "Blocks": "Blocks",
+    "Blocks-genitive": "Blocks",
+    "Block": "Block",
+    "Block-genitive": "Block"
   }
 }

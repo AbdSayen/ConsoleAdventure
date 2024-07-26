@@ -2,27 +2,24 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using ConsoleAdventure.Content.Scripts.Entities;
-using ConsoleAdventure.Content.Scripts.Entities.StateMachine;
 
 namespace ConsoleAdventure.Content.Scripts
 {
     [Serializable]
     public class Cat : Entity
     {
-        public Cat(World world, Position position, List<object> parameters = null) : base(world, position, parameters)
+        int index = -1;
+
+        public Cat(Position position, List<object> parameters = null) : base(position, parameters)
         {
-            renderFieldType = RenderFieldType.cat;
+            type = (int)RenderFieldType.cat;
             SetMaxLife(9);
+
+            AddTypeToMap<Cat>(type);
+
             Initialize();
-
-            Color.ChooseColor(position);
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-            StateMachine?.ChangeState(StatesEnum.Moving);
+            
+            EntityColor.ChooseColor(position);
         }
 
         public override string GetSymbol()
@@ -35,11 +32,17 @@ namespace ConsoleAdventure.Content.Scripts
             return Microsoft.Xna.Framework.Color.White;
         }
 
+        bool isFree = true;
+        int timer;
+        int randomTime = 0;
+        int rotation = -1;
+        int rotation1 = -1;
+
         public override List<object> GetParams()
         {
             List<object> parameters = new()
             {
-                Color.ColorIndex
+                index
             };
 
             return parameters;
@@ -50,7 +53,7 @@ namespace ConsoleAdventure.Content.Scripts
             if (p == null)
                 return;
 
-            Color.ColorIndex = (int)p[0];
+            index = (int)p[0];
         }
     }
 }
