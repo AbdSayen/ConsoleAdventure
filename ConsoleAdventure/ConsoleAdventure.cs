@@ -139,7 +139,7 @@ namespace ConsoleAdventure
 
                 if (kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 {
-                    Saves.Save(world.name);
+                    WorldIO.Save(world.name);
                     InWorld = false;
                 }
 

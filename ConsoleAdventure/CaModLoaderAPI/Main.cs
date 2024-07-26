@@ -9,6 +9,8 @@ namespace CaModLoaderAPI
         public static int vanillaTypesInitialized = Enum.GetNames(typeof(RenderFieldType)).Length;
         public static Dictionary<Type, int> modTypesInitialized = new Dictionary<Type, int>();
 
+        public static Dictionary<Type, short> modTransformTypesOffset = new Dictionary<Type, short>();
+
         public static int GetModBlock<T>()
         {
             int id = modTypesInitialized[typeof(T)];
