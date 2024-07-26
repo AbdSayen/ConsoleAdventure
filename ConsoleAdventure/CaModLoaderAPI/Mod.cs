@@ -1,4 +1,6 @@
 ﻿using ConsoleAdventure.WorldEngine;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace CaModLoaderAPI
 {
@@ -23,6 +25,16 @@ namespace CaModLoaderAPI
         /// Автор мода
         /// </summary>
         public string modAuthor = "Anonymous";
+
+        public string GetModString()
+        {
+            return GetType().Name;
+        }
+
+        public int GetModTransform<T>()
+        {
+            return Main.GetModTransform<T>(GetModString());
+        }
 
         /// <summary>
         /// Инициализация мода. Для корректной работы рекомендуется устанавливать название, версию, описание и автора мода именно в этом хуке
