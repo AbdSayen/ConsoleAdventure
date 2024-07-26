@@ -1,4 +1,6 @@
-﻿namespace ConsoleAdventure.CaModLoaderAPI
+﻿using ConsoleAdventure.Content.Scripts.Player;
+
+namespace ConsoleAdventure.CaModLoaderAPI
 {
     public abstract class GlobalItem
     {
@@ -7,7 +9,7 @@
             return null;
         }
 
-        public virtual bool? CanBePickedUp(Item item)
+        public virtual bool? CanBePickedUp(Item item, Player player)
         {
             return null;
         }

@@ -17,9 +17,12 @@ namespace ConsoleAdventure
         private static string[] modsPath;
         private static List<Mod> mods = new List<Mod>();
 
-        private static List<Type> modItems = new List<Type>();
+        public static List<Type> modItems = new List<Type>();
         public static List<GlobalItem> modGlobalItems = new List<GlobalItem>();
-        
+        public static List<Type> modBlocks = new List<Type>();
+
+        public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();
+
 
         public static void PreLoadMods()
         {
@@ -42,17 +45,27 @@ namespace ConsoleAdventure
 
                 mods.Add((Mod)Activator.CreateInstance(type)); // Добавляем в список модов
 
+                modLoadedContentCount.Add(type, new List<int> { 0, 0 }); // [0] - items, [1] - blocks
+
                 Type[] exportedTypes = assembly.GetExportedTypes();
 
                 foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(ModItem)))) // Загружаем все предметы из модов
                 {
                     modItems.Add(item);
+                    modLoadedContentCount[type][0]++;
                 }
 
                 foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalItem)))) // Загружаем все глобальные предметы из модов
                 {
                     GlobalItem gi = (GlobalItem)Activator.CreateInstance(item);
                     modGlobalItems.Add(gi);
+                }
+
+                foreach (Type block in exportedTypes.Where(type => type.IsSubclassOf(typeof(Transform)))) // Загружаем все блоки из модов
+                {
+                    Main.modTypesInitialized.Add(block, Main.modTypesInitialized.Keys.Count);
+                    modBlocks.Add(block);
+                    modLoadedContentCount[type][1]++;
                 }
 
             SkipLoop: continue; // Метка для пропуска внешнего цикла

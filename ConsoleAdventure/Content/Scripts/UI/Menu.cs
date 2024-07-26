@@ -4,6 +4,7 @@ using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -67,16 +68,25 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 string newDescription = String.Empty;
                 int symbolsThreshold = 50;
                 int currentThreshold = symbolsThreshold;
-                foreach (string word in mod.modDescription.Split(" "))
+                foreach (string word in mod.modDescription.Replace("\n", " _ ").Split(" "))
                 {
-                    if ((newDescription + word).Length > currentThreshold)
+                    if (word == "_")
+                    {
+                        newDescription += "\n    ";
+                        currentThreshold += symbolsThreshold;
+                        continue;
+                    }
+                    else if ((newDescription + word).Length > currentThreshold)
                     {
                         newDescription += "\n    ";
                         currentThreshold += symbolsThreshold;
                     }
                     newDescription += word + " ";
                 }
-                modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "\n    " + newDescription + "\n\n";
+
+                string itemsInMod = CaModLoader.modLoadedContentCount[mod.GetType()][0].ToString();
+                string blocksInMod = CaModLoader.modLoadedContentCount[mod.GetType()][1].ToString();
+                modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "   | " + itemsInMod + " items " + blocksInMod + " blocks" + "\n    " + newDescription + "\n\n";
             }
 
             aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);

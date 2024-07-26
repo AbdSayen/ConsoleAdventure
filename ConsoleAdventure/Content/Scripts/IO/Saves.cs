@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Runtime.Serialization;
 using System.Security.Cryptography;
 
 namespace ConsoleAdventure.Content.Scripts.IO
@@ -57,7 +58,6 @@ namespace ConsoleAdventure.Content.Scripts.IO
             if (File.Exists(fileName))
             {
                 byte[] bytes = File.ReadAllBytes(fileName);
-
                 ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytes); //Переводим байты в теги
             }
             else

@@ -1,5 +1,6 @@
 ﻿using ConsoleAdventure.CaModLoaderAPI;
 using System;
+using ConsoleAdventure;
 
 namespace ConsoleAdventure
 {
@@ -24,7 +25,7 @@ namespace ConsoleAdventure
         {
             foreach (GlobalItem glItem in CaModLoader.modGlobalItems)
             {
-                bool? customPickUp = glItem.CanBePickedUp(this);
+                bool? customPickUp = glItem.CanBePickedUp(this, ConsoleAdventure.world.players[0]);
                 if (customPickUp != null)
                 {
                     return (bool)customPickUp;
