@@ -66,6 +66,7 @@ namespace ConsoleAdventure.Content.Scripts
         /// </summary>
         public void Kill()
         {
+            ConsoleAdventure.world.Start -= Start;
             ConsoleAdventure.world.RemoveSubject(this, worldLayer);
         }
         
