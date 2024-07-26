@@ -40,6 +40,22 @@
 
         public static string navigModFolderHelp = Localization.GetTranslation("UI", "NavigationModFolder");
 
+        public static string Item = Localization.GetTranslation("Generic", "Item");
+
+        public static string ItemGenitive = Localization.GetTranslation("Generic", "Item-genitive");
+
+        public static string Items = Localization.GetTranslation("Generic", "Items");
+
+        public static string ItemsGenitive = Localization.GetTranslation("Generic", "Items-genitive");
+
+        public static string Block = Localization.GetTranslation("Generic", "Block");
+
+        public static string BlockGenitive = Localization.GetTranslation("Generic", "Block-genitive");
+
+        public static string Blocks = Localization.GetTranslation("Generic", "Blocks");
+
+        public static string BlocksGenitive = Localization.GetTranslation("Generic", "Blocks-genitive");
+
         public static void UpdateLabels()
         {
             navigHelp = Localization.GetTranslation("UI", "Navigation");
@@ -59,6 +75,15 @@
             AboutControl = Localization.GetTranslation("About", "Control");
             HelpWorldCreate = Localization.GetTranslation("UI", "HelpWorldCreate");
             Mods = Localization.GetTranslation("UI", "Mods");
+
+            Item = Localization.GetTranslation("Generic", "Item");
+            ItemGenitive = Localization.GetTranslation("Generic", "Item-genitive");
+            Items = Localization.GetTranslation("Generic", "Items");
+            ItemsGenitive = Localization.GetTranslation("Generic", "Items-genitive");
+            Block = Localization.GetTranslation("Generic", "Block");
+            BlockGenitive = Localization.GetTranslation("Generic", "Block-genitive");
+            Blocks = Localization.GetTranslation("Generic", "Blocks");
+            BlocksGenitive = Localization.GetTranslation("Generic", "Blocks-genitive");
         }
     }
 }

@@ -86,7 +86,11 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                 string itemsInMod = CaModLoader.modLoadedContentCount[mod.GetType()][0].ToString();
                 string blocksInMod = CaModLoader.modLoadedContentCount[mod.GetType()][1].ToString();
-                modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "   | " + itemsInMod + " items " + blocksInMod + " blocks" + "\n    " + newDescription + "\n\n";
+
+                string textItems = CaModLoader.modLoadedContentCount[mod.GetType()][0] != 1 ? TextAssets.ItemsGenitive : TextAssets.Item;
+                string textBlocks = CaModLoader.modLoadedContentCount[mod.GetType()][1] != 1 ? TextAssets.BlocksGenitive : TextAssets.Block; ;
+
+                modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "   | " + itemsInMod + " " + textItems + " " + blocksInMod + " " + textBlocks + "\n    " + newDescription + "\n\n";
             }
 
             aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);
