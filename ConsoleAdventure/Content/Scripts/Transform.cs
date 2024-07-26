@@ -23,11 +23,11 @@ namespace ConsoleAdventure
         public byte type;
         public bool isObstacle;
 
-        protected Transform(World world, Position position)
+        protected Transform(Position position)
         {
             this.position = position;
 
-            this.world = world;
+            world = ConsoleAdventure.world;
         }
 
         public void Initialize()

@@ -92,7 +92,7 @@ namespace ConsoleAdventure
 
         public void Drop(List<Stack> items)
         {
-            new Loot(player.world, player.position, items);
+            new Loot(player.position, items);
         }
 
         public string GetInfo()
