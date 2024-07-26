@@ -136,7 +136,7 @@ namespace ConsoleAdventure
 
                 if (kstate.IsKeyDown(Keys.Escape))
                 {
-                    Saves.Save(world.name);
+                    WorldIO.Save(world.name);
                     InWorld = false;
                 }
 

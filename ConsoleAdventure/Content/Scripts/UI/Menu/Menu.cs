@@ -44,7 +44,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public void WorldMenuInit()
         {
-            var worlds = Saves.GetWorlds();
+            var worlds = WorldIO.GetWorlds();
 
 
             for (int i = 0; i < worlds.names.Length; i++)
@@ -290,14 +290,14 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             if (worldPanels[i].curssor == 0 && worldPanels[i].isHover)
                             {
                                 ConsoleAdventure.CreateWorld(worldPanels[i].name, 1234, false);
-                                Saves.Load(worldPanels[i].name);
+                                WorldIO.Load(worldPanels[i].name);
                                 ConsoleAdventure.InWorld = true;
                                 timer = 0;
                             }
 
                             if (worldPanels[i].curssor == 2 && worldPanels[i].isHover)
                             {
-                                Saves.Delete(worldPanels[i].name);
+                                WorldIO.Delete(worldPanels[i].name);
                                 worldPanels.Clear();
                                 WorldMenuInit();
                                 timer = 0;
@@ -327,7 +327,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 if(!ConsoleAdventure.kstate.IsKeyDown(Keys.N) && ConsoleAdventure.prekstate.IsKeyDown(Keys.N))
                 {
                     ConsoleAdventure.CreateWorld("World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000));
-                    Saves.Save(ConsoleAdventure.world.name);
+                    WorldIO.Save(ConsoleAdventure.world.name);
                     worldPanels.Clear();
                     WorldMenuInit();
                 }

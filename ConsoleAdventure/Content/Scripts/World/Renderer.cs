@@ -37,6 +37,11 @@ namespace ConsoleAdventure.WorldEngine
 
                                 if (field != null)
                                 {
+                                    if (field.content?.GetBGColor() != null)
+                                    {
+                                        ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "██", new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), (Color)field.content.GetBGColor());
+                                    }
+
                                     ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), field.color);
                                 }
                             }

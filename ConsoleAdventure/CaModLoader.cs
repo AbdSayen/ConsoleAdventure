@@ -19,7 +19,7 @@ namespace ConsoleAdventure
 
         public static List<Type> modItems = new List<Type>();
         public static List<GlobalItem> modGlobalItems = new List<GlobalItem>();
-        public static List<Type> modBlocks = new List<Type>();
+        public static List<Type> modTransforms = new List<Type>();
 
         public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();
 
@@ -64,7 +64,7 @@ namespace ConsoleAdventure
                 foreach (Type block in exportedTypes.Where(type => type.IsSubclassOf(typeof(Transform)))) // Загружаем все блоки из модов
                 {
                     Main.modTypesInitialized.Add(block, Main.modTypesInitialized.Keys.Count);
-                    modBlocks.Add(block);
+                    modTransforms.Add(block);
                     modLoadedContentCount[type][1]++;
                 }
 

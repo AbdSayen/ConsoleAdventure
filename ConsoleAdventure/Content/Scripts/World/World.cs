@@ -92,7 +92,7 @@ namespace ConsoleAdventure.WorldEngine
 
             if (timer > (1 * 60 * 60))
             {
-                Saves.Save("World");
+                WorldIO.Save("World");
 
                 timer = 0;
             }

@@ -72,6 +72,11 @@ namespace ConsoleAdventure
             return Color.Black;
         }
 
+        public virtual Color? GetBGColor()
+        {
+            return null;
+        }
+
         public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
         {
             if (typeMapping.TryGetValue(type, out Type objectType))
