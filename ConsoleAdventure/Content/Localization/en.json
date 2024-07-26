@@ -10,6 +10,23 @@
     "Log": "Can be placed"
   },
 
+  "Transforms": {
+    "None": "none",
+    "Player": "player",
+    "Wall": "wall",
+    "Loot": "loot",
+    "Tree": "tree",
+    "Floor": "floor",
+    "Door": "door",
+    "Ruine": "ruine",
+    "Water": "water",
+    "Log": "log",
+    "Entity": "entity",
+    "Cat": "cat",
+    "Chest": "chest",
+    "Grass": "grass"
+  },
+
   "Events": {
     "Eating": "was eaten"
   },
@@ -36,7 +53,11 @@
     "Time": "Time:",
     "Structure": "Structure:",
     "Paused": "*Paused*",
-    "HelpWorldCreate": "press \"N\" to create a world."
+    "HelpWorldCreate": "press \"N\" to create a world.",
+    "Floor": "coating:",
+    "Block": "block:",
+    "Loot": "storage:",
+    "Entity": "entity:"
   },
 
   "About": {

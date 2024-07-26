@@ -38,6 +38,10 @@ namespace ConsoleAdventure
         public static KeyboardState prekstate;
         public static KeyboardState kstate;
 
+        public static MouseState mouse = Mouse.GetState();
+        public static MouseState oldMouse = Mouse.GetState();
+        public static Vector2 mousePosition;
+
         public static Random rand = new Random();
 
         private Menu menu;
@@ -53,6 +57,16 @@ namespace ConsoleAdventure
         public static float Height => _graphics.PreferredBackBufferHeight;
 
         public static int FPS => frameRate;
+
+        public static Position MouseWorld
+        {
+            get
+            {
+                Vector2 offset = (worldPos + ((new Vector2(30, 15) - world.players[0].position.ToVector2()) * cellSize));
+                Vector2 feildPos = ((mousePosition - offset) / cellSize).ToPoint().ToVector2();
+                return feildPos.ToPosition();
+            }
+        }
 
         private bool _isFirstUpdate = true;
 
@@ -123,6 +137,14 @@ namespace ConsoleAdventure
             prekstate = kstate;
             kstate = Keyboard.GetState();
 
+            MouseState currentMouseState = Mouse.GetState();
+
+            if (currentMouseState.X != mouse.X || currentMouseState.Y != mouse.Y)
+                mousePosition = new Vector2(currentMouseState.X, currentMouseState.Y);
+
+            oldMouse = mouse;
+            mouse = currentMouseState;
+
             elapsedTime += gameTime.ElapsedGameTime;
             if (elapsedTime > TimeSpan.FromSeconds(1))
             {
@@ -135,6 +157,12 @@ namespace ConsoleAdventure
 
             if (InWorld)
             {
+                if (_isFirstUpdate)
+                {
+                    world.Start?.Invoke();
+                    _isFirstUpdate = false;
+                }
+                
                 world.ListenEvents();
 
                 if (kstate.IsKeyDown(Keys.Escape))
@@ -171,17 +199,12 @@ namespace ConsoleAdventure
 
             if (InWorld)
             {
-                if (_isFirstUpdate)
-                {
-                    world.Start?.Invoke();
-                    _isFirstUpdate = false;
-                }
-                
                 _spriteBatch.Begin();
 
                 _spriteBatch.DrawString(font, $"FPS: {(int)frameRate}", new Vector2(10, _graphics.PreferredBackBufferHeight - 30), Color.White);
 
                 _spriteBatch.DrawString(font, display.DisplayInfo(), new Vector2(10, 10), Color.Gray);
+                _spriteBatch.DrawString(font, display.TransformTooltip(), new Vector2(197, 10), Color.Gray);
                 _spriteBatch.DrawString(font, display.DisplayInventory(), new Vector2(_graphics.PreferredBackBufferWidth - 300, 10), Color.White);
                 display.DrawWorld();
 

@@ -17,5 +17,6 @@ namespace ConsoleAdventure.WorldEngine
         entity,
         cat,
         chest,
+        grass,
     }
 }

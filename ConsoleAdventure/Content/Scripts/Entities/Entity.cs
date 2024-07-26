@@ -36,9 +36,9 @@ namespace ConsoleAdventure.Content.Scripts
             ConsoleAdventure.world.Start += Start;
         }
 
-        protected void Start()
+        protected virtual void Start()
         {
-            StateMachine?.ChangeState(StatesEnum.Moving);
+            
         }
 
         public override string GetSymbol()

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.Entities.StateMachine;
 
 namespace ConsoleAdventure.Content.Scripts
 {
@@ -20,6 +21,12 @@ namespace ConsoleAdventure.Content.Scripts
             Initialize();
             
             EntityColor.ChooseColor(position);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            StateMachine?.ChangeState(StatesEnum.Moving);
         }
 
         public override string GetSymbol()
