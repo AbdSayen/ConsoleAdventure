@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleAdventure.Content.Scripts;
+using System;
 using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine.Generate
@@ -19,9 +20,12 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         public void Generate(int seed, bool isfullGenerate = true)
         {
-            //ConsoleAdventure.world.seed = seed;
+            ConsoleAdventure.world.seed = seed;
             Generate(isfullGenerate);
+
+            ConsoleAdventure.world.entities.Add(new Cat(new(4, 4)));
         }
+
 
         public void Generate(bool isfullGenerate = true)
         {

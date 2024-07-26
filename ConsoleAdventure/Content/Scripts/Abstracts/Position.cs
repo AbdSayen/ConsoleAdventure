@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Drawing;
 
 namespace ConsoleAdventure
 {
@@ -30,6 +29,16 @@ namespace ConsoleAdventure
         public static Position Zero()
         {
             return new Position(0, 0);
+        }
+
+        public Vector2 ToVector2()
+        {
+            return new(x, y);
+        }
+
+        public Point ToPoint()
+        {
+            return new(x, y);
         }
 
         #region Operators

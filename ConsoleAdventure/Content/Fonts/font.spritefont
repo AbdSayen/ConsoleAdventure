@@ -43,7 +43,7 @@
 				<End>&#9608;</End>
 			</CharacterRegion>
 			<CharacterRegion>
-				<Start>&#9829;</Start>
+				<Start>&#9824;</Start>
 				<End>&#9830;</End>
 			</CharacterRegion>
 			<!-- Различные специальные символы -->
@@ -69,6 +69,26 @@
 			<CharacterRegion>
 				<Start>&#8801;</Start>
 				<End>&#8801;</End>
+			</CharacterRegion>
+
+			<CharacterRegion>
+				<Start>&#636;</Start>
+				<End>&#639;</End>
+			</CharacterRegion>
+			
+			<CharacterRegion>
+				<Start>&#978;</Start>
+				<End>&#980;</End>
+			</CharacterRegion>
+
+			<CharacterRegion>
+				<Start>&#9788;</Start>
+				<End>&#9788;</End>
+			</CharacterRegion>
+
+			<CharacterRegion>
+				<Start>&#1360;</Start>
+				<End>&#1360;</End>
 			</CharacterRegion>
 			
 		</CharacterRegions>

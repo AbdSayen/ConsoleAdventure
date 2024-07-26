@@ -151,5 +151,15 @@ namespace ConsoleAdventure
         {
             return StabilizeTicks((int)(seconds * 60));
         }
+
+        public static Position ToPosition(this Vector2 position)
+        {
+            return new((int)position.X, (int)position.Y);
+        }
+
+        public static Position ToPosition(this Point position)
+        {
+            return new(position.X, position.Y);
+        }
     }
 }

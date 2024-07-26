@@ -46,6 +46,17 @@ namespace ConsoleAdventure.WorldEngine.Generate
                             }
                         }
                     }
+
+                    if (random.Next(0, 500) == 0 && field.content == null && field.isStructure == false)
+                    {
+                        for (int i = 0; i < random.Next(1, 4); i++)
+                        {
+                            for (int j = 0; j < random.Next(1, 4); j++)
+                            {
+                                new Grass(position + new Position(i, j));
+                            }
+                        }
+                    }
                 }
             }
         }

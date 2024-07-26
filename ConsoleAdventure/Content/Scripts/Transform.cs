@@ -77,6 +77,18 @@ namespace ConsoleAdventure
             return null;
         }
 
+        public static string GetName(Position pos, int layer)
+        {
+            if (layer < 0) layer = 0;
+            if (layer > 3) layer = 3;
+
+            Field field = ConsoleAdventure.world.GetField(pos.x, pos.y, layer);
+
+            if (field?.content == null) return Localization.GetTranslation("Transforms", "None");
+
+            return Localization.GetTranslation("Transforms", field.content.GetType().Name);
+        }
+
         public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
         {
             if (typeMapping.TryGetValue(type, out Type objectType))
