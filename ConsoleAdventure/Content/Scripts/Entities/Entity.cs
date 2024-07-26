@@ -57,7 +57,7 @@ namespace ConsoleAdventure.Content.Scripts
         /// </summary>
         public virtual void InteractWithWorld()
         {
-            StateMachine?.CurrentState?.InteractWithWorld();
+            StateMachine?.InteractWithWorld();
             //if(life <= 0) Kill();
         }
 

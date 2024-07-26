@@ -17,6 +17,11 @@ public class StateMachine
         _movingState = new MovingState(_owner);
         _idleState = new IdleState(_owner);
     }
+
+    public void InteractWithWorld()
+    {
+        CurrentState?.InteractWithWorld();
+    }
     
     public void ChangeState(StatesEnum state)
     {
