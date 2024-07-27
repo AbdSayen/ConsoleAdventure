@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.Content.Scripts.InputLogic;
+﻿using ConsoleAdventure.Content.Scripts.Audio;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
@@ -121,6 +122,8 @@ namespace ConsoleAdventure
             CaModLoader.InitializeMods();
             menu = new Menu();
             CaModLoader.RunMods();
+
+            SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
         }
 
         protected override void LoadContent()

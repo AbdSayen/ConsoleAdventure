@@ -1,4 +1,5 @@
 ﻿using CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts.Audio;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
@@ -193,6 +194,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                 menuButtons[0].isHover = true;
 
                             timer = 0;
+
+                            TickSound();
                         }
                     }
 
@@ -208,7 +211,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                 menuButtons[menuButtons.Length - 1].isHover = true;
 
                             timer = 0;
-                        }
+                            TickSound();
+                        }    
                     }
 
                     if (menuButtons[i].isHover && ConsoleAdventure.kstate.IsKeyDown(Keys.Enter))
@@ -527,7 +531,21 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigModFolderHelp, new Vector2(ConsoleAdventure.Width/2 - ConsoleAdventure.Font.MeasureString(TextAssets.navigHelp).X, ConsoleAdventure.Height - 25), Color.Gray);
             }
 
+            bar.Progress = 5;
+            bar.Draw(spriteBatch);
+
             spriteBatch.End();
+        }
+
+        public async static void TickSound()
+        {
+            await SoundEngine.PlaySound(SoundEngine.SineWave, 400, 0.25f, TimeSpan.FromMilliseconds(80));   
+        }
+
+        public async static void ErrorSound()
+        {
+            await SoundEngine.PlaySound(SoundEngine.SineWave, 400, 0.25f, TimeSpan.FromMilliseconds(80));
+            await SoundEngine.PlaySound(SoundEngine.SquareWave, 200, 0.25f, TimeSpan.FromMilliseconds(80));
         }
     }
 }
