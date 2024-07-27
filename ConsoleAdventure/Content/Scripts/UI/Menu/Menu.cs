@@ -531,9 +531,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigModFolderHelp, new Vector2(ConsoleAdventure.Width/2 - ConsoleAdventure.Font.MeasureString(TextAssets.navigHelp).X, ConsoleAdventure.Height - 25), Color.Gray);
             }
 
-            bar.Progress = 5;
-            bar.Draw(spriteBatch);
-
             spriteBatch.End();
         }
 
