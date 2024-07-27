@@ -5,7 +5,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 {
     public class ProgressBar : Bar
     {
-        private static string[] loadAnimFrames = {"-", "/", "|", "\\" };
+        private static string[] loadAnimFrames = {"-", "/", "|", @"\" };
 
         public const bool PercentLeft = true;
         public const bool PercentRight = false;
@@ -15,6 +15,11 @@ namespace ConsoleAdventure.Content.Scripts.UI
         public string stepText = "load";
 
         public ProgressBar(Rectangle rectangle, Color color, uint size, bool percentPos) : base(rectangle, color, size)
+        {
+            this.percentPos = percentPos;
+        }
+
+        public ProgressBar(Vector2 position, Color color, uint size, bool percentPos) : base(position, color, size)
         {
             this.percentPos = percentPos;
         }

@@ -15,8 +15,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public int curssor = 0;
 
-        public bool isHover;
-
         internal string name = "";
 
         internal string seed = "";

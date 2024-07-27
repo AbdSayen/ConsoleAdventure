@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ConsoleAdventure.Content.Scripts.UI
@@ -13,6 +12,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
         public Rectangle rectangle = new();
 
         public Color color;
+
+        public bool updateToText = true;
+
+        public bool isHover = false;
 
         public Vector2 Position
         {
@@ -43,6 +46,13 @@ namespace ConsoleAdventure.Content.Scripts.UI
             Center = center;
         }
 
+        public BaseUI(string text, Vector2 position, Color color)
+        {
+            this.text = text;
+            this.color = color;
+            Position = position;
+        }
+
         public BaseUI(Vector2 center, Color color, string localization)
         {
             text = Localization.GetTranslation("UI", localization);
@@ -54,20 +64,30 @@ namespace ConsoleAdventure.Content.Scripts.UI
         public BaseUI(Rectangle rectangle, Color color)
         {   
             Position = Vector2.Zero;
-            rectangle.Size = rectangle.Size;
+            this.rectangle = rectangle;
             Center = rectangle.Location.ToVector2();
-            this.color = color;        
+            this.color = color;
+        }
+
+        public BaseUI(Rectangle rectangle, Color color, bool updateToText)
+        {
+            this.updateToText = updateToText;
+            Position = Vector2.Zero;
+            this.rectangle = rectangle;
+            Center = rectangle.Location.ToVector2();
+            this.color = color;
         }
 
         public void UpdateRectToTextSize()
         {
+            if (!updateToText) return;
             Vector2 textSize = ConsoleAdventure.Font.MeasureString(text);
             rectangle = new Rectangle(position.ToPoint(), textSize.ToPoint());
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(ConsoleAdventure.Font, text, position, color, 0, Vector2.Zero, 1f, 0, 0);
+            spriteBatch.DrawString(ConsoleAdventure.Font, text, position, !isHover ? color : Color.Yellow, 0, Vector2.Zero, 1f, 0, 0);
         }
     }
 }

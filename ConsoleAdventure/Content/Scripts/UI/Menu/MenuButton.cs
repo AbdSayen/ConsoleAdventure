@@ -12,8 +12,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
     {
         public Color cursorColor = Color.Yellow;
 
-        public bool isHover;
-
         public byte type;
 
         public MenuButton(Vector2 position, string kay, Color color, byte type) : base(position, color, kay)

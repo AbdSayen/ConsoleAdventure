@@ -35,7 +35,12 @@ namespace ConsoleAdventure.Content.Scripts.UI
             }
         }
 
-        public Bar(Rectangle rectangle, Color color, uint size) : base(rectangle, color)
+        public Bar(Rectangle rectangle, Color color, uint size) : base(rectangle, color, false)
+        {
+            this.Size = size;
+        }
+
+        public Bar(Vector2 position, Color color, uint size) : base(new Rectangle((int)position.X, (int)position.Y, (int)(size * 9), 19), color)
         {
             this.Size = size;
         }
