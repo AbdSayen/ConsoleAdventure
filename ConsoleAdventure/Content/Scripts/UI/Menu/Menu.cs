@@ -97,11 +97,11 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "   | " + itemsInMod + " " + textItems + " " + blocksInMod + " " + textBlocks + "\n    " + newDescription + "\n\n";
             }
 
-            aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 15 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);
+            aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);
 
-            aboutControlPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 15 * 18, 64, 30), TextAssets.Control, TextAssets.AboutControl);
+            aboutControlPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Control, TextAssets.AboutControl);
 
-            modListPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 15 * 18, 64, 30), TextAssets.Mods, modsListText);
+            modListPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Mods, modsListText);
 
             for (int i = 0; i < menuSettingsButtons.Length; i++)
             {
