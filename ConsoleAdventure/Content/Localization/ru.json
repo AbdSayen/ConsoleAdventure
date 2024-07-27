@@ -74,5 +74,12 @@
     "Blocks-genitive": "Блоков",
     "Block": "Блок",
     "Block-genitive": "Блока"
+  },
+
+  "Progress": {
+    "LoadFile": "Чтение файла мира...",
+    "LoadGenericData": "Загрузка общих данных...",
+    "LoadObjectData": "Загрузка объектов...",
+    "LoadEntityData": "Загрузка сущностей..."
   }
 }
