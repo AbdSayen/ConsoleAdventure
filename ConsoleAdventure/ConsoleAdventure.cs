@@ -1,4 +1,4 @@
-﻿using ConsoleAdventure.Content.Scripts.Audio;
+using ConsoleAdventure.Content.Scripts.Audio;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI;
