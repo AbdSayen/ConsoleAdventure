@@ -11,6 +11,11 @@ namespace ConsoleAdventure.Content.Scripts.Audio
         public static Wave SquareWave => new Square();
         public static Wave TriangleWave => new Triangle();
         public static Wave SawtootWave => new Sawtoot();
+        public static Wave WhiteNoiseWave => new WhiteNoise();
+        public static Wave FadeOutWhiteNoiseWave => new FadeOutWhiteNoise(); // 500 ms - max
+        public static Wave FadeInWhiteNoiseWave => new FadeInWhiteNoise(); // 500 ms - max
+
+        public static Wave BubbleWave => new Bubble(); // 500 ms - max
 
         static int sampleRate = 44100; // Частота дискретизации 
         static int samplesPerBuffer = 44100; // Количество семплов в одном буфере
