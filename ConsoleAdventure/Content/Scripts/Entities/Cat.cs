@@ -2,25 +2,13 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.Entities.StateMachine;
 
 namespace ConsoleAdventure.Content.Scripts
 {
     [Serializable]
     public class Cat : Entity
     {
-        static Color[] colors = new Color[9]
-        {
-            new Color(50, 50, 50),
-            new Color(131, 105, 44),
-            new Color(193, 138, 45),
-            new Color(243, 171, 51),
-            new Color(140, 147, 153),
-            new Color(255, 255, 255),
-            new Color(196, 207, 211),
-            new Color(250, 194, 45),
-            new Color(240, 210, 80),
-        };
-
         int index = -1;
 
         public Cat(Position position, List<object> parameters = null) : base(position, parameters)
@@ -31,9 +19,14 @@ namespace ConsoleAdventure.Content.Scripts
             AddTypeToMap<Cat>(type);
 
             Initialize();
+            
+            EntityColor.ChooseColor(position);
+        }
 
-            this.index = index == -1 ? ConsoleAdventure.rand.Next(0, colors.Length) : index;
-            СhooseColor(colors, this.position, this.index);
+        protected override void Start()
+        {
+            base.Start();
+            StateMachine?.ChangeState(StatesEnum.Moving);
         }
 
         public override string GetSymbol()
@@ -43,7 +36,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         public override Color GetColor()
         {
-            return Color.White;
+            return Microsoft.Xna.Framework.Color.White;
         }
 
         bool isFree = true;
@@ -51,51 +44,6 @@ namespace ConsoleAdventure.Content.Scripts
         int randomTime = 0;
         int rotation = -1;
         int rotation1 = -1;
-
-        public override void AI()
-        {
-            if (isFree)
-            {
-                randomTime = Utils.StabilizeTicks(ConsoleAdventure.rand.Next(0, 180));
-                rotation = ConsoleAdventure.rand.Next(-1, 4);
-                rotation1 = ConsoleAdventure.rand.Next(-3, 4);
-                isFree = false;
-
-                while (true)
-                {
-                    if (rotation1 == rotation)
-                    {
-                        rotation1 = ConsoleAdventure.rand.Next(-3, 4);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-
-            if (timer < randomTime)
-            {
-                if (rotation > -1 && timer % 10 == 0)
-                {
-                    Move(1, (Rotation)(rotation * 2));
-                    if (rotation1 > -1)
-                    {
-                        Move(1, (Rotation)(rotation1 * 2));
-                    }
-
-                    СhooseColor(colors, this.position, index);
-                }
-            }
-
-            else
-            {
-                isFree = true;
-                timer = 0;
-            }
-
-            timer++;
-        }
 
         public override List<object> GetParams()
         {

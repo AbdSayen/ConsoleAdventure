@@ -1,14 +1,10 @@
 ﻿using ConsoleAdventure.WorldEngine;
 using Microsoft.VisualBasic.FileIO;
-using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
 
 namespace ConsoleAdventure.Content.Scripts.IO
 {
@@ -240,13 +236,13 @@ namespace ConsoleAdventure.Content.Scripts.IO
             World world = ConsoleAdventure.world;
             Tags tags = ConsoleAdventure.tags;
 
-            world.seed = (int)tags.SafelyGet("Seed");
+            world.seed = tags.SafelyGet<int>("Seed");
 
-            world.size = (int)tags.SafelyGet("Size");
+            world.size = tags.SafelyGet<int>("Size");
             //world.seed = (int)tags.SafelyGet("Seed");
             //world.seed = (int)tags.SafelyGet("Seed");
 
-            world.time = (Time)tags.SafelyGet("Time");
+            world.time = tags.SafelyGet<Time>("Time");
 
             for (int i = 0; i < world.size; i++)
             {
@@ -256,7 +252,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                     {
                         if (k != World.MobsLayerId)
                         {
-                            byte type = ((byte[,,])tags.SafelyGet("Fields"))[i, j, k];
+                            byte type = (tags.SafelyGet<byte[,,]>("Fields"))[i, j, k];
                             if (type != (byte)RenderFieldType.loot && type != (byte)RenderFieldType.chest)
                             {
                                 Transform.SetObject(type, new(i, j), k); //загружаем ячейки из тега
@@ -266,12 +262,12 @@ namespace ConsoleAdventure.Content.Scripts.IO
                             {
                                 List<Stack> items = new List<Stack>();
 
-                                for (int l = 0; l < (int)tags.SafelyGet("LootCount"); l++)
+                                for (int l = 0; l < tags.SafelyGet<int>("LootCount"); l++)
                                 {
-                                    Position position = new Position(((int[])tags.SafelyGet("LootX"))[l], ((int[])tags.SafelyGet("LootY"))[l]);
+                                    Position position = new Position((tags.SafelyGet<int[]>("LootX"))[l], (tags.SafelyGet<int[]>("LootY"))[l]);
                                     if (position.x == i && position.y == j)
                                     {
-                                        items = ((List<Stack>[])tags.SafelyGet("Loots"))[l];
+                                        items = (tags.SafelyGet<List<Stack>[]>("Loots"))[l];
                                         break;
                                     }
                                 }
@@ -283,11 +279,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 }
             }
 
-            int EntityCount = (int)tags.SafelyGet("EntityCount");
-            int[] EntityX = (int[])tags.SafelyGet("EntityX");
-            int[] EntityY = (int[])tags.SafelyGet("EntityY");
-            byte[] EntityTypes = (byte[])tags.SafelyGet("EntityTypes");
-            List<object>[] EntityParams = (List<object>[])tags.SafelyGet("EntityParams");
+            int EntityCount = tags.SafelyGet<int>("EntityCount");
+            int[] EntityX = tags.SafelyGet<int[]>("EntityX");
+            int[] EntityY = tags.SafelyGet<int[]>("EntityY");
+            byte[] EntityTypes = tags.SafelyGet<byte[]>("EntityTypes");
+            List<object>[] EntityParams = tags.SafelyGet<List<object>[]>("EntityParams");
 
             for (int i = 0; i < world.entities.Count; i++)
             {

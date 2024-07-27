@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
@@ -47,10 +48,9 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public override Color GetColor()
         {
-            return Color.Yellow;
+            return Microsoft.Xna.Framework.Color.Yellow;
         }
-
-
+        
         public override void InteractWithWorld()
         {
             timer.Start();

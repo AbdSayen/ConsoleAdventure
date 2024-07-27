@@ -68,6 +68,8 @@ namespace ConsoleAdventure
             }
         }
 
+        private bool _isFirstUpdate = true;
+
         public ConsoleAdventure()
         {
             if (File.Exists(Program.savePath + "settings.json")) // Если файл существует
@@ -155,6 +157,12 @@ namespace ConsoleAdventure
 
             if (InWorld)
             {
+                if (_isFirstUpdate)
+                {
+                    world.Start?.Invoke();
+                    _isFirstUpdate = false;
+                }
+                
                 world.ListenEvents();
 
                 if (kstate.IsKeyDown(Keys.Escape))

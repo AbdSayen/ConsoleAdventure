@@ -13,6 +13,8 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class World
     {
+        public Action Start;
+        
         public int size { get; internal set; } = 256;
 
         public List<List<Chunk>> chunks = new List<List<Chunk>>();

@@ -27,14 +27,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
         }
 
-        public object SafelyGet(string key)
+        public T SafelyGet<T>(string key)
         {
             if (Data.TryGetValue(key, out var value))
             {
-                return value;
+                return (T)value;
             }
 
-            return new();
+            return default;
         }
     }
 }

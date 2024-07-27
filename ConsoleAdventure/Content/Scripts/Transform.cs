@@ -39,6 +39,11 @@ namespace ConsoleAdventure
             }
         }
 
+        public T Copy<T>()
+        {
+            return (T)MemberwiseClone();
+        }
+        
         public static void AddTypeToMap<T>(int type)
         {
             if(!typeMapping.ContainsKey(type))
