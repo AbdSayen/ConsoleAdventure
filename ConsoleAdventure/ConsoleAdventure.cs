@@ -1,4 +1,3 @@
-﻿using CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Audio;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
@@ -127,8 +126,6 @@ namespace ConsoleAdventure
             CaModLoader.RunMods();
 
             SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
-
-            ModCreator.CreateMod("AutoMod");
         }
 
         protected override void LoadContent()
