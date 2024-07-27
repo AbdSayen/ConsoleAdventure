@@ -74,5 +74,12 @@
     "Blocks-genitive": "Blocks",
     "Block": "Block",
     "Block-genitive": "Block"
+  },
+
+  "Progress": {
+    "LoadFile": "Read world file...",
+    "LoadGenericData": "Load generic data...",
+    "LoadObjectData": "Loading objects...",
+    "LoadEntityData": "Loading entities..."
   }
 }

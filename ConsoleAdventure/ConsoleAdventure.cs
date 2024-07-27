@@ -45,6 +45,8 @@ namespace ConsoleAdventure
 
         public static Random rand = new Random();
 
+        public static ProgressBar progressBar;
+
         private Menu menu;
 
         internal static bool isExit;

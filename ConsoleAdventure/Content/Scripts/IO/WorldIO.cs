@@ -15,6 +15,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 {
     internal class WorldIO
     {
+
+        private static readonly object locker = new object();
         private static string path = Program.savePath + "Worlds\\";
 
         public static void Save(string name)
@@ -47,30 +49,38 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
         public static void Load(string name)
         {
-            Console.WriteLine("Loading on account");
-
-            if (!Directory.Exists(path))
+            lock (locker)
             {
-                Directory.CreateDirectory(path);
+                ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadFile");
+
+                Console.WriteLine("Loading on account");
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string fileName = path + name + ".wld";
+
+                if (File.Exists(fileName))
+                {
+                    byte[] bytes = File.ReadAllBytes(fileName);
+                    ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytes); //Переводим байты в теги
+                }
+
+                else
+                {
+                    Console.WriteLine($"The world {name} was not found");
+                    return;
+                }
+
+                ConsoleAdventure.progressBar.Progress = 5;
+
+                ConsoleAdventure.world.name = name;
+                LoadTags(); //Загружам данные из тегов в мир
+
+                Console.WriteLine("The world was successfully loaded!");
             }
-
-            string fileName = path + name + ".wld";
-
-            if (File.Exists(fileName))
-            {
-                byte[] bytes = File.ReadAllBytes(fileName);
-                ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytes); //Переводим байты в теги
-            }
-            else
-            {
-                Console.WriteLine($"The world {name} was not found");
-                return;
-            }
-
-            ConsoleAdventure.world.name = name;
-            LoadTags(); //Загружам данные из тегов в мир
-
-            Console.WriteLine("The world was successfully loaded!");
         }
 
         public static void Delete(string name)
@@ -223,83 +233,97 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
         private static void LoadTags()
         {
-            Type baseType = typeof(Transform);
-            IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType));
-            foreach (Type type in list)
+            lock (locker)
             {
-                Transform.Init(type, Position.Zero(), null, null);
-            }
+                ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadGenericData");
 
-            World world = ConsoleAdventure.world;
-            Tags tags = ConsoleAdventure.tags;
-
-            world.seed = tags.SafelyGet<int>("Seed");
-
-            world.size = tags.SafelyGet<int>("Size");
-            //world.seed = (int)tags.SafelyGet("Seed");
-            //world.seed = (int)tags.SafelyGet("Seed");
-
-            world.time = tags.SafelyGet<Time>("Time");
-
-            Main.modTransformTypesOffset = tags.SafelyGet<Dictionary<string, byte>>("TransformTypesOffset");
-
-            for (int i = 0; i < world.size; i++)
-            {
-                for (int j = 0; j < world.size; j++)
+                Type baseType = typeof(Transform);
+                IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType));
+                foreach (Type type in list)
                 {
-                    for (int k = 0; k < 4; k++)
+                    Transform.Init(type, Position.Zero(), null, null);
+                }
+
+                World world = ConsoleAdventure.world;
+                Tags tags = ConsoleAdventure.tags;
+
+                world.seed = tags.SafelyGet<int>("Seed");
+
+                world.size = tags.SafelyGet<int>("Size");
+                //world.seed = (int)tags.SafelyGet("Seed");
+                //world.seed = (int)tags.SafelyGet("Seed");
+
+                world.time = tags.SafelyGet<Time>("Time");
+
+                Main.modTransformTypesOffset = tags.SafelyGet<Dictionary<string, byte>>("TransformTypesOffset");
+
+                ConsoleAdventure.progressBar.Progress += 10;
+                ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadObjectData");
+
+                for (int i = 0; i < world.size; i++)
+                {
+                    for (int j = 0; j < world.size; j++)
                     {
-                        if (k != World.MobsLayerId)
+                        for (int k = 0; k < 4; k++)
                         {
-                            byte type = (tags.SafelyGet<byte[,,]>("Fields"))[i, j, k];
-                            if (type != (byte)RenderFieldType.loot && type != (byte)RenderFieldType.chest)
+                            if (k != World.MobsLayerId)
                             {
-                                Transform.SetObject(type, new(i, j), k); //загружаем ячейки из тега
-                            }
-
-                            else
-                            {
-                                List<Stack> items = new List<Stack>();
-
-                                for (int l = 0; l < tags.SafelyGet<int>("LootCount"); l++)
+                                byte type = (tags.SafelyGet<byte[,,]>("Fields"))[i, j, k];
+                                if (type != (byte)RenderFieldType.loot && type != (byte)RenderFieldType.chest)
                                 {
-                                    Position position = new Position((tags.SafelyGet<int[]>("LootX"))[l], (tags.SafelyGet<int[]>("LootY"))[l]);
-                                    if (position.x == i && position.y == j)
-                                    {
-                                        items = (tags.SafelyGet<List<Stack>[]>("Loots"))[l];
-                                        break;
-                                    }
+                                    Transform.SetObject(type, new(i, j), k); //загружаем ячейки из тега
                                 }
 
-                                Transform.SetObject(type, new(i, j), items: items); //Загружам лут из мира
+                                else
+                                {
+                                    List<Stack> items = new List<Stack>();
+
+                                    for (int l = 0; l < tags.SafelyGet<int>("LootCount"); l++)
+                                    {
+                                        Position position = new Position((tags.SafelyGet<int[]>("LootX"))[l], (tags.SafelyGet<int[]>("LootY"))[l]);
+                                        if (position.x == i && position.y == j)
+                                        {
+                                            items = (tags.SafelyGet<List<Stack>[]>("Loots"))[l];
+                                            break;
+                                        }
+                                    }
+
+                                    Transform.SetObject(type, new(i, j), items: items); //Загружам лут из мира
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            int EntityCount = tags.SafelyGet<int>("EntityCount");
-            int[] EntityX = tags.SafelyGet<int[]>("EntityX");
-            int[] EntityY = tags.SafelyGet<int[]>("EntityY");
-            byte[] EntityTypes = tags.SafelyGet<byte[]>("EntityTypes");
-            List<object>[] EntityParams = tags.SafelyGet<List<object>[]>("EntityParams");
+                ConsoleAdventure.progressBar.Progress += 30;
+                ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadEntityData");
 
-            for (int i = 0; i < world.entities.Count; i++)
-            {
-                world.entities[i].Kill();
-            }
+                int EntityCount = tags.SafelyGet<int>("EntityCount");
+                int[] EntityX = tags.SafelyGet<int[]>("EntityX");
+                int[] EntityY = tags.SafelyGet<int[]>("EntityY");
+                byte[] EntityTypes = tags.SafelyGet<byte[]>("EntityTypes");
+                List<object>[] EntityParams = tags.SafelyGet<List<object>[]>("EntityParams");
 
-            world.entities.Clear();
-
-            for (int i = 0; i < EntityCount; i++)
-            {
-                if (EntityX[i] == 5 && EntityY[i] == 5)
+                for (int i = 0; i < world.entities.Count; i++)
                 {
-                    EntityX[i] = 0;
-                    EntityY[i] = 0;
+                    world.entities[i].Kill();
                 }
 
-                Transform.SetObject(EntityTypes[i], new Position(EntityX[i], EntityY[i]), parameters: EntityParams[i]);
+                world.entities.Clear();
+
+                for (int i = 0; i < EntityCount; i++)
+                {
+                    if (EntityX[i] == 5 && EntityY[i] == 5)
+                    {
+                        EntityX[i] = 0;
+                        EntityY[i] = 0;
+                    }
+
+                    Transform.SetObject(EntityTypes[i], new Position(EntityX[i], EntityY[i]), parameters: EntityParams[i]);
+                }
+
+                ConsoleAdventure.progressBar.Progress += 5;
+                ConsoleAdventure.InWorld = true;
             }
         }
     }

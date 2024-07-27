@@ -54,7 +54,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         public BaseUI(Rectangle rectangle, Color color)
         {   
             Position = Vector2.Zero;
-            rectangle.Size = rectangle.Size;
+            this.rectangle.Size = rectangle.Size;
             Center = rectangle.Location.ToVector2();
             this.color = color;        
         }

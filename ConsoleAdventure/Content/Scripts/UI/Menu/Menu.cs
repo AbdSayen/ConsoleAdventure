@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ConsoleAdventure.Content.Scripts.UI
 {
@@ -94,11 +97,11 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "   | " + itemsInMod + " " + textItems + " " + blocksInMod + " " + textBlocks + "\n    " + newDescription + "\n\n";
             }
 
-            aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);
+            aboutGamePanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 15 * 18, 64, 30), TextAssets.About, TextAssets.AboutGame);
 
-            aboutControlPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Control, TextAssets.AboutControl);
+            aboutControlPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 15 * 18, 64, 30), TextAssets.Control, TextAssets.AboutControl);
 
-            modListPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 32 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Mods, modsListText);
+            modListPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 15 * 18, 64, 30), TextAssets.Mods, modsListText);
 
             for (int i = 0; i < menuSettingsButtons.Length; i++)
             {
@@ -171,6 +174,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 menuButtons[0].isHover = true;
 
             menuSettingsButtons[0].isHover = true;
+
+            ConsoleAdventure.progressBar = new ProgressBar(new Rectangle(new Point((int)ConsoleAdventure.Width / 2, ((int)ConsoleAdventure.Height / 2) - 120), new Point(50 * 9, 19)), Color.LightGreen, 50, ProgressBar.PercentRight);
         }
 
         int timer;
@@ -293,10 +298,22 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         {
                             if (worldPanels[i].curssor == 0 && worldPanels[i].isHover)
                             {
-                                ConsoleAdventure.CreateWorld(worldPanels[i].name, 1234, false);
-                                WorldIO.Load(worldPanels[i].name);
-                                ConsoleAdventure.InWorld = true;
+                                ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadFile");
+                                ConsoleAdventure.progressBar.Progress = 0;
+
+                                string name = worldPanels[i].name;
+                                State = 6;
+                                
+                                Thread load = new Thread(new ThreadStart(LoadWorld));
+                                load.Start();
+
                                 timer = 0;
+
+                                void LoadWorld()
+                                {
+                                    ConsoleAdventure.CreateWorld(name, 1234, false);
+                                    WorldIO.Load(name);
+                                }
                             }
 
                             if (worldPanels[i].curssor == 2 && worldPanels[i].isHover)
@@ -529,6 +546,11 @@ namespace ConsoleAdventure.Content.Scripts.UI
             {
                 modListPanel.Draw(spriteBatch);
                 spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigModFolderHelp, new Vector2(ConsoleAdventure.Width/2 - ConsoleAdventure.Font.MeasureString(TextAssets.navigHelp).X, ConsoleAdventure.Height - 25), Color.Gray);
+            }
+
+            if (State == 6)
+            {
+                ConsoleAdventure.progressBar.Draw(spriteBatch);
             }
 
             spriteBatch.End();
