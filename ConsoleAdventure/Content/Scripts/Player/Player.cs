@@ -115,8 +115,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
             }
             else if (Input.IsKeyDown(InputConfig.Destroying) && CanDestroyAt(targetPosition))
             {
-                world.RemoveSubject(world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId).content, World.BlocksLayerId);
-                world.time.PassTime(60);
+                Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId).content;
+                if (t.CanBeDestroyed())
+                {
+                    world.RemoveSubject(t, World.BlocksLayerId);
+                    world.time.PassTime(60);
+                }
             }
         }
 

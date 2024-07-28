@@ -135,5 +135,10 @@ namespace ConsoleAdventure
             else
                 Activator.CreateInstance(type, args);
         }
+
+        public virtual bool CanBeDestroyed()
+        {
+            return true;
+        }
     }
 }

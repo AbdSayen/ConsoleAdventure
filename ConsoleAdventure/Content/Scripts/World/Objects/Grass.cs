@@ -31,19 +31,19 @@ namespace ConsoleAdventure.WorldEngine
             " r"
         };
 
-        static float darkDegree = 2.5f;
+        static float darkDegree = 1.6f;
 
         static Color[] colorsMap = new Color[]
         {
-            new(106, 255, 0) / darkDegree,
-            new(76, 182, 0) / darkDegree,
-            new(52, 124, 0) / darkDegree,
-            new(17, 255, 0) / darkDegree,
-            new(13, 191, 0) / darkDegree,
-            new(8, 120, 0) / darkDegree,
-            new(0, 255, 72) / darkDegree,
-            new(0, 200, 57) / darkDegree,
-            new(0, 112, 32) / darkDegree
+            new(106, 255, 0),
+            new(76, 182, 0),
+            new(52, 124, 0),
+            new(17, 255, 0),
+            new(13, 191, 0),
+            new(8, 120, 0),
+            new(0, 255, 72),
+            new(0, 200, 57),
+            new(0, 112, 32)
         };
 
         int Sindex; //Symbol

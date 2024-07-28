@@ -1,6 +1,5 @@
 ﻿using ConsoleAdventure.Content.Scripts;
-using System;
-using System.Collections.Generic;
+
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {

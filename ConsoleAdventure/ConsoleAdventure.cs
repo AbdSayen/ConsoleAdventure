@@ -47,7 +47,7 @@ namespace ConsoleAdventure
 
         public static ProgressBar progressBar;
 
-        private Menu menu;
+        private static Menu menu;
 
         internal static bool isExit;
 
@@ -176,7 +176,7 @@ namespace ConsoleAdventure
                 {
                     WorldIO.Save(world.name);
                     InWorld = false;
-                    menu.State = 0;
+                    menu.CloseAllPages();
                 }
 
                 if (!kstate.IsKeyDown(InputConfig.Pause) && prekstate.IsKeyDown(InputConfig.Pause))

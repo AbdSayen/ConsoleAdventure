@@ -19,11 +19,11 @@ namespace ConsoleAdventure.Content.Scripts.UI
 {
     public class Menu
     {
-        public int State { get; private set; }
+        public int State; // { get; private set; }
 
-        private MenuButton[] menuButtons = new MenuButton[4];
+        internal MenuButton[] menuButtons = new MenuButton[4];
 
-        private MenuButton[] menuSettingsButtons = new MenuButton[3];
+        internal MenuButton[] menuSettingsButtons = new MenuButton[3];
 
         private List<WorldPanel> worldPanels = new List<WorldPanel>();
 
@@ -202,8 +202,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                 menuButtons[0].isHover = true;
 
                             timer = 0;
-
-                            TickSound();
                         }
                     }
 
@@ -219,7 +217,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                 menuButtons[menuButtons.Length - 1].isHover = true;
 
                             timer = 0;
-                            TickSound();
                         }    
                     }
 
@@ -476,16 +473,31 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             if (ConsoleAdventure.kstate.IsKeyDown(Keys.Escape) && timer >= Utils.StabilizeTicks(20))
             {
-                State = 0;
-                for (int i = 0; i < menuButtons.Length; i++)
-                {
-                    menuButtons[i].cursorColor = Color.Yellow;
-                }
+                CloseAllPages();
                 timer = 0;
+            }
+
+            if (State == 0 || State == 2)
+            {
+                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && !ConsoleAdventure.prekstate.IsKeyDown(Keys.Left) ||
+                    ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && !ConsoleAdventure.prekstate.IsKeyDown(Keys.Right) ||
+                    ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && !ConsoleAdventure.prekstate.IsKeyDown(Keys.Up) ||
+                    ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && !ConsoleAdventure.prekstate.IsKeyDown(Keys.Down))
+                {
+                    TickSound();
+                }
             }
             timer++;
         }
         
+        public void CloseAllPages()
+        {
+            State = 0;
+            for (int i = 0; i < menuButtons.Length; i++)
+            {
+                menuButtons[i].cursorColor = Color.Yellow;
+            }
+        }
 
         private void ReLocalize()
         {
@@ -572,7 +584,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public async static void TickSound()
         {
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 400, 0.1f, TimeSpan.FromMilliseconds(80));   
+            await SoundEngine.PlaySound(SoundEngine.BubbleWave, 500, 0.1f, TimeSpan.FromMilliseconds(500));   
         }
 
         public async static void Melody()
