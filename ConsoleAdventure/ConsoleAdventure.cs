@@ -176,6 +176,7 @@ namespace ConsoleAdventure
                 {
                     WorldIO.Save(world.name);
                     InWorld = false;
+                    menu.State = 0;
                 }
 
                 if (!kstate.IsKeyDown(InputConfig.Pause) && prekstate.IsKeyDown(InputConfig.Pause))
