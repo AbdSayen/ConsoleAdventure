@@ -87,7 +87,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(ConsoleAdventure.Font, text, position, !isHover ? color : Color.Yellow, 0, Vector2.Zero, 1f, 0, 0);
+            spriteBatch.DrawString(ConsoleAdventure.Font, text, position, color, 0, Vector2.Zero, 1f, 0, 0);
         }
     }
 }

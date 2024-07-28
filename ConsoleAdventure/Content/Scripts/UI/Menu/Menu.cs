@@ -353,10 +353,14 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     WorldMenuInit();
                 }
 
-                if (!ConsoleAdventure.kstate.IsKeyDown(Keys.N) && ConsoleAdventure.prekstate.IsKeyDown(Keys.F))
+                if (!ConsoleAdventure.kstate.IsKeyDown(Keys.F) && ConsoleAdventure.prekstate.IsKeyDown(Keys.F))
                 {
                     timer = 0;
                     State = 0;
+                    for (int i = 0; i < menuButtons.Length; i++)
+                    {
+                        menuButtons[i].cursorColor = Color.Yellow;
+                    }
                     Melody();
                 }
             }
