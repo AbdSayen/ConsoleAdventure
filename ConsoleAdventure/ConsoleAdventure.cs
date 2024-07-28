@@ -204,10 +204,13 @@ namespace ConsoleAdventure
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(bg);
+            CaModLoader.PreDrawMods(_spriteBatch, gameTime);
 
             if (InWorld)
             {
                 _spriteBatch.Begin();
+
+                CaModLoader.PreDrawWorldMods(_spriteBatch, gameTime, world);
 
                 _spriteBatch.DrawString(font, $"FPS: {(int)frameRate}", new Vector2(10, _graphics.PreferredBackBufferHeight - 30), Color.White);
 
@@ -216,6 +219,8 @@ namespace ConsoleAdventure
                 _spriteBatch.DrawString(font, display.DisplayInventory(), new Vector2(_graphics.PreferredBackBufferWidth - 300, 10), Color.White);
                 display.DrawWorld();
 
+                CaModLoader.PostDrawWorldMods(_spriteBatch, gameTime, world);
+
                 _spriteBatch.End();
             }
 
@@ -223,6 +228,8 @@ namespace ConsoleAdventure
             {
                 menu.Draw(_spriteBatch);
             }
+
+            CaModLoader.PostDrawMods(_spriteBatch, gameTime);
 
             base.Draw(gameTime);
         }

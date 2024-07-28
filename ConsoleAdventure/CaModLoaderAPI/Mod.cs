@@ -1,4 +1,6 @@
 ﻿using ConsoleAdventure.WorldEngine;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -48,6 +50,26 @@ namespace CaModLoaderAPI
         ///  Этот хук вызывается после полной инициализации игры, можно выполнить какие-то изменения в работе приложения или присвоить значения переменным
         /// </summary>
         public virtual void Run()
+        {
+
+        }
+
+        public virtual void PreDraw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+
+        }
+
+        public virtual void PostDraw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+
+        }
+
+        public virtual void PreDrawWorld(SpriteBatch spriteBatch, GameTime gameTime, World world)
+        {
+
+        }
+
+        public virtual void PostDrawWorld(SpriteBatch spriteBatch, GameTime gameTime, World world)
         {
 
         }

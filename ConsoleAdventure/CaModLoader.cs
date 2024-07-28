@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using CaModLoaderAPI;
 using ConsoleAdventure.CaModLoaderAPI;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure
 {
@@ -106,6 +108,43 @@ namespace ConsoleAdventure
                 mod.WorldLoaded(world);
             }
         }
+
+        public static void PreDrawMods(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            spriteBatch.Begin();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].PreDraw(spriteBatch, gameTime);
+            }
+            spriteBatch.End();
+        }
+
+        public static void PostDrawMods(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            spriteBatch.Begin();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].PostDraw(spriteBatch, gameTime);
+            }
+            spriteBatch.End();
+        }
+
+        public static void PreDrawWorldMods(SpriteBatch spriteBatch, GameTime gameTime, World world)
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].PreDrawWorld(spriteBatch, gameTime, world);
+            }
+        }
+
+        public static void PostDrawWorldMods(SpriteBatch spriteBatch, GameTime gameTime, World world)
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].PostDrawWorld(spriteBatch, gameTime, world);
+            }
+        }
+
 
         public static List<Mod> GetActiveMods()
         {
