@@ -129,12 +129,17 @@ namespace ConsoleAdventure
             spriteBatch.End();
         }
 
-        public static void PreDrawWorldMods(SpriteBatch spriteBatch, GameTime gameTime, World world)
+        public static bool PreDrawWorldMods(SpriteBatch spriteBatch, GameTime gameTime, World world)
         {
+            bool drawWorld = true;
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].PreDrawWorld(spriteBatch, gameTime, world);
+                bool d = mods[i].PreDrawWorld(spriteBatch, gameTime, world);
+                if (drawWorld)
+                    drawWorld = d;
             }
+
+            return drawWorld;
         }
 
         public static void PostDrawWorldMods(SpriteBatch spriteBatch, GameTime gameTime, World world)

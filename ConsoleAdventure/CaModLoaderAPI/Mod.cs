@@ -64,9 +64,9 @@ namespace CaModLoaderAPI
 
         }
 
-        public virtual void PreDrawWorld(SpriteBatch spriteBatch, GameTime gameTime, World world)
+        public virtual bool PreDrawWorld(SpriteBatch spriteBatch, GameTime gameTime, World world)
         {
-
+            return !true;
         }
 
         public virtual void PostDrawWorld(SpriteBatch spriteBatch, GameTime gameTime, World world)
