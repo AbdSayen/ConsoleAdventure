@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -72,12 +73,14 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 string newDescription = String.Empty;
                 int symbolsThreshold = 50;
                 int currentThreshold = symbolsThreshold;
+                int oldLineLength = 0;
                 foreach (string word in mod.modDescription.Replace("\n", " _ ").Split(" "))
                 {
+                    oldLineLength = newDescription.Split("\n").Last().Length;
                     if (word == "_")
                     {
                         newDescription += "\n    ";
-                        currentThreshold += symbolsThreshold;
+                        currentThreshold += oldLineLength - 1;
                         continue;
                     }
                     else if ((newDescription + word).Length > currentThreshold)
