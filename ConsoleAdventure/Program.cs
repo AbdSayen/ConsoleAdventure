@@ -6,6 +6,7 @@ namespace ConsoleAdventure
     {
         public static readonly string savePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleAdventure\\";
 
+        [STAThreadAttribute]
         public static void Main()
         {
             var game = new ConsoleAdventure();
