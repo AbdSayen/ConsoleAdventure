@@ -83,7 +83,7 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
 
                         if (charList != null)
                         {
-                            if (listType = BlackList)
+                            if (listType == BlackList)
                             {
                                 for (int j = 0; j < charList.Length; j++)
                                 {
@@ -107,6 +107,8 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
 
                             if (!isAvailable) goto exit; //выход, если символ запретный
                         }
+
+                        if (cursorPos.X > lines[cursorPos.Y].Length) cursorPos.X = lines[cursorPos.Y].Length;
 
                         if (character.Value == '\b')
                         {

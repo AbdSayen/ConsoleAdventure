@@ -182,9 +182,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
             menuSettingsButtons[0].isHover = true;
 
             ConsoleAdventure.progressBar = new ProgressBar(new Rectangle(new Point((int)ConsoleAdventure.Width / 2, ((int)ConsoleAdventure.Height / 2) - 120), new Point(50 * 9, 19)), Color.LightGreen, 50, ProgressBar.PercentRight);
-        
-            inputField = new TextInputField(new Point(150, 10), Color.White, 25, 0, "Введите какой-то бред...");
-            inputField.isHover = true;
         }
 
         int timer;
@@ -493,9 +490,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     TickSound();
                 }
             }
-
-            inputField.Update();
-
             timer++;
         }
         
@@ -587,9 +581,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
             {
                 ConsoleAdventure.progressBar.Draw(spriteBatch);
             }
-
-            inputField.Draw(spriteBatch);
-
             spriteBatch.End();
         }
 

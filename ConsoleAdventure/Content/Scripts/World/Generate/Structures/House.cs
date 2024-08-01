@@ -268,4 +268,3 @@ namespace ConsoleAdventure.Generate.Structures
         }
     }
 }
-

@@ -9,6 +9,9 @@ namespace ConsoleAdventure.WorldEngine.Generate
         {
             this.world = world;
 
+            //House.Build(new Position(30, 30), 10, 10, Rotation.up);
+            //GenerateHouses();
+
             Position startPosition = new Position(30, 30);
             new House(startPosition, 25, 25);
         }
