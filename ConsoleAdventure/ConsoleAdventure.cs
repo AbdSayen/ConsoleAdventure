@@ -1,4 +1,5 @@
 using ConsoleAdventure.Content.Scripts.Audio;
+using ConsoleAdventure.Content.Scripts.Debug.Commands;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI;
@@ -52,6 +53,9 @@ namespace ConsoleAdventure
         internal static bool isExit;
 
         public static Tags tags = new();
+
+
+        public static bool BlockHotKey { get; internal set; } = false;
 
         public static SpriteFont Font => font;
 
@@ -128,6 +132,7 @@ namespace ConsoleAdventure
             CaModLoader.RunMods();
 
             SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
+            Command.InitCommands();
         }
 
         protected override void LoadContent()
@@ -179,7 +184,7 @@ namespace ConsoleAdventure
                     menu.CloseAllPages();
                 }
 
-                if (!kstate.IsKeyDown(InputConfig.Pause) && prekstate.IsKeyDown(InputConfig.Pause))
+                if (!kstate.IsKeyDown(InputConfig.Pause) && prekstate.IsKeyDown(InputConfig.Pause) && !ConsoleAdventure.BlockHotKey)
                 {
                     if (!isPause)
                         isPause = true;

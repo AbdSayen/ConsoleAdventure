@@ -4,8 +4,12 @@ using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine.Generate;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using ConsoleAdventure.Content.Scripts.Player;
+using ConsoleAdventure.Content.Scripts.UI;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using ConsoleAdventure.Content.Scripts.Debug.Commands;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 
 
 namespace ConsoleAdventure.WorldEngine
@@ -40,6 +44,10 @@ namespace ConsoleAdventure.WorldEngine
 
         internal bool isInitialized = false;
 
+        private bool _isFirstFrame = true;
+
+        TextInputField inputField;
+
         public World(string name, int seed)
         {
             this.name = name;
@@ -50,6 +58,10 @@ namespace ConsoleAdventure.WorldEngine
             generator = new Generator(this, size);
             renderer = new Renderer(chunks);
             new Cursor();
+
+            inputField = new TextInputField(new Point(0, 0), Color.White, 173, 0, "Введите комманду...", 0, new char[1] { '\r' });
+            inputField.Position = new Vector2(18, ConsoleAdventure.Height - (19 * 2) - 19);
+            inputField.isHover = true;
         }
 
         public void Initialize(bool isfullGenerate = true)
@@ -79,6 +91,12 @@ namespace ConsoleAdventure.WorldEngine
         {
             if (!ConsoleAdventure.isPause)
             {
+                if (_isFirstFrame)
+                {
+                    Start?.Invoke();
+                    _isFirstFrame = false;
+                }
+                
                 time.PassTime(1);
 
                 for (int i = 0; i < players.Count; i++)
@@ -99,12 +117,43 @@ namespace ConsoleAdventure.WorldEngine
                 timer = 0;
             }
 
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Cmd) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Cmd))
+            {
+                if (isCmdOpen)
+                {
+                    isCmdOpen = false;
+                    ConsoleAdventure.BlockHotKey = false;
+                    inputField.isHover = false;
+                }
+
+                else
+                {
+                    isCmdOpen = true;
+                    ConsoleAdventure.BlockHotKey = true;
+                    inputField.isHover = true;
+                }
+            }
+
             timer++;
         }
 
+        bool isCmdOpen;
         public void Render()
         {
             renderer.Render(players[0], Cursor.Instance.CursorPosition);
+
+            if (isCmdOpen)
+            {
+                inputField.Update();
+                inputField.Draw(ConsoleAdventure._spriteBatch);
+
+                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter))
+                {
+                    Command.Find(inputField.text);
+                    inputField.text = "";
+                    inputField.cursorPos = new();
+                }
+            }
         }
 
         public void RemoveSubject(Transform subject, int worldLayer, bool isDroped = true)

@@ -1,5 +1,6 @@
 ﻿using CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Audio;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
@@ -40,6 +41,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
         private int selectedLanguage = SettingsSystem.GetSetting("Options", "Language"); // Получить сохраненный язык
 
         private string modsListText = "";
+
+        TextInputField inputField;
 
         public Menu()
         {
@@ -578,7 +581,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
             {
                 ConsoleAdventure.progressBar.Draw(spriteBatch);
             }
-
             spriteBatch.End();
         }
 

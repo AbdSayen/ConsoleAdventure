@@ -55,11 +55,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             timer.Start();
 
-            if (Input.IsKeyDown(InputConfig.Run) && timer.Elapsed.TotalMilliseconds > 15)
+            if (Input.IsKeyDown(InputConfig.Run) && timer.Elapsed.TotalMilliseconds > 15 && !ConsoleAdventure.BlockHotKey)
             {
                 PerformActions();
             }
-            else if (timer.Elapsed.TotalMilliseconds > 50)
+            else if (timer.Elapsed.TotalMilliseconds > 50 && !ConsoleAdventure.BlockHotKey)
             {
                 PerformActions();
             }
@@ -77,7 +77,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             bool isCursorKeyPressed = Input.IsKeyDown(InputConfig.Cursor);
 
-            if (isCursorKeyPressed && !wasCursorKeyPressedLastFrame)
+            if (isCursorKeyPressed && !wasCursorKeyPressedLastFrame && !ConsoleAdventure.BlockHotKey)
             {
                 Cursor.Instance.Toggle();
             }
@@ -100,7 +100,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 return;
             }
 
-            if (Input.IsKeyDown(InputConfig.Building) && CanBuildAt(targetPosition))
+            if (Input.IsKeyDown(InputConfig.Building) && CanBuildAt(targetPosition) && !ConsoleAdventure.BlockHotKey)
             {
                 if (inventory.HasItems(new Log(), 1))
                 {
@@ -113,7 +113,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     Loger.AddLog("Not enough resources to build!");
                 }
             }
-            else if (Input.IsKeyDown(InputConfig.Destroying) && CanDestroyAt(targetPosition))
+            else if (Input.IsKeyDown(InputConfig.Destroying) && CanDestroyAt(targetPosition) && !ConsoleAdventure.BlockHotKey)
             {
                 Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId).content;
                 if (t.CanBeDestroyed())
@@ -143,7 +143,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);
 
-            if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null)
+            if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null && !ConsoleAdventure.BlockHotKey)
             {
                 if (itemField.content is Loot)
                     ((Loot)itemField.content).PickUpAll(inventory);
