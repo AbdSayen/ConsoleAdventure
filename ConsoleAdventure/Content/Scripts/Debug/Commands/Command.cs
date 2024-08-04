@@ -11,7 +11,7 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
 {
     public abstract class Command
     {
-        public static List<Command> Commands { get; private set; } = new List<Command>();
+        public static Dictionary<string, Command> Commands { get; private set; } = new Dictionary<string, Command>();
 
         public string Name { get; protected set; }
 
@@ -31,7 +31,8 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             
             foreach (Type type in list)
             {
-                Commands.Add((Command)Activator.CreateInstance(type));
+                Command cmd = (Command)Activator.CreateInstance(type);
+                Commands.Add(cmd.Name, cmd);
             }
         }
 
@@ -44,20 +45,18 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
         {
             List<string> fragments = new List<string>(commandText.Split(new[] { ' ' }, StringSplitOptions.None));
 
-            foreach (var command in Commands)
+            if (Commands.Keys.Contains(fragments[0]))
             {
-                if (command.Name == fragments[0] && command.Arguments.Count == fragments.Count - 1)
+                Command cmd = Commands[fragments[0]];
+                try
                 {
-                    try
-                    {
-                        List<string> args = fragments;
-                        args.RemoveAt(0);
-                        command.Logic(args.ToArray());
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    List<string> args = fragments;
+                    args.RemoveAt(0);
+                    cmd.Logic(args.ToArray());
+                }
+                catch (Exception)
+                {
+                    throw;
                 }
             }
         }
@@ -69,12 +68,20 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
 
         protected int GetIntArg(string[] args, string name)
         {
-            return int.Parse(args[GetArgIndex(name)]);
+            int idx = GetArgIndex(name);
+            if (args.Length - 1 >= idx)
+                return int.Parse(args[GetArgIndex(name)]);
+            else
+                return 0;
         }
 
         protected string GetStringArg(string[] args, string name)
         {
-            return args[GetArgIndex(name)];
+            int idx = GetArgIndex(name);
+            if (args.Length - 1 >= idx)
+                return args[idx];
+            else
+                return "";
         }
     }
 }

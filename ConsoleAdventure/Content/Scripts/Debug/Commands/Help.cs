@@ -24,21 +24,37 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
         {
             try
             {
-                for (int i = 0; i < Commands.Count; i++)
+                if (args.Length < 1)
                 {
-                    Command command = Commands[i];
-                    string argsText = ""; 
-
-                    for (int j = 0; j < command.Arguments.Count; j++)
+                    for (int i = 0; i < Commands.Count; i++)
                     {
-                        argsText += " " + command.Arguments[j];
+                        Loger.AddLog(GetCommandHelp(Commands.ElementAt(i).Key));
                     }
-
-                    Loger.AddLog(command.Name + argsText);
+                }
+                else
+                {
+                    string name = GetStringArg(args, "command");
+                    if (Commands.Keys.Contains(name))
+                        Loger.AddLog(GetCommandHelp(name) + "\n  " + Commands[name].Description.Replace("\n", "\n  "));
                 }
             }
 
             catch (Exception) { }          
+        }
+
+        private string GetCommandHelp(string cmd)
+        {
+            Command command = Commands[cmd];
+            string argsText = "";
+
+            for (int j = 0; j < command.Arguments.Count; j++)
+            {
+                argsText += command.Arguments[j];
+                if (j < command.Arguments.Count - 1)
+                    argsText += ", ";
+            }
+
+            return command.Name + " - " + argsText;
         }
     }
 }

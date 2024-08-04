@@ -16,7 +16,8 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             Arguments = new List<string>()
             {
                 "name",
-                "count"
+                "count",
+                "namespace"
             };
         }
 
@@ -24,10 +25,13 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
         {
             string name = GetStringArg(args, "name");
             int count = GetIntArg(args, "count");
+            string namespace_ = "ConsoleAdventure";
+            if (args.Length >= 3)
+                namespace_ = GetStringArg(args, "namespace");
 
             try
             {
-                Type type = Type.GetType(name);
+                Type type = Type.GetType(namespace_ + "." + name);
 
                 if (type != null && type.IsSubclassOf(typeof(Item))) 
                 {
