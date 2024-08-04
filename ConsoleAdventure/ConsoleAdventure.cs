@@ -65,7 +65,7 @@ namespace ConsoleAdventure
 
         public static int FPS => frameRate;
 
-        public static int MenuState => menu.State;
+        public static MenuState MenuState => menu.State;
 
         public static Position MouseWorld
         {
