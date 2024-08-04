@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.IO;
+using System.IO.Compression;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleAdventure
 {
@@ -160,6 +160,36 @@ namespace ConsoleAdventure
         public static Position ToPosition(this Point position)
         {
             return new(position.X, position.Y);
+        }
+
+        /// <summary>
+        /// Сжимает список байтов с нужным уровнем сжатия
+        /// </summary>
+        /// <param name="data">Данные для сжатия</param>
+        /// <param name="compressionLevel">Уровень сжатия</param>
+        public static byte[] Compress(byte[] data, CompressionLevel compressionLevel)
+        {
+            MemoryStream output = new MemoryStream();
+            using (DeflateStream dstream = new DeflateStream(output, compressionLevel))
+            {
+                dstream.Write(data, 0, data.Length);
+            }
+            return output.ToArray();
+        }
+
+        /// <summary>
+        /// Распаковывает ранее сжатый список байт
+        /// </summary>
+        /// <param name="data">Данные для распаковывки</param>
+        public static byte[] Decompress(byte[] data)
+        {
+            MemoryStream input = new MemoryStream(data);
+            MemoryStream output = new MemoryStream();
+            using (DeflateStream dstream = new DeflateStream(input, CompressionMode.Decompress))
+            {
+                dstream.CopyTo(output);
+            }
+            return output.ToArray();
         }
     }
 }

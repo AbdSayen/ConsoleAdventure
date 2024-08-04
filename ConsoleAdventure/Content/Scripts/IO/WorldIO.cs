@@ -20,27 +20,6 @@ namespace ConsoleAdventure.Content.Scripts.IO
         private static readonly object locker = new object();
         private static string path = Program.savePath + "Worlds\\";
 
-        private static byte[] Compress(byte[] data)
-        {
-            MemoryStream output = new MemoryStream();
-            using (DeflateStream dstream = new DeflateStream(output, CompressionLevel.SmallestSize))
-            {
-                dstream.Write(data, 0, data.Length);
-            }
-            return output.ToArray();
-        }
-
-        private static byte[] Decompress(byte[] data)
-        {
-            MemoryStream input = new MemoryStream(data);
-            MemoryStream output = new MemoryStream();
-            using (DeflateStream dstream = new DeflateStream(input, CompressionMode.Decompress))
-            {
-                dstream.CopyTo(output);
-            }
-            return output.ToArray();
-        }
-
         public static void Save(string name)
         {
             Console.WriteLine("Saving on account");
@@ -53,7 +32,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
 
             byte[] bytes = SerializeData.Serialize(ConsoleAdventure.tags.Data); //Переводим теги в массив байтов
-            byte[] bytesToSave = Compress(bytes);
+            byte[] bytesToSave = Utils.Compress(bytes, CompressionLevel.SmallestSize);
 
             string fileName = path + name + ".wld";
 
@@ -88,7 +67,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 if (File.Exists(fileName))
                 {
                     byte[] bytes = File.ReadAllBytes(fileName);
-                    byte[] bytesToLoad = Decompress(bytes);
+                    byte[] bytesToLoad = Utils.Decompress(bytes);
 
                     ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytesToLoad); //Переводим байты в теги
                 }
