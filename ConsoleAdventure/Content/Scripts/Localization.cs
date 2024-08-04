@@ -14,26 +14,21 @@ namespace ConsoleAdventure
         public static void Load()
         {
             
-            localizeFiles[0] = File.ReadAllText("Content\\Localization\\en.json");
-            localizeFiles[1] = File.ReadAllText("Content\\Localization\\ru.json");
-
-            for (int i = 0; i < localizeFiles.Length; i++)
-            {
-                //Localizations[i] = JsonSerializer.Deserialize<LocalizationStruct>(localizeFiles[i]);
-            }
+            localizeFiles[(int)Language.english] = File.ReadAllText("Content\\Localization\\en.json");
+            localizeFiles[(int)Language.russian] = File.ReadAllText("Content\\Localization\\ru.json");
         }
 
         public static string GetLanguageName(int id)
         {
-            return id == 0 ? GetTranslation("UI", "English")
-                   : id == 1 ? GetTranslation("UI", "Russian")
+            return id == (int)Language.english ? GetTranslation("UI", "English")
+                   : id == (int)Language.russian ? GetTranslation("UI", "Russian")
                    : "None";
         }
 
         public static string GetTranslation(int language, string type, string key)
         {
-            string languageName = language == 0 ? "English"
-                                : language == 1 ? "Russian"
+            string languageName = language == (int)Language.english ? "English"
+                                : language == (int)Language.russian ? "Russian"
                                 : "None";
 
             Dictionary<string, Dictionary<string, string>>[] Localizations = new Dictionary<string, Dictionary<string, string>>[2];
