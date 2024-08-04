@@ -1,5 +1,6 @@
 ﻿using ConsoleAdventure.WorldEngine;
 using Microsoft.VisualBasic.FileIO;
+using System.IO.Compression;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +28,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
 
             byte[] bytes = SerializeData.Serialize(ConsoleAdventure.tags.Data); //Переводим теги в массив байтов
+            
 
             string fileName = path + name + ".wld";
 
@@ -57,6 +59,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             if (File.Exists(fileName))
             {
                 byte[] bytes = File.ReadAllBytes(fileName);
+                
                 ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytes); //Переводим байты в теги
             }
             else

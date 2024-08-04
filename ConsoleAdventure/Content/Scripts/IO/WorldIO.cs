@@ -5,6 +5,7 @@ using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -19,6 +20,27 @@ namespace ConsoleAdventure.Content.Scripts.IO
         private static readonly object locker = new object();
         private static string path = Program.savePath + "Worlds\\";
 
+        private static byte[] Compress(byte[] data)
+        {
+            MemoryStream output = new MemoryStream();
+            using (DeflateStream dstream = new DeflateStream(output, CompressionLevel.SmallestSize))
+            {
+                dstream.Write(data, 0, data.Length);
+            }
+            return output.ToArray();
+        }
+
+        private static byte[] Decompress(byte[] data)
+        {
+            MemoryStream input = new MemoryStream(data);
+            MemoryStream output = new MemoryStream();
+            using (DeflateStream dstream = new DeflateStream(input, CompressionMode.Decompress))
+            {
+                dstream.CopyTo(output);
+            }
+            return output.ToArray();
+        }
+
         public static void Save(string name)
         {
             Console.WriteLine("Saving on account");
@@ -31,12 +53,13 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
 
             byte[] bytes = SerializeData.Serialize(ConsoleAdventure.tags.Data); //Переводим теги в массив байтов
+            byte[] bytesToSave = Compress(bytes);
 
             string fileName = path + name + ".wld";
 
             if (bytes != null)
             {
-                File.WriteAllBytes(fileName, bytes);
+                File.WriteAllBytes(fileName, bytesToSave);
             }
             else
             {
@@ -65,7 +88,9 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 if (File.Exists(fileName))
                 {
                     byte[] bytes = File.ReadAllBytes(fileName);
-                    ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytes); //Переводим байты в теги
+                    byte[] bytesToLoad = Decompress(bytes);
+
+                    ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytesToLoad); //Переводим байты в теги
                 }
 
                 else
