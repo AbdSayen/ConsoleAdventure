@@ -44,6 +44,8 @@ namespace ConsoleAdventure.WorldEngine
 
         internal bool isInitialized = false;
 
+        private bool _isFirstFrame = true;
+
         TextInputField inputField;
 
         public World(string name, int seed)
@@ -89,6 +91,12 @@ namespace ConsoleAdventure.WorldEngine
         {
             if (!ConsoleAdventure.isPause)
             {
+                if (_isFirstFrame)
+                {
+                    Start?.Invoke();
+                    _isFirstFrame = false;
+                }
+                
                 time.PassTime(1);
 
                 for (int i = 0; i < players.Count; i++)
