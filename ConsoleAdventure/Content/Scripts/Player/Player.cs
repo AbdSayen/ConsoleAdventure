@@ -66,18 +66,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             if(!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Interaction) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Interaction))
             {
-                int? blockType = world.GetField(position.x, position.y, World.BlocksLayerId, w)?.content?.type;
+                Transform? block = world.GetField(position.x, position.y, World.BlocksLayerId, w)?.content;
 
-                if (blockType == (int)RenderFieldType.descent)
+                if(block != null)
                 {
-                    if (world.players[0].SetPosition(world.players[0].position, 0))
-                        ConsoleAdventure.curDeep = 0;
-                }
-
-                if (blockType == (int)RenderFieldType.climb)
-                {
-                    if (world.players[0].SetPosition(world.players[0].position, 1))
-                        ConsoleAdventure.curDeep = 1;
+                    block.Interaction();
                 }
             }
 
