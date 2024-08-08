@@ -52,6 +52,9 @@ namespace ConsoleAdventure
 
         internal static bool isExit;
 
+        public static int curDeep = 1;
+        public static int StartDeep = 1;
+
         public static Tags tags = new();
 
 
@@ -177,7 +180,7 @@ namespace ConsoleAdventure
                 
                 world.ListenEvents();
 
-                if (kstate.IsKeyDown(Keys.Escape))
+                if (kstate.IsKeyDown(Keys.Escape) && !world.isCmdOpen)
                 {
                     WorldIO.Save(world.name);
                     InWorld = false;

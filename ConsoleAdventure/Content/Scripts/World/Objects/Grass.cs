@@ -49,7 +49,7 @@ namespace ConsoleAdventure.WorldEngine
         int Sindex; //Symbol
         int Cindex; //Color
 
-        public Grass(Position position, int worldLayer = -1) : base(position)
+        public Grass(Position position, int w, int worldLayer = -1) : base(position, w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;

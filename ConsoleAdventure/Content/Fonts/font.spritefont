@@ -29,7 +29,7 @@
 			</CharacterRegion>
 			<!-- Геометрические фигуры -->
 			<CharacterRegion>
-				<Start>&#9632;</Start>
+				<Start>&#9600;</Start>
 				<End>&#9679;</End>
 			</CharacterRegion>
 			<!-- Символы, такие как звёздочки, палочки, сердечки -->

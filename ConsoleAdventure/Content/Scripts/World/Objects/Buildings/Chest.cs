@@ -9,7 +9,7 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Chest : Storage
     {
-        public Chest(Position position, List<Stack> items, int worldLayer = -1) : base(position, items)
+        public Chest(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, w, items)
         {
             type = (int)RenderFieldType.chest;
 

@@ -24,7 +24,13 @@
     "Entity": "entity",
     "Cat": "cat",
     "Chest": "chest",
-    "Grass": "grass"
+    "Grass": "grass",
+    "Stone": "stone",
+    "Granite": "granite",
+    "Quartz": "quartz",
+    "GraniteFloor": "granite floor",
+    "Descent": "descent",
+    "Climb": "climb"
   },
 
   "Events": {

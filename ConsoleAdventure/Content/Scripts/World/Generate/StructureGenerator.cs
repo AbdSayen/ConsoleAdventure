@@ -32,8 +32,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 for (int x = startPosition.x; x < startPosition.x + sizeX; x++)
                 {
                     if (x >= worldSize || x < 0 ||
-                        world.GetField(x, y, World.BlocksLayerId) == null ||
-                        world.GetField(x, y, World.BlocksLayerId).isStructure)
+                        world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep) == null ||
+                        world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep).isStructure)
                     {
                         return false;
                     }

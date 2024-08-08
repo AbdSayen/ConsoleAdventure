@@ -7,7 +7,7 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Tree : Transform
     {
-        public Tree(Position position, int worldLayer = -1) : base(position)
+        public Tree(Position position, int w, int worldLayer = -1) : base(position, w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
@@ -23,7 +23,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void Collapse()
         {
-            new Loot(position, new List<Stack> { new Stack(new Log(), 3), new Stack(new Apple(), 1) });
+            new Loot(position, w, new List<Stack> { new Stack(new Log(), 3), new Stack(new Apple(), 1) });
         }
 
         public override string GetSymbol()

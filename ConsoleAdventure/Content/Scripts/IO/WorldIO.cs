@@ -9,6 +9,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Runtime.ExceptionServices;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 
@@ -153,17 +154,20 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             tags["TransformTypesOffset"] = Main.modTransformTypesOffset;
 
-            byte[,,] fields = new byte[size, size, 4];
+            byte[,,,] fields = new byte[Chunk.maxDeep, size, size, 4]; //w, x, y, z
 
 
             int lootCount = 0;
-            for (int i = 0; i < size; i++) //поик количества лута и сундуков
+            for (int i = 0; i < Chunk.maxDeep; i++) //w, поик количества лута и сундуков
             {
-                for (int j = 0; j < size; j++)
+                for (int j = 0; j < size; j++) //x
                 {
-                    if (world.GetField(i, j, World.ItemsLayerId).content != null)
+                    for (int k = 0; k < size; k++) //y
                     {
-                        lootCount++;
+                        if (world.GetField(j, k, World.ItemsLayerId, i).content != null)
+                        {
+                            lootCount++;
+                        }
                     }
                 }
             } 
@@ -171,34 +175,39 @@ namespace ConsoleAdventure.Content.Scripts.IO
             List<Stack>[] loots = new List<Stack>[lootCount];
             int[] lootX = new int[lootCount];
             int[] lootY = new int[lootCount];
+            int[] lootW = new int[lootCount];
             byte[] lootTypes = new byte[lootCount]; //Тип объекта: лут или один из сундуков
 
             int curLoot = 0;
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < Chunk.maxDeep; i++) //w
             {
-                for (int j = 0; j < size; j++)
+                for (int j = 0; j < size; j++) //x
                 {
-                    for (int k = 0; k < 4; k++)
+                    for (int k = 0; k < size; k++) //y
                     {
-                        byte type = 0;
-                        if (world.GetField(i, j, k).content != null) //Поиск ячеяк мира
+                        for (int l = 0; l < 4; l++) //z
                         {
-                            type = (byte)world.GetField(i, j, k).content.type;
+                            byte type = 0;
+                            if (world.GetField(j, k, l, i).content != null) //Поиск ячеяк мира
+                            {
+                                type = (byte)world.GetField(j, k, l, i).content.type;
+                            }
+
+                            fields[i, j, k, l] = type;
                         }
 
-                        fields[i, j, k] = type;
-                    }
+                        Field field = world.GetField(j, k, World.ItemsLayerId, i);
 
-                    Field field = world.GetField(i, j, World.ItemsLayerId);
-
-                    if (field.content != null) //Поиск лута и сундуков
-                    {
-                        loots[curLoot] = ((Storage)field.content).GetItems();
-                        lootX[curLoot] = i;
-                        lootY[curLoot] = j;
-                        lootTypes[curLoot] = field.content.type;
-                        curLoot++;
+                        if (field.content != null) //Поиск лута и сундуков
+                        {
+                            loots[curLoot] = ((Storage)field.content).GetItems();
+                            lootW[curLoot] = i;
+                            lootX[curLoot] = j;
+                            lootY[curLoot] = k;
+                            lootTypes[curLoot] = field.content.type;
+                            curLoot++;
+                        }
                     }
                 }
             }
@@ -209,10 +218,12 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["Loots"] = loots;
             tags["LootX"] = lootX;
             tags["LootY"] = lootY;
+            tags["LootW"] = lootW;
 
             int EntityCount = world.entities.Count;
             int[] EntityX = new int[EntityCount];
             int[] EntityY = new int[EntityCount];
+            int[] EntityW = new int[EntityCount];
             byte[] EntityTypes = new byte[EntityCount];
             List<object>[] EntityParams = new List<object>[EntityCount];
 
@@ -220,6 +231,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             {
                 Entity entity = world.entities[i];
 
+                EntityW[i] = entity.w;
                 EntityX[i] = entity.position.x;
                 EntityY[i] = entity.position.y;
                 EntityTypes[i] = entity.type;
@@ -229,6 +241,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["EntityCount"] = EntityCount;
             tags["EntityX"] = EntityX;
             tags["EntityY"] = EntityY;
+            tags["EntityW"] = EntityW;
             tags["EntityTypes"] = EntityTypes;
             tags["EntityParams"] = EntityParams;
 
@@ -245,7 +258,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType));
                 foreach (Type type in list)
                 {
-                    Transform.Init(type, Position.Zero(), null, null);
+                    Transform.Init(type, Position.Zero(), 0, null, null);
                 }
 
                 World world = ConsoleAdventure.world;
@@ -261,38 +274,45 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 Main.modTransformTypesOffset = tags.SafelyGet<Dictionary<string, byte>>("TransformTypesOffset");
 
+                byte[,,,] fields = tags.SafelyGet<byte[,,,]>("Fields");
+
                 ConsoleAdventure.progressBar.Progress += 10;
                 ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadObjectData");
 
-                for (int i = 0; i < world.size; i++)
+                for (int i = 0; i < Chunk.maxDeep; i++) //w
                 {
-                    for (int j = 0; j < world.size; j++)
+                    for (int j = 0; j < world.size; j++) //x
                     {
-                        for (int k = 0; k < 4; k++)
+                        for (int k = 0; k < world.size; k++) //y
                         {
-                            if (k != World.MobsLayerId)
+                            for (int l = 0; l < 4; l++) //z
                             {
-                                byte type = (tags.SafelyGet<byte[,,]>("Fields"))[i, j, k];
-                                if (type != (byte)RenderFieldType.loot && type != (byte)RenderFieldType.chest)
+                                if (l != World.MobsLayerId)
                                 {
-                                    Transform.SetObject(type, new(i, j), k); //загружаем ячейки из тега
-                                }
-
-                                else
-                                {
-                                    List<Stack> items = new List<Stack>();
-
-                                    for (int l = 0; l < tags.SafelyGet<int>("LootCount"); l++)
+                                    byte type = fields[i, j, k, l];
+                                    if (type != (byte)RenderFieldType.loot && type != (byte)RenderFieldType.chest)
                                     {
-                                        Position position = new Position((tags.SafelyGet<int[]>("LootX"))[l], (tags.SafelyGet<int[]>("LootY"))[l]);
-                                        if (position.x == i && position.y == j)
-                                        {
-                                            items = (tags.SafelyGet<List<Stack>[]>("Loots"))[l];
-                                            break;
-                                        }
+                                        Transform.SetObject(type, new(j, k), i, l); //загружаем ячейки из тега
                                     }
 
-                                    Transform.SetObject(type, new(i, j), items: items); //Загружам лут из мира
+                                    else
+                                    {
+                                        List<Stack> items = new List<Stack>();
+
+                                        for (int m = 0; m < tags.SafelyGet<int>("LootCount"); m++)
+                                        {
+                                            Position position = new Position((tags.SafelyGet<int[]>("LootX"))[m], (tags.SafelyGet<int[]>("LootY"))[m]);
+                                            int w = tags.SafelyGet<int[]>("LootW")[m];
+
+                                            if (w == i && position.x == j && position.y == k)
+                                            {
+                                                items = (tags.SafelyGet<List<Stack>[]>("Loots"))[m];
+                                                break;
+                                            }
+                                        }
+
+                                        Transform.SetObject(type, new(j, k), i, items: items); //Загружам лут из мира
+                                    }
                                 }
                             }
                         }
@@ -305,6 +325,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 int EntityCount = tags.SafelyGet<int>("EntityCount");
                 int[] EntityX = tags.SafelyGet<int[]>("EntityX");
                 int[] EntityY = tags.SafelyGet<int[]>("EntityY");
+                int[] EntityW = tags.SafelyGet<int[]>("EntityW");
                 byte[] EntityTypes = tags.SafelyGet<byte[]>("EntityTypes");
                 List<object>[] EntityParams = tags.SafelyGet<List<object>[]>("EntityParams");
 
@@ -323,7 +344,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                         EntityY[i] = 0;
                     }
 
-                    Transform.SetObject(EntityTypes[i], new Position(EntityX[i], EntityY[i]), parameters: EntityParams[i]);
+                    Transform.SetObject(EntityTypes[i], new Position(EntityX[i], EntityY[i]), EntityW[i], parameters: EntityParams[i]);
                 }
 
                 ConsoleAdventure.progressBar.Progress += 5;

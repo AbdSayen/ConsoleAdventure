@@ -6,7 +6,7 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Wall : Transform
     {
-        public Wall(Position position, int worldLayer = -1) : base(position)
+        public Wall(Position position, int w, int worldLayer = -1) : base(position, w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;

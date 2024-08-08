@@ -17,7 +17,7 @@ namespace ConsoleAdventure.Content.Scripts
         public int maxLife;
         public int damage;
 
-        public Entity(Position position, List<object> parameters = null) : base(position)
+        public Entity(Position position, int w, List<object> parameters = null) : base(position, w)
         {
             worldLayer = World.MobsLayerId;
             type = (int)RenderFieldType.entity;
@@ -83,7 +83,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         public void SetColor(Color color, Position position)
         {
-            world.GetField(position.x, position.y, World.MobsLayerId).color = color;
+            world.GetField(position.x, position.y, World.MobsLayerId, w).color = color;
         }
 
         public virtual void SetParams(List<object> p) { }

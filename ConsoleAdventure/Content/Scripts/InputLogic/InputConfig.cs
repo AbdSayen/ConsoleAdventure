@@ -30,4 +30,5 @@ public static class InputConfig
     public static Keys Cursor = Keys.Space;
     public static Keys Pause = Keys.P;
     public static Keys Cmd = Keys.OemTilde;
+    public static Keys Interaction = Keys.E;
 }

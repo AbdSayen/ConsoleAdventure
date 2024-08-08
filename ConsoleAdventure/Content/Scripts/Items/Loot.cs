@@ -8,7 +8,7 @@ namespace ConsoleAdventure
     [Serializable]
     public class Loot : Storage
     {
-        public Loot(Position position, List<Stack> items, int worldLayer = -1) : base(position, items)
+        public Loot(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, w, items)
         {
             type = (int)RenderFieldType.loot;
 

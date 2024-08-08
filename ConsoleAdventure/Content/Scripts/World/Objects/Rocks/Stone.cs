@@ -4,29 +4,29 @@ using System;
 namespace ConsoleAdventure.WorldEngine
 {
     [Serializable]
-    public class Water : Transform
+    public class Stone : Transform
     {
-        public Water(Position position, int w, int worldLayer = -1) : base(position, w)
+        public Stone(Position position, int w, int worldLayer = -1) : base(position, w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;
 
-            type = (int)RenderFieldType.water;
+            type = (int)RenderFieldType.stone;
             isObstacle = true;
 
-            AddTypeToMap<Water>(type);
+            AddTypeToMap<Stone>(type);
 
             Initialize();
         }
 
         public override string GetSymbol()
         {
-            return "≈≈";
+            return "██";
         }
 
         public override Color GetColor()
         {
-            return new(16, 29, 211);
+            return Color.Gray;
         }
     }
 }

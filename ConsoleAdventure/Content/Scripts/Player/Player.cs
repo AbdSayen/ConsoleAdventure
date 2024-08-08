@@ -22,7 +22,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private bool wasCursorKeyPressedLastFrame;
 
-        public Player(int id, Position position, int worldLayer = -1) : base(position)
+        public Player(int id, Position position, int w, int worldLayer = -1) : base(position, w)
         {
             if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
             else this.worldLayer = worldLayer;
@@ -62,6 +62,23 @@ namespace ConsoleAdventure.Content.Scripts.Player
             else if (timer.Elapsed.TotalMilliseconds > 50 && !ConsoleAdventure.BlockHotKey)
             {
                 PerformActions();
+            }
+
+            if(!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Interaction) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Interaction))
+            {
+                int? blockType = world.GetField(position.x, position.y, World.BlocksLayerId, w)?.content?.type;
+
+                if (blockType == (int)RenderFieldType.descent)
+                {
+                    if (world.players[0].SetPosition(world.players[0].position, 0))
+                        ConsoleAdventure.curDeep = 0;
+                }
+
+                if (blockType == (int)RenderFieldType.climb)
+                {
+                    if (world.players[0].SetPosition(world.players[0].position, 1))
+                        ConsoleAdventure.curDeep = 1;
+                }
             }
 
             void PerformActions()
@@ -104,7 +121,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             {
                 if (inventory.HasItems(new Log(), 1))
                 {
-                    new Plank(targetPosition);
+                    new Plank(targetPosition, w);
                     inventory.RemoveItems(new Log(), 1);
                     world.time.PassTime(120);
                 }
@@ -115,7 +132,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             }
             else if (Input.IsKeyDown(InputConfig.Destroying) && CanDestroyAt(targetPosition) && !ConsoleAdventure.BlockHotKey)
             {
-                Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId).content;
+                Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId, w).content;
                 if (t.CanBeDestroyed())
                 {
                     world.RemoveSubject(t, World.BlocksLayerId);
@@ -126,12 +143,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private bool CanBuildAt(Position pos)
         {
-            return world.GetField(pos.x, pos.y, World.BlocksLayerId).content == null;
+            return world.GetField(pos.x, pos.y, World.BlocksLayerId, w).content == null;
         }
 
         private bool CanDestroyAt(Position pos)
         {
-            return world.GetField(pos.x, pos.y, World.BlocksLayerId).content != null;
+            return world.GetField(pos.x, pos.y, World.BlocksLayerId, w).content != null;
         }
 
         private void Walk()
@@ -141,7 +158,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private void CheckPickUpItems()
         {
-            Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId);
+            Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId, w);
 
             if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null && !ConsoleAdventure.BlockHotKey)
             {

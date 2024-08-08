@@ -12,7 +12,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
         {
             this.world = world;
 
-            new Chest(new(0, 0), new List<Stack>() { new Stack(new Apple(), 50) });
+            new Chest(new(0, 0), ConsoleAdventure.StartDeep, new List<Stack>() { new Stack(new Apple(), 50) });
             GenerateTrees();
         }
 
@@ -24,12 +24,12 @@ namespace ConsoleAdventure.WorldEngine.Generate
             {
                 for (int x = 0; x < world.size; x++)
                 {
-                    Field field = world.GetField(x, y, World.BlocksLayerId);
+                    Field field = world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep);
                     Position position = new Position(x, y);
 
                     if (random.Next(0, 150) == 0 && field.content == null && field.isStructure == false)
                     {
-                        new Tree(position);
+                        new Tree(position, ConsoleAdventure.StartDeep);
                     }
 
                     if (random.Next(0, 1500) == 0 && field.content == null && field.isStructure == false)
@@ -38,7 +38,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                         {
                             for (int j = 0; j < random.Next(1, 3); j++)
                             {
-                                new Water(position + new Position(i, j), World.BlocksLayerId);
+                                new Water(position + new Position(i, j), ConsoleAdventure.StartDeep);
                             }
                         }
                     }
@@ -49,7 +49,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                         {
                             for (int j = 0; j < random.Next(1, 4); j++)
                             {
-                                new Grass(position + new Position(i, j));
+                                new Grass(position + new Position(i, j), ConsoleAdventure.StartDeep);
                             }
                         }
                     }

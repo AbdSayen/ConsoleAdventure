@@ -15,7 +15,7 @@ namespace ConsoleAdventure
     {
         public static readonly string modsDirPath = Directory.GetCurrentDirectory() + @"\Content\mods";
 
-        private static List<string> libs = new List<string> { "" };
+        private static List<string> libs = new List<string> { "SecondMod", "TestMod" };
         private static string[] modsPath;
         private static List<Mod> mods = new List<Mod>();
 

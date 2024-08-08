@@ -33,7 +33,7 @@ namespace ConsoleAdventure.WorldEngine
                             var chunk = GetChunk(x, y);
                             for (int z = 0; z < World.CountOfLayers; z++)
                             {
-                                var field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, z);
+                                var field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, z, observer.w);
 
                                 if (field != null)
                                 {

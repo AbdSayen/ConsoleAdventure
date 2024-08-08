@@ -6,7 +6,7 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Plank : Transform
     {
-        public Plank(Position position, int worldLayer = -1) : base(position)
+        public Plank(Position position, int w, int worldLayer = -1) : base(position, w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;
@@ -21,7 +21,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void Collapse()
         {
-            new Loot(position, new List<Stack>() { new Stack(new Log(), 1) });
+            new Loot(position, w, new List<Stack>() { new Stack(new Log(), 1) });
         }
 
         public override string GetSymbol()

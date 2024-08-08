@@ -19,23 +19,29 @@ namespace ConsoleAdventure
         public World world { get; protected set; }
         public int worldLayer { get; protected set; }
 
-        public Position position;
+        public Position position;  
         public byte type;
         public bool isObstacle;
+        
+        /// <summary>
+        /// Ось w, глубина объекта (на коком уровне мира он находится)
+        /// </summary>
+        public int w;
 
-        protected Transform(Position position)
+        protected Transform(Position position, int w)
         {
             this.position = position;
+            this.w = w;
 
-            world = ConsoleAdventure.world;
+            world = ConsoleAdventure.world;    
         }
 
         public void Initialize()
         {
-            if (world.GetField(position.x, position.y, worldLayer) != null)
+            if (world.GetField(position.x, position.y, worldLayer, w) != null)
             {
-                world.GetField(position.x, position.y, worldLayer).content = this;
-                world.GetField(position.x, position.y, worldLayer).color = GetColor();
+                world.GetField(position.x, position.y, worldLayer, w).content = this;
+                world.GetField(position.x, position.y, worldLayer, w).color = GetColor();
             }
         }
 
@@ -60,9 +66,14 @@ namespace ConsoleAdventure
             world.MoveSubject(this, worldLayer, stepSize, position);
         }
 
-        public virtual void SetPosition(Position newPos)
+        public virtual bool SetPosition(Position newPos)
         {
-            world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y);
+            return world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y);
+        }
+
+        public virtual bool SetPosition(Position newPos, int newW)
+        {
+            return world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y, newW);
         }
 
         public virtual void Collapse() { }
@@ -82,53 +93,59 @@ namespace ConsoleAdventure
             return null;
         }
 
-        public static string GetName(Position pos, int layer)
+        public static string GetName(Position pos, int layer, int w)
         {
             if (layer < 0) layer = 0;
             if (layer > 3) layer = 3;
 
-            Field field = ConsoleAdventure.world.GetField(pos.x, pos.y, layer);
+            Field field = ConsoleAdventure.world.GetField(pos.x, pos.y, layer, w);
 
             if (field?.content == null) return Localization.GetTranslation("Transforms", "None");
 
             return Localization.GetTranslation("Transforms", field.content.GetType().Name);
         }
 
-        public static void SetObject(int type, Position position, int layer = -1, List<Stack> items = null, List<object> parameters = null)
+        public static void SetObject(int type, Position position, int w, int layer = -1, List<Stack> items = null, List<object> parameters = null)
         {
+            if (position.x < 0) { position.x = 0; }
+            if (position.y < 0) { position.y = 0; }
+            if (position.x > ConsoleAdventure.world.size) { position.x = ConsoleAdventure.world.size; }
+            if (position.y > ConsoleAdventure.world.size) { position.y = ConsoleAdventure.world.size; }
+
             if (typeMapping.TryGetValue(type, out Type objectType))
             {
                 if (objectType == typeof(Transform))
                 {
-                    ConsoleAdventure.world.RemoveSubject(ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId).content, layer, false);
+                    Transform content = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, w).content;
+                    ConsoleAdventure.world.RemoveSubject(content, layer, false);
                     return;
                 }
 
                 //ConstructorInfo constructor = GetConstructor(objectType, items != null, parameters != null);
-                Init(objectType, position, items, parameters);
+                Init(objectType, position, w, items, parameters);
             }
         }
 
-        internal static object[] BuildConstructorArgs(Type objectType, Position position, List<Stack> items, List<object> parameters)
+        internal static object[] BuildConstructorArgs(Type objectType, Position position, int w, List<Stack> items, List<object> parameters)
         {
             if (objectType.IsSubclassOf(typeof(Loot)) || objectType == typeof(Loot) ||
                 objectType.IsSubclassOf(typeof(Storage)) || objectType == typeof(Storage))
-                return new object[] { position, items, -1 };
+                return new object[] { position, w, items, -1 };
 
             if (objectType.IsSubclassOf(typeof(Entity)) || objectType == typeof(Entity))
-                return new object[] { position, parameters };
+                return new object[] { position, w, parameters };
 
-            return new object[] { position, -1 };
+            return new object[] { position, w, -1 };
         }
 
-        internal static void Init(Type type, Position position, List<Stack> items, List<object> parameters)
+        internal static void Init(Type type, Position position, int w, List<Stack> items, List<object> parameters)
         {
             if(type == typeof(Storage) || type == typeof(Player))
             {
                 return;
             }
 
-            object[] args = BuildConstructorArgs(type, position, items, parameters);
+            object[] args = BuildConstructorArgs(type, position, w, items, parameters);
 
             if (type.IsSubclassOf(typeof(Entity)) || type == typeof(Entity))
                 ConsoleAdventure.world.entities.Add((Entity)Activator.CreateInstance(type, args));

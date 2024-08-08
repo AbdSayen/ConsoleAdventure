@@ -191,5 +191,21 @@ namespace ConsoleAdventure
             }
             return output.ToArray();
         }
+
+        public static object Choose(this Random random, object[] objs)
+        {
+            return objs[random.Next(objs.Length)];
+        }
+
+        public static Vector2 Rotated(this Vector2 point, double radians)
+        {
+            float cos = (float)Math.Cos(radians);
+            float sin = (float)Math.Sin(radians);
+            Vector2 vector = point;
+            Vector2 result = Vector2.Zero;
+            result.X = vector.X * cos - vector.Y * sin;
+            result.Y = vector.X * sin + vector.Y * cos;
+            return result;
+        }
     }
 }

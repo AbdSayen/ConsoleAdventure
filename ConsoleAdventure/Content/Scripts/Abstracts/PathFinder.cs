@@ -40,8 +40,8 @@ namespace ConsoleAdventure
                 {
                     Position neighbor = new Position(current.x + neighborOffset.x, current.y + neighborOffset.y);
 
-                    Field fBlock = ConsoleAdventure.world.GetField(neighbor.x, neighbor.y, World.BlocksLayerId);
-                    Field fEntity = ConsoleAdventure.world.GetField(neighbor.x, neighbor.y, World.MobsLayerId);
+                    Field fBlock = ConsoleAdventure.world.GetField(neighbor.x, neighbor.y, World.BlocksLayerId, ConsoleAdventure.StartDeep);
+                    Field fEntity = ConsoleAdventure.world.GetField(neighbor.x, neighbor.y, World.MobsLayerId, ConsoleAdventure.StartDeep);
 
                     Transform block = fBlock != null ? fBlock.content : null;
                     Transform entity = fEntity != null ? fEntity.content : null;

@@ -25,10 +25,10 @@ namespace ConsoleAdventure
         {
             Position pos = ConsoleAdventure.MouseWorld;
             return
-                $"│ {Localization.GetTranslation("UI", "Floor") + Transform.GetName(pos, 0)}\n" +
-                $"│ {Localization.GetTranslation("UI", "Block") + Transform.GetName(pos, 1)}\n" +
-                $"│ {Localization.GetTranslation("UI", "Loot") + Transform.GetName(pos, 2)}\n" +
-                $"│ {Localization.GetTranslation("UI", "Entity") + Transform.GetName(pos, 3)}\n\n"
+                $"│ {Localization.GetTranslation("UI", "Floor") + Transform.GetName(pos, 0, ConsoleAdventure.curDeep)}\n" +
+                $"│ {Localization.GetTranslation("UI", "Block") + Transform.GetName(pos, 1, ConsoleAdventure.curDeep)}\n" +
+                $"│ {Localization.GetTranslation("UI", "Loot") + Transform.GetName(pos, 2, ConsoleAdventure.curDeep)}\n" +
+                $"│ {Localization.GetTranslation("UI", "Entity") + Transform.GetName(pos, 3, ConsoleAdventure.curDeep)}\n\n"
                 ;
         }
 

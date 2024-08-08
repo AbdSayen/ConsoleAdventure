@@ -1,32 +1,34 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Diagnostics;
 
 namespace ConsoleAdventure.WorldEngine
 {
     [Serializable]
-    public class Water : Transform
+    public class Descent : Transform
     {
-        public Water(Position position, int w, int worldLayer = -1) : base(position, w)
+        public Descent(Position position, int w, int worldLayer = 1) : base(position, w)
         {
+            this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = worldLayer;
 
-            type = (int)RenderFieldType.water;
-            isObstacle = true;
+            type = (int)RenderFieldType.descent;
+            isObstacle = false;
 
-            AddTypeToMap<Water>(type);
+            AddTypeToMap<Descent>(type);
 
             Initialize();
         }
 
         public override string GetSymbol()
         {
-            return "≈≈";
+            return "▼▼";
         }
 
         public override Color GetColor()
         {
-            return new(16, 29, 211);
+            return Color.Gray;
         }
     }
 }

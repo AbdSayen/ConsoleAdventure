@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpDX.Direct2D1;
+using System;
 using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
@@ -6,42 +7,49 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Chunk
     {
-        private readonly List<List<List<Field>>> fields;
-        private string biome;
+        private readonly List<List<List<List<Field>>>> fields;
+        private short biome;
         public static int Size = 16;
+        public static int maxDeep = 2;
 
         public Chunk()
         {
             fields = InitializeFields();
         }
 
-        private List<List<List<Field>>> InitializeFields()
+        private List<List<List<List<Field>>>> InitializeFields()
         {
-            var initializedFields = new List<List<List<Field>>>(World.CountOfLayers);
+            var initializedFields = new List<List<List<List<Field>>>>(World.CountOfLayers);
 
-            for (int z = 0; z < World.CountOfLayers; z++)
+            for (int w = 0; w < maxDeep; w++)
             {
-                var layer = new List<List<Field>>(Size);
-                for (int y = 0; y < Size; y++)
+                var vertical = new List<List<List<Field>>>(maxDeep);
+                for (int z = 0; z < World.CountOfLayers; z++)
                 {
-                    var row = new List<Field>(Size);
-                    for (int x = 0; x < Size; x++)
+                    var layer = new List<List<Field>>(Size);
+                    for (int y = 0; y < Size; y++)
                     {
-                        row.Add(new Field());
+                        var row = new List<Field>(Size);
+                        for (int x = 0; x < Size; x++)
+                        {
+                            row.Add(new Field());
+                        }
+                        layer.Add(row);
                     }
-                    layer.Add(row);
+                    vertical.Add(layer);
                 }
-                initializedFields.Add(layer);
+                initializedFields.Add(vertical);
             }
 
             return initializedFields;
         }
 
-        public Field GetField(int x, int y, int z)
+        public Field GetField(int x, int y, int z, int w)
         {
-            if (IsValidCoordinate(x, y, z))
+            if (IsValidCoordinate(x, y, z, w))
             {
-                var layer = fields[z];
+                var vertical = fields[w];
+                var layer = vertical[z];
                 var row = layer[y];
                 var field = row[x];
                 if (field == null)
@@ -54,38 +62,50 @@ namespace ConsoleAdventure.WorldEngine
             return null;
         }
 
-        public void SetField(int x, int y, int layer, Field field)
+        public void SetField(int x, int y, int layer, int w, Field field)
         {
-            if (IsValidCoordinate(x, y, layer))
+            if (IsValidCoordinate(x, y, layer, w))
             {
-                fields[layer][y][x] = field;
+                fields[w][layer][y][x] = field;
             }
         }
 
-        public string GetBiome()
+        public short GetBiome()
         {
-            return biome ?? "none";
+            return biome;
         }
 
-        public List<List<Field>> GetFields(int z)
+        public List<List<Field>> GetFields(int z, int w)
         {
-            if (z >= 0 && z < fields.Count)
+            if (w >= 0 && w < fields.Count)
             {
-                return fields[z];
+                if (z >= 0 && z < fields[w].Count)
+                {
+                    return fields[w][z];
+                }
             }
             return null;
         }
 
-        public List<List<List<Field>>> GetFields()
+        public List<List<List<Field>>> GetFields(int w)
+        {
+            if (w >= 0 && w < fields.Count)
+            {
+                return fields[w];
+            }
+            return null;
+        }
+
+        public List<List<List<List<Field>>>> GetFields()
         {
             return fields;
         }
 
-        private bool IsValidCoordinate(int x, int y, int z)
+        private bool IsValidCoordinate(int x, int y, int z, int w)
         {
-            return z >= 0 && z < fields.Count &&
-                   y >= 0 && y < fields[z].Count &&
-                   x >= 0 && x < fields[z][y].Count;
+            return z >= 0 && z < fields[w].Count &&
+                   y >= 0 && y < fields[w][z].Count &&
+                   x >= 0 && x < fields[w][z][y].Count;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace ConsoleAdventure.Content.Scripts
     {
         int index = -1;
 
-        public Cat(Position position, List<object> parameters = null) : base(position, parameters)
+        public Cat(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
         {
             type = (int)RenderFieldType.cat;
             SetMaxLife(9);
@@ -20,7 +20,7 @@ namespace ConsoleAdventure.Content.Scripts
 
             Initialize();
             
-            EntityColor.ChooseColor(position);
+            EntityColor.ChooseColor(position, w);
         }
 
         protected override void Start()

@@ -25,13 +25,13 @@ public class EntityColor
         ColorIndex = ConsoleAdventure.rand.Next(0, Colors.Length);
     }
     
-    public void ChooseColor(Position position)
+    public void ChooseColor(Position position, int w)
     {
-        SetColor(Colors[ColorIndex], position);
+        SetColor(Colors[ColorIndex], position, w);
     }
         
-    private void SetColor(Color color, Position position)
+    private void SetColor(Color color, Position position, int w)
     {
-        ConsoleAdventure.world.GetField(position.x, position.y, World.MobsLayerId).color = color;
+        ConsoleAdventure.world.GetField(position.x, position.y, World.MobsLayerId, w).color = color;
     }
 }
