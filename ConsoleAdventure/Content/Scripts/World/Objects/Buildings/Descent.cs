@@ -30,5 +30,11 @@ namespace ConsoleAdventure.WorldEngine
         {
             return Color.Gray;
         }
+        
+        public override void Interaction()
+        {
+            if (world.players[0].SetPosition(world.players[0].position, 0))
+                ConsoleAdventure.curDeep = 0;
+        }
     }
 }
