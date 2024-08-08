@@ -78,6 +78,8 @@ namespace ConsoleAdventure
 
         public virtual void Collapse() { }
 
+        public virtual void Interaction() { }
+
         public virtual string GetSymbol()
         {
             return "  ";   
