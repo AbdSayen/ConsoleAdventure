@@ -7,11 +7,11 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Climb : Transform
     {
-        public Climb(Position position, int w, int worldLayer = 1) : base(position, w)
+        public Climb(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = worldLayer;
+            else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.climb;
             isObstacle = false;

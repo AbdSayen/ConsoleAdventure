@@ -7,11 +7,11 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Descent : Transform
     {
-        public Descent(Position position, int w, int worldLayer = 1) : base(position, w)
+        public Descent(Position position, int w, int worldLayer = 1) : base(position, (byte)w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = worldLayer;
+            else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.descent;
             isObstacle = false;

@@ -36,7 +36,7 @@ namespace ConsoleAdventure.WorldEngine
         sandstone,
         clay,
         clayFloor,
-        brownIronOre,
+        brownIronOre,           //+
         basalt,
         basaltFloor,
         obsidian,

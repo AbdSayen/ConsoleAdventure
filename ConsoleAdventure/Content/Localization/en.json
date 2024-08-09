@@ -30,7 +30,8 @@
     "Quartz": "quartz",
     "GraniteFloor": "granite floor",
     "Descent": "descent",
-    "Climb": "climb"
+    "Climb": "climb",
+    "BrownIronOre": "brown iron ore"
   },
 
   "Events": {

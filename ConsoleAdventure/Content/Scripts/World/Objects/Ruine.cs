@@ -6,11 +6,11 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Ruine : Transform
     {
-        public Ruine(Position position, int w, int worldLayer = -1) : base(position, w)
+        public Ruine(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = worldLayer;
+            else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.ruine;
             this.isObstacle = false;

@@ -37,11 +37,11 @@ namespace ConsoleAdventure.WorldEngine
         public string name;
         public int seed = 1234;
 
-        public readonly static int CountOfLayers = 4;
-        public readonly static int FloorLayerId = 0;
-        public readonly static int BlocksLayerId = 1;
-        public readonly static int ItemsLayerId = 2;
-        public readonly static int MobsLayerId = 3;
+        public readonly static byte CountOfLayers = 4;
+        public readonly static byte FloorLayerId = 0;
+        public readonly static byte BlocksLayerId = 1;
+        public readonly static byte ItemsLayerId = 2;
+        public readonly static byte MobsLayerId = 3;
 
         internal bool isInitialized = false;
 
@@ -219,9 +219,9 @@ namespace ConsoleAdventure.WorldEngine
             SetSubjectPosition(subject, worldLayer, newX, newY);
         }
 
-        public bool SetSubjectPosition(Transform subject, int worldLayer, int newX, int newY, int newW = -1)
+        public bool SetSubjectPosition(Transform subject, int worldLayer, int newX, int newY, byte? newW = null)
         {
-            int deep = (newW == -1) ? subject.w : newW;
+            byte deep = (newW == null) ? subject.w : (byte)newW;
 
             if (IsValidMove(worldLayer, newX, newY, deep))
             {
@@ -229,7 +229,7 @@ namespace ConsoleAdventure.WorldEngine
                 subject.position.SetPosition(newX, newY);
                 subject.w = deep;
                 GetField(newX, newY, worldLayer, deep).content = subject;
-                GetField(newX, newY, worldLayer, deep).color = subject.GetColor();
+                //GetField(newX, newY, worldLayer, deep).color = subject.GetColor();
                 return true;
             }
 

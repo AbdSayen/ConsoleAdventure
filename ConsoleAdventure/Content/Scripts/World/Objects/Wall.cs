@@ -6,10 +6,10 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Wall : Transform
     {
-        public Wall(Position position, int w, int worldLayer = -1) : base(position, w)
+        public Wall(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = worldLayer;
+            else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.wall;
             isObstacle = true;

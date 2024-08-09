@@ -9,7 +9,7 @@ public static class Spawner
     {
         Entity spawnEntity = new Entity(Position.Zero(), w);
         spawnEntity = entity.Copy<Entity>();
-        spawnEntity.EntityColor.ChooseColor(position, w);
+        //spawnEntity.EntityColor.ChooseColor(position, w);
         ConsoleAdventure.world.SetSubjectPosition(spawnEntity, entity.worldLayer, position.x, position.y);
 
         return spawnEntity;

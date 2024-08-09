@@ -46,34 +46,34 @@ namespace ConsoleAdventure.WorldEngine
             new(0, 112, 32)
         };
 
-        int Sindex; //Symbol
-        int Cindex; //Color
+        //byte Sindex; //Symbol
+        //int Cindex; //Color
 
-        public Grass(Position position, int w, int worldLayer = -1) : base(position, w)
+        public Grass(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = worldLayer;
+            else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.grass;
             isObstacle = false;
 
             AddTypeToMap<Grass>(type);
 
-            Sindex = ConsoleAdventure.rand.Next(0, symbolsMap.Length);
-            Cindex = ConsoleAdventure.rand.Next(0, colorsMap.Length);
+            //Sindex = ConsoleAdventure.rand.Next(0, symbolsMap.Length);
+            //Cindex = ConsoleAdventure.rand.Next(0, colorsMap.Length);
 
             Initialize();
         }
 
         public override string GetSymbol()
         {
-            return symbolsMap[Sindex];
+            return symbolsMap[Utils.HashNoise(position.x, position.y, 12)];
         }
 
         public override Color GetColor()
         {
-            return colorsMap[Cindex];
+            return colorsMap[Utils.HashNoise(position.x, position.y, 9)];
         }
     }
 }

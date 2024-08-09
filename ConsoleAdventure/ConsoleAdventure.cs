@@ -96,7 +96,7 @@ namespace ConsoleAdventure
             //                          ^^^^         ^^^^
             //                     Тип настроек     Ключ настройки
 
-            //  Тут такая же система как в локализации
+            //  Тут такая же система как в локализации.
 
 
             _graphics = new GraphicsDeviceManager(this);

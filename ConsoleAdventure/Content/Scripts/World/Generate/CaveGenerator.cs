@@ -107,10 +107,44 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
                 new Climb(descentPos, w);
                 new Descent(descentPos, w + 1);
-        }
+            }
 
-            string cave = "";
-            cave = world.LevelToString(w);         
+            for (int i = 0; i < 70; i++)
+            {
+                Position position = new(Generator.GenRand.Next(1, world.size - 1), Generator.GenRand.Next(1, world.size - 1));
+
+                int width = Generator.GenRand.Next(8, 16);
+                int height = Generator.GenRand.Next(8, 16);
+
+                bool[,] oreArea = new bool[width, height];
+
+                int[] BOre = new int[] { 3, 5, 6, 7, 8 }; 
+                int[] SOre = new int[] { 5, 6, 7, 8 }; 
+
+                for (int j = 0; j < width; j++)
+                {
+                    for (int k = 0; k < height; k++)
+                    {
+                        oreArea[j, k] = Generator.GenRand.Next(0, 4) > 1;
+                    }
+                }
+
+                oreArea = WorldGenUtils.CellularAutomaton(oreArea, 6, BOre, SOre);
+
+                for (int j = 0; j < width; j++)
+                {
+                    for (int k = 0; k < height; k++)
+                    {
+                        if (oreArea[j, k] && world.GetField(position.x + j, position.y + k, World.BlocksLayerId, w)?.content != null)
+                        {
+                            new BrownIronOre(new(j + position.x, k + position.y), w);
+                        }
+                    }
+                }
+            }
+
+            //string cave = "";
+            //cave = world.LevelToString(w);         
         }
     }
 }

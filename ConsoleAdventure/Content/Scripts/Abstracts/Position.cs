@@ -6,12 +6,12 @@ namespace ConsoleAdventure
     [Serializable]
     public struct Position
     {
-        public int x { get; set; }
-        public int y { get; set; }
+        public short x { get; set; }
+        public short y { get; set; }
         public Position(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            this.x = (short)x;
+            this.y = (short)y;
         }
 
         public Position()
@@ -22,8 +22,8 @@ namespace ConsoleAdventure
 
         public void SetPosition(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            this.x = (short)x;
+            this.y = (short)y;
         }
 
         public static Position Zero()

@@ -35,7 +35,7 @@ namespace ConsoleAdventure.WorldEngine
                             {
                                 var field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, z, observer.w);
 
-                                if (field != null)
+                                if (field != null && field.content != null)
                                 {
                                     //ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "██", Co, (Color)field.content.GetBGColor());
 
@@ -44,7 +44,7 @@ namespace ConsoleAdventure.WorldEngine
                                         ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "██", new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), (Color)field.content.GetBGColor());
                                     }
 
-                                    ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), field.color);
+                                    ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), field.content.GetColor());
                                 }
                             }
                         }

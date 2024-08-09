@@ -6,11 +6,11 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Door : Transform
     {
-        public Door(Position position, int w, int worldLayer = 1) : base(position, w)
+        public Door(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = worldLayer;
+            else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.door;
             isObstacle = false;

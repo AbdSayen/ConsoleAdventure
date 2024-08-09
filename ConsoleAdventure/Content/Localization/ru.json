@@ -30,7 +30,8 @@
     "Quartz": "кварц",
     "GraniteFloor": "гранитный пол",
     "Descent": "спуск",
-    "Climb": "подъем"
+    "Climb": "подъем",
+    "BrownIronOre": "бурый железняк"
   },
 
   "Events": {

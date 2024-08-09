@@ -8,10 +8,6 @@ namespace ConsoleAdventure.WorldEngine
     {
         public bool isStructure = false;
 
-        [NonSerialized]
-        public Color color = Color.White;
-
-        public string structureName { get; set; } = "None";
         public Transform content;
 
         public string GetSymbol()

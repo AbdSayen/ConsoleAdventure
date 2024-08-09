@@ -11,13 +11,12 @@ namespace ConsoleAdventure.Content.Scripts
         //public List<object> Parameters { get; set; } = new List<object>();
 
         public StateMachine StateMachine { get; private set; }
-        public EntityColor EntityColor { get; private set; }
 
         public int life;
         public int maxLife;
         public int damage;
 
-        public Entity(Position position, int w, List<object> parameters = null) : base(position, w)
+        public Entity(Position position, int w, List<object> parameters = null) : base(position, (byte)w)
         {
             worldLayer = World.MobsLayerId;
             type = (int)RenderFieldType.entity;
@@ -29,7 +28,6 @@ namespace ConsoleAdventure.Content.Scripts
             }
 
             StateMachine = new StateMachine(this);
-            EntityColor = new EntityColor();
 
             AddTypeToMap<Entity>(type);
             
@@ -74,16 +72,6 @@ namespace ConsoleAdventure.Content.Scripts
         {
             this.life = life;
             maxLife = life;
-        }
-
-        public void СhooseColor(Color[] colors, Position position, int index)
-        {
-            SetColor(colors[index], position);
-        }
-
-        public void SetColor(Color color, Position position)
-        {
-            world.GetField(position.x, position.y, World.MobsLayerId, w).color = color;
         }
 
         public virtual void SetParams(List<object> p) { }

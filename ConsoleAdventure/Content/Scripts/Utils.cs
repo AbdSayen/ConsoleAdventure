@@ -207,5 +207,19 @@ namespace ConsoleAdventure
             result.Y = vector.X * sin + vector.Y * cos;
             return result;
         }
+
+        public static int HashNoise(int x, int y)
+        {
+            int n = x * 374761393 + y * 668265263;
+            n = (n ^ (n >> 13)) * 1274126177;
+            n = (n ^ (n >> 16));
+            return n;
+        }
+
+        public static int HashNoise(int x, int y, int max)
+        {
+            int n = HashNoise(x, y);
+            return Math.Abs(n % max);
+        }
     }
 }

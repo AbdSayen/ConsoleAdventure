@@ -29,8 +29,8 @@ public class PlayerMovement
         
         _direction = Position.Zero();
         
-        _direction.x = Input.GetHorizontalMovement();
-        _direction.y = Input.GetVerticalMovement();
+        _direction.x = (short)Input.GetHorizontalMovement();
+        _direction.y = (short)Input.GetVerticalMovement();
 
         if (x != 0 || y != 0)
         {

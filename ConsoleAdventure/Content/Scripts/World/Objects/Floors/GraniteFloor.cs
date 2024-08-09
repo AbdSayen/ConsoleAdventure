@@ -14,13 +14,13 @@ namespace ConsoleAdventure.WorldEngine
             " ,",
         };
 
-        byte Sindex;
+        //byte Sindex;
 
-        public GraniteFloor(Position position, int w, int worldLayer = -1) : base(position, w)
+        public GraniteFloor(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.FloorLayerId;
-            else this.worldLayer = worldLayer;
+            else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.graniteFloor;
             isObstacle = false;
@@ -29,12 +29,12 @@ namespace ConsoleAdventure.WorldEngine
 
             Initialize();
 
-            Sindex = (byte)ConsoleAdventure.rand.Next(0, symbolsMap.Length);
+            //Sindex = (byte)ConsoleAdventure.rand.Next(0, symbolsMap.Length);
         }
 
         public override string GetSymbol()
         {
-            return symbolsMap[Sindex];
+            return symbolsMap[Utils.HashNoise(position.x, position.y, 3)];
         }
 
         public override Color GetColor()

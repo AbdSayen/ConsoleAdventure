@@ -11,10 +11,10 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Granite : Transform
     {
-        public Granite(Position position, int w, int worldLayer = -1) : base(position, w)
+        public Granite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = worldLayer;
+            else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.granite;
             isObstacle = true;

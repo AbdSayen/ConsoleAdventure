@@ -25,7 +25,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         public Player(int id, Position position, int w, int worldLayer = -1) : base(position, w)
         {
             if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
-            else this.worldLayer = worldLayer;
+            else this.worldLayer = (byte)worldLayer;
             this.position = position;
 
             info = new PlayerInfo();
@@ -33,7 +33,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             inventory = new Inventory(this);
 
             info.Id = id;
-            this.world = world;
+            //Transform.world = world;
             type = (int)RenderFieldType.player;
 
             AddTypeToMap<Player>(type);

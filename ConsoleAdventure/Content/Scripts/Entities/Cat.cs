@@ -9,6 +9,19 @@ namespace ConsoleAdventure.Content.Scripts
     [Serializable]
     public class Cat : Entity
     {
+        public static Color[] Colors = new Color[9]
+        {
+            new Color(50, 50, 50),
+            new Color(131, 105, 44),
+            new Color(193, 138, 45),
+            new Color(243, 171, 51),
+            new Color(140, 147, 153),
+            new Color(255, 255, 255),
+            new Color(196, 207, 211),
+            new Color(250, 194, 45),
+            new Color(240, 210, 80),
+        };
+
         int index = -1;
 
         public Cat(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
@@ -19,8 +32,11 @@ namespace ConsoleAdventure.Content.Scripts
             AddTypeToMap<Cat>(type);
 
             Initialize();
-            
-            EntityColor.ChooseColor(position, w);
+
+            if (parameters == null)
+                index = ConsoleAdventure.rand.Next(0, Colors.Length);
+            else
+                index = (int)parameters[0];
         }
 
         protected override void Start()
@@ -36,7 +52,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         public override Color GetColor()
         {
-            return Microsoft.Xna.Framework.Color.White;
+            return Colors[index];
         }
 
         bool isFree = true;

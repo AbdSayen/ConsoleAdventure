@@ -16,8 +16,8 @@ namespace ConsoleAdventure
             { 0, typeof(Transform) },
         };
 
-        public World world { get; protected set; }
-        public int worldLayer { get; protected set; }
+        public static World world { get; protected set; }
+        public byte worldLayer { get; protected set; }
 
         public Position position;  
         public byte type;
@@ -26,9 +26,9 @@ namespace ConsoleAdventure
         /// <summary>
         /// Ось w, глубина объекта (на коком уровне мира он находится)
         /// </summary>
-        public int w;
+        public byte w;
 
-        protected Transform(Position position, int w)
+        protected Transform(Position position, byte w)
         {
             this.position = position;
             this.w = w;
@@ -41,7 +41,7 @@ namespace ConsoleAdventure
             if (world.GetField(position.x, position.y, worldLayer, w) != null)
             {
                 world.GetField(position.x, position.y, worldLayer, w).content = this;
-                world.GetField(position.x, position.y, worldLayer, w).color = GetColor();
+                //world.GetField(position.x, position.y, worldLayer, w).color = GetColor();
             }
         }
 
@@ -73,7 +73,7 @@ namespace ConsoleAdventure
 
         public virtual bool SetPosition(Position newPos, int newW)
         {
-            return world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y, newW);
+            return world.SetSubjectPosition(this, worldLayer, newPos.x, newPos.y, (byte)newW);
         }
 
         public virtual void Collapse() { }
@@ -111,8 +111,8 @@ namespace ConsoleAdventure
         {
             if (position.x < 0) { position.x = 0; }
             if (position.y < 0) { position.y = 0; }
-            if (position.x > ConsoleAdventure.world.size) { position.x = ConsoleAdventure.world.size; }
-            if (position.y > ConsoleAdventure.world.size) { position.y = ConsoleAdventure.world.size; }
+            if (position.x > ConsoleAdventure.world.size) { position.x = (short)ConsoleAdventure.world.size; }
+            if (position.y > ConsoleAdventure.world.size) { position.y = (short)ConsoleAdventure.world.size; }
 
             if (typeMapping.TryGetValue(type, out Type objectType))
             {
