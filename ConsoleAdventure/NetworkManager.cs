@@ -33,12 +33,14 @@ namespace ConsoleAdventure
         pickUpItem,
         sendCommand,
         sendWorld,
-        worldRequest
+        worldRequest,
+        sendPlayerData,
+        playerDataRequest
     }
 
     public static class NetworkManager
     {
-        private static string host = "127.0.0.1";//"26.8.244.156";
+        private static string host = "26.8.244.156";
         private static int port = 2454;
         private static TcpClient client = new TcpClient();
 
@@ -75,6 +77,7 @@ namespace ConsoleAdventure
                 await SendDataAsync(NetworkFuncType.sendPlayerConnectedId, Id);
                 Task.Run(() => ReceiveMainDataAsync());
                 await SendDataAsync(NetworkFuncType.worldRequest, Id);
+                await SendDataAsync(NetworkFuncType.playerDataRequest, Id);
             }
             catch (SocketException) {
                 ConsoleAdventure.menu.serverNotFoundTimer = 90;
@@ -274,6 +277,9 @@ namespace ConsoleAdventure
                     if (Id == 0)
                         SendDataAsync(NetworkFuncType.sendWorld, WorldIO.GetWorldBytes(), num);
                     break;
+                case NetworkFuncType.playerDataRequest:
+                    SendDataAsync(NetworkFuncType.sendPlayerData, ConsoleAdventure.world.GetLocalPlayer().GetPlayerBytes(), num, Id);
+                    break;
             }
         }
 
@@ -291,6 +297,10 @@ namespace ConsoleAdventure
                         WorldIO.SetWorldFromBytes(data);
                         WorldIO.LoadTags();
                     }
+                    break;
+                case NetworkFuncType.sendPlayerData:
+                    if (a == Id)
+                        ConsoleAdventure.world.players[b].LoadPlayerFromBytes(data);
                     break;
             }
         }

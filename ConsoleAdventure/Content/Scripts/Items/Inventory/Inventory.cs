@@ -10,7 +10,7 @@ namespace ConsoleAdventure
     public class Inventory
     {
         private Player player;
-        private List<Stack> slots = new List<Stack>();
+        public List<Stack> slots = new List<Stack>();
         private int maxCount = 10;
 
         public Inventory(Player player)

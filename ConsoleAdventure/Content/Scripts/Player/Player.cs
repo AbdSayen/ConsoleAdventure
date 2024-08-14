@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.InputLogic;
+using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
@@ -12,7 +15,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
     public class Player : Entity
     {
         public readonly PlayerInfo info;
-        public readonly Inventory inventory;
+        public Inventory inventory;
 
         [NonSerialized]
         public Stopwatch timer = new Stopwatch();
@@ -42,6 +45,26 @@ namespace ConsoleAdventure.Content.Scripts.Player
             AddTypeToMap<Player>(type);
 
             Initialize();
+        }
+
+        public byte[] GetPlayerBytes()
+        {
+            List<byte> data = new List<byte>();
+
+            byte[] inv = SerializeData.Serialize(inventory.slots);
+
+            data.AddRange(BitConverter.GetBytes(inv.Length));
+            data.AddRange(inv);
+
+            return data.ToArray();
+        }
+
+        public void LoadPlayerFromBytes(byte[] data)
+        {
+            int inventoryDataLength = BitConverter.ToInt32(data, 0);
+            List<byte> dat = data.ToList();
+            byte[] inv = dat.GetRange(4, inventoryDataLength).ToArray();
+            inventory.slots = SerializeData.Deserialize<List<Stack>>(inv);
         }
 
         public override string GetSymbol()
