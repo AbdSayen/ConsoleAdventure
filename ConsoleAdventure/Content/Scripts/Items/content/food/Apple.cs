@@ -10,6 +10,8 @@ namespace ConsoleAdventure
             satiety = 1;
             name = Localization.GetTranslation("Items", GetType().Name);
             description = GetDescription();
+
+            AddTypeToMap<Apple>();
         }
 
         public new string GetDescription()

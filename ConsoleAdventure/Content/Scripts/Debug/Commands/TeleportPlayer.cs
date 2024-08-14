@@ -20,7 +20,7 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             };
         }
 
-        public override void Logic(string[] args)
+        public override void Logic(string[] args, short id = -1)
         {
 
             int x = GetIntArg(args, "x");
@@ -37,7 +37,9 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
                 if (y > ConsoleAdventure.world.size) 
                     return;
 
-                ConsoleAdventure.world.players[0].SetPosition(new(x, y));
+                if (id == -1) id = NetworkManager.Id;
+                Player.Player pl = ConsoleAdventure.world.players[id];
+                pl.SetPosition(new(x, y));
             }
 
             catch (Exception) { }          

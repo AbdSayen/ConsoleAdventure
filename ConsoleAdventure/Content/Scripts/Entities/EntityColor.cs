@@ -32,6 +32,6 @@ public class EntityColor
         
     private void SetColor(Color color, Position position, int w)
     {
-        ConsoleAdventure.world.GetField(position.x, position.y, World.MobsLayerId, w).color = color;
+        //ConsoleAdventure.world.GetField(position.x, position.y, World.MobsLayerId, w).content.color = color;
     }
 }

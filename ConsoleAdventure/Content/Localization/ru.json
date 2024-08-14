@@ -88,5 +88,9 @@
     "LoadGenericData": "Загрузка общих данных...",
     "LoadObjectData": "Загрузка объектов...",
     "LoadEntityData": "Загрузка сущностей..."
+  },
+
+  "MProgress": {
+    "Connecting": "Подключаемся к серверу..."
   }
 }

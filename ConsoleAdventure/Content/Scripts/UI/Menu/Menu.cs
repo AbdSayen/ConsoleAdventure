@@ -29,6 +29,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private InfoPanel modListPanel = null;
 
+        private InfoPanel serverNotFoundPanel = null;
+
+        public int serverNotFoundTimer = 0;
+
         private static int worldDrawBuffer = 6;
 
         private int startWList, endWList = worldDrawBuffer;
@@ -36,8 +40,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
         private int selectedLanguage = SettingsSystem.GetSetting("Options", "Language"); // Получить сохраненный язык
 
         private string modsListText = "";
-
-        TextInputField inputField;
 
         private int timer;
 
@@ -60,6 +62,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             SettingsInit();
 
             WorldLoadingProgressInit();
+
+            ServerNotFoundPanelInit();
         }
 
         public void MenuUpdate()
@@ -71,6 +75,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             SettingsUpdate();
 
             ModsPanelUpdate();
+
+            ServerNotFoundPanelUpdate();
 
             if (ConsoleAdventure.kstate.IsKeyDown(Keys.Escape) && timer >= Utils.StabilizeTicks(20))
             {
@@ -292,8 +298,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                                 void LoadWorld()
                                 {
-                                    ConsoleAdventure.CreateWorld(name, 1234, false);
-                                    WorldIO.Load(name);
+                                    bool inm = false;
+                                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.M)) inm = true;
+                                    ConsoleAdventure.CreateWorld(name, 1234, false, inm);
+                                    if (ConsoleAdventure.world != null) WorldIO.Load(name);
                                 }
                             }
 
@@ -632,6 +640,23 @@ namespace ConsoleAdventure.Content.Scripts.UI
         }
         #endregion
 
+        #region ServerNotFoundPanel
+        private void ServerNotFoundPanelInit()
+        {
+            serverNotFoundPanel = new InfoPanel(new Rectangle(ConsoleAdventure.screenWidth / 2 - 135, ConsoleAdventure.screenHeight / 2 - 57, 30, 6), "ServerNotFound", "Server Not Found");
+        }
+        private void ServerNotFoundPanelUpdate()
+        {
+            if (serverNotFoundTimer > 0)
+                serverNotFoundTimer--;
+        }
+        private void ServerNotFoundPanelDraw(SpriteBatch spriteBatch)
+        {
+            if (serverNotFoundTimer > 0)
+                serverNotFoundPanel.Draw(spriteBatch);
+        }
+        #endregion
+
         public void CloseAllPages()
         {
             State = 0;
@@ -680,6 +705,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             ModsPanelDraw(spriteBatch);
 
             WorldLoadingProgressDraw(spriteBatch);
+
+            ServerNotFoundPanelDraw(spriteBatch);
             
             spriteBatch.End();
         }

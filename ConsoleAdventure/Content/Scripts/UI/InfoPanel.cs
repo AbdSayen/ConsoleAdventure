@@ -25,9 +25,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             SpriteFont font = ConsoleAdventure.Font;
 
-            spriteBatch.Draw(pixel, new Rectangle((int)Position.X, (int)Position.Y, 64 * 9, 30 * 19), Color.White);
-            spriteBatch.DrawFrame(font, Utils.GetPanel(new(64, 30), 0), Position, Color.White);
-            spriteBatch.DrawFrame(font, Utils.GetPanel(new(64, 3), 0), Position, Color.White);
+            spriteBatch.Draw(pixel, new Rectangle((int)Position.X, (int)Position.Y, rectangle.Width * 9, rectangle.Height * 19), Color.White);
+            spriteBatch.DrawFrame(font, Utils.GetPanel(new(rectangle.Width, rectangle.Height), 0), Position, Color.White);
+            spriteBatch.DrawFrame(font, Utils.GetPanel(new(rectangle.Width, 3), 0), Position, Color.White);
 
             spriteBatch.DrawString(font, name, Position + (new Vector2(9 * 8, 19 * 1)), Color.White);
             spriteBatch.DrawString(font, text, Position + (new Vector2(9 * 3, 19 * 3)), Color.White);

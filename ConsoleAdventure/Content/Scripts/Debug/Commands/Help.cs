@@ -20,7 +20,7 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             };
         }
 
-        public override void Logic(string[] args)
+        public override void Logic(string[] args, short id = -1)
         {
             try
             {

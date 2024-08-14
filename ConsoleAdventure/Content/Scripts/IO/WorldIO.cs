@@ -1,17 +1,12 @@
 ﻿using CaModLoaderAPI;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.VisualBasic.FileIO;
-using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Runtime.ExceptionServices;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
 
 namespace ConsoleAdventure.Content.Scripts.IO
 {
@@ -25,21 +20,18 @@ namespace ConsoleAdventure.Content.Scripts.IO
         {
             Console.WriteLine("Saving on account");
 
-            CreateTags(); //Создаём теги и храним в них данные о мире
-
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            byte[] bytes = SerializeData.Serialize(ConsoleAdventure.tags.Data); //Переводим теги в массив байтов
-            byte[] bytesToSave = Utils.Compress(bytes, CompressionLevel.SmallestSize);
+            byte[] bytes = GetWorldBytes();
 
             string fileName = path + name + ".wld";
 
             if (bytes != null)
             {
-                File.WriteAllBytes(fileName, bytesToSave);
+                File.WriteAllBytes(fileName, bytes);
             }
             else
             {
@@ -48,6 +40,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
 
             Console.WriteLine("The world was successfully saved!");
+        }
+
+        public static byte[] GetWorldBytes()
+        {
+            CreateTags(); //Создаём теги и храним в них данные о мире
+            byte[] bytes = SerializeData.Serialize(ConsoleAdventure.tags.Data); //Переводим теги в массив байтов
+            byte[] bytesToSave = Utils.Compress(bytes, CompressionLevel.SmallestSize);
+            return bytesToSave;
         }
 
         public static void Load(string name)
@@ -68,9 +68,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 if (File.Exists(fileName))
                 {
                     byte[] bytes = File.ReadAllBytes(fileName);
-                    byte[] bytesToLoad = Utils.Decompress(bytes);
-
-                    ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytesToLoad); //Переводим байты в теги
+                    SetWorldFromBytes(bytes);
                 }
 
                 else
@@ -86,6 +84,12 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 Console.WriteLine("The world was successfully loaded!");
             }
+        }
+
+        public static void SetWorldFromBytes(byte[] bytes)
+        {
+            byte[] bytesToLoad = Utils.Decompress(bytes);
+            ConsoleAdventure.tags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytesToLoad); //Переводим байты в теги
         }
 
         public static void Delete(string name)
@@ -248,7 +252,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             ConsoleAdventure.tags = tags;
         }
 
-        private static void LoadTags()
+        public static void LoadTags()
         {
             lock (locker)
             {

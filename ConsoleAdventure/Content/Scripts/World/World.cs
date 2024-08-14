@@ -23,7 +23,7 @@ namespace ConsoleAdventure.WorldEngine
         public int size { get; internal set; } = 256;
 
         public List<List<Chunk>> chunks = new List<List<Chunk>>();
-        public List<Player> players = new List<Player>();
+        public Dictionary<short, Player> players = new();
         public List<Entity> entities = new List<Entity>();
 
         public Time time = new Time();
@@ -33,7 +33,7 @@ namespace ConsoleAdventure.WorldEngine
 
         [NonSerialized]
         private Renderer renderer;
-
+        
         public string name;
         public int seed = 1234;
 
@@ -50,6 +50,8 @@ namespace ConsoleAdventure.WorldEngine
         public bool isCmdOpen;
 
         TextInputField inputField;
+
+        public bool inMultiplayer = false;
 
         public World(string name, int seed)
         {
@@ -69,14 +71,30 @@ namespace ConsoleAdventure.WorldEngine
 
         public void Initialize(bool isfullGenerate = true)
         {
+
             if (!isInitialized)
             {
                 generator.Generate(seed, isfullGenerate);
-                ConnectPlayer();
+                LoadInMultiplayer();
 
-                CaModLoader.WorldLoadedMods(this);
-                isInitialized = true;
+                if (players.Count > 0)
+                {
+                    CaModLoader.WorldLoadedMods(this);
+                    isInitialized = true;
+                }
             }
+        }
+
+        private async void LoadInMultiplayer()
+        {
+            if (!inMultiplayer)
+            {
+                ConnectPlayer(0);
+                players[0].isActive = true;
+                return;
+            }
+            if (await NetworkManager.ConnectClient())
+                ConnectLocalPlayer();
         }
 
         public Point GetChunkCounts()
@@ -84,9 +102,29 @@ namespace ConsoleAdventure.WorldEngine
             return new(chunks[0].Count, chunks.Count);
         }
 
-        public void ConnectPlayer()
+        public void ConnectLocalPlayer()
         {
-            players.Add(new Player(players.Count, new Position(5, 5), ConsoleAdventure.StartDeep));
+            short id = NetworkManager.Id;
+            players.Add(id, new Player(id, new Position(5 + id, 5 + id), ConsoleAdventure.StartDeep));
+            GetLocalPlayer().isActive = true;
+        }
+
+        public void ConnectPlayer(short id)
+        {
+            players.Add(id, new Player(id, new Position(5 + id, 5 + id), ConsoleAdventure.StartDeep));
+        }
+
+        public void DisconnectPlayer(short id)
+        {
+            players[id].Kill();
+            players.Remove(id);
+        }
+
+        public Player GetLocalPlayer()
+        {
+            if (NetworkManager.Id != -1)
+                return players[NetworkManager.Id];
+            return players[0];
         }
 
         int timer;
@@ -102,10 +140,7 @@ namespace ConsoleAdventure.WorldEngine
                 
                 time.PassTime(1);
 
-                for (int i = 0; i < players.Count; i++)
-                {
-                    players[i].InteractWithWorld();
-                }
+                GetLocalPlayer().InteractWithWorld();
 
                 for (int i = 0; i < entities.Count; i++)
                 {
@@ -122,14 +157,7 @@ namespace ConsoleAdventure.WorldEngine
 
             if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Cmd) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Cmd))
             {
-                if (isCmdOpen)
-                {
-                    isCmdOpen = false;
-                    ConsoleAdventure.BlockHotKey = false;
-                    inputField.isHover = false;
-                }
-
-                else
+                if (!isCmdOpen)
                 {
                     isCmdOpen = true;
                     ConsoleAdventure.BlockHotKey = true;
@@ -137,12 +165,22 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
 
+            if (!ConsoleAdventure.kstate.IsKeyDown(Keys.Escape) && ConsoleAdventure.prekstate.IsKeyDown(Keys.Escape))
+            {
+                if (isCmdOpen)
+                {
+                    isCmdOpen = false;
+                    ConsoleAdventure.BlockHotKey = false;
+                    inputField.isHover = false;
+                }
+            }
+
             timer++;
         }
 
-        public void Render()
+        public async void Render()
         {
-            renderer.Render(players[0], Cursor.Instance.CursorPosition);
+            renderer.Render(GetLocalPlayer(), Cursor.Instance.CursorPosition);
 
             if (isCmdOpen)
             {
@@ -152,8 +190,11 @@ namespace ConsoleAdventure.WorldEngine
                 if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter))
                 {
                     Command.Find(inputField.text);
+                    await NetworkManager.SendDataAsync(NetworkFuncType.sendCommand, inputField.text, NetworkManager.Id);
                     inputField.text = "";
                     inputField.cursorPos = new();
+                    isCmdOpen = false;
+                    ConsoleAdventure.BlockHotKey = false;
                 }
             }
         }

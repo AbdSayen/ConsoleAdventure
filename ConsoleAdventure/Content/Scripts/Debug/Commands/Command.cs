@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ConsoleAdventure.Content.Scripts.Debug.Commands
 {
@@ -36,12 +32,12 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             }
         }
 
-        public virtual void Logic(string[] args)
+        public virtual void Logic(string[] args, short id = -1)
         {
 
         }
 
-        public static void Find(string commandText) 
+        public static void Find(string commandText, short id = -1) 
         {
             List<string> fragments = new List<string>(commandText.Split(new[] { ' ' }, StringSplitOptions.None));
 
@@ -52,7 +48,7 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
                 {
                     List<string> args = fragments;
                     args.RemoveAt(0);
-                    cmd.Logic(args.ToArray());
+                    cmd.Logic(args.ToArray(), id);
                 }
                 catch (Exception)
                 {

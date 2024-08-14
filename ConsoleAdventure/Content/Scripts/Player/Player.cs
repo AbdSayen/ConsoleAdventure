@@ -22,7 +22,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private bool wasCursorKeyPressedLastFrame;
 
-        public Player(int id, Position position, int w, int worldLayer = -1) : base(position, w)
+        public bool isActive = false;
+
+        private byte frames = 0;
+
+        public Player(short id, Position position, int w, int worldLayer = -1) : base(position, w)
         {
             if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
             else this.worldLayer = (byte)worldLayer;
@@ -33,7 +37,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
             inventory = new Inventory(this);
 
             info.Id = id;
-            //Transform.world = world;
             type = (int)RenderFieldType.player;
 
             AddTypeToMap<Player>(type);
@@ -53,7 +56,18 @@ namespace ConsoleAdventure.Content.Scripts.Player
         
         public override void InteractWithWorld()
         {
+            if (!isActive) return;
+
             timer.Start();
+
+            if (frames < 2)
+                frames++;
+            else
+            {
+                if (oldPos.x != position.x || oldPos.y != position.y)
+                    NetworkManager.SendDataAsync(NetworkFuncType.setPlayerPos, position, NetworkManager.Id, 0);
+                frames = 0;
+            }
 
             if (Input.IsKeyDown(InputConfig.Run) && timer.Elapsed.TotalMilliseconds > 15 && !ConsoleAdventure.BlockHotKey)
             {
@@ -117,6 +131,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     new Plank(targetPosition, w);
                     inventory.RemoveItems(new Log(), 1);
                     world.time.PassTime(120);
+                    NetworkManager.SendDataAsync(NetworkFuncType.buildTransform, targetPosition, w, NetworkManager.Id);
                 }
                 else
                 {
@@ -130,6 +145,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 {
                     world.RemoveSubject(t, World.BlocksLayerId);
                     world.time.PassTime(60);
+                    NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w);
                 }
             }
         }
@@ -146,18 +162,34 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private void Walk()
         {
+            oldPos = position;
             _movement.Move(this);
         }
 
         private void CheckPickUpItems()
         {
+            
+            if (Input.IsKeyDown(InputConfig.PickUp) && !ConsoleAdventure.BlockHotKey)
+            {
+                if (TryPickUp())
+                    NetworkManager.SendDataAsync(NetworkFuncType.pickUpItem, NetworkManager.Id);
+            }
+        }
+
+        public bool TryPickUp()
+        {
             Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId, w);
 
-            if (Input.IsKeyDown(InputConfig.PickUp) && itemField.content != null && !ConsoleAdventure.BlockHotKey)
+            if (itemField.content != null)
             {
                 if (itemField.content is Loot)
+                {
                     ((Loot)itemField.content).PickUpAll(inventory);
+                    return true;
+                }
             }
+
+            return false;
         }
     }
 }

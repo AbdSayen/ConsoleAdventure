@@ -56,6 +56,14 @@
 
         public static string BlocksGenitive = Localization.GetTranslation("Generic", "Blocks-genitive");
 
+        public static string FloorTooltip = Localization.GetTranslation("UI", "Floor");
+
+        public static string BlockTooltip = Localization.GetTranslation("UI", "Block");
+
+        public static string LootTooltip = Localization.GetTranslation("UI", "Loot");
+
+        public static string EntityTooltip = Localization.GetTranslation("UI", "Entity");
+
         public static void UpdateLabels()
         {
             navigHelp = Localization.GetTranslation("UI", "Navigation");

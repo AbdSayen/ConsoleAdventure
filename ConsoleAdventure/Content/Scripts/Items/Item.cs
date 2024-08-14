@@ -1,6 +1,8 @@
 ﻿using ConsoleAdventure.CaModLoaderAPI;
 using System;
 using ConsoleAdventure;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ConsoleAdventure
 {
@@ -9,6 +11,13 @@ namespace ConsoleAdventure
     {
         public string name = "Name missing";
         public string description = "Description missing";
+
+        public static int lastTypeId = 0;
+
+        private static Dictionary<int, Type> typeMapping = new Dictionary<int, Type>()
+        {
+            { 0, typeof(Item) },
+        };
 
         protected string GetDescription()
         {
@@ -21,11 +30,44 @@ namespace ConsoleAdventure
             return description;
         }
 
+        public static void AddTypeToMap<T>(int type)
+        {
+            if (!typeMapping.ContainsKey(type))
+            {
+                typeMapping.Add(type, typeof(T));
+                lastTypeId++;
+            }
+        }
+
+        public static void AddTypeToMap<T>()
+        {
+            do
+            {
+                lastTypeId++;
+            } while (typeMapping.ContainsKey(lastTypeId));
+            typeMapping.Add(lastTypeId, typeof(T));
+        }
+
+        public static int GetTypeFromMap(Type t)
+        {
+            return typeMapping.FirstOrDefault(x => x.Value == t).Key;
+        }
+
+        public static Stack GetItem(int type, int count)
+        {
+            if (typeMapping.TryGetValue(type, out Type item))
+            {
+                return new Stack((Item)Activator.CreateInstance(item), count);
+            }
+
+            return null;
+        }
+
         public virtual bool CanBePickedUp()
         {
             foreach (GlobalItem glItem in CaModLoader.modGlobalItems)
             {
-                bool? customPickUp = glItem.CanBePickedUp(this, ConsoleAdventure.world.players[0]);
+                bool? customPickUp = glItem.CanBePickedUp(this, ConsoleAdventure.world.GetLocalPlayer());
                 if (customPickUp != null)
                 {
                     return (bool)customPickUp;

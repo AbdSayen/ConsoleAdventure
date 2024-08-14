@@ -21,7 +21,7 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             };
         }
 
-        public override void Logic(string[] args)
+        public override void Logic(string[] args, short id = -1)
         {
             string name = GetStringArg(args, "name");
             int count = GetIntArg(args, "count");
@@ -38,11 +38,13 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
                     if (count < 1) count = 1;
                     
                     Item item = (Item)Activator.CreateInstance(type);
-                    ConsoleAdventure.world.players[0].inventory.PickUpItems(new List<Stack>() { new Stack(item, count) });
+                    if (id == -1) id = NetworkManager.Id;
+                    Player.Player pl = ConsoleAdventure.world.players[id];
+                    pl.inventory.PickUpItems(new List<Stack>() { new Stack(item, count) });
                 }
             }
 
-            catch (Exception) { }          
+            catch (Exception) { }
         }
     }
 }

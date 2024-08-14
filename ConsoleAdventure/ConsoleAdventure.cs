@@ -8,6 +8,7 @@ using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.MediaFoundation;
 using System;
 using System.IO;
 
@@ -48,7 +49,7 @@ namespace ConsoleAdventure
 
         public static ProgressBar progressBar;
 
-        private static Menu menu;
+        public static Menu menu;
 
         internal static bool isExit;
 
@@ -56,7 +57,6 @@ namespace ConsoleAdventure
         public static int StartDeep = 1;
 
         public static Tags tags = new();
-
 
         public static bool BlockHotKey { get; internal set; } = false;
 
@@ -74,13 +74,15 @@ namespace ConsoleAdventure
         {
             get
             {
-                Vector2 offset = (worldPos + ((new Vector2(30, 15) - world.players[0].position.ToVector2()) * cellSize));
+                Vector2 offset = (worldPos + ((new Vector2(30, 15) - world.GetLocalPlayer().position.ToVector2()) * cellSize));
                 Vector2 feildPos = ((mousePosition - offset) / cellSize).ToPoint().ToVector2();
                 return feildPos.ToPosition();
             }
         }
 
         private bool _isFirstUpdate = true;
+
+        public bool WindowActive => IsActive;
 
         public ConsoleAdventure()
         {
@@ -103,9 +105,10 @@ namespace ConsoleAdventure
             Localization.Load();
         }
 
-        public static void CreateWorld(string name, int seed, bool isfullGenerate = true)
+        public static void CreateWorld(string name, int seed, bool isfullGenerate = true, bool inMultiplayer = false)
         {
             world = new World(name, seed);
+            world.inMultiplayer = inMultiplayer;
             world.Initialize();
             display = new Display(world);
         }
@@ -182,7 +185,8 @@ namespace ConsoleAdventure
 
                 if (kstate.IsKeyDown(Keys.Escape) && !world.isCmdOpen)
                 {
-                    WorldIO.Save(world.name);
+                    NetworkManager.DisconectClient();
+                    if (NetworkManager.Id == 0 || NetworkManager.Id == -1) WorldIO.Save(world.name);
                     InWorld = false;
                     menu.CloseAllPages();
                 }

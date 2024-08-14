@@ -16,6 +16,8 @@ namespace ConsoleAdventure.Content.Scripts
         public int maxLife;
         public int damage;
 
+        protected Position oldPos;
+
         public Entity(Position position, int w, List<object> parameters = null) : base(position, (byte)w)
         {
             worldLayer = World.MobsLayerId;

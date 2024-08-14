@@ -9,6 +9,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Items", GetType().Name);
             description = GetDescription();
+            AddTypeToMap<Log>();
         }
 
         public new string GetDescription()

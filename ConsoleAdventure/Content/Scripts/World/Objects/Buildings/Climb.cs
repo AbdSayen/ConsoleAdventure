@@ -33,8 +33,11 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void Interaction()
         {
-            if (world.players[0].SetPosition(world.players[0].position, 1))
+            if (world.GetLocalPlayer().SetPosition(world.GetLocalPlayer().position, 1))
+            {
                 ConsoleAdventure.curDeep = 1;
+                NetworkManager.SendDataAsync(NetworkFuncType.setPlayerW, (short)ConsoleAdventure.curDeep, NetworkManager.Id);
+            }
         }  
     }
 }
