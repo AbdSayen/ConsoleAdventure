@@ -2,7 +2,9 @@
 using ConsoleAdventure.Content.Scripts.Debug.Commands;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.Player;
+using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
+using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +37,10 @@ namespace ConsoleAdventure
         sendWorld,
         worldRequest,
         sendPlayerData,
-        playerDataRequest
+        playerDataRequest,
+        syncPlayerDataLoading,
+        sendChatMsg,
+        dropItem
     }
 
     public static class NetworkManager
@@ -54,6 +59,8 @@ namespace ConsoleAdventure
         private static short dropItemDeep;
         private static short dropItemPlayerId;
 
+        public static string pcId = string.Empty;
+
         public static async Task<bool> ConnectClient()
         {
             try
@@ -68,13 +75,14 @@ namespace ConsoleAdventure
                 await Writer.FlushAsync();
                 byte[] buffer = new byte[2];
                 await stream.ReadAsync(buffer, 0, 2);
-                Id = BitConverter.ToInt16(buffer);
+                Id = BitConverter.ToInt16(buffer, 0);
+                
 
                 for (int i = Id - 1; i >= 0; i--)
                 {
                     ConsoleAdventure.world.ConnectPlayer((short)i);
                 }
-                await SendDataAsync(NetworkFuncType.sendPlayerConnectedId, Id);
+                await SendDataAsync(NetworkFuncType.sendPlayerConnectedId, Encoding.UTF8.GetBytes(pcId), Id);
                 Task.Run(() => ReceiveMainDataAsync());
                 await SendDataAsync(NetworkFuncType.worldRequest, Id);
                 await SendDataAsync(NetworkFuncType.playerDataRequest, Id);
@@ -196,7 +204,7 @@ namespace ConsoleAdventure
                     NetworkFuncType type = (NetworkFuncType)BitConverter.ToInt16(dat, 2);
 
                     Position pos;
-                    short a, b;
+                    short a, b, c;
 
                     switch (dataType)
                     {
@@ -245,13 +253,14 @@ namespace ConsoleAdventure
                     }
                     break;
                 case NetworkFuncType.buildTransform:
-                    Inventory inv = ConsoleAdventure.world.players[b].inventory;
-                    if (inv.HasItems(new Log(), 1))
-                    {
-                        new Plank(pos, a);
-                        inv.RemoveItems(new Log(), 1);
-                        ConsoleAdventure.world.time.PassTime(120);
-                    }
+                    byte[] b_ = BitConverter.GetBytes(b);
+                    byte c = b_[1];
+                    byte d = b_[0];
+                    Player player = (Player)ConsoleAdventure.world.players[a];
+                    Inventory inv = player.inventory;
+                    Item item = inv.slots[c].item;
+                    Transform.SetObject(item.placeType, pos, d);
+                    inv.RemoveAt(c, 1);
                     break;
             }
         }
@@ -260,9 +269,6 @@ namespace ConsoleAdventure
         {
             switch (type)
             {
-                case NetworkFuncType.sendPlayerConnectedId:
-                    ConsoleAdventure.world.ConnectPlayer(num);
-                    break;
                 case NetworkFuncType.sendPlayerDisconnectedId:
                     ConsoleAdventure.world.DisconnectPlayer(num);
                     break;
@@ -279,6 +285,9 @@ namespace ConsoleAdventure
                     break;
                 case NetworkFuncType.playerDataRequest:
                     SendDataAsync(NetworkFuncType.sendPlayerData, ConsoleAdventure.world.GetLocalPlayer().GetPlayerBytes(), num, Id);
+                    break;
+                case NetworkFuncType.dropItem:
+                    ConsoleAdventure.world.players[a].DropSlot(num);
                     break;
             }
         }
@@ -301,6 +310,16 @@ namespace ConsoleAdventure
                 case NetworkFuncType.sendPlayerData:
                     if (a == Id)
                         ConsoleAdventure.world.players[b].LoadPlayerFromBytes(data);
+                    break;
+                case NetworkFuncType.syncPlayerDataLoading:
+                    ConsoleAdventure.world.players[a].LoadPlayerFromBytes(data);
+                    break;
+                case NetworkFuncType.sendPlayerConnectedId:
+                    ConsoleAdventure.world.ConnectPlayer(a, Encoding.UTF8.GetString(data));
+                    break;
+                case NetworkFuncType.sendChatMsg:
+                    string text = Encoding.UTF8.GetString(data).Replace('\0', ' ');
+                    Loger.AddLog(Utils.StringMaxLengthOnLine(a + ": " + text, 24));
                     break;
             }
         }

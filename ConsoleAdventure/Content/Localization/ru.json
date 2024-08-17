@@ -86,7 +86,12 @@
     "Blocks": "Блоки",
     "Blocks-genitive": "Блоков",
     "Block": "Блок",
-    "Block-genitive": "Блока"
+    "Block-genitive": "Блока",
+
+    "CanBePlaced": "Можно поставить",
+    "CanBeEaten": "Можно съесть",
+    "Material": "Материал",
+    "Consumed": "Расходуется"
   },
 
   "Progress": {

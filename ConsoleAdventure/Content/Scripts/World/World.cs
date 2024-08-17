@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using ConsoleAdventure.Content.Scripts.Debug.Commands;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace ConsoleAdventure.WorldEngine
@@ -53,6 +54,8 @@ namespace ConsoleAdventure.WorldEngine
 
         public bool inMultiplayer = false;
 
+        public Dictionary<string, byte[]> playersDat;
+
         public World(string name, int seed)
         {
             this.name = name;
@@ -67,6 +70,8 @@ namespace ConsoleAdventure.WorldEngine
             inputField = new TextInputField(new Point(0, 0), Color.White, 173, 0, "Введите комманду...", 0, new char[1] { '\r' });
             inputField.Position = new Vector2(18, ConsoleAdventure.Height - (19 * 2) - 19);
             inputField.isHover = true;
+
+            playersDat = new Dictionary<string, byte[]>();
         }
 
         public void Initialize(bool isfullGenerate = true)
@@ -82,6 +87,15 @@ namespace ConsoleAdventure.WorldEngine
                     CaModLoader.WorldLoadedMods(this);
                     isInitialized = true;
                 }
+            }
+        }
+
+        public void Loaded()
+        {
+            if (playersDat.ContainsKey(NetworkManager.pcId))
+            {
+                GetLocalPlayer().LoadPlayerFromBytes(playersDat[NetworkManager.pcId]);
+                NetworkManager.SendDataAsync(NetworkFuncType.syncPlayerDataLoading, playersDat[NetworkManager.pcId], NetworkManager.Id);
             }
         }
 
@@ -105,13 +119,13 @@ namespace ConsoleAdventure.WorldEngine
         public void ConnectLocalPlayer()
         {
             short id = NetworkManager.Id;
-            players.Add(id, new Player(id, new Position(5 + id, 5 + id), ConsoleAdventure.StartDeep));
+            ConnectPlayer(id, NetworkManager.pcId);
             GetLocalPlayer().isActive = true;
         }
 
-        public void ConnectPlayer(short id)
+        public void ConnectPlayer(short id, string pcId = "")
         {
-            players.Add(id, new Player(id, new Position(5 + id, 5 + id), ConsoleAdventure.StartDeep));
+            players.Add(id, new Player(id, pcId, new Position(5 + id, 5 + id), ConsoleAdventure.StartDeep));
         }
 
         public void DisconnectPlayer(short id)
@@ -148,7 +162,7 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
 
-            if (timer > (1 * 60 * 60))
+            if (timer > (10 * 60 * 60) && NetworkManager.Id <= 0)
             {
                 WorldIO.Save("World");
 
@@ -189,8 +203,17 @@ namespace ConsoleAdventure.WorldEngine
 
                 if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter))
                 {
-                    Command.Find(inputField.text);
-                    await NetworkManager.SendDataAsync(NetworkFuncType.sendCommand, inputField.text, NetworkManager.Id);
+                    if (inputField.text[0] == '/')
+                    {
+                        Command.Find(inputField.text.Remove(0, 1));
+                        await NetworkManager.SendDataAsync(NetworkFuncType.sendCommand, inputField.text.Remove(0, 1), NetworkManager.Id);
+                    }
+                    else
+                    {
+                        string pre = "You";
+                        Loger.AddLog(Utils.StringMaxLengthOnLine(pre + ": " + inputField.text, 24));
+                        NetworkManager.SendDataAsync(NetworkFuncType.sendChatMsg, Encoding.UTF8.GetBytes(inputField.text), NetworkManager.Id);
+                    }
                     inputField.text = "";
                     inputField.cursorPos = new();
                     isCmdOpen = false;

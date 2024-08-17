@@ -86,7 +86,12 @@
     "Blocks": "Blocks",
     "Blocks-genitive": "Blocks",
     "Block": "Block",
-    "Block-genitive": "Block"
+    "Block-genitive": "Block",
+
+    "CanBePlaced": "Can Be Placed",
+    "CanBeEaten": "Can Be Eaten",
+    "Material": "Material",
+    "Consumed": "Consumed"
   },
 
   "Progress": {

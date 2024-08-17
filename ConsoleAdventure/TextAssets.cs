@@ -64,6 +64,14 @@
 
         public static string EntityTooltip = Localization.GetTranslation("UI", "Entity");
 
+        public static string ItemCanBePlaced = Localization.GetTranslation("Generic", "CanBePlaced");
+
+        public static string ItemCanBeEaten = Localization.GetTranslation("Generic", "CanBeEaten");
+
+        public static string ItemMaterial = Localization.GetTranslation("Generic", "Material");
+
+        public static string ItemConsumed = Localization.GetTranslation("Generic", "Consumed");
+
         public static void UpdateLabels()
         {
             navigHelp = Localization.GetTranslation("UI", "Navigation");
@@ -92,6 +100,16 @@
             BlockGenitive = Localization.GetTranslation("Generic", "Block-genitive");
             Blocks = Localization.GetTranslation("Generic", "Blocks");
             BlocksGenitive = Localization.GetTranslation("Generic", "Blocks-genitive");
+
+            FloorTooltip = Localization.GetTranslation("UI", "Floor");
+            BlockTooltip = Localization.GetTranslation("UI", "Block");
+            LootTooltip = Localization.GetTranslation("UI", "Loot");
+            EntityTooltip = Localization.GetTranslation("UI", "Entity");
+
+            ItemCanBePlaced = Localization.GetTranslation("Generic", "CanBePlaced");
+            ItemCanBeEaten = Localization.GetTranslation("Generic", "CanBeEaten");
+            ItemMaterial = Localization.GetTranslation("Generic", "Material");
+            ItemConsumed = Localization.GetTranslation("Generic", "Consumed");
         }
     }
 }

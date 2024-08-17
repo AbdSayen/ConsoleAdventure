@@ -34,7 +34,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public bool isCraftOpen = false;
 
-        public Player(short id, Position position, int w, int worldLayer = -1) : base(position, w)
+        public Player(short id, string pcid, Position position, int w, int worldLayer = -1) : base(position, w)
         {
             if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
             else this.worldLayer = (byte)worldLayer;
@@ -47,11 +47,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 slots = 
                 { 
                     new Stack( new IronPick(), 1), 
-                    //new Stack( new StoneItem(), ConsoleAdventure.rand.Next(3, 7)),
                 }
             };
 
             info.Id = id;
+            info.pcId = pcid;
             type = (int)RenderFieldType.player;
 
             AddTypeToMap<Player>(type);
@@ -137,6 +137,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     isCraftOpen = true;
             }
 
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.DropItem) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.DropItem) && !ConsoleAdventure.BlockHotKey)
+            {
+                DropSlot(holdItemIndex);
+                NetworkManager.SendDataAsync(NetworkFuncType.dropItem, (short)holdItemIndex, NetworkManager.Id);
+            }
+
             if (isCraftOpen)
             {
                 if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeListRight) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeListRight) && Display.recipesUI.cursorPos < ConsoleAdventure.availableRecipes.Count - 1)
@@ -164,6 +170,13 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 CheckPickUpItems();
                 timer.Restart();
             }
+        }
+
+        public void DropSlot(int slot)
+        {
+            Stack stack = inventory.slots[slot];
+            new Loot(position, w, new List<Stack>() { stack });
+            inventory.RemoveAt(slot, stack.count);
         }
 
         private void HandlePlayerInput()
@@ -200,7 +213,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 {
                     SetObject(item.placeType, targetPosition, w);
                     inventory.RemoveAt(holdItemIndex, 1);
-                    NetworkManager.SendDataAsync(NetworkFuncType.buildTransform, targetPosition, w, NetworkManager.Id);
+                    NetworkManager.SendDataAsync(NetworkFuncType.buildTransform, targetPosition, NetworkManager.Id, BitConverter.ToInt16(new byte[] { w, (byte)holdItemIndex }));
                 }
             }
             else if (Input.IsKeyDown(InputConfig.Destroying) && !ConsoleAdventure.BlockHotKey)
@@ -212,7 +225,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     if(t.degreeDestruction >= 100)
                     {
                         world.RemoveSubject(t, World.BlocksLayerId);
-                        NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w);
+                        NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w, (short)0);
                     }
                 }
 
@@ -220,7 +233,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 if (t1?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.FloorLayerId) && inventory.slots[holdItemIndex].item.hammer > 0)
                 {
                     world.RemoveSubject(t1, World.FloorLayerId);
-                    NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w);
+                    NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w, (short)0);
                 }
             }
         }
@@ -244,7 +257,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         private void CheckPickUpItems()
         {
             
-            if (!Input.IsKeyDown(InputConfig.PickUp) && !ConsoleAdventure.BlockHotKey)
+            if (Input.IsKeyDown(InputConfig.PickUp) && !ConsoleAdventure.BlockHotKey)
             {
                 if (TryPickUp())
                     NetworkManager.SendDataAsync(NetworkFuncType.pickUpItem, NetworkManager.Id);

@@ -221,5 +221,22 @@ namespace ConsoleAdventure
             int n = HashNoise(x, y);
             return Math.Abs(n % max);
         }
+
+        public static string StringMaxLengthOnLine(string str, int maxLengthOnLine)
+        {
+            string resultStr = "";
+            int curThreshold = maxLengthOnLine;
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (i < curThreshold)
+                    resultStr += str[i];
+                else
+                {
+                    resultStr += "\r\n";
+                    curThreshold += maxLengthOnLine;
+                }
+            }
+            return resultStr;
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace ConsoleAdventure.Settings
     {
         static List<string> logs = new List<string>();
 
-        public static int buffer = 50; 
+        public static int buffer = 10; 
 
         public static void AddLog(string log)
         {

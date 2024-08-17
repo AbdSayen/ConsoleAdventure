@@ -12,6 +12,8 @@ using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace ConsoleAdventure
 {
@@ -104,6 +106,15 @@ namespace ConsoleAdventure
 
             //  Тут такая же система как в локализации.
 
+            if (File.Exists(Program.pcIdPath)) // create pc id
+                NetworkManager.pcId = File.ReadAllText(Program.pcIdPath);
+            else
+            {
+                FileStream f = File.Create(Program.pcIdPath);
+                NetworkManager.pcId = Guid.NewGuid().ToString();
+                f.Write(Encoding.UTF8.GetBytes(NetworkManager.pcId));
+                f.Close();
+            }
 
             _graphics = new GraphicsDeviceManager(this);
             Localization.Load();

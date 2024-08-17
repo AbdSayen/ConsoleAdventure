@@ -5,6 +5,7 @@ namespace ConsoleAdventure
     public class Program
     {
         public static readonly string savePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleAdventure\\";
+        public static readonly string pcIdPath = savePath + "pc.id";
 
         [STAThreadAttribute]
         public static void Main()

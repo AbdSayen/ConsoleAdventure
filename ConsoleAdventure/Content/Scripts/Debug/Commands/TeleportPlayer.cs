@@ -37,7 +37,7 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
                 if (y > ConsoleAdventure.world.size) 
                     return;
 
-                if (id == -1) id = NetworkManager.Id;
+                if (id == -1) id = 0;
                 Player.Player pl = ConsoleAdventure.world.players[id];
                 pl.SetPosition(new(x, y));
             }

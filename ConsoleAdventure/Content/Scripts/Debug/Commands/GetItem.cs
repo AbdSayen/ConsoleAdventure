@@ -29,19 +29,21 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             if (args.Length >= 3)
                 namespace_ = GetStringArg(args, "namespace");
 
+            Type type = Type.GetType(namespace_ + "." + name);
+
+            if (type != null && type.IsSubclassOf(typeof(Item)))
+            {
+                if (count < 1) count = 1;
+
+                Item item = (Item)Activator.CreateInstance(type);
+                if (id == -1) id = 0;
+                Player.Player pl = ConsoleAdventure.world.players[id];
+                pl.inventory.PickUpItems(new List<Stack>() { new Stack(item, count) });
+            }
+
             try
             {
-                Type type = Type.GetType(namespace_ + "." + name);
-
-                if (type != null && type.IsSubclassOf(typeof(Item))) 
-                {
-                    if (count < 1) count = 1;
-                    
-                    Item item = (Item)Activator.CreateInstance(type);
-                    if (id == -1) id = NetworkManager.Id;
-                    Player.Player pl = ConsoleAdventure.world.players[id];
-                    pl.inventory.PickUpItems(new List<Stack>() { new Stack(item, count) });
-                }
+                
             }
 
             catch (Exception) { }

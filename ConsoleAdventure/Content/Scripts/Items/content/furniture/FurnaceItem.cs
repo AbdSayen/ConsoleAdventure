@@ -20,14 +20,14 @@ namespace ConsoleAdventure
         {
             return (
                     new List<string>() { "▄", "■", "⌂" },
-                    new List<Color>() { Color.Gray, Color.Gray, new Color(50, 50, 50)}
+                    new List<Color>() { Color.DarkGray, Color.Gray, new Color(50, 50, 50)}
                    );
         }
 
         public override Recipe AddRecipe()
         {
             Recipe recipe = new Recipe(new Stack(this, 1));
-            recipe.AddIngredient(new WallItem(), 8);
+            recipe.AddIngredient(new StoneItem(), 10);
             recipe.AddIngredient(new Log(), 5);
             recipe.AddStation((int)RenderFieldType.workbench);
 

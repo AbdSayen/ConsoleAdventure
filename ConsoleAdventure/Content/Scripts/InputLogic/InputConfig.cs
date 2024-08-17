@@ -36,4 +36,5 @@ public static class InputConfig
     public static Keys RecipeOpen = Keys.R;
     public static Keys RecipeListLeft = Keys.NumPad7;
     public static Keys RecipeListRight = Keys.NumPad9;
+    public static Keys DropItem = Keys.Q;
 }

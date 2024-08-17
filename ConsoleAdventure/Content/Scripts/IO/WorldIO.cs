@@ -1,5 +1,6 @@
 ﻿using CaModLoaderAPI;
 using ConsoleAdventure.CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts.Player;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.VisualBasic.FileIO;
@@ -10,6 +11,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace ConsoleAdventure.Content.Scripts.IO
 {
@@ -84,6 +86,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 ConsoleAdventure.world.name = name;
                 LoadTags(); //Загружам данные из тегов в мир
+
+                ConsoleAdventure.world.Loaded();
 
                 Console.WriteLine("The world was successfully loaded!");
             }
@@ -160,6 +164,21 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["Time"] = world.time;
 
             tags["TransformTypesOffset"] = Main.modTransformTypesOffset;
+
+            Dictionary<string, byte[]> playersDat = new Dictionary<string, byte[]>();
+
+
+            short[] players = new short[ConsoleAdventure.world.players.Count];
+            ConsoleAdventure.world.players.Keys.CopyTo(players, 0);
+
+            for (int i = 0; i < players.Length; i++)
+            {
+                Player.Player player = ConsoleAdventure.world.players[players[i]];
+                if (!playersDat.ContainsKey(player.info.pcId))
+                    playersDat.Add(player.info.pcId, player.GetPlayerBytes());
+            }
+
+            tags["PlayersData"] = playersDat;
 
             byte[,,,] fields = new byte[Chunk.maxDeep, size, size, 4]; //w, x, y, z
 
@@ -296,6 +315,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 world.time = tags.SafelyGet<Time>("Time");
 
                 Main.modTransformTypesOffset = tags.SafelyGet<Dictionary<string, byte>>("TransformTypesOffset");
+
+                ConsoleAdventure.world.playersDat = tags.SafelyGet<Dictionary<string, byte[]>>("PlayersData");
 
                 byte[,,,] fields = tags.SafelyGet<byte[,,,]>("Fields");
 
