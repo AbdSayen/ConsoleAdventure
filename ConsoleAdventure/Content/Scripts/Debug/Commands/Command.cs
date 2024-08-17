@@ -32,12 +32,12 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             }
         }
 
-        public virtual void Logic(string[] args, short id = -1)
+        public virtual void Logic(string[] args, short id = -2)
         {
 
         }
 
-        public static void Find(string commandText, short id = -1) 
+        public static void Find(string commandText, short id = -2) 
         {
             List<string> fragments = new List<string>(commandText.Split(new[] { ' ' }, StringSplitOptions.None));
 
