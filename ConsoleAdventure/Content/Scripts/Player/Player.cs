@@ -179,6 +179,23 @@ namespace ConsoleAdventure.Content.Scripts.Player
             inventory.RemoveAt(slot, stack.count);
         }
 
+        public void CraftItem(int slot)
+        {
+            Recipe recipe = ConsoleAdventure.availableRecipes[slot];
+            Stack item = recipe.OutItem.Copy();
+            inventory.PickUpItems(new List<Stack>() { item });
+
+            if (item.count > 0)
+            {
+                new Loot(position, w, new List<Stack>() { item });
+            }
+
+            for (int i = 0; i < recipe.Ingredients.Count; i++)
+            {
+                inventory.RemoveItems(recipe.Ingredients.ElementAt(i).Key, recipe.Ingredients.ElementAt(i).Value);
+            }
+        }
+
         private void HandlePlayerInput()
         {
             bool isCursorKeyPressed = Input.IsKeyDown(InputConfig.Cursor);
@@ -260,13 +277,29 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (Input.IsKeyDown(InputConfig.PickUp) && !ConsoleAdventure.BlockHotKey)
             {
                 if (TryPickUp())
-                    NetworkManager.SendDataAsync(NetworkFuncType.pickUpItem, NetworkManager.Id);
+                    NetworkManager.SendDataAsync(NetworkFuncType.pickUpItem, position, NetworkManager.Id);
             }
         }
 
         public bool TryPickUp()
         {
             Field itemField = world.GetField(position.x, position.y, World.ItemsLayerId, w);
+
+            if (itemField.content != null)
+            {
+                if (itemField.content is Loot)
+                {
+                    ((Loot)itemField.content).PickUpAll(inventory);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool TryPickUp(Position pos)
+        {
+            Field itemField = world.GetField(pos.x, pos.y, World.ItemsLayerId, w);
 
             if (itemField.content != null)
             {

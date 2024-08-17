@@ -232,7 +232,7 @@ namespace ConsoleAdventure
                     resultStr += str[i];
                 else
                 {
-                    resultStr += "\r\n";
+                    resultStr += str[i] + "\r\n";
                     curThreshold += maxLengthOnLine;
                 }
             }

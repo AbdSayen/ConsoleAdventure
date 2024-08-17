@@ -19,8 +19,8 @@ namespace ConsoleAdventure
         public override (List<string>, List<Color>) GetTexture()
         {
             return (
-                    new List<string>() { "▄", "■", "⌂" },
-                    new List<Color>() { Color.DarkGray, Color.Gray, new Color(50, 50, 50)}
+                    new List<string>() { "■", "&", "┻", "⌂" },
+                    new List<Color>() { Color.Gray, Color.Gray, Color.Gray, new Color(50, 50, 50) }
                    );
         }
 

@@ -27,7 +27,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         }
 
         int timer;
-        public void Update()
+        public async void Update()
         {
             if (timer % 5 == 0)
             {
@@ -44,19 +44,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             if (!ConsoleAdventure.kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter) && ConsoleAdventure.prekstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter) && cursorPos > -1 && cursorPos < ConsoleAdventure.availableRecipes.Count)
             {
-                Recipe recipe = ConsoleAdventure.availableRecipes[cursorPos];
-                Stack item = recipe.OutItem.Copy();
-                ConsoleAdventure.world.GetLocalPlayer().inventory.PickUpItems(new List<Stack>() { item });
-
-                if(item.count > 0)
-                {
-                    new Loot(ConsoleAdventure.world.GetLocalPlayer().position, ConsoleAdventure.world.GetLocalPlayer().w, new List<Stack>() { item });
-                }
-
-                for (int i = 0; i < recipe.Ingredients.Count; i++)
-                {
-                    ConsoleAdventure.world.GetLocalPlayer().inventory.RemoveItems(recipe.Ingredients.ElementAt(i).Key, recipe.Ingredients.ElementAt(i).Value);
-                }
+                ConsoleAdventure.world.GetLocalPlayer().CraftItem(cursorPos);
+                await NetworkManager.SendDataAsync(NetworkFuncType.craftItem, ConsoleAdventure.world.GetLocalPlayer().GetPlayerBytes(), NetworkManager.Id);
             }
 
             timer++;

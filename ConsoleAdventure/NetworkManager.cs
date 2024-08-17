@@ -40,7 +40,8 @@ namespace ConsoleAdventure
         playerDataRequest,
         syncPlayerDataLoading,
         sendChatMsg,
-        dropItem
+        dropItem,
+        craftItem
     }
 
     public static class NetworkManager
@@ -262,6 +263,9 @@ namespace ConsoleAdventure
                     Transform.SetObject(item.placeType, pos, d);
                     inv.RemoveAt(c, 1);
                     break;
+                case NetworkFuncType.pickUpItem:
+                    ConsoleAdventure.world.players[a].TryPickUp(pos);
+                    break;
             }
         }
 
@@ -275,9 +279,6 @@ namespace ConsoleAdventure
                 case NetworkFuncType.setPlayerW:
                     Player pl = ConsoleAdventure.world.players[a];
                     pl.SetPosition(pl.position, num);
-                    break;
-                case NetworkFuncType.pickUpItem:
-                    ConsoleAdventure.world.players[num].TryPickUp();
                     break;
                 case NetworkFuncType.worldRequest:
                     if (Id == 0)
@@ -320,6 +321,9 @@ namespace ConsoleAdventure
                 case NetworkFuncType.sendChatMsg:
                     string text = Encoding.UTF8.GetString(data).Replace('\0', ' ');
                     Loger.AddLog(Utils.StringMaxLengthOnLine(a + ": " + text, 24));
+                    break;
+                case NetworkFuncType.craftItem:
+                    ConsoleAdventure.world.players[a].LoadPlayerFromBytes(data);
                     break;
             }
         }
