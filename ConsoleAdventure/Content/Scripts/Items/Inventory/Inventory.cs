@@ -147,5 +147,19 @@ namespace ConsoleAdventure
                 }
             }
         }
+
+        public void RemoveAt(int index, int count)
+        {
+            int itemsToRemove = count;
+
+            if (slots[index].count <= itemsToRemove)
+            {
+                slots.RemoveAt(index);
+            }
+            else
+            {
+                slots[index].count -= itemsToRemove;
+            }
+        }
     }
 }

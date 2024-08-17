@@ -1,39 +1,39 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
+using System.Collections;
 
 namespace ConsoleAdventure.WorldEngine
 {
     [Serializable]
-    public class Door : Transform
+    public class Anvil : Transform
     {
-        public Door(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Anvil(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.door;
+            type = (int)RenderFieldType.anvil;
             isObstacle = false;
 
-            AddTypeToMap<Door>(type);
+            AddTypeToMap<Anvil>(type);
 
             Initialize();
         }
 
         public override void Collapse()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new DoorItem(), 1) });
+            new Loot(position, w, new() { new Stack(new AnvilItem(), 1) });
         }
 
         public override string GetSymbol()
         {
-            return "[]";
+            return " σ";
         }
 
         public override Color GetColor()
         {
-            return new(94, 61, 38);
+            return Color.Gray;
         }
     }
 }

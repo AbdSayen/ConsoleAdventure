@@ -27,5 +27,16 @@ namespace ConsoleAdventure
                 this.count += count;
             }
         }
+
+        public Stack Copy()
+        {
+            Stack copy = (Stack)MemberwiseClone();
+            if (item != null)
+            {
+                copy.item = item;
+            }
+
+            return copy;
+        }
     }
 }

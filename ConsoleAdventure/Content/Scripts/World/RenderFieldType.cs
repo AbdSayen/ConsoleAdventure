@@ -55,7 +55,10 @@ namespace ConsoleAdventure.WorldEngine
         redMossFloor,
         fungus,
         fungusFloor,
-        descent,
-        climb,
+        descent,                //+
+        climb,                  //+
+        workbench,              //+
+        furnace,                //+
+        anvil,                  //+
     }
 }

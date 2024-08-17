@@ -8,6 +8,7 @@ using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace ConsoleAdventure.Content.Scripts.Player
 {
@@ -29,6 +30,10 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private byte frames = 0;
 
+        public int holdItemIndex = 1;
+
+        public bool isCraftOpen = false;
+
         public Player(short id, Position position, int w, int worldLayer = -1) : base(position, w)
         {
             if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
@@ -37,7 +42,14 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             info = new PlayerInfo();
             _movement = new PlayerMovement(speed);
-            inventory = new Inventory(this);
+            inventory = new Inventory(this) 
+            {   
+                slots = 
+                { 
+                    new Stack( new IronPick(), 1), 
+                    //new Stack( new StoneItem(), ConsoleAdventure.rand.Next(3, 7)),
+                }
+            };
 
             info.Id = id;
             type = (int)RenderFieldType.player;
@@ -74,7 +86,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public override Color GetColor()
         {
-            return Microsoft.Xna.Framework.Color.Yellow;
+            return Color.Yellow;
         }
         
         public override void InteractWithWorld()
@@ -110,6 +122,40 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     block.Interaction();
                 }
             }
+
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.InventoryPlus) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.InventoryPlus) && holdItemIndex < inventory.slots.Count - 1 && !ConsoleAdventure.BlockHotKey)
+                holdItemIndex++;
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.InventoryMinus) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.InventoryMinus) && holdItemIndex > 0 && !ConsoleAdventure.BlockHotKey)
+                holdItemIndex--;
+
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeOpen) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeOpen) && !ConsoleAdventure.BlockHotKey)
+            {
+                if(isCraftOpen)
+                    isCraftOpen = false;
+
+                else if (!isCraftOpen)
+                    isCraftOpen = true;
+            }
+
+            if (isCraftOpen)
+            {
+                if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeListRight) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeListRight) && Display.recipesUI.cursorPos < ConsoleAdventure.availableRecipes.Count - 1)
+                {
+                    Display.recipesUI.cursorPos++;
+                }
+
+                if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeListLeft) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeListLeft) && Display.recipesUI.cursorPos > 0)
+                {
+                    Display.recipesUI.cursorPos--;
+                }
+
+                Display.recipesUI.cursorPos = Math.Min(Display.recipesUI.cursorPos, ConsoleAdventure.availableRecipes.Count - 1);
+
+                Display.recipesUI.Update();
+            }
+
+            if(inventory.slots.Count > 0)
+                holdItemIndex = Math.Min(holdItemIndex, inventory.slots.Count - 1);
 
             void PerformActions()
             {
@@ -147,40 +193,46 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 return;
             }
 
-            if (Input.IsKeyDown(InputConfig.Building) && CanBuildAt(targetPosition) && !ConsoleAdventure.BlockHotKey)
+            if (Input.IsKeyDown(InputConfig.Building) && inventory.slots?.Count > 0 && holdItemIndex < inventory.slots.Count && !ConsoleAdventure.BlockHotKey)
             {
-                if (inventory.HasItems(new Log(), 1))
+                Item item = inventory.slots[holdItemIndex].item;
+                if (CanBuildAt(targetPosition, World.BlocksLayerId) && item.placeType > -1)
                 {
-                    new Plank(targetPosition, w);
-                    inventory.RemoveItems(new Log(), 1);
-                    world.time.PassTime(120);
+                    SetObject(item.placeType, targetPosition, w);
+                    inventory.RemoveAt(holdItemIndex, 1);
                     NetworkManager.SendDataAsync(NetworkFuncType.buildTransform, targetPosition, w, NetworkManager.Id);
                 }
-                else
-                {
-                    Loger.AddLog("Not enough resources to build!");
-                }
             }
-            else if (Input.IsKeyDown(InputConfig.Destroying) && CanDestroyAt(targetPosition) && !ConsoleAdventure.BlockHotKey)
+            else if (Input.IsKeyDown(InputConfig.Destroying) && !ConsoleAdventure.BlockHotKey)
             {
                 Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId, w).content;
-                if (t.CanBeDestroyed())
+                if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].item.pick > 0)
                 {
-                    world.RemoveSubject(t, World.BlocksLayerId);
-                    world.time.PassTime(60);
+                    t.degreeDestruction += (byte)inventory.slots[holdItemIndex].item.pick;
+                    if(t.degreeDestruction >= 100)
+                    {
+                        world.RemoveSubject(t, World.BlocksLayerId);
+                        NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w);
+                    }
+                }
+
+                Transform t1 = world.GetField(targetPosition.x, targetPosition.y, World.FloorLayerId, w).content;
+                if (t1?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.FloorLayerId) && inventory.slots[holdItemIndex].item.hammer > 0)
+                {
+                    world.RemoveSubject(t1, World.FloorLayerId);
                     NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w);
                 }
             }
         }
 
-        private bool CanBuildAt(Position pos)
+        private bool CanBuildAt(Position pos, int layer)
         {
-            return world.GetField(pos.x, pos.y, World.BlocksLayerId, w).content == null;
+            return world.GetField(pos.x, pos.y, layer, w).content == null;
         }
 
-        private bool CanDestroyAt(Position pos)
+        private bool CanDestroyAt(Position pos, int layer)
         {
-            return world.GetField(pos.x, pos.y, World.BlocksLayerId, w).content != null;
+            return world.GetField(pos.x, pos.y, layer, w).content != null;
         }
 
         private void Walk()
@@ -192,7 +244,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         private void CheckPickUpItems()
         {
             
-            if (Input.IsKeyDown(InputConfig.PickUp) && !ConsoleAdventure.BlockHotKey)
+            if (!Input.IsKeyDown(InputConfig.PickUp) && !ConsoleAdventure.BlockHotKey)
             {
                 if (TryPickUp())
                     NetworkManager.SendDataAsync(NetworkFuncType.pickUpItem, NetworkManager.Id);

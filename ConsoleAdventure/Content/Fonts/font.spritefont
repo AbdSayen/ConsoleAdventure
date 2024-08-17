@@ -90,6 +90,26 @@
 				<Start>&#1360;</Start>
 				<End>&#1360;</End>
 			</CharacterRegion>
+
+			<CharacterRegion>
+				<Start>&#8962;</Start>
+				<End>&#8962;</End>
+			</CharacterRegion>
+
+			<CharacterRegion>
+				<Start>&#865;</Start>
+				<End>&#865;</End>
+			</CharacterRegion>
+
+			<CharacterRegion>
+				<Start>&#724;</Start>
+				<End>&#724;</End>
+			</CharacterRegion>
+
+			<CharacterRegion>
+				<Start>&#963;</Start>
+				<End>&#963;</End>
+			</CharacterRegion>
 			
 		</CharacterRegions>
 	</Asset>

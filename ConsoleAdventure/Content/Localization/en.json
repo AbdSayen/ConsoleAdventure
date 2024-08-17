@@ -1,7 +1,10 @@
 {
   "Items": {
     "Apple": "Apple",
-    "Log": "Log"
+    "Log": "Log",
+    "IronBar": "Iron bar",
+    "IronPick": "Iron pick",
+    "IronHammer": "Iron hammer"
   },
 
   "ItemDescription": {
@@ -31,7 +34,10 @@
     "GraniteFloor": "granite floor",
     "Descent": "descent",
     "Climb": "climb",
-    "BrownIronOre": "brown iron ore"
+    "BrownIronOre": "brown iron ore",
+    "Workbench": "workbench",
+    "Furnace": "furnace",
+    "Anvil": "anvil"
   },
 
   "Events": {

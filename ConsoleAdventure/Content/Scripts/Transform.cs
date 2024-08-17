@@ -22,7 +22,8 @@ namespace ConsoleAdventure
         public Position position;  
         public byte type;
         public bool isObstacle;
-        
+        public byte degreeDestruction = 0;
+
         /// <summary>
         /// Ось w, глубина объекта (на коком уровне мира он находится)
         /// </summary>

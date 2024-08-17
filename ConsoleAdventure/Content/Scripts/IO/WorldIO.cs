@@ -1,6 +1,9 @@
 ﻿using CaModLoaderAPI;
+using ConsoleAdventure.CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.VisualBasic.FileIO;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -264,6 +267,22 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 {
                     Transform.Init(type, Position.Zero(), 0, null, null);
                 }
+
+                ConsoleAdventure.recipes.Clear();
+
+                IEnumerable<Type> listItem = Assembly.GetAssembly(typeof(Item)).GetTypes().Where(type => type.IsSubclassOf(typeof(Item)));
+                foreach (Type type in listItem)
+                {
+                    if (type.IsAbstract)
+                        continue;
+
+                    Item item = (Item)Activator.CreateInstance(type);
+                    Recipe recipe = item.AddRecipe();
+                    if (recipe != null)
+                        ConsoleAdventure.recipes.Add(recipe);
+                }
+
+                Display.recipesUI = new RecipesUI(new Point(ConsoleAdventure.screenWidth / 2, ConsoleAdventure.screenHeight / 2), new Point(60, 15));
 
                 World world = ConsoleAdventure.world;
                 Tags tags = ConsoleAdventure.tags;

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SharpDX.MediaFoundation;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ConsoleAdventure
@@ -22,6 +23,9 @@ namespace ConsoleAdventure
 
         internal static World world;
         internal static Display display;
+
+        public static List<Recipe> recipes = new List<Recipe>();
+        public static List<Recipe> availableRecipes = new List<Recipe>();
 
         static int frameRate = 0;
         int frameCounter = 0;
@@ -226,12 +230,13 @@ namespace ConsoleAdventure
 
                 _spriteBatch.DrawString(font, display.DisplayInfo(), new Vector2(10, 10), Color.Gray);
                 _spriteBatch.DrawString(font, display.TransformTooltip(), new Vector2(197, 10), Color.Gray);
-                _spriteBatch.DrawString(font, display.DisplayInventory(), new Vector2(_graphics.PreferredBackBufferWidth - 300, 10), Color.White);
 
                 if (CaModLoader.PreDrawWorldMods(_spriteBatch, gameTime, world))
                     display.DrawWorld();
 
                 CaModLoader.PostDrawWorldMods(_spriteBatch, gameTime, world);
+
+                display.DisplayInventory(new Vector2(_graphics.PreferredBackBufferWidth - 300, 10));
 
                 _spriteBatch.End();
             }

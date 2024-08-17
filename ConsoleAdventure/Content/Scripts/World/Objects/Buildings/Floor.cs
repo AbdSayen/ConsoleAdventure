@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.CodeDom;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -19,6 +20,11 @@ namespace ConsoleAdventure.WorldEngine
             AddTypeToMap<Floor>(type);
 
             Initialize();
+        }
+
+        public override void Collapse()
+        {
+            new Loot(position, w, new List<Stack>() { new Stack(new FloorItem(), 1) });
         }
 
         public override string GetSymbol()

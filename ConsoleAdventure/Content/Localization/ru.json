@@ -1,7 +1,10 @@
 {
   "Items": {
     "Apple": "Яблоко",
-    "Log": "Бревно"
+    "Log": "Бревно",
+    "IronBar": "Железный слиток",
+    "IronPick": "Железная кирка",
+    "IronHammer": "Железный молот"
   },
 
   "ItemDescription": {
@@ -31,7 +34,10 @@
     "GraniteFloor": "гранитный пол",
     "Descent": "спуск",
     "Climb": "подъем",
-    "BrownIronOre": "бурый железняк"
+    "BrownIronOre": "бурый железняк",
+    "Workbench": "верстак",
+    "Furnace": "печь",
+    "Anvil": "наковальня"
   },
 
   "Events": {

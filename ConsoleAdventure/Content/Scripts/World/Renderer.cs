@@ -11,6 +11,16 @@ namespace ConsoleAdventure.WorldEngine
         private int viewDistanceY = 30;
         private int viewDistanceX = 60;
 
+        private string[] destroys = new string[]
+        {
+            "  ",
+            "──",
+            "xх",
+            "XХ",
+            "╳╳",
+            "╳╳",
+        };
+
         public Renderer(List<List<Chunk>> chunks)
         {
             this.chunks = chunks;
@@ -45,6 +55,11 @@ namespace ConsoleAdventure.WorldEngine
                                     }
 
                                     ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), field.content.GetColor());
+                                
+                                    if(field.content.degreeDestruction > 16)
+                                    {
+                                        ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, destroys[(int)(((float)field.content.degreeDestruction) / 16)], new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), Color.Black);
+                                    }
                                 }
                             }
                         }

@@ -25,6 +25,11 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
+        public override void Collapse()
+        {
+            new Loot(position, w, new List<Stack>() { new Stack(new GraniteItem(), 1) });
+        }
+        
         public override string GetSymbol()
         {
             return "##";

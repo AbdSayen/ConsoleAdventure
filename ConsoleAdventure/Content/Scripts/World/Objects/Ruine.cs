@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure.WorldEngine
@@ -18,6 +19,14 @@ namespace ConsoleAdventure.WorldEngine
             AddTypeToMap<Ruine>(type);
 
             Initialize();
+        }
+
+        public override void Collapse()
+        {
+            if(ConsoleAdventure.rand.Next(0, 3) == 0)
+            {
+                new Loot(position, w, new List<Stack>() { new Stack(new StoneItem(), 1) });
+            }
         }
 
         public override string GetSymbol()

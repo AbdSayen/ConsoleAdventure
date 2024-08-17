@@ -3,6 +3,8 @@ using System;
 using ConsoleAdventure;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ConsoleAdventure
 {
@@ -11,6 +13,10 @@ namespace ConsoleAdventure
     {
         public string name = "Name missing";
         public string description = "Description missing";
+
+        public int placeType = -1;
+        public int pick = 0;
+        public int hammer = 0;
 
         public static int lastTypeId = 0;
 
@@ -28,6 +34,14 @@ namespace ConsoleAdventure
                     return customDescription;
             }
             return description;
+        }
+
+        public virtual (List<string>, List<Color>) GetTexture()
+        {
+            return (
+                    new List<string>() {"I"}, 
+                    new List<Color>() { Color.White }
+                   );
         }
 
         public static void AddTypeToMap<T>(int type)
@@ -63,6 +77,16 @@ namespace ConsoleAdventure
             return null;
         }
 
+        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        {
+            var texture = GetTexture();
+
+            for (int j = 0; j < texture.Item1.Count; j++)
+            {
+                spriteBatch.DrawString(ConsoleAdventure.Font, texture.Item1[j], position, texture.Item2[j]);
+            }
+        }
+
         public virtual bool CanBePickedUp()
         {
             foreach (GlobalItem glItem in CaModLoader.modGlobalItems)
@@ -74,6 +98,11 @@ namespace ConsoleAdventure
                 }
             }
             return true;
+        }
+
+        public virtual Recipe AddRecipe()
+        {
+            return null;
         }
     }
 }

@@ -31,4 +31,9 @@ public static class InputConfig
     public static Keys Pause = Keys.P;
     public static Keys Cmd = Keys.OemTilde;
     public static Keys Interaction = Keys.E;
+    public static Keys InventoryPlus = Keys.OemPlus;
+    public static Keys InventoryMinus = Keys.OemMinus;
+    public static Keys RecipeOpen = Keys.R;
+    public static Keys RecipeListLeft = Keys.NumPad7;
+    public static Keys RecipeListRight = Keys.NumPad9;
 }

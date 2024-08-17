@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure
 {
@@ -12,6 +14,14 @@ namespace ConsoleAdventure
             description = GetDescription();
 
             AddTypeToMap<Apple>();
+        }
+
+        public override (List<string>, List<Color>) GetTexture()
+        {
+            return (
+                    new List<string>() { "o", "`" },
+                    new List<Color>() { Color.Red, Color.Green }
+                   );
         }
 
         public new string GetDescription()

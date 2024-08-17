@@ -22,6 +22,11 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
+        public override void Collapse()
+        {
+            new Loot(position, w, new List<Stack>() { new Stack(new QuartzItem(), 1) });
+        }
+
         public override string GetSymbol()
         {
             return "◊◊";
