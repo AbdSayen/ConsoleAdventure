@@ -15,6 +15,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.descent;
             isObstacle = false;
+            hardness = -1;
 
             AddTypeToMap<Descent>(type);
 

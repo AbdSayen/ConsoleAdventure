@@ -14,7 +14,8 @@ namespace ConsoleAdventure
 
             AddTypeToMap<Loot>(type);
 
-            Initialize();
+            if (this.items != null)
+                Initialize();
         }
 
         private static List<Stack> AddItems(List<Stack> items, int x, int y, int z, int w)
@@ -34,6 +35,12 @@ namespace ConsoleAdventure
                 if (field.content is Loot)
                 {
                     stacks = ((Loot)field.content).items;
+                }
+
+                if (field.content is Chest)
+                {
+                    ((Chest)field.content).GetItems().AddRange(stacks);
+                    return null;
                 }
             }
 

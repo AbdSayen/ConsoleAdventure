@@ -58,7 +58,16 @@ namespace ConsoleAdventure.Content.Scripts
         public virtual void InteractWithWorld()
         {
             StateMachine?.InteractWithWorld();
+            AI();
             //if(life <= 0) Kill();
+        }
+
+        /// <summary>
+        /// Искуственный интилект сущьности
+        /// </summary>
+        public virtual void AI() 
+        { 
+        
         }
 
         /// <summary>
@@ -68,6 +77,7 @@ namespace ConsoleAdventure.Content.Scripts
         {
             ConsoleAdventure.world.Start -= Start;
             ConsoleAdventure.world.RemoveSubject(this, worldLayer);
+            ConsoleAdventure.world.entities.Remove(this);
         }
         
         public void SetMaxLife(int life)

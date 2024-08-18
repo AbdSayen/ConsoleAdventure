@@ -37,7 +37,9 @@
     "BrownIronOre": "бурый железняк",
     "Workbench": "верстак",
     "Furnace": "печь",
-    "Anvil": "наковальня"
+    "Anvil": "наковальня",
+    "Bomb": "бомба",
+    "Explosion": "взрыв"
   },
 
   "Events": {
@@ -70,7 +72,9 @@
     "Floor": "покрытие:",
     "Block": "блок:",
     "Loot": "хранилище:",
-    "Entity": "сущность:"
+    "Entity": "сущность:",
+    "RecipeMenu": "Меню рецептов",
+    "RecipeBook": "Книга рецептов"
   },
 
   "About": {

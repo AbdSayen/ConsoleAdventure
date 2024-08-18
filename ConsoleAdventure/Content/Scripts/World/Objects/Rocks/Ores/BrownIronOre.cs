@@ -18,8 +18,8 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.brownIronOre;
             isObstacle = true;
+            hardness = 0.8f;
 
-            
             AddTypeToMap<BrownIronOre>(type);
 
             Initialize();

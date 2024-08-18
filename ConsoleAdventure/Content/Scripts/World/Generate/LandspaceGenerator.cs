@@ -12,7 +12,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
         {
             this.world = world;
 
-            new Chest(new(0, 0), ConsoleAdventure.StartDeep, new List<Stack>() { new Stack(new Apple(), 50) });
+            new Chest(new(1, 1), ConsoleAdventure.StartDeep, new List<Stack>() { new Stack(new Apple(), 50) });
             GenerateTrees();
         }
 

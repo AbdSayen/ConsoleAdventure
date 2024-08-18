@@ -58,7 +58,9 @@ namespace ConsoleAdventure.WorldEngine
                                 
                                     if(field.content.degreeDestruction > 16)
                                     {
-                                        ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, destroys[(int)(((float)field.content.degreeDestruction) / 16)], new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), Color.Black);
+                                        int destroyIndex = (int)(((float)field.content.degreeDestruction) / 16);
+                                        destroyIndex = destroyIndex > 5 ? 5 : destroyIndex;
+                                        ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, destroys[destroyIndex], new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), Color.Black);
                                     }
                                 }
                             }

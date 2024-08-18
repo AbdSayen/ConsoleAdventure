@@ -24,7 +24,7 @@ namespace ConsoleAdventure
             }
         }
 
-        private static readonly char[] baseFrameChars = new char[6] {'│', '─', '┌', '┐', '└', '┘'};
+        private static readonly char[] baseFrameChars = new char[6] { '│', '─', '┌', '┐', '└', '┘' };
 
         /// <summary>
         /// Создаёт рамку из символов
@@ -45,18 +45,18 @@ namespace ConsoleAdventure
                 {
                     if (i == 0) //Верх
                     {
-                        if (j == 0) 
-                        { 
-                            TB.Append(' '); 
-                            LR.Append(chars[2]); 
+                        if (j == 0)
+                        {
+                            TB.Append(' ');
+                            LR.Append(chars[2]);
                         }
-                        else if (j == panel.X - 1) 
-                        { 
-                            TB.Append(chars[3]); 
-                            LR.Append(' '); 
+                        else if (j == panel.X - 1)
+                        {
+                            TB.Append(chars[3]);
+                            LR.Append(' ');
                         }
-                        else 
-                        { 
+                        else
+                        {
                             TB.Append(chars[1]);
                             LR.Append(' ');
                         }
@@ -90,7 +90,7 @@ namespace ConsoleAdventure
                         {
                             TB.Append(' ');
                             LR.Append(' ');
-                        }                          
+                        }
                     }
                 }
                 TB.Append('\n');
@@ -131,7 +131,7 @@ namespace ConsoleAdventure
         public static void DrawFrame(this SpriteBatch spriteBatch, SpriteFont font, string[] panel, Vector2 position, Color color)
         {
             spriteBatch.DrawString(font, panel[0], position - new Vector2(4, 0), color);
-            spriteBatch.DrawString(font, panel[1], position, color);         
+            spriteBatch.DrawString(font, panel[1], position, color);
         }
 
         /// <summary>
@@ -237,6 +237,13 @@ namespace ConsoleAdventure
                 }
             }
             return resultStr;
+        }
+
+        public static Vector2 Move(this Vector2 position, double radians)
+        {
+            Vector2 vector = new Vector2(1, 0).Rotated(radians);
+            Vector2 result = position + vector;
+            return result;
         }
     }
 }

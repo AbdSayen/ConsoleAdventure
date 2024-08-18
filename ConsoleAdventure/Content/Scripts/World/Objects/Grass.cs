@@ -11,23 +11,23 @@ namespace ConsoleAdventure.WorldEngine
         static string[] symbolsMap = new string[] //√♠♣ɾɿɼϔϒ☼"'rϓՐ
         {
             //"√\"",
-            "'√",
-            "√√",
             //"Ր√",
+            //"ϔr",
+            //"''",
+            //"ɿ,",
+            //",ɼ",
+            //"ɾr",
+            "'√",
+            "√√",  
             "√r",
             "♣♣",
-            "√♣",
-            //"ϔr",
+            "√♣",         
             "ϔϔ",
             "ϒ ",
             " ϒ",
             "\"\"",
-            //"''",
-            //"ɿ,",
-            //",ɼ",
             ",'",
             "',",
-            //"ɾr",
             " r"
         };
 
@@ -46,9 +46,6 @@ namespace ConsoleAdventure.WorldEngine
             new(0, 112, 32)
         };
 
-        //byte Sindex; //Symbol
-        //int Cindex; //Color
-
         public Grass(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
@@ -57,12 +54,9 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.grass;
             isObstacle = false;
+            hardness = 0.1f;
 
             AddTypeToMap<Grass>(type);
-
-            //Sindex = ConsoleAdventure.rand.Next(0, symbolsMap.Length);
-            //Cindex = ConsoleAdventure.rand.Next(0, colorsMap.Length);
-
             Initialize();
         }
 

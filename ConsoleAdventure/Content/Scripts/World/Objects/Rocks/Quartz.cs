@@ -15,7 +15,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.quartz;
             isObstacle = true;
-
+            hardness = 2;
 
             AddTypeToMap<Quartz>(type);
 

@@ -103,7 +103,7 @@ namespace ConsoleAdventure.WorldEngine
         {
             if (!inMultiplayer)
             {
-                ConnectPlayer(0);
+                ConnectPlayer(0, NetworkManager.pcId);
                 players[0].isActive = true;
                 return;
             }
@@ -126,6 +126,7 @@ namespace ConsoleAdventure.WorldEngine
         public void ConnectPlayer(short id, string pcId = "")
         {
             players.Add(id, new Player(id, pcId, new Position(5 + id, 5 + id), ConsoleAdventure.StartDeep));
+            //Loger.AddLog($"Player {id} has join!");
         }
 
         public void DisconnectPlayer(short id)

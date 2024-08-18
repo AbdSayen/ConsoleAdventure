@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using ConsoleAdventure.Content.Scripts.Player;
 using System.Reflection;
+using System.Text;
 
 namespace ConsoleAdventure
 {
@@ -16,6 +17,8 @@ namespace ConsoleAdventure
             { 0, typeof(Transform) },
         };
 
+        public static Dictionary<int, Type> TypeMapping { get { return typeMapping; } }
+
         public static World world { get; protected set; }
         public byte worldLayer { get; protected set; }
 
@@ -23,6 +26,7 @@ namespace ConsoleAdventure
         public byte type;
         public bool isObstacle;
         public byte degreeDestruction = 0;
+        public float hardness = 1;
 
         /// <summary>
         /// Ось w, глубина объекта (на коком уровне мира он находится)
@@ -96,7 +100,7 @@ namespace ConsoleAdventure
             return null;
         }
 
-        public static string GetName(Position pos, int layer, int w)
+        public static string GetName(Position pos, int layer, int w, bool showData = false)
         {
             if (layer < 0) layer = 0;
             if (layer > 3) layer = 3;
@@ -105,7 +109,37 @@ namespace ConsoleAdventure
 
             if (field?.content == null) return Localization.GetTranslation("Transforms", "None");
 
-            return Localization.GetTranslation("Transforms", field.content.GetType().Name);
+            string text = "";
+            if (showData)
+            {
+                if (layer == World.MobsLayerId)
+                {
+                    text = $" ({((Entity)field.content).life} / {((Entity)field.content).maxLife})";
+                }
+
+                else if (layer != World.ItemsLayerId)
+                {
+                    text = $" ({100 - (int)field.content.degreeDestruction} / 100)";
+                }
+
+                else
+                {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    int width = Math.Min(((Storage)field.content).GetItems().Count, 5);
+                    for (int i = 0; i < width; i++)
+                    {
+                        stringBuilder.Append($"{((Storage)field.content).GetItems()[i].GetInfo()}");
+                        if(i != width - 1)
+                        {
+                            stringBuilder.Append(", ");
+                        }
+                    }
+
+                    text = " (" + stringBuilder.ToString() + ")";
+                }
+            }
+
+            return Localization.GetTranslation("Transforms", field.content.GetType().Name) + text;
         }
 
         public static void SetObject(int type, Position position, int w, int layer = -1, List<Stack> items = null, List<object> parameters = null)
@@ -158,7 +192,7 @@ namespace ConsoleAdventure
 
         public virtual bool CanBeDestroyed()
         {
-            return true;
+            return hardness > 0;
         }
     }
 }

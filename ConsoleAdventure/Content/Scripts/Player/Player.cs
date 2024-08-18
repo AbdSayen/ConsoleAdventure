@@ -9,6 +9,7 @@ using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.Direct2D1;
 
 namespace ConsoleAdventure.Content.Scripts.Player
 {
@@ -31,6 +32,10 @@ namespace ConsoleAdventure.Content.Scripts.Player
         private byte frames = 0;
 
         public int holdItemIndex = 1;
+        public int holdChestItemIndex = 1;
+
+        internal Inventory chest;
+        public bool isChestOpen;
 
         public bool isCraftOpen = false;
 
@@ -42,13 +47,15 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             info = new PlayerInfo();
             _movement = new PlayerMovement(speed);
-            inventory = new Inventory(this) 
-            {   
-                slots = 
-                { 
-                    new Stack( new IronPick(), 1), 
+            inventory = new Inventory(this)
+            {
+                slots =
+                {
+                    new Stack( new IronPick(), 1),
                 }
             };
+
+            chest = new Inventory(this);
 
             info.Id = id;
             info.pcId = pcid;
@@ -57,6 +64,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
             AddTypeToMap<Player>(type);
 
             Initialize();
+        }
+
+        public void ClearChest()
+        {
+            chest = new Inventory(this);
         }
 
         public byte[] GetPlayerBytes()
@@ -88,7 +100,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             return Color.Yellow;
         }
-        
+
         public override void InteractWithWorld()
         {
             if (!isActive) return;
@@ -113,13 +125,16 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 PerformActions();
             }
 
-            if(!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Interaction) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Interaction))
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Interaction) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Interaction))
             {
-                Transform? block = world.GetField(position.x, position.y, World.BlocksLayerId, w)?.content;
-
-                if(block != null)
+                for (int i = 0; i < World.CountOfLayers; i++)
                 {
-                    block.Interaction();
+                    Transform? block = world.GetField(position.x, position.y, i, w)?.content;
+
+                    if (block != null)
+                    {
+                        block.Interaction();
+                    }
                 }
             }
 
@@ -128,13 +143,36 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.InventoryMinus) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.InventoryMinus) && holdItemIndex > 0 && !ConsoleAdventure.BlockHotKey)
                 holdItemIndex--;
 
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.ChestPlus) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.ChestPlus) && holdChestItemIndex < chest.slots.Count - 1 && !ConsoleAdventure.BlockHotKey)
+                holdChestItemIndex++;
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.ChestMinus) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.ChestMinus) && holdChestItemIndex > 0 && !ConsoleAdventure.BlockHotKey)
+                holdChestItemIndex--;
+
             if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeOpen) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeOpen) && !ConsoleAdventure.BlockHotKey)
             {
-                if(isCraftOpen)
+                if (isCraftOpen)
                     isCraftOpen = false;
 
                 else if (!isCraftOpen)
                     isCraftOpen = true;
+
+                Display.recipesUI.type = 0;
+            }
+
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeBookOpen) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeBookOpen) && !ConsoleAdventure.BlockHotKey)
+            {
+                if (isCraftOpen)
+                {
+                    isCraftOpen = false;
+                    Display.recipesUI.type = 0;
+                }
+
+
+                else if (!isCraftOpen )
+                {
+                    isCraftOpen = true;
+                    Display.recipesUI.type = 1;
+                }
             }
 
             if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.DropItem) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.DropItem) && !ConsoleAdventure.BlockHotKey)
@@ -145,7 +183,9 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             if (isCraftOpen)
             {
-                if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeListRight) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeListRight) && Display.recipesUI.cursorPos < ConsoleAdventure.availableRecipes.Count - 1)
+                List<Recipe> recipes = Display.recipesUI.type == 1 ? ConsoleAdventure.recipes : ConsoleAdventure.availableRecipes;
+
+                if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeListRight) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeListRight) && Display.recipesUI.cursorPos < recipes.Count - 1)
                 {
                     Display.recipesUI.cursorPos++;
                 }
@@ -155,13 +195,40 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     Display.recipesUI.cursorPos--;
                 }
 
-                Display.recipesUI.cursorPos = Math.Min(Display.recipesUI.cursorPos, ConsoleAdventure.availableRecipes.Count - 1);
+                Display.recipesUI.cursorPos = Math.Min(Display.recipesUI.cursorPos, recipes.Count - 1);
 
                 Display.recipesUI.Update();
             }
 
-            if(inventory.slots.Count > 0)
+            if (!ConsoleAdventure.kstate.IsKeyDown(Keys.Y) && ConsoleAdventure.prekstate.IsKeyDown(Keys.Y))
+            {
+                world.entities.Add(new Bomb(position + new Position(-1, 0), w));
+            }
+
+            if (inventory.slots.Count > 0)
                 holdItemIndex = Math.Min(holdItemIndex, inventory.slots.Count - 1);
+
+            if (chest.slots.Count > 0)
+                holdChestItemIndex = Math.Min(holdChestItemIndex, chest.slots.Count - 1);
+
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.TakeInInventoryStack) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.TakeInInventoryStack) && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0)
+            {
+                inventory.PickUpItems(new() { chest.slots[holdChestItemIndex] });
+                if(chest.slots[holdChestItemIndex].count <= 0)
+                {
+                    chest.slots.RemoveAt(holdChestItemIndex);
+                }
+            }
+
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.TakeInChestStack) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.TakeInChestStack) && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0)
+            {
+                chest.PickUpItems(new() { inventory.slots[holdItemIndex] });
+                if (inventory.slots[holdItemIndex].count <= 0)
+                {
+                    inventory.slots.RemoveAt(holdItemIndex);
+                }
+            }
+
 
             void PerformActions()
             {
@@ -226,11 +293,17 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (Input.IsKeyDown(InputConfig.Building) && inventory.slots?.Count > 0 && holdItemIndex < inventory.slots.Count && !ConsoleAdventure.BlockHotKey)
             {
                 Item item = inventory.slots[holdItemIndex].item;
-                if (CanBuildAt(targetPosition, World.BlocksLayerId) && item.placeType > -1)
+                if (item.placeType > -1 )
                 {
-                    SetObject(item.placeType, targetPosition, w);
-                    inventory.RemoveAt(holdItemIndex, 1);
-                    NetworkManager.SendDataAsync(NetworkFuncType.buildTransform, targetPosition, NetworkManager.Id, BitConverter.ToInt16(new byte[] { w, (byte)holdItemIndex }));
+                    if (item.placeLayer == World.BlocksLayerId && CanBuildAt(targetPosition, World.BlocksLayerId))
+                    {
+                        Place(item);
+                    }
+
+                    if (item.placeLayer == World.FloorLayerId && CanBuildAt(targetPosition, World.FloorLayerId))
+                    {
+                        Place(item);
+                    }
                 }
             }
             else if (Input.IsKeyDown(InputConfig.Destroying) && !ConsoleAdventure.BlockHotKey)
@@ -238,8 +311,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId, w).content;
                 if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].item.pick > 0)
                 {
-                    t.degreeDestruction += (byte)inventory.slots[holdItemIndex].item.pick;
-                    if(t.degreeDestruction >= 100)
+                    t.degreeDestruction += (byte)Math.Abs(inventory.slots[holdItemIndex].item.pick / t.hardness);
+                    if (t.degreeDestruction >= 100)
                     {
                         world.RemoveSubject(t, World.BlocksLayerId);
                         NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w, (short)0);
@@ -252,6 +325,13 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     world.RemoveSubject(t1, World.FloorLayerId);
                     NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w, (short)0);
                 }
+            }
+
+            void Place(Item item)
+            {
+                SetObject(item.placeType, targetPosition, w);
+                inventory.RemoveAt(holdItemIndex, 1);
+                NetworkManager.SendDataAsync(NetworkFuncType.buildTransform, targetPosition, NetworkManager.Id, BitConverter.ToInt16(new byte[] { w, (byte)holdItemIndex }));
             }
         }
 
@@ -273,7 +353,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private void CheckPickUpItems()
         {
-            
+
             if (Input.IsKeyDown(InputConfig.PickUp) && !ConsoleAdventure.BlockHotKey)
             {
                 if (TryPickUp())

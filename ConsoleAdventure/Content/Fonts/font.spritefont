@@ -10,7 +10,7 @@
 			<!-- Диапазон ASCII символов от 32 (пробел) до 180 (знак ударения)--> <!-- 126 (тильда) -->
 			<CharacterRegion>
 				<Start>&#32;</Start>
-				<End>&#180;</End>
+				<End>&#247;</End>
 			</CharacterRegion>
 			<!-- Диапазон символов кириллицы (русские буквы) от 1040 до 1103 -->
 			<CharacterRegion>
@@ -110,7 +110,7 @@
 				<Start>&#963;</Start>
 				<End>&#963;</End>
 			</CharacterRegion>
-			
+
 		</CharacterRegions>
 	</Asset>
 </XnaContent>

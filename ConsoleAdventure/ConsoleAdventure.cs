@@ -124,7 +124,7 @@ namespace ConsoleAdventure
         {
             world = new World(name, seed);
             world.inMultiplayer = inMultiplayer;
-            world.Initialize();
+            world.Initialize(isfullGenerate);
             display = new Display(world);
         }
 
@@ -247,7 +247,7 @@ namespace ConsoleAdventure
 
                 CaModLoader.PostDrawWorldMods(_spriteBatch, gameTime, world);
 
-                display.DisplayInventory(new Vector2(_graphics.PreferredBackBufferWidth - 300, 10));
+                display.DisplayInventory(new Vector2(_graphics.PreferredBackBufferWidth - 240, 10));
 
                 _spriteBatch.End();
             }

@@ -60,5 +60,7 @@ namespace ConsoleAdventure.WorldEngine
         workbench,              //+
         furnace,                //+
         anvil,                  //+
+        bomb,                   //+
+        explosion,              //+
     }
 }

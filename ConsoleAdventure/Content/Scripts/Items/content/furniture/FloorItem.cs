@@ -13,6 +13,7 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Transforms", "Floor");
             description = GetDescription();
             placeType = (int)RenderFieldType.floor;
+            placeLayer = World.FloorLayerId;
             AddTypeToMap<FloorItem>();
         }
 

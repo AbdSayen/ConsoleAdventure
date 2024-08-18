@@ -2,6 +2,7 @@
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
+using System.Xml;
 
 namespace ConsoleAdventure
 {
@@ -28,10 +29,10 @@ namespace ConsoleAdventure
         {
             Position pos = ConsoleAdventure.MouseWorld;
             return
-                $"│ {TextAssets.FloorTooltip + Transform.GetName(pos, 0, ConsoleAdventure.curDeep)}\n" +
-                $"│ {TextAssets.BlockTooltip + Transform.GetName(pos, 1, ConsoleAdventure.curDeep)}\n" +
-                $"│ {TextAssets.LootTooltip + Transform.GetName(pos, 2, ConsoleAdventure.curDeep)}\n" +
-                $"│ {TextAssets.EntityTooltip + Transform.GetName(pos, 3, ConsoleAdventure.curDeep)}\n\n"
+                $"│ {TextAssets.FloorTooltip + Transform.GetName(pos, 0, ConsoleAdventure.curDeep, true)}\n" +
+                $"│ {TextAssets.BlockTooltip + Transform.GetName(pos, 1, ConsoleAdventure.curDeep, true)}\n" +
+                $"│ {TextAssets.LootTooltip + Transform.GetName(pos, 2, ConsoleAdventure.curDeep, true)}\n" +
+                $"│ {TextAssets.EntityTooltip + Transform.GetName(pos, 3, ConsoleAdventure.curDeep, true)}\n\n"
                 ;
         }
 
@@ -49,6 +50,23 @@ namespace ConsoleAdventure
                 //;
 
             Inventory inventory = world.GetLocalPlayer().inventory;
+            Vector2 startLogs = DrawItems(inventory, position, world.GetLocalPlayer().holdItemIndex);
+
+            if(world.GetLocalPlayer().isChestOpen) 
+            {
+                DrawItems(world.GetLocalPlayer().chest, position + new Vector2(-240, 0), world.GetLocalPlayer().holdChestItemIndex);
+            }
+
+            if (ConsoleAdventure.world.GetLocalPlayer().isCraftOpen)
+            {
+                recipesUI.Draw(ConsoleAdventure._spriteBatch);
+            }
+
+            ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "──────────────────────────\n" + Loger.GetLogs(), startLogs , Color.White);
+        }
+
+        private Vector2 DrawItems(Inventory inventory, Vector2 position, int cursor)
+        {
             Vector2 startDescription = position + new Vector2(0, 19 * inventory.slots.Count);
             Vector2 startLogs = startDescription;
 
@@ -58,7 +76,7 @@ namespace ConsoleAdventure
 
                 Color color = Color.White;
 
-                if(world.GetLocalPlayer().holdItemIndex == i)
+                if (cursor == i)
                 {
                     color = Color.Yellow;
                     ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, ">", position + new Vector2(-18, i * 19), color);
@@ -71,12 +89,7 @@ namespace ConsoleAdventure
                 ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, inventory.slots[i].item.name + (inventory.slots[i].count > 1 ? $" ({inventory.slots[i].count})" : ""), position + new Vector2(18, i * 19), color);
             }
 
-            if (ConsoleAdventure.world.GetLocalPlayer().isCraftOpen)
-            {
-                recipesUI.Draw(ConsoleAdventure._spriteBatch);
-            }
-
-            ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "──────────────────────────\n" + Loger.GetLogs(), startLogs , Color.White);
+            return startLogs;
         }
     }
 }

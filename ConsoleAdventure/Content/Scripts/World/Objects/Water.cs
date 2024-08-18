@@ -13,6 +13,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.water;
             isObstacle = true;
+            hardness = -1;
 
             AddTypeToMap<Water>(type);
 

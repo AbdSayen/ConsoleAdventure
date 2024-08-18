@@ -77,7 +77,7 @@ namespace ConsoleAdventure
                 byte[] buffer = new byte[2];
                 await stream.ReadAsync(buffer, 0, 2);
                 Id = BitConverter.ToInt16(buffer, 0);
-                
+
 
                 for (int i = Id - 1; i >= 0; i--)
                 {
@@ -88,7 +88,8 @@ namespace ConsoleAdventure
                 await SendDataAsync(NetworkFuncType.worldRequest, Id);
                 await SendDataAsync(NetworkFuncType.playerDataRequest, Id);
             }
-            catch (SocketException) {
+            catch (SocketException)
+            {
                 ConsoleAdventure.menu.serverNotFoundTimer = 90;
                 ConsoleAdventure.InWorld = false;
                 ConsoleAdventure.menu.CloseAllPages();

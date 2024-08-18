@@ -37,7 +37,9 @@
     "BrownIronOre": "brown iron ore",
     "Workbench": "workbench",
     "Furnace": "furnace",
-    "Anvil": "anvil"
+    "Anvil": "anvil",
+    "Bomb": "bomb",
+    "Explosion": "explosion"
   },
 
   "Events": {
@@ -70,7 +72,9 @@
     "Floor": "coating:",
     "Block": "block:",
     "Loot": "storage:",
-    "Entity": "entity:"
+    "Entity": "entity:",
+    "RecipeMenu": "Recipe menu",
+    "RecipeBook": "Recipe book"
   },
 
   "About": {

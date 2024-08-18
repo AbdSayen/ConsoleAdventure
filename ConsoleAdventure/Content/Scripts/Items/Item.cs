@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ConsoleAdventure.WorldEngine;
 
 namespace ConsoleAdventure
 {
@@ -15,6 +16,7 @@ namespace ConsoleAdventure
         public string description = "Description missing";
 
         public int placeType = -1;
+        public int placeLayer = World.BlocksLayerId;
         public int pick = 0;
         public int hammer = 0;
 

@@ -13,6 +13,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.log;
             isObstacle = true;
+            hardness = 0.8f;
 
             AddTypeToMap<Plank>(type);
 
