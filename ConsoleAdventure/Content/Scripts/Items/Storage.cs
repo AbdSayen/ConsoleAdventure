@@ -25,6 +25,11 @@ namespace ConsoleAdventure
             return items;
         }
 
+        public void AddRange(List<Stack> stacks)
+        {
+            items.AddRange(stacks);
+        }
+
         public string GetItemsInfo()
         {
             string output = string.Empty;

@@ -1,4 +1,5 @@
 ﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Generate.Structures;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -141,6 +142,11 @@ namespace ConsoleAdventure.WorldEngine.Generate
                         }
                     }
                 }
+            }
+
+            for (int i = 0; i < 8; i++)
+            {
+                new Treasury(new Position(Generator.GenRand.Next(0, world.size), Generator.GenRand.Next(0, world.size)), w, Generator.GenRand, new Point(Generator.GenRand.Next(10, 15), Generator.GenRand.Next(10, 15)), 4);
             }
 
             //string cave = "";

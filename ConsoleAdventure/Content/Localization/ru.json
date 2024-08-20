@@ -39,7 +39,9 @@
     "Furnace": "печь",
     "Anvil": "наковальня",
     "Bomb": "бомба",
-    "Explosion": "взрыв"
+    "Explosion": "взрыв",
+    "Web": "паутина",
+    "GraniteWall": "гранитная стена"
   },
 
   "Events": {

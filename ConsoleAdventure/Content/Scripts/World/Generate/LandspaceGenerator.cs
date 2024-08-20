@@ -1,4 +1,6 @@
-﻿using ConsoleAdventure.Settings;
+﻿using ConsoleAdventure.Generate.Structures;
+using ConsoleAdventure.Settings;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +14,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
         {
             this.world = world;
 
-            new Chest(new(1, 1), ConsoleAdventure.StartDeep, new List<Stack>() { new Stack(new Apple(), 50) });
+            //new Chest(new(1, 1), ConsoleAdventure.StartDeep, new List<Stack>() { new Stack(new Apple(), 50) });
+
             GenerateTrees();
         }
 

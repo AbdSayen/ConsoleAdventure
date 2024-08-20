@@ -122,7 +122,7 @@ namespace ConsoleAdventure
                     text = $" ({100 - (int)field.content.degreeDestruction} / 100)";
                 }
 
-                else
+                else if (((Storage)field.content).GetItems() != null)
                 {
                     StringBuilder stringBuilder = new StringBuilder();
                     int width = Math.Min(((Storage)field.content).GetItems().Count, 5);
@@ -135,7 +135,7 @@ namespace ConsoleAdventure
                         }
                     }
 
-                    text = " (" + stringBuilder.ToString() + ")";
+                    text = " (" + stringBuilder.ToString() + (((Storage)field.content).GetItems().Count > 5 ? "..." : "") + ")";
                 }
             }
 

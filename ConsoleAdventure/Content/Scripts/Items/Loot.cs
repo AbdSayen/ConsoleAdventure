@@ -39,7 +39,7 @@ namespace ConsoleAdventure
 
                 if (field.content is Chest)
                 {
-                    ((Chest)field.content).GetItems().AddRange(stacks);
+                    ((Chest)field.content).AddRange(items);
                     return null;
                 }
             }

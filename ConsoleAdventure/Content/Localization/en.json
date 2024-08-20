@@ -39,7 +39,9 @@
     "Furnace": "furnace",
     "Anvil": "anvil",
     "Bomb": "bomb",
-    "Explosion": "explosion"
+    "Explosion": "explosion",
+    "Web": "web",
+    "GraniteWall": "granite wall"
   },
 
   "Events": {

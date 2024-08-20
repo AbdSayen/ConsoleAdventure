@@ -195,7 +195,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public async void Render()
         {
-            renderer.Render(GetLocalPlayer(), Cursor.Instance.CursorPosition);
+            renderer.Render(GetLocalPlayer(), Cursor.Instance.CursorPosition, Color.OrangeRed);
 
             if (isCmdOpen)
             {

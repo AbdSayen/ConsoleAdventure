@@ -62,5 +62,7 @@ namespace ConsoleAdventure.WorldEngine
         anvil,                  //+
         bomb,                   //+
         explosion,              //+
+        web,                    //+
+        graniteWall,            //+
     }
 }

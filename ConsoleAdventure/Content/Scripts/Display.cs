@@ -54,7 +54,8 @@ namespace ConsoleAdventure
 
             if(world.GetLocalPlayer().isChestOpen) 
             {
-                DrawItems(world.GetLocalPlayer().chest, position + new Vector2(-240, 0), world.GetLocalPlayer().holdChestItemIndex);
+                Vector2 pos = DrawItems(world.GetLocalPlayer().chest, position + new Vector2(-260, 0), world.GetLocalPlayer().holdChestItemIndex);
+                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "──────────────────────────\n", pos, Color.White);
             }
 
             if (ConsoleAdventure.world.GetLocalPlayer().isCraftOpen)

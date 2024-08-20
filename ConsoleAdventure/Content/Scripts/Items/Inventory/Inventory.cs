@@ -11,7 +11,7 @@ namespace ConsoleAdventure
     {
         private Player player;
         public List<Stack> slots = new List<Stack>();
-        private int maxCount = 10;
+        public int maxCount = 10;
 
         public Inventory(Player player)
         {

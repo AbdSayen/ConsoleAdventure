@@ -1,0 +1,35 @@
+﻿using ConsoleAdventure.WorldEngine;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+
+namespace ConsoleAdventure
+{
+    [Serializable]
+    public class GraniteWallItem : Item
+    {
+        public GraniteWallItem()
+        {
+            name = Localization.GetTranslation("Transforms", "GraniteWall");
+            description = GetDescription();
+            placeType = (int)RenderFieldType.graniteWall;
+            AddTypeToMap<GraniteWallItem>();
+        }
+
+        public override (List<string>, List<Color>) GetTexture()
+        {
+            return (
+                    new List<string>() { "∫" },
+                    new List<Color>() { new Color(45, 45, 45) }
+                   );
+        }
+
+        public override Recipe AddRecipe()
+        {
+            Recipe recipe = new Recipe(new Stack(this, 1));
+            recipe.AddIngredient(new GraniteItem(), 1);
+            recipe.AddStation((int)RenderFieldType.workbench);
+            return recipe;
+        }
+    }
+}

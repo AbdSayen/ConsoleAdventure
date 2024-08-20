@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using ConsoleAdventure.Content.Scripts.Player;
+using System.Threading;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -26,7 +27,7 @@ namespace ConsoleAdventure.WorldEngine
             this.chunks = chunks;
         }
 
-        public void Render(Transform observer, Position cursorPosition)
+        public void Render(Transform observer, Position cursorPosition, Color cursorColor)
         {
             int X = 0, Y = 0;
 
@@ -74,15 +75,15 @@ namespace ConsoleAdventure.WorldEngine
 
             if (Cursor.Instance != null && Cursor.Instance.IsActive)
             {
-                DrawCursor(cursorPosition);
+                DrawCursor(cursorPosition, cursorColor);
             }
         }
 
-        private void DrawCursor(Position cursorPosition)
+        private void DrawCursor(Position cursorPosition, Color cursorColor)
         {
             ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "><", new Vector2((viewDistanceX * ConsoleAdventure.cellSize.X / 2) + ConsoleAdventure.worldPos.X
                 + cursorPosition.x * ConsoleAdventure.cellSize.X, (viewDistanceY * ConsoleAdventure.cellSize.Y / 2) + ConsoleAdventure.worldPos.Y
-                + cursorPosition.y * ConsoleAdventure.cellSize.Y), Color.Gray);
+                + cursorPosition.y * ConsoleAdventure.cellSize.Y), cursorColor);
         }
 
         private Chunk GetChunk(int x, int y)

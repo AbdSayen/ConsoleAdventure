@@ -85,7 +85,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
                         bool isAlive = fieldCells[j, k];
 
-                        if (isAlive)
+                        if (isAlive && S.Length > 0)
                         {
                             bool survives = false;
                             for (int l = 0; l < S.Length; l++)
@@ -98,7 +98,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                             }
                             newFieldCells[j, k] = survives;
                         }
-                        else
+                        else if (B.Length > 0)
                         {
                             for (int l = 0; l < B.Length; l++)
                             {

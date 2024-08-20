@@ -37,6 +37,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
         internal Inventory chest;
         public bool isChestOpen;
 
+        internal Vector3 chestPosition;
+
         public bool isCraftOpen = false;
 
         public Player(short id, string pcid, Position position, int w, int worldLayer = -1) : base(position, w)
@@ -200,18 +202,13 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 Display.recipesUI.Update();
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(Keys.Y) && ConsoleAdventure.prekstate.IsKeyDown(Keys.Y))
-            {
-                world.entities.Add(new Bomb(position + new Position(-1, 0), w));
-            }
-
             if (inventory.slots.Count > 0)
                 holdItemIndex = Math.Min(holdItemIndex, inventory.slots.Count - 1);
 
-            if (chest.slots.Count > 0)
+            if (chest.slots?.Count > 0)
                 holdChestItemIndex = Math.Min(holdChestItemIndex, chest.slots.Count - 1);
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.TakeInInventoryStack) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.TakeInInventoryStack) && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0)
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.TakeInInventoryStack) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.TakeInInventoryStack) && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0 && inventory.slots.Count < inventory.maxCount)
             {
                 inventory.PickUpItems(new() { chest.slots[holdChestItemIndex] });
                 if(chest.slots[holdChestItemIndex].count <= 0)
@@ -220,7 +217,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.TakeInChestStack) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.TakeInChestStack) && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0)
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.TakeInChestStack) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.TakeInChestStack) && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0 && chest.slots.Count < chest.maxCount)
             {
                 chest.PickUpItems(new() { inventory.slots[holdItemIndex] });
                 if (inventory.slots[holdItemIndex].count <= 0)
@@ -229,6 +226,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
+            if(chestPosition != new Vector3(position.x, position.y, w))
+            {
+                ClearChest();
+                chestPosition = new Vector3(-1, -1, -1);
+                isChestOpen = false;
+            }
 
             void PerformActions()
             {
@@ -304,6 +307,16 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     {
                         Place(item);
                     }
+
+                    if (item.placeLayer == World.ItemsLayerId && CanBuildAt(targetPosition, World.ItemsLayerId))
+                    {
+                        Place(item);
+                    }
+
+                    if (item.placeLayer == World.MobsLayerId && CanBuildAt(targetPosition, World.MobsLayerId))
+                    {
+                        Place(item);
+                    }
                 }
             }
             else if (Input.IsKeyDown(InputConfig.Destroying) && !ConsoleAdventure.BlockHotKey)
@@ -325,11 +338,18 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     world.RemoveSubject(t1, World.FloorLayerId);
                     NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w, (short)0);
                 }
+
+                Transform t2 = world.GetField(targetPosition.x, targetPosition.y, World.ItemsLayerId, w).content;
+                if (t2?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.ItemsLayerId) && t2 is Chest && inventory.slots[holdItemIndex].item.pick > 0)
+                {
+                    world.RemoveSubject(t2, World.ItemsLayerId);
+                    NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w, (short)0);
+                }
             }
 
             void Place(Item item)
             {
-                SetObject(item.placeType, targetPosition, w);
+                SetObject(item.placeType, targetPosition, w, items: new());
                 inventory.RemoveAt(holdItemIndex, 1);
                 NetworkManager.SendDataAsync(NetworkFuncType.buildTransform, targetPosition, NetworkManager.Id, BitConverter.ToInt16(new byte[] { w, (byte)holdItemIndex }));
             }

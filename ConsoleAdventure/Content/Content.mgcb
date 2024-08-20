@@ -13,6 +13,24 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin AudioFiles/Music/ItsMagicRain.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:AudioFiles/Music/ItsMagicRain.mp3
+
+#begin AudioFiles/Music/StrangeWorld.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:AudioFiles/Music/StrangeWorld.mp3
+
+#begin AudioFiles/Music/StrangeWorld.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:AudioFiles/Music/StrangeWorld.mp3
+
 #begin Fonts/font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

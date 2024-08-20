@@ -10,6 +10,7 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Chest : Storage
     {
+        internal bool isBrake = false;
         public Chest(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, w, items)
         {
             type = (int)RenderFieldType.chest;
@@ -37,13 +38,30 @@ namespace ConsoleAdventure.WorldEngine
             if (!player.isChestOpen)
             {
                 world.GetLocalPlayer().chest.slots = items;
+                player.chestPosition = new Vector3(position.x, position.y, w);
                 player.isChestOpen = true;
             }
 
             else if (player.isChestOpen)
             {
                 player.isChestOpen = false;
+                player.chestPosition = new Vector3(-1, -1, -1);
             }
+        }
+
+        public override void Collapse()
+        {
+            Player player = world.GetLocalPlayer();
+            player.ClearChest();
+            player.isChestOpen = false;
+            player.chestPosition = new Vector3(-1, -1, -1);
+            isBrake = true;
+            new Loot(position + new Position((int)ConsoleAdventure.rand.Choose(new object[] {-1, 1}), (int)ConsoleAdventure.rand.Choose(new object[] { -1, 1 })), w, new List<Stack>() { new Stack(new ChestItem(), 1) });
+        }
+
+        public override bool CanBeDestroyed()
+        {
+            return items == null || items.Count <= 0;
         }
     }
 }

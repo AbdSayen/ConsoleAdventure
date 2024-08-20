@@ -8,6 +8,7 @@ using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
@@ -161,6 +162,11 @@ namespace ConsoleAdventure
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/font");
 
+            string musicDir = "AudioFiles/Music/";
+            MusicEngine.AddSong("ConsoleAdventure.StrangeWorld", Content.Load<Song>(musicDir + "StrangeWorld"));
+            MusicEngine.AddSong("ConsoleAdventure.ItsMagicRain", Content.Load<Song>(musicDir + "ItsMagicRain"));
+            MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld");
+
             CaModLoader.PreLoadMods();
             CaModLoader.LoadMods();
         }
@@ -187,6 +193,7 @@ namespace ConsoleAdventure
             }
             frameCounter++;
 
+            MusicEngine.Update();
 
             if (InWorld)
             {
@@ -213,6 +220,12 @@ namespace ConsoleAdventure
                     else
                         isPause = false;
                 }
+
+                if (world.GetLocalPlayer().w == 0)
+                    MusicEngine.ChangeSong("ConsoleAdventure.ItsMagicRain");
+
+                if (world.GetLocalPlayer().w == 1 || !InWorld)
+                    MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld");
             }
 
             else
