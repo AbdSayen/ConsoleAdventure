@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.Content.Scripts;
+using Microsoft.Xna.Framework;
 using System;
 using System.Diagnostics;
 
@@ -18,7 +19,6 @@ namespace ConsoleAdventure.WorldEngine
             hardness = -1;
 
             AddTypeToMap<Climb>(type);
-
             Initialize();
         }
 
@@ -39,6 +39,11 @@ namespace ConsoleAdventure.WorldEngine
                 ConsoleAdventure.curDeep = 1;
                 NetworkManager.SendDataAsync(NetworkFuncType.setPlayerW, (short)ConsoleAdventure.curDeep, NetworkManager.Id);
             }
-        }  
+        }
+
+        public override void OnTheScreen()
+        {
+            Light.Add(position.x, position.y, w, new Color(255, 255, 255), 8.5f);
+        }
     }
 }

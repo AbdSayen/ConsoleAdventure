@@ -41,7 +41,9 @@
     "Bomb": "bomb",
     "Explosion": "explosion",
     "Web": "web",
-    "GraniteWall": "granite wall"
+    "GraniteWall": "granite wall",
+    "Torch": "torch",
+    "Stalactite": "stalactite"
   },
 
   "Events": {

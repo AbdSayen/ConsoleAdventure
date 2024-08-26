@@ -41,7 +41,9 @@
     "Bomb": "бомба",
     "Explosion": "взрыв",
     "Web": "паутина",
-    "GraniteWall": "гранитная стена"
+    "GraniteWall": "гранитная стена",
+    "Torch": "факел",
+    "Stalactite": "Сталактит"
   },
 
   "Events": {

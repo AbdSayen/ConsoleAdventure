@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using ConsoleAdventure.Content.Scripts.Player;
 using System.Reflection;
 using System.Text;
+using System.DirectoryServices;
 
 namespace ConsoleAdventure
 {
@@ -98,6 +99,11 @@ namespace ConsoleAdventure
         public virtual Color? GetBGColor()
         {
             return null;
+        }
+
+        public virtual void OnTheScreen()
+        {
+
         }
 
         public static string GetName(Position pos, int layer, int w, bool showData = false)

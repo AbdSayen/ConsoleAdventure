@@ -96,5 +96,10 @@ namespace ConsoleAdventure.Content.Scripts
 
             timer++;
         }
+
+        public override void OnTheScreen()
+        {
+            Light.Add(position.x, position.y, w, new Color(255, 255, 255), 8.5f);
+        }
     }
 }

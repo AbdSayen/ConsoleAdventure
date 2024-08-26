@@ -2,6 +2,7 @@
 using ConsoleAdventure.Generate.Structures;
 using Microsoft.Xna.Framework;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -144,6 +145,28 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 }
             }
 
+            for (int i = 1; i < world.size - 1; i++)
+            {
+                for (int j = 1; j < world.size - 1; j++)
+                {
+                    float noiceValue1 = OpenSimplex.noise2(ConsoleAdventure.world.seed * w * 4, i * 0.05, j * 0.05);
+                    if (noiceValue1 < -0.6f && ConsoleAdventure.world.GetField(i, j, World.BlocksLayerId, w)?.content == null)
+                    {
+                        new Water(new(i, j), w);
+                    }
+                }
+            }
+
+            for (int i = 0; i < 21; i++)
+            {                    
+                Position stalactitePos = new(Generator.GenRand.Next(1, world.size - 1), Generator.GenRand.Next(1, world.size - 1));
+
+                for (int j = 0; j < 3; j++)
+                {
+                    GenerateStalactitesArea(stalactitePos + new Position(Generator.GenRand.Next(-15, 15), Generator.GenRand.Next(-15, 15)), Generator.GenRand.Next(5, 25), Generator.GenRand.Next(5, 25), w);
+                }
+            }
+
             for (int i = 0; i < 8; i++)
             {
                 new Treasury(new Position(Generator.GenRand.Next(0, world.size), Generator.GenRand.Next(0, world.size)), w, Generator.GenRand, new Point(Generator.GenRand.Next(10, 15), Generator.GenRand.Next(10, 15)), 4);
@@ -151,6 +174,21 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
             //string cave = "";
             //cave = world.LevelToString(w);         
+        }
+
+        private void GenerateStalactitesArea(Position position, int width, int height, int w)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    Position curPos = position + new Position(i, j);
+                    if (Generator.GenRand.Next(0, 5) > 3 && ConsoleAdventure.world.GetField(curPos.x, curPos.y, World.BlocksLayerId, w)?.content == null)
+                    {
+                        new Stalactite(curPos, w);
+                    }
+                }
+            }
         }
     }
 }

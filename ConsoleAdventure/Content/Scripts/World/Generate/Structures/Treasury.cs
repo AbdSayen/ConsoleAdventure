@@ -96,8 +96,7 @@ namespace ConsoleAdventure.Generate.Structures
                     List<Stack> allElements = new List<Stack>()
                     {
                         new Stack(new BombItem(), random.Next(4, 10)),
-                        new Stack(new BombItem(), random.Next(4, 10)),
-                        new Stack(new BombItem(), random.Next(4, 10)),
+                        new Stack(new TorchItem(), random.Next(5, 23)),
                         new Stack(new IronBar(), random.Next(1, 4)),
                         new Stack(new Log(), random.Next(7, 15)),
                         new Stack(new StoneItem(), random.Next(1, 5)),

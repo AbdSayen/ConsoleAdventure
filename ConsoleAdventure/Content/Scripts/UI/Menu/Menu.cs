@@ -281,7 +281,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             }
                         }
 
-                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= Utils.StabilizeTicks(30))
+                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= 30) //теперь, тут не как по другому
                         {
                             if (worldPanels[i].curssor == 0 && worldPanels[i].isHover)
                             {

@@ -140,7 +140,7 @@ namespace ConsoleAdventure
         /// <param name="ticks">Время в тиках, которое нужно стабилизировать</param>
         public static int StabilizeTicks(int ticks)
         {
-            return (int)(ticks * (ConsoleAdventure.FPS / 60)); //Тут, мы умножаем тики на отношение реального фпс, и ожидаемого.
+            return (int)(ticks / ((float)(ConsoleAdventure.FPS) / 60f)); //Тут, мы умножаем тики на отношение реального фпс, и ожидаемого.
         }
 
         /// <summary>
@@ -244,6 +244,29 @@ namespace ConsoleAdventure
             Vector2 vector = new Vector2(1, 0).Rotated(radians);
             Vector2 result = position + vector;
             return result;
+        }
+
+        public static Color ToColor(this Vector3 vector)
+        {
+            return new(vector.X, vector.Y, vector.Z);
+        }
+
+        public static Color ToColor(this Vector4 vector)
+        {
+            return new(vector.X, vector.Y, vector.Z, vector.W);
+        }
+
+        public static Color AddColors(Color color1, Color color2)
+        {
+            int R = color1.R + color2.R;
+            int G = color1.G + color2.G;
+            int B = color1.B + color2.B;
+            return new Color
+            (
+                R > 255 ? 255 : R,
+                G > 255 ? 255 : G,
+                B > 255 ? 255 : B
+            );
         }
     }
 }

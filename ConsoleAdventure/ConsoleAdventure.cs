@@ -191,7 +191,7 @@ namespace ConsoleAdventure
                 frameRate = frameCounter;
                 frameCounter = 0;
             }
-            frameCounter++;
+            //frameCounter++;
 
             MusicEngine.Update();
 
@@ -272,6 +272,7 @@ namespace ConsoleAdventure
 
             CaModLoader.PostDrawMods(_spriteBatch, gameTime);
 
+            frameCounter++;
             base.Draw(gameTime);
         }
     }

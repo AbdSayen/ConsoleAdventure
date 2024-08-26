@@ -64,7 +64,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
             type = (int)RenderFieldType.player;
 
             AddTypeToMap<Player>(type);
-
             Initialize();
         }
 
@@ -103,6 +102,14 @@ namespace ConsoleAdventure.Content.Scripts.Player
             return Color.Yellow;
         }
 
+        public override void OnTheScreen()
+        {
+            if (inventory.slots.Count > 0 && holdItemIndex > -1 && holdItemIndex < inventory.slots.Count && inventory.slots[holdItemIndex].item is TorchItem)
+            {
+                Light.Add(position, w, Color.White);
+            }
+        }
+
         public override void InteractWithWorld()
         {
             if (!isActive) return;
@@ -127,7 +134,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 PerformActions();
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Interaction) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Interaction))
+            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Interaction) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Interaction) && !ConsoleAdventure.BlockHotKey)
             {
                 for (int i = 0; i < World.CountOfLayers; i++)
                 {

@@ -280,6 +280,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
             {
                 ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadGenericData");
 
+                Light.Clear();
+
                 Type baseType = typeof(Transform);
                 IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType));
                 foreach (Type type in list)

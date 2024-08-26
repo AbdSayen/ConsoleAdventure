@@ -9,7 +9,7 @@ namespace ConsoleAdventure
     [Serializable]
     public abstract class Storage : Transform
     {
-        protected List<Stack> items { get; set; }
+        protected List<Stack> items { get; set; } = new();
 
         public Storage(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, (byte)w)
         {

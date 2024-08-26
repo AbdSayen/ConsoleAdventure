@@ -64,5 +64,7 @@ namespace ConsoleAdventure.WorldEngine
         explosion,              //+
         web,                    //+
         graniteWall,            //+
+        torch,                  //+
+        stalactite,             //+
     }
 }

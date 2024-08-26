@@ -18,7 +18,7 @@ namespace ConsoleAdventure
         public string DisplayInfo()
         {
             return
-                $"{Docs.GetInfo()}\n" +
+                //$"{Docs.GetInfo()}\n" +
                 $"{world.time.GetTime()}\n" +
                 $"X:{world.GetLocalPlayer().position.x} Y:{world.GetLocalPlayer().position.y}\n" +
                 (ConsoleAdventure.isPause ? TextAssets.Paused : "") + "\n\n"
