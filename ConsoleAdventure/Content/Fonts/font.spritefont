@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
 	<Asset Type="Graphics:FontDescription">
 		<FontName>Consolas</FontName>
@@ -7,125 +7,11 @@
 		<UseKerning>true</UseKerning>
 		<Style>Regular</Style>
 		<CharacterRegions>
-			<!-- Диапазон ASCII символов от 32 (пробел) до 180 (знак ударения)--> <!-- 126 (тильда) -->
+			<!-- Диапазон ASCII символов от 32 (пробел) до 11799 (двойной наклонный дефис) -->
 			<CharacterRegion>
 				<Start>&#32;</Start>
-				<End>&#247;</End>
+				<End>&#11799;</End>
 			</CharacterRegion>
-			<!-- Диапазон символов кириллицы (русские буквы) от 1040 до 1103 -->
-			<CharacterRegion>
-				<Start>&#1040;</Start>
-				<End>&#1103;</End>
-			</CharacterRegion>
-			<!-- Дополнительные символы (например, ё) -->
-			<CharacterRegion>
-				<Start>&#1025;</Start>
-				<End>&#1105;</End>
-			</CharacterRegion>
-			<!-- Символы стрелок -->
-			<CharacterRegion>
-				<Start>&#8592;</Start>
-				<End>&#8601;</End>
-			</CharacterRegion>
-			<!-- Геометрические фигуры -->
-			<CharacterRegion>
-				<Start>&#9600;</Start>
-				<End>&#9679;</End>
-			</CharacterRegion>
-			<!-- Символы, такие как звёздочки, палочки, сердечки -->
-			<CharacterRegion>
-				<Start>&#9733;</Start>
-				<End>&#9734;</End>
-			</CharacterRegion>
-			<!-- Символы рамки -->
-			<CharacterRegion>
-				<Start>&#9472;</Start>
-				<End>&#9608;</End>
-			</CharacterRegion>
-			<CharacterRegion>
-				<Start>&#9824;</Start>
-				<End>&#9830;</End>
-			</CharacterRegion>
-			<!-- Различные специальные символы -->
-			<CharacterRegion>
-				<Start>&#10003;</Start>
-				<End>&#10007;</End>
-			</CharacterRegion>
-			<CharacterRegion>
-				<Start>&#8211;</Start>
-				<End>&#8776;</End> <!-- &#8226; -->
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#1357;</Start>
-				<End>&#1357;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#923;</Start>
-				<End>&#923;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#8801;</Start>
-				<End>&#8801;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#636;</Start>
-				<End>&#639;</End>
-			</CharacterRegion>
-			
-			<CharacterRegion>
-				<Start>&#978;</Start>
-				<End>&#980;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#9788;</Start>
-				<End>&#9788;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#1360;</Start>
-				<End>&#1360;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#8962;</Start>
-				<End>&#8962;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#823;</Start>
-				<End>&#865;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#724;</Start>
-				<End>&#724;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#963;</Start>
-				<End>&#963;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#7463;</Start>
-				<End>&#7463;</End>
-			</CharacterRegion>
-
-			<CharacterRegion>
-				<Start>&#7610;</Start>
-				<End>&#7610;</End>
-			</CharacterRegion>
-			
-			<CharacterRegion>
-				<Start>&#7515;</Start>
-				<End>&#7515;</End>
-			</CharacterRegion>
-
 		</CharacterRegions>
 	</Asset>
 </XnaContent>
