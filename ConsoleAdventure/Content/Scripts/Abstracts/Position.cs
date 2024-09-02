@@ -83,6 +83,26 @@ namespace ConsoleAdventure
             return left.x == right.x && left.y == right.y;
         }
 
+        public static bool operator >(Position left, Position right)
+        {
+            return left.x > right.x && left.y > right.y;
+        }
+
+        public static bool operator <(Position left, Position right)
+        {
+            return left.x < right.x && left.y < right.y;
+        }
+
+        public static bool operator >=(Position left, Position right)
+        {
+            return left.x >= right.x && left.y >= right.y;
+        }
+
+        public static bool operator <=(Position left, Position right)
+        {
+            return left.x <= right.x && left.y <= right.y;
+        }
+
         #endregion
     }
 }

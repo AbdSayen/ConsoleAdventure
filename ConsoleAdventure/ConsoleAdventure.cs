@@ -39,6 +39,8 @@ namespace ConsoleAdventure
 
         public static Vector2 cellSize = new Vector2(18, 19);
         public static Vector2 worldPos = new Vector2(9, 150);
+        public static Position startDisplay;
+        public static Position endDisplay;
 
         public static int screenWidth = 1602;
         public static int screenHeight = 912;
@@ -211,6 +213,7 @@ namespace ConsoleAdventure
                     if (NetworkManager.Id == 0 || NetworkManager.Id == -1) WorldIO.Save(world.name);
                     InWorld = false;
                     menu.CloseAllPages();
+                    Loger.ClearLogs();
                 }
 
                 if (!kstate.IsKeyDown(InputConfig.Pause) && prekstate.IsKeyDown(InputConfig.Pause) && !ConsoleAdventure.BlockHotKey)

@@ -57,14 +57,19 @@ namespace ConsoleAdventure.WorldEngine
         fungusFloor,
         descent,                //+
         climb,                  //+
-        workbench,              //+
-        furnace,                //+
-        anvil,                  //+
-        bomb,                   //+
-        explosion,              //+
-        web,                    //+
-        graniteWall,            //+
-        torch,                  //+
-        stalactite,             //+
+
+        workbench,
+        furnace,
+        anvil,
+        bomb,
+        explosion,
+        web, 
+        graniteWall,
+        torch,
+        stalactite,
+        woodFloor,
+        brokenLog,
+        leaves,
+        seedling
     }
 }

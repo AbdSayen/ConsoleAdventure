@@ -19,6 +19,10 @@ namespace ConsoleAdventure
         public int placeLayer = World.BlocksLayerId;
         public int pick = 0;
         public int hammer = 0;
+        public int damage;
+        public bool canUse;
+        public byte damageClass;
+        public bool consume;
 
         public static int lastTypeId = 0;
 
@@ -105,6 +109,11 @@ namespace ConsoleAdventure
         public virtual Recipe AddRecipe()
         {
             return null;
+        }
+
+        public virtual void UseItem()
+        {
+
         }
     }
 }

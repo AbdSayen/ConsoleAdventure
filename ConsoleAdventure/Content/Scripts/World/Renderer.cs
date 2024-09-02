@@ -5,13 +5,11 @@ using ConsoleAdventure.Content.Scripts.Player;
 using System.Threading;
 using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Content.Scripts.IO;
-using System.Xml.Linq;
 
 namespace ConsoleAdventure.WorldEngine
 {
     public class Renderer
     {
-        List<List<Chunk>> chunks;
         private int viewDistanceY = 30;
         private int viewDistanceX = 60;
 
@@ -25,9 +23,9 @@ namespace ConsoleAdventure.WorldEngine
             "╳╳",
         };
 
-        public Renderer(List<List<Chunk>> chunks)
+        public Renderer()
         {
-            this.chunks = chunks;
+          
         }
 
         int timer;
@@ -35,29 +33,48 @@ namespace ConsoleAdventure.WorldEngine
         int oldW;
         public void Render(Transform observer, Position cursorPosition, Color cursorColor)
         {
+            ConsoleAdventure.startDisplay = observer.position - new Position(30, 15);
+            ConsoleAdventure.endDisplay = observer.position + new Position(30, 15);
+
             int X = 0, Y = 0;
+
+            Light.Clear();
+            StringPaint.Clear();
+
+            for (int i = -11; i < 61 + 11; i++)
+            {
+                for (int j = -11; j < 61 + 11; j++)
+                {
+                    Field field = ConsoleAdventure.world.GetField(i + ConsoleAdventure.startDisplay.x, j + ConsoleAdventure.startDisplay.y, World.BlocksLayerId, observer.w);
+                    Field field1 = ConsoleAdventure.world.GetField(i + ConsoleAdventure.startDisplay.x, j + ConsoleAdventure.startDisplay.y, World.MobsLayerId, observer.w);
+
+                    if (field?.content != null)
+                    {
+                        field.content.OnTheScreen();
+                    }
+
+                    if (field1?.content != null)
+                    {
+                        field1.content.OnTheScreen();
+                    }
+                }
+            }
 
             ConsoleAdventure._spriteBatch.DrawFrame(ConsoleAdventure.Font, Utils.GetPanel(new(122, 32)), new(ConsoleAdventure.worldPos.X - (ConsoleAdventure.cellSize.X / 2) + 4, ConsoleAdventure.worldPos.Y - ConsoleAdventure.cellSize.Y), new Color(50, 50, 50));
             
             if (observer.position != oldPosition || observer.w != oldW)
-            {
-                //Lighting();
                 Light.Update(observer.position);
-            }
 
             else if (timer % 5 == 0)
-            {
-                //Lighting();
                 Light.Update(observer.position);
-            }
 
             for (int y = observer.position.y - viewDistanceY / 2; y < observer.position.y + viewDistanceY / 2; y++)
             {
-                if (y >= 0 && y < chunks.Count * Chunk.Size)
+                if (y >= 0 && y < ConsoleAdventure.world.chunks.GetLength(1) * Chunk.Size)
                 {
                     for (int x = observer.position.x - viewDistanceX / 2; x < observer.position.x + viewDistanceX / 2; x++)
                     {
-                        if (x >= 0 && x < chunks[0].Count * Chunk.Size)
+                        if (x >= 0 && x < ConsoleAdventure.world.chunks.GetLength(0) * Chunk.Size)
                         {
                             var chunk = GetChunk(x, y);
                             Vector3 lightColor = Light.colors[X, Y].ToVector3();
@@ -91,6 +108,8 @@ namespace ConsoleAdventure.WorldEngine
                 X = 0;
             }
 
+            StringPaint.DrawUnits((ConsoleAdventure.startDisplay).ToVector2());
+
             if (Cursor.Instance != null && Cursor.Instance.IsActive)
             {
                 DrawCursor(cursorPosition, cursorColor);
@@ -113,9 +132,9 @@ namespace ConsoleAdventure.WorldEngine
         {
             int chunkX = x / Chunk.Size;
             int chunkY = y / Chunk.Size;
-            if (chunkX >= 0 && chunkX < chunks.Count && chunkY >= 0 && chunkY < chunks[chunkX].Count)
+            if (chunkX >= 0 && chunkX < ConsoleAdventure.world.chunks.GetLength(0) && chunkY >= 0 && chunkY < ConsoleAdventure.world.chunks.GetLength(1))
             {
-                return chunks[chunkX][chunkY];
+                return ConsoleAdventure.world.chunks[chunkX, chunkY];
             }
             return null;
         }

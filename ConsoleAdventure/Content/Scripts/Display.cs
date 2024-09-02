@@ -1,7 +1,9 @@
-﻿using ConsoleAdventure.Content.Scripts.UI;
+﻿using ConsoleAdventure.Content.Scripts.Player;
+using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
+using System;
 using System.Xml;
 
 namespace ConsoleAdventure
@@ -9,10 +11,24 @@ namespace ConsoleAdventure
     internal class Display
     {
         internal static RecipesUI recipesUI;
+        public static Bar hpBar;
+        public static Bar manaBar;
+        public static Bar foodBar;
+
         private World world;
+        private static Vector2 barsPos;
+
         public Display(World world)
         {
             this.world = world;
+        }
+
+        public static void SetBars()
+        {
+            barsPos = ConsoleAdventure.worldPos + new Vector2(0, -(19 * 2));
+            hpBar = new Bar(new Vector2(0, 0), Color.Red, 20);
+            hpBar.Position = barsPos + new Vector2(27, 0);
+            hpBar.baseSymbol = '∙';
         }
 
         public string DisplayInfo()
@@ -39,6 +55,18 @@ namespace ConsoleAdventure
         public void DrawWorld()
         {
             world.Render();
+
+            DrawBars();
+        }
+
+        public void DrawBars()
+        {
+            Player player = world.GetLocalPlayer();
+            hpBar.Progress = (uint)(player.life);
+
+            ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "♥", barsPos, Color.Red);
+            ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, $"[{player.life}/{player.maxLife}]", barsPos + new Vector2(18, -19), new Color(80, 80, 80));
+            hpBar.Draw(ConsoleAdventure._spriteBatch);
         }
 
         public void DisplayInventory(Vector2 position)

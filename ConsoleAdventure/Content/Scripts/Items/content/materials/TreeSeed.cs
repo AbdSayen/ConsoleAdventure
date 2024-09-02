@@ -6,21 +6,21 @@ using System.Collections.Generic;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class Log : Item
+    public class TreeSeed : Item
     {
-        public Log()
+        public TreeSeed()
         {
             name = Localization.GetTranslation("Items", GetType().Name);
             description = GetDescription();
-            placeType = (int)RenderFieldType.log;
-            AddTypeToMap<Log>();
+            placeType = (int)RenderFieldType.seedling;
+            AddTypeToMap<TreeSeed>();
         }
 
         public override (List<string>, List<Color>) GetTexture()
         {
             return (
-                    new List<string>() { "⸗" }, //≡
-                    new List<Color>() { new Color(94, 61, 38) }
+                    new List<string>() { "•" },
+                    new List<Color>() { new Color(94, 61, 38)}
                    );
         }
 

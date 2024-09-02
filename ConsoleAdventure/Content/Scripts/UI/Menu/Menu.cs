@@ -291,6 +291,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                 string name = worldPanels[i].name;
                                 State = MenuState.worldLoadingProgress;
 
+                                Display.SetBars();
+
                                 Thread load = new Thread(new ThreadStart(LoadWorld));
                                 load.Start();
 

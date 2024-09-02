@@ -200,5 +200,15 @@ namespace ConsoleAdventure
         {
             return hardness > 0;
         }
+
+        public bool CanDraw()
+        {
+            return position >= ConsoleAdventure.startDisplay && position < ConsoleAdventure.endDisplay;
+        }
+
+        public virtual void RandomUpdate()
+        {
+
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             new House(startPosition, 25, 25);
         }
 
-        private bool CheckGeneratePossibility(Position startPosition, int sizeX, int sizeY)
+        /*private bool CheckGeneratePossibility(Position startPosition, int sizeX, int sizeY)
         {
             var layer = world.GetFields(WorldEngine.World.BlocksLayerId);
             int layerHeight = layer.Count;
@@ -41,6 +41,6 @@ namespace ConsoleAdventure.WorldEngine.Generate
             }
 
             return true;
-        }
+        }*/
     }
 }

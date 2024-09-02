@@ -56,7 +56,8 @@ namespace ConsoleAdventure.Content.Scripts
                 color = Color.White;
             }
 
-            Clear();
+            /*Light.Clear();
+            StringPaint.Clear();
 
             for (int i = -11; i < width + 11; i++)
             {
@@ -75,7 +76,7 @@ namespace ConsoleAdventure.Content.Scripts
                         field1.content.OnTheScreen();
                     }
                 }
-            }
+            }*/
 
             for (int i = 0; i < width; i++)
             {

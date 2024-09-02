@@ -20,10 +20,7 @@ public static class InputConfig
     public static Keys CursorDown = Keys.Down;
     public static Keys CursorLeft = Keys.Left;
     public static Keys CursorRight = Keys.Right;
-    
-    public static Keys Building = Keys.B;
-    public static Keys Destroying = Keys.V;
-
+   
     #endregion
     
     public static Keys PickUp = Keys.L;
@@ -44,4 +41,5 @@ public static class InputConfig
     public static Keys TakeInChest = Keys.J;
     public static Keys TakeInInventoryStack = Keys.I;
     public static Keys TakeInChestStack = Keys.O;
+    public static Keys Use = Keys.B;
 }

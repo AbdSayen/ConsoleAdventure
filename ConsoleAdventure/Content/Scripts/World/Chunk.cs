@@ -7,7 +7,7 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public class Chunk
     {
-        private readonly List<List<List<List<Field>>>> fields;
+        private readonly Field[,,,] fields;
         private short biome;
         public static int Size = 16;
         public static int maxDeep = 2;
@@ -17,28 +17,22 @@ namespace ConsoleAdventure.WorldEngine
             fields = InitializeFields();
         }
 
-        private List<List<List<List<Field>>>> InitializeFields()
+        private Field[,,,] InitializeFields()
         {
-            var initializedFields = new List<List<List<List<Field>>>>(World.CountOfLayers);
+            var initializedFields = new Field[Size, Size, World.CountOfLayers, maxDeep];
 
-            for (int w = 0; w < maxDeep; w++)
+            for (int i = 0; i < Size; i++)
             {
-                var vertical = new List<List<List<Field>>>(maxDeep);
-                for (int z = 0; z < World.CountOfLayers; z++)
+                for (int j = 0; j < Size; j++)
                 {
-                    var layer = new List<List<Field>>(Size);
-                    for (int y = 0; y < Size; y++)
+                    for (int k = 0; k < World.CountOfLayers; k++)
                     {
-                        var row = new List<Field>(Size);
-                        for (int x = 0; x < Size; x++)
+                        for (int l = 0; l < maxDeep; l++)
                         {
-                            row.Add(new Field());
+                            initializedFields[i, j, k, l] = new Field();
                         }
-                        layer.Add(row);
                     }
-                    vertical.Add(layer);
                 }
-                initializedFields.Add(vertical);
             }
 
             return initializedFields;
@@ -48,14 +42,10 @@ namespace ConsoleAdventure.WorldEngine
         {
             if (IsValidCoordinate(x, y, z, w))
             {
-                var vertical = fields[w];
-                var layer = vertical[z];
-                var row = layer[y];
-                var field = row[x];
+                Field field = fields[x, y, z, w];
                 if (field == null)
                 {
                     field = new Field();
-                    row[x] = field;
                 }
                 return field;
             }
@@ -66,7 +56,7 @@ namespace ConsoleAdventure.WorldEngine
         {
             if (IsValidCoordinate(x, y, layer, w))
             {
-                fields[w][layer][y][x] = field;
+                fields[x, y, layer, w] = field;
             }
         }
 
@@ -75,7 +65,7 @@ namespace ConsoleAdventure.WorldEngine
             return biome;
         }
 
-        public List<List<Field>> GetFields(int z, int w)
+        /*public List<List<Field>> GetFields(int z, int w)
         {
             if (w >= 0 && w < fields.Count)
             {
@@ -85,27 +75,28 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
             return null;
-        }
+        }*/
 
-        public List<List<List<Field>>> GetFields(int w)
+        /*public List<List<List<Field>>> GetFields(int w)
         {
             if (w >= 0 && w < fields.Count)
             {
                 return fields[w];
             }
             return null;
-        }
+        }*/
 
-        public List<List<List<List<Field>>>> GetFields()
+        public Field[,,,] GetFields()
         {
             return fields;
         }
 
         private bool IsValidCoordinate(int x, int y, int z, int w)
         {
-            return z >= 0 && z < fields[w].Count &&
-                   y >= 0 && y < fields[w][z].Count &&
-                   x >= 0 && x < fields[w][z][y].Count;
+            return x >= 0 && x < Size &&
+                   y >= 0 && y < Size &&
+                   z >= 0 && z < World.CountOfLayers &&
+                   w >= 0 && w < maxDeep;
         }
     }
 }

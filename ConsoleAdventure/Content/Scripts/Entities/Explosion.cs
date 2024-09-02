@@ -48,6 +48,11 @@ namespace ConsoleAdventure.Content.Scripts
         int delay = 5;
         public override void AI()
         {
+            if (CanHitToPlayer(out short id) && world.players[id].invulnerabilityTime < 0)
+            {
+                world.players[id].Hit(10);
+            }
+
             if (timer % delay == 0 && frame < Symbols.Length)
                 frame++;
 

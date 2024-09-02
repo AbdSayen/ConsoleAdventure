@@ -4,7 +4,9 @@
     "Log": "Log",
     "IronBar": "Iron bar",
     "IronPick": "Iron pick",
-    "IronHammer": "Iron hammer"
+    "IronHammer": "Iron hammer",
+    "IronSword": "Iron sword",
+    "TreeSeed": "Tree seeds"
   },
 
   "ItemDescription": {
@@ -23,7 +25,7 @@
     "Door": "door",
     "Ruine": "ruine",
     "Water": "water",
-    "Log": "log",
+    "Plank": "log",
     "Entity": "entity",
     "Cat": "cat",
     "Chest": "chest",
@@ -43,11 +45,15 @@
     "Web": "web",
     "GraniteWall": "granite wall",
     "Torch": "torch",
-    "Stalactite": "stalactite"
+    "Stalactite": "stalactite",
+    "BrokenLog": "broken log",
+    "Leaves": "leaves",
+    "Seedling": "seedling"
   },
 
   "Events": {
-    "Eating": "was eaten"
+    "Eating": "was eaten",
+    "DeadPlayer": "you dead"
   },
 
   "UI": {
@@ -82,8 +88,8 @@
   },
 
   "About": {
-    "Game": "This game was made by the author \nof the YouTube channel named @bondscreators.\nDevelopment started at 05.19.2024.\nGenre of this game is RPG. \nThe main feature of this game is console graphics.",
-    "Control": "W - Walk Up\nS - Walk Down\nA - Walk Left\nD - Walk Right\nLeft Shift - Run\n\n← - Move Cursor Left\n→ - Move Cursor Right\n↑ - Move Cursor Up\n↓ - Move Cursor Down\n\nSpace - Toggle Cursor\nP - Pause\n\nE - Interact\nB - Build\nV - Destroy\nL - Pick up item"
+    "Game": "This game was made by the author \nof the YouTube channel named @bondscreators.\nDevelopment started at 05.19.2024.\nGenre of this game is RPG. \nThe main feature of this game is console graphics.\nDevelopers:\n  Programmers: Bonder, VoidDefi, ZaLa, RomanEXE\n  Author: Bonder\n  ASCII artist: VoidDefi\n  Composer: ZaLa\n  Clean coder: RomanExe\n  Testers: ZaLa, VoidDefi\n  Random Helper: SeveralAttempts\n  Special thanks to: klubini, Wama",
+    "Control": "W - Walk Up\nS - Walk Down\nA - Walk Left\nD - Walk Right\nLeft Shift - Run\n\n← - Move Cursor Left\n→ - Move Cursor Right\n↑ - Move Cursor Up\n↓ - Move Cursor Down\n\nSpace - Toggle Cursor\nP - Pause\n\nE - Interact\nB - Use\nL - Pick up item"
   },
 
   "Generic": {

@@ -30,7 +30,7 @@ namespace ConsoleAdventure.Generate.Structures
             {
                 for (int x = startPosition.x; x < startPosition.x + sizeX; x++)
                 {
-                    new Floor(new Position(x, y), ConsoleAdventure.StartDeep);
+                    new WoodFloor(new Position(x, y), ConsoleAdventure.StartDeep);
                     world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep).isStructure = true;
 
                     bool isHorizontalWall = (y == startPosition.y || y == startPosition.y + sizeY - 1);
@@ -52,9 +52,18 @@ namespace ConsoleAdventure.Generate.Structures
                         }
                     }
 
-                    if (world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep).content != null && random.Next(0, 8) == 0)
+                    Transform transform = world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep).content;
+                    if (transform != null && random.Next(0, 8) == 0)
                     {
-                        new Ruine(new Position(x, y), ConsoleAdventure.StartDeep);
+                        if(transform.type == (int)RenderFieldType.wall)
+                        {
+                            new Ruine(new Position(x, y), ConsoleAdventure.StartDeep);
+                        }
+
+                        else if (transform.type == (int)RenderFieldType.log || transform.type == (int)RenderFieldType.door)
+                        {
+                            new BrokenLog(new Position(x, y), ConsoleAdventure.StartDeep);
+                        }
                     }
                     else if (random.Next(0, 320) == 0)
                     {

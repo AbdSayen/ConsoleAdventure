@@ -62,6 +62,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             info.Id = id;
             info.pcId = pcid;
             type = (int)RenderFieldType.player;
+            SetMaxLife(20);
 
             AddTypeToMap<Player>(type);
             Initialize();
@@ -240,6 +241,41 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 isChestOpen = false;
             }
 
+            Item curItem = inventory.slots[holdItemIndex].item;
+            if (curItem.damageClass == 1 && curItem.damage > 0 && ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use))
+            {
+                for (int i = 0; i < world.entities.Count; i++)
+                {
+                    if (world.entities[i].maxLife > 0)
+                    {
+                        Position pos = world.entities[i].position;
+                        if (pos >= position + new Position(-1, -1) && pos <= position + new Position(1, 1) && pos != position && world.entities[i].w == w)
+                        {
+                            if(world.entities[i].invulnerabilityTime <= 0)
+                                world.entities[i].Hit(1);
+                        }
+                    }
+                }
+            }
+
+            if (curItem.canUse && !ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Use))
+            {
+                curItem.UseItem();
+                if (curItem.consume)
+                {
+                    inventory.RemoveAt(holdItemIndex, 1);
+                }
+            }
+
+            if (life <= 0)
+            {
+                Loger.AddLog(Localization.GetTranslation("Events", "DeadPlayer"));
+                position = new(4, 4);
+                life = maxLife;
+            }
+
+            invulnerabilityTime--;
+
             void PerformActions()
             {
                 HandlePlayerInput();
@@ -300,7 +336,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 return;
             }
 
-            if (Input.IsKeyDown(InputConfig.Building) && inventory.slots?.Count > 0 && holdItemIndex < inventory.slots.Count && !ConsoleAdventure.BlockHotKey)
+            if (Input.IsKeyDown(InputConfig.Use) && inventory.slots?.Count > 0 && holdItemIndex < inventory.slots.Count && !ConsoleAdventure.BlockHotKey)
             {
                 Item item = inventory.slots[holdItemIndex].item;
                 if (item.placeType > -1 )
@@ -308,26 +344,28 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     if (item.placeLayer == World.BlocksLayerId && CanBuildAt(targetPosition, World.BlocksLayerId))
                     {
                         Place(item);
+                        return;
                     }
 
                     if (item.placeLayer == World.FloorLayerId && CanBuildAt(targetPosition, World.FloorLayerId))
                     {
                         Place(item);
+                        return;
                     }
 
                     if (item.placeLayer == World.ItemsLayerId && CanBuildAt(targetPosition, World.ItemsLayerId))
                     {
                         Place(item);
+                        return;
                     }
 
                     if (item.placeLayer == World.MobsLayerId && CanBuildAt(targetPosition, World.MobsLayerId))
                     {
                         Place(item);
+                        return;
                     }
                 }
-            }
-            else if (Input.IsKeyDown(InputConfig.Destroying) && !ConsoleAdventure.BlockHotKey)
-            {
+
                 Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId, w).content;
                 if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].item.pick > 0)
                 {

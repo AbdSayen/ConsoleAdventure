@@ -13,6 +13,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
         public char baseSymbol = '.';
         public char newSymbol = '▪';
 
+        public string startSymbol = "[";
+        public string endSymbol = "]";
+
+
         private uint progress;
 
         public Vector2 SizeInPixel { get; private set; }
@@ -52,7 +56,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             for(int i = 0; i < Size; i++)
             {
-                if(i <= progress)
+                if(i < progress)
                 {
                     oldBar += " ";
                     newBar += newSymbol;
@@ -68,10 +72,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             SizeInPixel = font.MeasureString(oldBar); 
 
-            spriteBatch.DrawString(font, "[", Position - new Vector2(9, 0), Color.White);
+            spriteBatch.DrawString(font, startSymbol, Position - new Vector2(9, 0), Color.White);
             spriteBatch.DrawString(font, oldBar, Position, Color.Gray);
             spriteBatch.DrawString(font, newBar, Position, color);
-            spriteBatch.DrawString(font, "]", Position + new Vector2(SizeInPixel.X, 0), Color.White);
+            spriteBatch.DrawString(font, endSymbol, Position + new Vector2(SizeInPixel.X, 0), Color.White);
         }
     }
 }

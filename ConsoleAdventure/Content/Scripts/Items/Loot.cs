@@ -30,7 +30,7 @@ namespace ConsoleAdventure
 
             Field field = ConsoleAdventure.world.GetField(x, y, z, w);
 
-            if (field.content != null)
+            if (field?.content != null)
             {
                 if (field.content is Loot)
                 {

@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.Entities.StateMachine;
+using System;
+using System.Linq;
+using ConsoleAdventure.Content.Scripts.Player;
 
 namespace ConsoleAdventure.Content.Scripts
 {
@@ -15,6 +18,8 @@ namespace ConsoleAdventure.Content.Scripts
         public int life;
         public int maxLife;
         public int damage;
+        public int defense;
+        public int invulnerabilityTime;
 
         protected Position oldPos;
 
@@ -59,7 +64,11 @@ namespace ConsoleAdventure.Content.Scripts
         {
             StateMachine?.InteractWithWorld();
             AI();
-            //if(life <= 0) Kill();
+
+            if (life <= 0 && maxLife > 0)   
+                Kill();
+
+            invulnerabilityTime--;
         }
 
         /// <summary>
@@ -86,11 +95,46 @@ namespace ConsoleAdventure.Content.Scripts
             maxLife = life;
         }
 
+        public void Hit(int damage)
+        {
+            if (maxLife <= 0 && invulnerabilityTime > 0)
+                return;
+
+            if (defense == 0) 
+                defense = 1;
+
+            damage = Math.Abs(damage);
+            life -= Math.Abs((int)((float)damage / ((float)defense)));
+
+            invulnerabilityTime = 60;
+        }
+
         public virtual void SetParams(List<object> p) { }
 
         public virtual List<object> GetParams()
         {
             return new();
+        }
+
+
+        public bool CanHitToPlayer(out short id)
+        {
+            for (int i = 0; i < world.players.Count; i++)
+            {
+                Player.Player player = world.players.ElementAt(i).Value;
+
+                if (player.maxLife > 0)
+                {
+                    Position pos = player.position;
+                    if (pos >= position + new Position(-1, -1) && pos <= position + new Position(1, 1) && pos != position && player.w == w)
+                    {
+                        id = world.players.ElementAt(i).Key;
+                        return true;
+                    }
+                }
+            }
+            id = 0;
+            return false;
         }
     }
 }

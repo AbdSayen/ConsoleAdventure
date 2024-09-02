@@ -23,7 +23,7 @@ namespace ConsoleAdventure.WorldEngine
         
         public int size { get; internal set; } = 256;
 
-        public List<List<Chunk>> chunks = new List<List<Chunk>>();
+        public Chunk[,] chunks;
         public Dictionary<short, Player> players = new();
         public List<Entity> entities = new List<Entity>();
 
@@ -64,7 +64,7 @@ namespace ConsoleAdventure.WorldEngine
             ConsoleAdventure.rand = new Random();
 
             generator = new Generator(this, size);
-            renderer = new Renderer(chunks);
+            renderer = new Renderer();
             new Cursor();
 
             inputField = new TextInputField(new Point(0, 0), Color.White, 173, 0, "Введите комманду...", 0, new char[1] { '\r' });
@@ -113,7 +113,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public Point GetChunkCounts()
         {
-            return new(chunks[0].Count, chunks.Count);
+            return new(ConsoleAdventure.world.chunks.GetLength(0), ConsoleAdventure.world.chunks.GetLength(1));
         }
 
         public void ConnectLocalPlayer()
@@ -160,6 +160,12 @@ namespace ConsoleAdventure.WorldEngine
                 for (int i = 0; i < entities.Count; i++)
                 {
                     entities[i].InteractWithWorld();
+                }
+
+                Field field = GetField(ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, CountOfLayers), ConsoleAdventure.rand.Next(0, Chunk.maxDeep));
+                if(field?.content != null)
+                {
+                    field.content.RandomUpdate();
                 }
             }
 
@@ -288,13 +294,15 @@ namespace ConsoleAdventure.WorldEngine
         {
             byte deep = (newW == null) ? subject.w : (byte)newW;
 
-            if (IsValidMove(worldLayer, newX, newY, deep))
+            Field field0 = GetField(subject.position.x, subject.position.y, worldLayer, subject.w);
+            Field field1 = GetField(newX, newY, worldLayer, deep);
+
+            if (IsValidMove(worldLayer, newX, newY, deep) && field0 != null && field1 != null)
             {
-                GetField(subject.position.x, subject.position.y, worldLayer, subject.w).content = null;
+                field0.content = null;
                 subject.position.SetPosition(newX, newY);
                 subject.w = deep;
-                GetField(newX, newY, worldLayer, deep).content = subject;
-                //GetField(newX, newY, worldLayer, deep).color = subject.GetColor();
+                field1.content = subject;
                 return true;
             }
 
@@ -317,16 +325,16 @@ namespace ConsoleAdventure.WorldEngine
             int localX = x % Chunk.Size;
             int localY = y % Chunk.Size;
 
-            if (chunkX >= 0 && chunkX < chunks.Count && chunkY >= 0 && chunkY < chunks[chunkX].Count)
+            if (chunkX >= 0 && chunkX < ConsoleAdventure.world.chunks.GetLength(0) && chunkY >= 0 && chunkY < ConsoleAdventure.world.chunks.GetLength(1))
             {
-                Field field = chunks[chunkX][chunkY].GetField(localX, localY, layer, w);
+                Field field = chunks[chunkX, chunkY].GetField(localX, localY, layer, w);
                 return field;
             }
 
             return new();
         }
 
-        public List<List<Field>> GetFields(int y, int layer, int w)
+        /*public List<List<Field>> GetFields(int y, int layer, int w)
         {
             int chunkY = y / Chunk.Size;
             int localY = y % Chunk.Size;
@@ -345,9 +353,9 @@ namespace ConsoleAdventure.WorldEngine
             }
 
             return null;
-        }
+        }*/
 
-        public List<List<Field>> GetFields(int layer, int w)
+        /*public List<List<Field>> GetFields(int layer, int w)
         {
             var result = new List<List<Field>>();
             foreach (var chunkRow in chunks)
@@ -362,9 +370,9 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
             return result;
-        }
+        }*/
 
-        public List<List<List<Field>>> GetFields(int w)
+        /*public List<List<List<Field>>> GetFields(int w)
         {
             var result = new List<List<List<Field>>>();
             foreach (var chunkRow in chunks)
@@ -375,9 +383,9 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
             return result;
-        }
+        }*/
 
-        public List<List<List<List<Field>>>> GetFields()
+        /*public List<List<List<List<Field>>>> GetFields()
         {
             var result = new List<List<List<List<Field>>>>();
             foreach (var chunkRow in chunks)
@@ -388,7 +396,7 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
             return result;
-        }
+        }*/
 
         public void SetField(int x, int y, int layer, int w, Field field)
         {
@@ -397,13 +405,13 @@ namespace ConsoleAdventure.WorldEngine
             int localX = x % Chunk.Size;
             int localY = y % Chunk.Size;
 
-            if (chunkX >= 0 && chunkX < chunks.Count && chunkY >= 0 && chunkY < chunks[chunkX].Count)
+            if (chunkX >= 0 && chunkX < ConsoleAdventure.world.chunks.GetLength(0) && chunkY >= 0 && chunkY < ConsoleAdventure.world.chunks.GetLength(1))
             {
-                chunks[chunkX][chunkY].SetField(localX, localY, layer, w, field);
+                chunks[chunkX, chunkY].SetField(localX, localY, layer, w, field);
             }
         }
 
-        public List<List<Chunk>> GetChunks()
+        public Chunk[,] GetChunks()
         {
             return chunks;
         }
@@ -411,12 +419,14 @@ namespace ConsoleAdventure.WorldEngine
         public void InitializeChunks()
         {
             int chunkCount = (size + Chunk.Size - 1) / Chunk.Size;
-            for (int y = 0; y < chunkCount; y++)
+
+            chunks = new Chunk[chunkCount, chunkCount];
+
+            for (int x = 0; x < chunkCount; x++)
             {
-                chunks.Add(new List<Chunk>());
-                for (int x = 0; x < chunkCount; x++)
+                for (int y = 0; y < chunkCount; y++)
                 {
-                    chunks[y].Add(new Chunk());
+                    chunks[x, y] = new Chunk();
                 }
             }
         }
