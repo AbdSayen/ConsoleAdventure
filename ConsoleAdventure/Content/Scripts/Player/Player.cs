@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -216,6 +216,32 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (chest.slots?.Count > 0)
                 holdChestItemIndex = Math.Min(holdChestItemIndex, chest.slots.Count - 1);
 
+            Item curItem = inventory.slots[holdItemIndex].item;
+            if (curItem.damageClass == 1 && curItem.damage > 0 && ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use))
+            {
+                for (int i = 0; i < world.entities.Count; i++)
+                {
+                    if (world.entities[i].maxLife > 0)
+                    {
+                        Position pos = world.entities[i].position;
+                        if (pos >= position + new Position(-1, -1) && pos <= position + new Position(1, 1) && pos != position && world.entities[i].w == w)
+                        {
+                            if (world.entities[i].invulnerabilityTime <= 0)
+                                world.entities[i].Hit(1);
+                        }
+                    }
+                }
+            }
+
+            if (curItem.canUse && !ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Use))
+            {
+                curItem.UseItem();
+                if (curItem.consume)
+                {
+                    inventory.RemoveAt(holdItemIndex, 1);
+                }
+            }
+
             if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.TakeInInventoryStack) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.TakeInInventoryStack) && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0 && inventory.slots.Count < inventory.maxCount)
             {
                 inventory.PickUpItems(new() { chest.slots[holdChestItemIndex] });
@@ -239,32 +265,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 ClearChest();
                 chestPosition = new Vector3(-1, -1, -1);
                 isChestOpen = false;
-            }
-
-            Item curItem = inventory.slots[holdItemIndex].item;
-            if (curItem.damageClass == 1 && curItem.damage > 0 && ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use))
-            {
-                for (int i = 0; i < world.entities.Count; i++)
-                {
-                    if (world.entities[i].maxLife > 0)
-                    {
-                        Position pos = world.entities[i].position;
-                        if (pos >= position + new Position(-1, -1) && pos <= position + new Position(1, 1) && pos != position && world.entities[i].w == w)
-                        {
-                            if(world.entities[i].invulnerabilityTime <= 0)
-                                world.entities[i].Hit(1);
-                        }
-                    }
-                }
-            }
-
-            if (curItem.canUse && !ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Use))
-            {
-                curItem.UseItem();
-                if (curItem.consume)
-                {
-                    inventory.RemoveAt(holdItemIndex, 1);
-                }
             }
 
             if (life <= 0)
