@@ -72,6 +72,8 @@
 
         public static string ItemConsumed = Localization.GetTranslation("Generic", "Consumed");
 
+        public static string[] NormalFrame3x2 = Utils.GetPanel(new(3, 2), 0);
+
         public static void UpdateLabels()
         {
             navigHelp = Localization.GetTranslation("UI", "Navigation");

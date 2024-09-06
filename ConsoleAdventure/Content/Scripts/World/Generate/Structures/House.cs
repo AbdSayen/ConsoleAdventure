@@ -1,6 +1,7 @@
 ﻿using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.WorldEngine.Generate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,14 @@ namespace ConsoleAdventure.Generate.Structures
 {
     public class House : Structure
     {
-        private Random random = ConsoleAdventure.rand;
+        private Random random;
         private World world = ConsoleAdventure.world;
         private List<Room> rooms = new List<Room>();
 
         public House(Position startPosition, int sizeX, int sizeY)
         {
+            random = Generator.GenRand;
+
             Room initialRoom = new Room(
                 startPosition,
                 new Position(startPosition.x + sizeX, startPosition.y),

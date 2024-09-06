@@ -62,7 +62,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void Collapse()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new StoneItem(), 3) });
+            new Loot(position, w, new List<Stack>() { new Stack(new SaltItem(), 3) });
         }
 
         public override string GetSymbol()

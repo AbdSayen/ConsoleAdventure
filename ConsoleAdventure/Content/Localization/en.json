@@ -15,6 +15,16 @@
     "Log": "Can be placed"
   },
 
+  "Buffs": {
+    "Buff": "Buff",
+    "InTheFlames": "In flames!"
+  },
+
+  "BuffDescription": {
+    "Buff": "empty",
+    "InTheFlames": "you are burning"
+  },
+
   "Transforms": {
     "None": "none",
     "Player": "player",
@@ -47,8 +57,16 @@
     "Torch": "torch",
     "Stalactite": "stalactite",
     "BrokenLog": "broken log",
+    "WoodFloor": "wood floor",
     "Leaves": "leaves",
-    "Seedling": "seedling"
+    "Seedling": "seedling",
+    "Zoisite": "zoisite",
+    "Ruby": "ruby",
+    "Salt": "salt",
+    "Fire": "fire",
+    "Charcoal": "charcoal",
+    "CharcoalFloor": "charcoal floor",
+    "HighTemperatureFire": "high temperature fire"
   },
 
   "Events": {
@@ -84,7 +102,11 @@
     "Loot": "storage:",
     "Entity": "entity:",
     "RecipeMenu": "Recipe menu",
-    "RecipeBook": "Recipe book"
+    "RecipeBook": "Recipe book",
+    "WorldNameField": "Name",
+    "WorldSeedField": "Seed",
+    "WorldSizeField": "Size",
+    "WorldPlayerNameField": "Player name"
   },
 
   "About": {

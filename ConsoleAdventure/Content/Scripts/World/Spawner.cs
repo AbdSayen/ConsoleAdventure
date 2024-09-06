@@ -1,17 +1,54 @@
 using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Content.Scripts.Entities;
+using ConsoleAdventure.Content.Scripts.Player;
+using ConsoleAdventure.Content.Scripts.World;
+using System;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine;
 
 public static class Spawner
 {
-    public static Entity Spawn(Entity entity, int w, Position position = default)
+    private static List<SpawnCondition> SpawnConditions = new List<SpawnCondition>();
+
+    public static Entity Spawn(Entity entity)
     {
-        Entity spawnEntity = new Entity(Position.Zero(), w);
+        Entity spawnEntity = new Entity(Position.Zero(), entity.w);
         spawnEntity = entity.Copy<Entity>();
-        //spawnEntity.EntityColor.ChooseColor(position, w);
-        ConsoleAdventure.world.SetSubjectPosition(spawnEntity, entity.worldLayer, position.x, position.y);
+        ConsoleAdventure.world.SetSubjectPosition(spawnEntity, entity.worldLayer, entity.position.x, entity.position.y);
 
         return spawnEntity;
+    }
+
+    public static void SpawnSuitableMob(Player player)
+    {
+        List<SpawnCondition> candidates = new();
+
+        for (int i = 0; i < SpawnConditions.Count; i++)
+        {
+            if (SpawnConditions[i].wRange.Start.Value >= player.w && SpawnConditions[i].wRange.End.Value <= player.w) 
+            {
+                candidates.Add(SpawnConditions[i]);
+            }
+        }
+
+        int maxPosobility = -1;
+        int curIndex = -1;
+
+        for (int i = 0;i < candidates.Count;i++)
+        {
+            int oldPosobility = maxPosobility;
+            maxPosobility = Math.Max(maxPosobility, candidates[i].Probability);
+
+            if(oldPosobility != maxPosobility)
+            {
+                curIndex = i;
+            }
+        }
+
+        if (curIndex > -1)
+        {
+            Transform.SetObject(curIndex, new(), player.w);
+        }
     }
 }

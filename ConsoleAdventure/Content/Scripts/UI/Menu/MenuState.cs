@@ -8,6 +8,8 @@
         aboutGame,
         aboutControl,
         mods,
-        worldLoadingProgress
+        worldLoadingProgress,
+        worldGenProgress,
+        wordGenMenu
     }
 }

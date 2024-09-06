@@ -77,6 +77,7 @@ namespace ConsoleAdventure.Content.Scripts
                                         else
                                         {
                                             transform.degreeDestruction /= 2;
+                                            transform.degreeDestruction = (byte)Math.Abs(transform.degreeDestruction);
                                         }
                                     }
                                 }

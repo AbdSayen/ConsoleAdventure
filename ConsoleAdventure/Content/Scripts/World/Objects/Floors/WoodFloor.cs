@@ -16,6 +16,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.woodFloor;
             isObstacle = false;
+            burnType = 0;
 
             AddTypeToMap<WoodFloor>(type);
 
@@ -35,6 +36,19 @@ namespace ConsoleAdventure.WorldEngine
         public override Color GetColor()
         {
             return new(74, 41, 18);
+        }
+
+        public override void AfterBurning()
+        {
+            if (ConsoleAdventure.rand.Next(0, 2) == 1)
+            {
+                new CharcoalFloor(position, w);
+            }
+
+            else
+            {
+                base.AfterBurning();
+            }
         }
     }
 }

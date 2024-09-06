@@ -41,6 +41,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.tree;
             isObstacle = true;
+            burnType = 0;
 
             AddTypeToMap<Tree>(type);
 
@@ -117,6 +118,31 @@ namespace ConsoleAdventure.WorldEngine
             if (crownColor.R != 0 && crownColor.G != 0 && crownColor.B != 0) 
             { 
                 StringPaint.Draw(crown.ToString(), position + new Position(-3, -3), w, new(), crownColor);
+            }
+        }
+
+        public override void AfterBurning()
+        {
+            if (ConsoleAdventure.rand.Next(0, 2) == 1)
+            {
+                new Charcoal(position, w);
+            }
+
+            else
+            {
+                base.AfterBurning();
+            }
+        }
+
+        public override void WhenBurning()
+        {
+            if (ConsoleAdventure.rand.Next(0, 21) == 20)
+            {
+                Position pos = new Position(ConsoleAdventure.rand.Next(-3, 4) + position.x, ConsoleAdventure.rand.Next(-3, 4) + position.y);
+                if (world.GetField(pos.x, pos.y, World.MobsLayerId, w)?.content == null)
+                {
+                    ConsoleAdventure.world.entities.Add(new Fire(pos, w));
+                }
             }
         }
     }

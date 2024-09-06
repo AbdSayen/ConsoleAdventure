@@ -21,7 +21,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         private void GenerateTrees()
         {
-            Random random = ConsoleAdventure.rand;
+            Random random = Generator.GenRand;
 
             for (int y = 0; y < world.size; y++)
             {

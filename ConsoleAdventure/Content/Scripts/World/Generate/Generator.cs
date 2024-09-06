@@ -1,5 +1,6 @@
 ﻿using ConsoleAdventure.Content.Scripts;
 using System;
+using System.Threading;
 
 
 namespace ConsoleAdventure.WorldEngine.Generate
@@ -14,6 +15,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
         private CaveGenerator caveGenerator = new CaveGenerator();
 
         public static Random GenRand { get; private set; }
+        private static readonly object locker = new object();
 
         public Generator(World world, int size)
         {
@@ -25,22 +27,24 @@ namespace ConsoleAdventure.WorldEngine.Generate
         {
             GenRand = new Random(seed);
             ConsoleAdventure.world.seed = seed;
-            Generate(isfullGenerate);
 
-            ConsoleAdventure.world.entities.Add(new Cat(new(4, 4), ConsoleAdventure.StartDeep));
+            Generate(isfullGenerate);
         }
 
 
         public void Generate(bool isfullGenerate = true)
         {
-            world.InitializeChunks();
-            GenerateBarriers();
-
-            if(isfullGenerate)
+            lock (locker)
             {
-                structureGenerator.Generate(world);
-                landspaceGenerator.Generate(world);
-                caveGenerator.Generate(world);
+                world.InitializeChunks();
+                GenerateBarriers();
+
+                if (isfullGenerate)
+                {
+                    structureGenerator.Generate(world);
+                    landspaceGenerator.Generate(world);
+                    caveGenerator.Generate(world);
+                }
             }
         }
 
@@ -55,7 +59,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                         if (y == size - 1 || y == 0 || x == size - 1 || x == 0)
                         {
                             //Field field = world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep);
-                            new Tree(new Position(x, y), w);
+                            new Stone(new Position(x, y), w);
                         }
                     }
                 }

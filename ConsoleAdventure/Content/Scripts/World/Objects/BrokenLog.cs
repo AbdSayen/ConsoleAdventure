@@ -14,7 +14,8 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.brokenLog;
-            this.isObstacle = false;
+            isObstacle = false;
+            burnType = 0;
 
             AddTypeToMap<BrokenLog>(type);
 
@@ -37,6 +38,19 @@ namespace ConsoleAdventure.WorldEngine
         public override Color GetColor()
         {
             return new(74, 41, 18);
+        }
+
+        public override void AfterBurning()
+        {
+            if (ConsoleAdventure.rand.Next(0, 2) == 1)
+            {
+                new Charcoal(position, w);
+            }
+
+            else
+            {
+                base.AfterBurning();
+            }
         }
     }
 }

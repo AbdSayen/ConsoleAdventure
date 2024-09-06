@@ -70,6 +70,13 @@ namespace ConsoleAdventure.WorldEngine
         woodFloor,
         brokenLog,
         leaves,
-        seedling
+        seedling,
+        zoisite,
+        ruby,
+        salt,
+        fire,
+        charcoal,
+        charcoalFloor,
+        highTemperatureFire,
     }
 }

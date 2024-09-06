@@ -12,6 +12,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 
 namespace ConsoleAdventure.Content.Scripts.IO
 {
@@ -23,28 +24,31 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
         public static void Save(string name)
         {
-            Console.WriteLine("Saving on account");
-
-            if (!Directory.Exists(path))
+            lock (locker)
             {
-                Directory.CreateDirectory(path);
+                Console.WriteLine("Saving on account");
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                byte[] bytes = GetWorldBytes();
+
+                string fileName = path + name + ".wld";
+
+                if (bytes != null)
+                {
+                    File.WriteAllBytes(fileName, bytes);
+                }
+                else
+                {
+                    Console.WriteLine("There was a problem when serializing tags (the byte array cannot be null)");
+                    return;
+                }
+
+                Console.WriteLine("The world was successfully saved!");
             }
-
-            byte[] bytes = GetWorldBytes();
-
-            string fileName = path + name + ".wld";
-
-            if (bytes != null)
-            {
-                File.WriteAllBytes(fileName, bytes);
-            }
-            else
-            {
-                Console.WriteLine("There was a problem when serializing tags (the byte array cannot be null)");
-                return;
-            }
-
-            Console.WriteLine("The world was successfully saved!");
         }
 
         public static byte[] GetWorldBytes()
@@ -138,7 +142,13 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 {
                     names[i] = Path.GetFileNameWithoutExtension(names[i]);
 
-                    Console.WriteLine(names[i]);
+                    byte[] bytes = File.ReadAllBytes(path + names[i] + ".wld");
+                    byte[] bytesToLoad = Utils.Decompress(bytes);
+                    Tags curTags = new();
+                    curTags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytesToLoad);
+                    seeds[i] = curTags.SafelyGet<int>("Seed");
+
+                    Console.WriteLine(names[i] + " / " + seeds[i]);
                 }
             }
             catch (Exception ex)

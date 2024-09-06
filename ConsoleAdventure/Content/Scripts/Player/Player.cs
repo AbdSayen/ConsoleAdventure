@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -41,9 +41,13 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public bool isCraftOpen = false;
 
+        public int buffCursor = 0;
+
+        public int postKullTimer = 0;
+
         public Player(short id, string pcid, Position position, int w, int worldLayer = -1) : base(position, w)
         {
-            if (worldLayer == -1) this.worldLayer = World.MobsLayerId;
+            if (worldLayer == -1) this.worldLayer = World.MobsLayerId; 
             else this.worldLayer = (byte)worldLayer;
             this.position = position;
 
@@ -103,6 +107,16 @@ namespace ConsoleAdventure.Content.Scripts.Player
             return Color.Yellow;
         }
 
+        Color bgColor = new(0, 0, 0, 0);
+        public override Color? GetBGColor()
+        {
+            if(postKullTimer > 0)
+                return bgColor = Color.Lerp(bgColor, Color.Red, 0.1f);
+
+            bgColor = new(0, 0, 0, 0);
+            return null;
+        }
+
         public override void OnTheScreen()
         {
             if (inventory.slots.Count > 0 && holdItemIndex > -1 && holdItemIndex < inventory.slots.Count && inventory.slots[holdItemIndex].item is TorchItem)
@@ -113,7 +127,26 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public override void InteractWithWorld()
         {
-            if (!isActive) return;
+            if (!isActive) 
+            { 
+                if (postKullTimer > 0)
+                {
+                    postKullTimer--;
+
+                    if (postKullTimer == 0)
+                    {
+                        Loger.AddLog(Localization.GetTranslation("Events", "DeadPlayer"));
+                        SetPosition(new(4, 4));
+                        life = maxLife;
+                        buffs.Clear();
+                        isActive = true;
+                    }
+                }
+
+                return; 
+            }
+
+            UpdateBuffs();
 
             timer.Start();
 
@@ -135,7 +168,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 PerformActions();
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Interaction) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Interaction) && !ConsoleAdventure.BlockHotKey)
+            if (Input.PostClick(InputConfig.Interaction) && !ConsoleAdventure.BlockHotKey)
             {
                 for (int i = 0; i < World.CountOfLayers; i++)
                 {
@@ -148,17 +181,17 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.InventoryPlus) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.InventoryPlus) && holdItemIndex < inventory.slots.Count - 1 && !ConsoleAdventure.BlockHotKey)
+            if (Input.PostClick(InputConfig.InventoryPlus) && holdItemIndex < inventory.slots.Count - 1 && !ConsoleAdventure.BlockHotKey)
                 holdItemIndex++;
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.InventoryMinus) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.InventoryMinus) && holdItemIndex > 0 && !ConsoleAdventure.BlockHotKey)
+            if (Input.PostClick(InputConfig.InventoryMinus) && holdItemIndex > 0 && !ConsoleAdventure.BlockHotKey)
                 holdItemIndex--;
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.ChestPlus) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.ChestPlus) && holdChestItemIndex < chest.slots.Count - 1 && !ConsoleAdventure.BlockHotKey)
+            if (Input.PostClick(InputConfig.ChestPlus) && holdChestItemIndex < chest.slots.Count - 1 && !ConsoleAdventure.BlockHotKey)
                 holdChestItemIndex++;
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.ChestMinus) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.ChestMinus) && holdChestItemIndex > 0 && !ConsoleAdventure.BlockHotKey)
+            if (Input.PostClick(InputConfig.ChestMinus) && holdChestItemIndex > 0 && !ConsoleAdventure.BlockHotKey)
                 holdChestItemIndex--;
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeOpen) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeOpen) && !ConsoleAdventure.BlockHotKey)
+            if (Input.PostClick(InputConfig.RecipeOpen) && !ConsoleAdventure.BlockHotKey)
             {
                 if (isCraftOpen)
                     isCraftOpen = false;
@@ -169,7 +202,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 Display.recipesUI.type = 0;
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeBookOpen) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeBookOpen) && !ConsoleAdventure.BlockHotKey)
+            if (Input.PostClick(InputConfig.RecipeBookOpen) && !ConsoleAdventure.BlockHotKey)
             {
                 if (isCraftOpen)
                 {
@@ -185,7 +218,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.DropItem) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.DropItem) && !ConsoleAdventure.BlockHotKey)
+            if (Input.PostClick(InputConfig.DropItem) && !ConsoleAdventure.BlockHotKey)
             {
                 DropSlot(holdItemIndex);
                 NetworkManager.SendDataAsync(NetworkFuncType.dropItem, (short)holdItemIndex, NetworkManager.Id);
@@ -195,12 +228,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
             {
                 List<Recipe> recipes = Display.recipesUI.type == 1 ? ConsoleAdventure.recipes : ConsoleAdventure.availableRecipes;
 
-                if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeListRight) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeListRight) && Display.recipesUI.cursorPos < recipes.Count - 1)
+                if (Input.PostClick(InputConfig.RecipeListRight) && Display.recipesUI.cursorPos < recipes.Count - 1)
                 {
                     Display.recipesUI.cursorPos++;
                 }
 
-                if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.RecipeListLeft) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.RecipeListLeft) && Display.recipesUI.cursorPos > 0)
+                if (Input.PostClick(InputConfig.RecipeListLeft) && Display.recipesUI.cursorPos > 0)
                 {
                     Display.recipesUI.cursorPos--;
                 }
@@ -242,7 +275,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.TakeInInventoryStack) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.TakeInInventoryStack) && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0 && inventory.slots.Count < inventory.maxCount)
+            if (Input.PostClick(InputConfig.TakeInInventoryStack) && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0 && inventory.slots.Count < inventory.maxCount)
             {
                 inventory.PickUpItems(new() { chest.slots[holdChestItemIndex] });
                 if(chest.slots[holdChestItemIndex].count <= 0)
@@ -251,7 +284,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.TakeInChestStack) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.TakeInChestStack) && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0 && chest.slots.Count < chest.maxCount)
+            if (Input.PostClick(InputConfig.TakeInChestStack) && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0 && chest.slots.Count < chest.maxCount)
             {
                 chest.PickUpItems(new() { inventory.slots[holdItemIndex] });
                 if (inventory.slots[holdItemIndex].count <= 0)
@@ -260,7 +293,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if(chestPosition != new Vector3(position.x, position.y, w))
+            if (Input.PostClick(InputConfig.BuffsPlus) && buffCursor < buffs.Count - 1 && !ConsoleAdventure.BlockHotKey)
+                buffCursor++;
+            if (Input.PostClick(InputConfig.BuffsMinus) && buffCursor > 0 && !ConsoleAdventure.BlockHotKey)
+                buffCursor--;
+
+            if (chestPosition != new Vector3(position.x, position.y, w))
             {
                 ClearChest();
                 chestPosition = new Vector3(-1, -1, -1);
@@ -269,9 +307,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             if (life <= 0)
             {
-                Loger.AddLog(Localization.GetTranslation("Events", "DeadPlayer"));
-                position = new(4, 4);
-                life = maxLife;
+                postKullTimer = 300;
+                isActive = false;
             }
 
             invulnerabilityTime--;

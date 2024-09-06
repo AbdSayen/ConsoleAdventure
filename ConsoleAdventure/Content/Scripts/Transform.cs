@@ -30,6 +30,12 @@ namespace ConsoleAdventure
         public float hardness = 1;
 
         /// <summary>
+        /// хранит тип горения трансформ:<br/>  
+        /// null - негорит.<br/> 0 - горит от обычного огня.<br/> 1 - горит от высокотемпературного огня.
+        /// </summary>
+        public byte? burnType = null;
+
+        /// <summary>
         /// Ось w, глубина объекта (на коком уровне мира он находится)
         /// </summary>
         public byte w;
@@ -208,7 +214,15 @@ namespace ConsoleAdventure
 
         public virtual void RandomUpdate()
         {
+        }
 
+        public virtual void WhenBurning()
+        {
+        }
+
+        public virtual void AfterBurning()
+        {
+            world.RemoveSubject(this, worldLayer, false);
         }
     }
 }

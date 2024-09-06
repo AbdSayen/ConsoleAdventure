@@ -14,6 +14,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.stone;
             isObstacle = true;
+            burnType = 1;
 
             AddTypeToMap<Stone>(type);
 

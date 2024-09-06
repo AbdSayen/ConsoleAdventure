@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace ConsoleAdventure.Content.Scripts.InputLogic;
 
@@ -42,4 +43,6 @@ public static class InputConfig
     public static Keys TakeInInventoryStack = Keys.I;
     public static Keys TakeInChestStack = Keys.O;
     public static Keys Use = Keys.B;
+    public static Keys BuffsPlus = Keys.NumPad3;
+    public static Keys BuffsMinus = Keys.NumPad1;
 }

@@ -15,6 +15,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.door;
             isObstacle = false;
+            burnType = 0;
 
             AddTypeToMap<Door>(type);
 
@@ -34,6 +35,19 @@ namespace ConsoleAdventure.WorldEngine
         public override Color GetColor()
         {
             return new(94, 61, 38);
+        }
+
+        public override void AfterBurning()
+        {
+            if (ConsoleAdventure.rand.Next(0, 2) == 1)
+            {
+                new Charcoal(position, w);
+            }
+
+            else
+            {
+                base.AfterBurning();
+            }
         }
     }
 }

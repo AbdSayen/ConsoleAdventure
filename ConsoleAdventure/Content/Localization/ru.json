@@ -15,6 +15,16 @@
     "Log": "Можно поставить"
   },
 
+  "Buffs": {
+    "Buff": "Бафф",
+    "InTheFlames": "В пламени!"
+  },
+
+  "BuffDescription": {
+    "Buff": "пустой бафф",
+    "InTheFlames": "вы горите"
+  },
+
   "Transforms": {
     "None": "нет",
     "Player": "игрок",
@@ -47,8 +57,16 @@
     "Torch": "факел",
     "Stalactite": "сталактит",
     "BrokenLog": "сломанное бревно",
+    "WoodFloor": "деревянный пол",
     "Leaves": "листья",
-    "Seedling": "саженец"
+    "Seedling": "саженец",
+    "Zoisite": "цоизит",
+    "Ruby": "рубин",
+    "Salt": "соль",
+    "Fire": "огонь",
+    "Charcoal": "древесный уголь",
+    "CharcoalFloor": "угольный пол",
+    "HighTemperatureFire": "высокотемпературный огонь"
   },
 
   "Events": {
@@ -84,7 +102,10 @@
     "Loot": "хранилище:",
     "Entity": "сущность:",
     "RecipeMenu": "Меню рецептов",
-    "RecipeBook": "Книга рецептов"
+    "WorldNameField": "Имя",
+    "WorldSeedField": "Сид",
+    "WorldSizeField": "Размер",
+    "WorldPlayerNameField": "Имя игрока"
   },
 
   "About": {

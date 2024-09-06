@@ -1,5 +1,6 @@
 ﻿using ConsoleAdventure.Content.Scripts;
 using Microsoft.Xna.Framework;
+using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,6 +17,7 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)RenderFieldType.seedling;
+            burnType = 0;
 
             AddTypeToMap<Seedling>(type);
 
@@ -49,6 +51,20 @@ namespace ConsoleAdventure.WorldEngine
         public override void RandomUpdate()
         {
             new Tree(position, w);
+        }
+
+        public override void AfterBurning()
+        {
+            if (ConsoleAdventure.rand.Next(0, 2) == 1)
+            {
+                new Charcoal(position, w);
+            }
+
+
+            else
+            {
+                base.AfterBurning();
+            }
         }
     }
 }

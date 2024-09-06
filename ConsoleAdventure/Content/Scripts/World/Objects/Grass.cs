@@ -55,6 +55,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)RenderFieldType.grass;
             isObstacle = false;
             hardness = 0.1f;
+            burnType = 0;
 
             AddTypeToMap<Grass>(type);
             Initialize();

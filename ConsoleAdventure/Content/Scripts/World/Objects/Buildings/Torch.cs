@@ -37,9 +37,24 @@ namespace ConsoleAdventure.WorldEngine
             return new(94, 61, 38);
         }
 
+        float timer;
         public override void OnTheScreen()
         {
             Light.Add(position, w, Color.White);
+
+            if(CanDraw())
+            {
+                StringPaint.Draw("●", position, w, new(0.38f, -0.23f), Color.OrangeRed);
+                StringPaint.Draw("•", position, w, new(0.42f + (float)(Math.Sin(timer / 30 * Math.PI) / 20), -0.35f), Color.OrangeRed * 0.8f);
+                StringPaint.Draw("•", position, w, new(0.42f, -0.23f), Color.Orange * (float)(1 + Math.Sin(timer / 60 * Math.PI) / 4));
+            }
+
+            if(ConsoleAdventure.rand.Next(0, 181) > 179 && world.GetField(position.x, position.y, World.MobsLayerId, w)?.content == null)
+            {
+                ConsoleAdventure.world.entities.Add(new Fire(position, w));
+            }
+
+            timer++;
         }
     }
 }

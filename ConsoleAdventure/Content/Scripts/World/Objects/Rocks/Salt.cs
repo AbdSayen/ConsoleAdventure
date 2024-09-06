@@ -1,46 +1,43 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.WorldEngine;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    public class Quartz : Transform
+    public class Salt : Transform
     {
-        public Quartz(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Salt(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.quartz;
+            type = (int)RenderFieldType.salt;
             isObstacle = true;
             hardness = 2;
-            burnType = 1;
 
-            AddTypeToMap<Quartz>(type);
+            AddTypeToMap<Salt>(type);
 
             Initialize();
         }
 
         public override void Collapse()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new QuartzItem(), 1) });
+            new Loot(position, w, new List<Stack>() { new Stack(new SaltItem(), 1) });
         }
-
+        
         public override string GetSymbol()
         {
-            return "◊◊";
+            return "∆∆";
         }
 
         public override Color GetColor()
         {
-            return Color.White;
-        }
-
-        public override Color? GetBGColor()
-        {
-            return Color.Gray;
+            return new Color(193, 157, 175);
         }
     }
 }

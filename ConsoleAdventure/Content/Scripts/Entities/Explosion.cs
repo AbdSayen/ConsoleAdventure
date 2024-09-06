@@ -56,8 +56,15 @@ namespace ConsoleAdventure.Content.Scripts
             if (timer % delay == 0 && frame < Symbols.Length)
                 frame++;
 
-            if (timer >= (Symbols.Length - 1) * 5) 
+            if (timer >= (Symbols.Length - 1) * 5)
+            {
                 Kill();
+                
+                if(ConsoleAdventure.rand.Next(0, 21) == 20)
+                {
+                    ConsoleAdventure.world.entities.Add(new Fire(position, w));
+                }
+            }
 
             timer++;
         }

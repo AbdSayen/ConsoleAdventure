@@ -1,5 +1,6 @@
 ﻿using CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Audio;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Settings;
 using Microsoft.Xna.Framework;
@@ -30,6 +31,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
         private InfoPanel modListPanel = null;
 
         private InfoPanel serverNotFoundPanel = null;
+
+        private TextInputField[] worldGenTextFields = new TextInputField[2];
 
         public int serverNotFoundTimer = 0;
 
@@ -64,6 +67,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             WorldLoadingProgressInit();
 
             ServerNotFoundPanelInit();
+
+            WorldGenMenuInit();
         }
 
         public void MenuUpdate()
@@ -77,6 +82,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             ModsPanelUpdate();
 
             ServerNotFoundPanelUpdate();
+
+            WorldGenMenuUpdate();
 
             if (ConsoleAdventure.kstate.IsKeyDown(Keys.Escape) && timer >= Utils.StabilizeTicks(20))
             {
@@ -223,7 +230,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
         {
             var worlds = WorldIO.GetWorlds();
 
-
             for (int i = 0; i < worlds.names.Length; i++)
             {
                 worldPanels.Add(new WorldPanel(new Rectangle(), worlds.names[i], worlds.seeds[i].ToString()));
@@ -338,10 +344,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                 if (!ConsoleAdventure.kstate.IsKeyDown(Keys.N) && ConsoleAdventure.prekstate.IsKeyDown(Keys.N))
                 {
-                    ConsoleAdventure.CreateWorld("World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000));
-                    WorldIO.Save(ConsoleAdventure.world.name);
-                    worldPanels.Clear();
-                    WorldMenuInit();
+                    State = MenuState.wordGenMenu;
                 }
 
                 if (!ConsoleAdventure.kstate.IsKeyDown(Keys.F) && ConsoleAdventure.prekstate.IsKeyDown(Keys.F))
@@ -659,6 +662,153 @@ namespace ConsoleAdventure.Content.Scripts.UI
         }
         #endregion
 
+        #region WordGenMenu
+
+        int WGErrorType = -1;
+
+        private void WorldGenMenuInit()
+        {
+            byte[] textFieldTypes = new byte[2] { 0, 1 };
+
+            for (int i = 0; i < textFieldTypes.Length; i++)
+            {
+                string text = "";
+                char[] chars = null;
+                bool charsType = false;
+
+                switch (textFieldTypes[i])
+                {
+                    case 0:
+                        text = Localization.GetTranslation("UI", "WorldNameField");
+                        chars = new char[] {'\\', '|', '/','<', '>', '*', '"', '?', '\n', '\r' };
+                        charsType = TextInput.BlackList;
+                        break;
+                    case 1:
+                        text = Localization.GetTranslation("UI", "WorldSeedField");
+                        chars = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+                        charsType = TextInput.WhiteList;
+                        break;
+                    case 2:
+                        text = Localization.GetTranslation("UI", "WorldSizeField");
+                        chars = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+                        charsType = TextInput.WhiteList;
+                        break;
+                    case 3:
+                        text = Localization.GetTranslation("UI", "WorldPlayerNameField");
+                        chars = new char[] { '\n', '\r' };
+                        charsType = TextInput.BlackList;
+                        break;
+                }
+                int startPos = 400;
+                int indent = 20;
+
+                worldGenTextFields[i] = new TextInputField(new Point((int)(ConsoleAdventure.Width / 2), startPos + (int)(indent * (i - 1.5f))), new Color(255, 255, 255), 15, 1, text, 0, chars, charsType);
+            }
+
+            worldGenTextFields[0].isHover = true;
+        }
+
+        private void WorldGenMenuDraw(SpriteBatch spriteBatch)
+        {
+            if (State == MenuState.wordGenMenu)
+            {
+                for (int i = 0; i < worldGenTextFields.Length; i++)
+                {
+                    worldGenTextFields[i].Draw(spriteBatch);
+                }
+            }
+        }
+
+        private void WorldGenMenuUpdate()
+        {
+            if (State == MenuState.wordGenMenu)
+            {
+                for (int i = 0; i < worldGenTextFields.Length; i++)
+                {
+                    int waitTime = Utils.StabilizeTicks(20);
+
+                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && timer >= waitTime) //прокрутка 
+                    {
+                        if (worldGenTextFields[i].isHover)
+                        {
+                            worldGenTextFields[i].isHover = false;
+
+                            if (i != worldGenTextFields.Length - 1) //перемещяем курсор
+                                worldGenTextFields[i + 1].isHover = true;
+                            else
+                                worldGenTextFields[0].isHover = true;
+
+                            timer = 0;
+                        }
+                    }
+
+                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && timer >= waitTime)
+                    {
+                        if (worldGenTextFields[i].isHover)
+                        {
+                            worldGenTextFields[i].isHover = false;
+
+                            if (i != 0)
+                                worldGenTextFields[i - 1].isHover = true;
+                            else
+                                worldGenTextFields[worldGenTextFields.Length - 1].isHover = true;
+
+                            timer = 0;
+                        }
+                    }
+                }
+
+                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter))
+                {
+                    //Thread gen = new Thread(new ThreadStart(Gen));
+                    //gen.Start();
+
+                    //void Gen()
+                    //{
+                    if (WGErrorType == -1)
+                    {
+                        ConsoleAdventure.CreateWorld(worldGenTextFields[0].text, int.Parse(worldGenTextFields[1].text)); //"World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000)
+                        WorldIO.Save(ConsoleAdventure.world.name);
+                        worldPanels.Clear();
+                        WorldMenuInit();
+                    }
+
+                    else
+                    {
+                        return;
+                    }
+                    //}
+
+                    for (int i = 0; i < worldGenTextFields.Length; i++)
+                    {
+                        worldGenTextFields[i].text = "";
+                        worldGenTextFields[i].cursorPos = new();
+                        worldGenTextFields[i].isHover = false;
+                        worldGenTextFields[i].color = Color.White;
+                        WGErrorType = -1;
+                    }
+
+                    worldGenTextFields[0].isHover = true;
+
+                    State = MenuState.worldMenu;
+                }
+
+                for (int i = 0; i < worldGenTextFields.Length; i++)
+                {
+                    worldGenTextFields[i].Update();
+                }
+
+                if (worldGenTextFields[1].text != "" && !int.TryParse(worldGenTextFields[1].text, out int r0)) { worldGenTextFields[1].color = Color.Red; WGErrorType = 0; }
+                else { worldGenTextFields[1].color = Color.White; WGErrorType = -1; }
+
+                if(worldGenTextFields[1].text == "") WGErrorType = 0;
+
+                //if (worldGenTextFields[2].text != "" && !int.TryParse(worldGenTextFields[2].text, out int r1)) worldGenTextFields[2].color = Color.Red;
+                //else worldGenTextFields[2].color = Color.White;
+            }
+        }
+        #endregion
+
         public void CloseAllPages()
         {
             State = 0;
@@ -709,6 +859,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             WorldLoadingProgressDraw(spriteBatch);
 
             ServerNotFoundPanelDraw(spriteBatch);
+
+            WorldGenMenuDraw(spriteBatch);
             
             spriteBatch.End();
         }

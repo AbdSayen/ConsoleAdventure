@@ -15,6 +15,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)RenderFieldType.web;
             isObstacle = false;
             hardness = 0.1f;
+            burnType = 0;
 
             AddTypeToMap<Web>(type);
 

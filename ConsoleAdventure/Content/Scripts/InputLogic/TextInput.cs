@@ -96,11 +96,12 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
 
                             else
                             {
+                                isAvailable = false;
                                 for (int j = 0; j < charList.Length; j++)
                                 {
-                                    if (character.Value != charList[j])
+                                    if (character.Value == charList[j] || character.Value == '\b')
                                     {
-                                        isAvailable = false;
+                                        isAvailable = true;
                                     }
                                 }
                             }

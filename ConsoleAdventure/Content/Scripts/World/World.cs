@@ -56,6 +56,8 @@ namespace ConsoleAdventure.WorldEngine
 
         public Dictionary<string, byte[]> playersDat;
 
+        public int rainForce;
+
         public World(string name, int seed)
         {
             this.name = name;
@@ -143,6 +145,7 @@ namespace ConsoleAdventure.WorldEngine
         }
 
         int timer;
+        int rainDelay;
         public void ListenEvents()
         {
             if (!ConsoleAdventure.isPause)
@@ -167,11 +170,13 @@ namespace ConsoleAdventure.WorldEngine
                 {
                     field.content.RandomUpdate();
                 }
+
+                rainDelay++;
             }
 
             if (timer > (10 * 60 * 60) && NetworkManager.Id <= 0)
             {
-                WorldIO.Save("World");
+                WorldIO.Save(name);
 
                 timer = 0;
             }

@@ -13,6 +13,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)RenderFieldType.log;
             isObstacle = true;
+            burnType = 0;
             hardness = 0.8f;
 
             AddTypeToMap<Plank>(type);
@@ -33,6 +34,19 @@ namespace ConsoleAdventure.WorldEngine
         public override Color GetColor()
         {
             return new(94, 61, 38);
+        }
+
+        public override void AfterBurning()
+        {
+            if (ConsoleAdventure.rand.Next(0, 2) == 1)
+            {
+                new Charcoal(position, w);
+            }
+
+            else
+            {
+                base.AfterBurning();
+            }
         }
     }
 }

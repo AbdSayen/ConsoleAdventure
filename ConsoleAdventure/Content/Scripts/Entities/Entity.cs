@@ -21,6 +21,8 @@ namespace ConsoleAdventure.Content.Scripts
         public int defense;
         public int invulnerabilityTime;
 
+        public List<Buff> buffs = new();
+
         protected Position oldPos;
 
         public Entity(Position position, int w, List<object> parameters = null) : base(position, (byte)w)
@@ -62,6 +64,7 @@ namespace ConsoleAdventure.Content.Scripts
         /// </summary>
         public virtual void InteractWithWorld()
         {
+            UpdateBuffs();
             StateMachine?.InteractWithWorld();
             AI();
 
@@ -135,6 +138,44 @@ namespace ConsoleAdventure.Content.Scripts
             }
             id = 0;
             return false;
+        }
+
+        protected void UpdateBuffs()
+        {
+            for (int i = 0; i < buffs.Count; i++)
+            {
+                buffs[i].Update(this);
+                buffs[i].time--;
+
+                if (buffs[i].time < 0)
+                {
+                    buffs.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        public bool AddBuff(Buff buff)
+        {
+            Type curType = buff.GetType();
+            int buffIndex = -1;
+
+            for (int i = 0; i < buffs.Count; i++)
+            {
+                if (buffs[i].GetType() == curType)
+                {
+                    buffIndex = i;
+                }
+            }
+
+            if( buffIndex > -1)
+            {
+                //buffs[buffIndex].time = buff.time;
+                return false;
+            }
+
+            buffs.Add(buff);
+            return true;
         }
     }
 }

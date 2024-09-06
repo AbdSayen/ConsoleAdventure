@@ -19,6 +19,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)RenderFieldType.granite;
             isObstacle = true;
             hardness = 2;
+            burnType = 1;
 
             AddTypeToMap<Granite>(type);
 
