@@ -49,9 +49,20 @@ namespace ConsoleAdventure.WorldEngine
                 StringPaint.Draw("•", position, w, new(0.42f, -0.23f), Color.Orange * (float)(1 + Math.Sin(timer / 60 * Math.PI) / 4));
             }
 
-            if(ConsoleAdventure.rand.Next(0, 181) > 179 && world.GetField(position.x, position.y, World.MobsLayerId, w)?.content == null)
+            if(ConsoleAdventure.rand.Next(0, 301) == 300 && world.GetField(position.x, position.y, World.MobsLayerId, w)?.content == null)
             {
-                ConsoleAdventure.world.entities.Add(new Fire(position, w));
+                for(int i = -1; i < 2; i++)
+                {
+                    for (int j = -1; j < 2; j++)
+                    {
+                        Transform transform = world.GetField(position.x + i, position.y + j, worldLayer, w)?.content;
+                        Transform mob = world.GetField(position.x + i, position.y + j, World.MobsLayerId, w)?.content;
+                        if (transform?.burnType == 0 && mob == null)
+                        {
+                            ConsoleAdventure.world.entities.Add(new Fire(position + new Position(i, j), w));
+                        }
+                    }
+                }
             }
 
             timer++;

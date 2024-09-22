@@ -48,7 +48,7 @@ namespace ConsoleAdventure
 
             if (language < 0 || language >= Localizations.Length)
             {
-                Console.WriteLine($"Localization: language with index \"{language}\" was not found.");
+                ConsoleAdventure.logger.AddMassage($"Localization: language with index \"{language}\" was not found.");
                 return "";
             }
 
@@ -60,12 +60,12 @@ namespace ConsoleAdventure
                 }
                 else
                 {
-                    Console.WriteLine($"Localization: key \"{key}\" in type \"{type}\" in language \"{languageName}\" was not found.");
+                    ConsoleAdventure.logger.AddMassage($"Localization: key \"{key}\" in type \"{type}\" in language \"{languageName}\" was not found.");
                 }
             }
             else
             {
-                Console.WriteLine($"Localization: type \"{type}\" in language \"{languageName}\" was not found.");
+                ConsoleAdventure.logger.AddMassage($"Localization: type \"{type}\" in language \"{languageName}\" was not found.");
             }
 
             return "";

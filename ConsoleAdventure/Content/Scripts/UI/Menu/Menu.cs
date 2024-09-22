@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -214,6 +215,13 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     }
                 }
             }
+
+            if (Input.PostClick(Keys.L))
+            {
+                string logPath = Program.savePath + "Logs\\";
+                if (Directory.Exists(logPath))
+                    Utils.OpenExplorerAtFolder(logPath);
+            }
         }
 
         private void MainScreenDraw(SpriteBatch spriteBatch)
@@ -342,7 +350,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     }
                 }
 
-                if (!ConsoleAdventure.kstate.IsKeyDown(Keys.N) && ConsoleAdventure.prekstate.IsKeyDown(Keys.N))
+                if (Input.PostClick(InputConfig.WorldGen))
                 {
                     State = MenuState.wordGenMenu;
                 }
@@ -767,7 +775,24 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     //{
                     if (WGErrorType == -1)
                     {
-                        ConsoleAdventure.CreateWorld(worldGenTextFields[0].text, int.Parse(worldGenTextFields[1].text)); //"World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000)
+                        string name = worldGenTextFields[0].text;
+                        string[] worlds = WorldIO.GetWorlds(false).names;
+
+                        int countIdenticalWorldName = 0;
+                        for (int i = 0; i < worlds.Length; i++)
+                        {   string curEndName = (countIdenticalWorldName > 0 ? countIdenticalWorldName.ToString() : "");
+                            if (worlds[i] == name + curEndName)
+                            {
+                                countIdenticalWorldName++;
+                            }
+                        }
+
+                        if(countIdenticalWorldName > 0)
+                        {
+                            name += countIdenticalWorldName;
+                        }
+                        
+                        ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text)); //"World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000)
                         WorldIO.Save(ConsoleAdventure.world.name);
                         worldPanels.Clear();
                         WorldMenuInit();

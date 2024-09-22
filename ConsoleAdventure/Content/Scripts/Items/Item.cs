@@ -15,8 +15,6 @@ namespace ConsoleAdventure
         public string name = "Name missing";
         public string description = "Description missing";
 
-        public int placeType = -1;
-        public int placeLayer = World.BlocksLayerId;
         public int pick = 0;
         public int hammer = 0;
         public int damage;

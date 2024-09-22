@@ -21,9 +21,11 @@ public static class InputConfig
     public static Keys CursorDown = Keys.Down;
     public static Keys CursorLeft = Keys.Left;
     public static Keys CursorRight = Keys.Right;
-   
+
     #endregion
-    
+
+    public static Keys WorldGen = Keys.N;
+    public static Keys WorldExit = Keys.Escape;
     public static Keys PickUp = Keys.L;
     public static Keys Cursor = Keys.Space;
     public static Keys Pause = Keys.P;

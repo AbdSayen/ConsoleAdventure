@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class TreeSeed : Item
+    public class TreeSeed : PlaceableItem
     {
         public TreeSeed()
         {

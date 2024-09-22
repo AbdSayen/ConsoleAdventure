@@ -261,8 +261,11 @@ namespace ConsoleAdventure
                     Player player = (Player)ConsoleAdventure.world.players[a];
                     Inventory inv = player.inventory;
                     Item item = inv.slots[c].item;
-                    Transform.SetObject(item.placeType, pos, d);
-                    inv.RemoveAt(c, 1);
+                    if (item.GetType().BaseType == typeof(PlaceableItem))
+                    {
+                        Transform.SetObject(((PlaceableItem)item).placeType, pos, d);
+                        inv.RemoveAt(c, 1);
+                    }
                     break;
                 case NetworkFuncType.pickUpItem:
                     ConsoleAdventure.world.players[a].TryPickUp(pos);

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.Content.Scripts;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -46,6 +47,45 @@ namespace ConsoleAdventure.WorldEngine
             "ᶺV",
         };
 
+        static string[] symbolsDrawsMap = new string[]
+        {
+            "VV",
+            "  ",
+
+            "vv",
+            "  ",
+
+            "ᵛᵛ",
+            "  ",
+
+            " V",
+            "  ",
+
+            " v",
+            "  ",
+
+            " ᵛ",
+            "  ",
+
+            "Vv",
+            "  ",
+
+            "vᵛ",
+            "  ",
+
+            "ᵛV",
+            "  ",
+
+            "V ",
+            " v",
+
+            "v ",
+            " ᵛ",
+
+            "ᵛ ",
+            " V",
+        };
+
         public Stalactite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
@@ -73,6 +113,14 @@ namespace ConsoleAdventure.WorldEngine
         public override Color GetColor()
         {
             return Color.Gray;
+        }
+
+        public override void OnTheScreen()
+        {
+            if (CanDraw())
+            {
+                StringPaint.Draw(symbolsDrawsMap[Utils.HashNoise(position.x, position.y, symbolsDrawsMap.Length - 1)], position, w, new(), Light.GetColor(Color.Gray, position));
+            }
         }
     }
 }

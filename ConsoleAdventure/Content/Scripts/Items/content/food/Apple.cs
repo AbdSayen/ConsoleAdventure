@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class Apple : Food
+    public class Apple : FoodItem
     {
         public Apple()
         {

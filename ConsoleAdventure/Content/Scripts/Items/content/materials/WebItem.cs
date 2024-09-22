@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class WebItem : Item
+    public class WebItem : PlaceableItem
     {
         public WebItem()
         {

@@ -187,5 +187,12 @@ namespace ConsoleAdventure.Content.Scripts
         {
             lightSources.Clear();
         }
+
+        public static Color GetColor(Color color, Position position)
+        {
+            Position tryColorPos = new Position(Math.Clamp(position.x - ConsoleAdventure.startDisplay.x, 0, 60), Math.Clamp(position.y - ConsoleAdventure.startDisplay.y, 0, 30));
+            Color result = (color.ToVector3() * colors[tryColorPos.x, tryColorPos.y].ToVector3()).ToColor();
+            return result;
+        }
     }
 }

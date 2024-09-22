@@ -2,6 +2,7 @@ using ConsoleAdventure.Content.Scripts.Audio;
 using ConsoleAdventure.Content.Scripts.Debug.Commands;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
@@ -15,6 +16,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConsoleAdventure
 {
@@ -67,6 +70,8 @@ namespace ConsoleAdventure
 
         public static Tags tags = new();
 
+        public static ExceptionLogger logger;
+
         public static bool BlockHotKey { get; internal set; } = false;
 
         public static SpriteFont Font => font;
@@ -95,6 +100,12 @@ namespace ConsoleAdventure
 
         public ConsoleAdventure()
         {
+            logger = new ExceptionLogger("gameLog.txt");
+            //Task task = new Task(UpdateLogs);
+            //task.Start();
+
+            logger.AddMassage("Starting...");
+            logger.AddMassage("Settings loading ...");
             if (File.Exists(Program.savePath + "settings.json")) // Если файл существует
                 SettingsSystem.LoadSettings(); // Загружаем сохраненные настройки
 
@@ -121,7 +132,27 @@ namespace ConsoleAdventure
 
             _graphics = new GraphicsDeviceManager(this);
             Localization.Load();
+
         }
+
+        /*int LogIterationCount;
+        private static StringWriter stringWriter = new StringWriter();
+        private static readonly object lockObj = new object();
+
+        private void UpdateLogs()
+        {
+            while (true)
+            {
+                //if(LogIterationCount % 4 == 0)
+                lock (lockObj)
+                {
+                    Console.SetOut(stringWriter);
+                    logger.AddLog(stringWriter.ToString());
+                    stringWriter.GetStringBuilder().Clear();
+                }
+                //LogIterationCount++;
+            } 
+        }*/
 
         public static void CreateWorld(string name, int seed, bool isfullGenerate = true, bool inMultiplayer = false)
         {
@@ -133,6 +164,7 @@ namespace ConsoleAdventure
 
         protected override void Initialize()
         {
+            logger.AddMassage("Initializing...");
             display = new Display(world);
 
             Content.RootDirectory = "Content";
@@ -161,6 +193,7 @@ namespace ConsoleAdventure
 
         protected override void LoadContent()
         {
+            logger.AddMassage("Content loading...");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/font");
 
@@ -171,6 +204,7 @@ namespace ConsoleAdventure
 
             CaModLoader.PreLoadMods();
             CaModLoader.LoadMods();
+            logger.AddMassage("Done!");
         }
 
         protected override void Update(GameTime gameTime)
@@ -207,7 +241,7 @@ namespace ConsoleAdventure
                 
                 world.ListenEvents();
 
-                if (kstate.IsKeyDown(Keys.Escape) && !world.isCmdOpen)
+                if (kstate.IsKeyDown(InputConfig.WorldExit) && !world.isCmdOpen)
                 {
                     NetworkManager.DisconectClient();
                     if (NetworkManager.Id == 0 || NetworkManager.Id == -1) WorldIO.Save(world.name);

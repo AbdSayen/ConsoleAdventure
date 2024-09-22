@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class RubyItem : Item
+    public class RubyItem : PlaceableItem
     {
         public RubyItem()
         {

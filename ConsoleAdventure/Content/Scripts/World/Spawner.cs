@@ -1,7 +1,7 @@
 using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.Player;
-using ConsoleAdventure.Content.Scripts.World;
+using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
 

@@ -12,6 +12,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Xml.Linq;
 
 namespace ConsoleAdventure.Content.Scripts.IO
@@ -26,7 +27,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
         {
             lock (locker)
             {
-                Console.WriteLine("Saving on account");
+                ConsoleAdventure.logger.AddMassage($"The world {name} saving...");
 
                 if (!Directory.Exists(path))
                 {
@@ -43,11 +44,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 }
                 else
                 {
-                    Console.WriteLine("There was a problem when serializing tags (the byte array cannot be null)");
+                    ConsoleAdventure.logger.AddMassage("There was a problem when serializing tags (the byte array cannot be null)");
                     return;
                 }
 
-                Console.WriteLine("The world was successfully saved!");
+                ConsoleAdventure.logger.AddMassage("The world was successfully saved!");
             }
         }
 
@@ -65,7 +66,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             {
                 ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadFile");
 
-                Console.WriteLine("Loading on account");
+                ConsoleAdventure.logger.AddMassage($"The world {name} loading...");
 
                 if (!Directory.Exists(path))
                 {
@@ -82,7 +83,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 else
                 {
-                    Console.WriteLine($"The world {name} was not found");
+                    ConsoleAdventure.logger.AddMassage($"The world {name} was not found");
                     return;
                 }
 
@@ -93,7 +94,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 ConsoleAdventure.world.Loaded();
 
-                Console.WriteLine("The world was successfully loaded!");
+                ConsoleAdventure.logger.AddMassage("The world was successfully loaded!");
             }
         }
 
@@ -106,25 +107,26 @@ namespace ConsoleAdventure.Content.Scripts.IO
         public static void Delete(string name)
         {
             string worldPath = path + name + ".wld";
+            ConsoleAdventure.logger.AddMassage($"The world {name} deleting...");
             try
             {
                 if (File.Exists(worldPath))
                 {
                     FileSystem.DeleteFile(worldPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
-                    Console.WriteLine("File moved to recycle bin successfully.");
+                    ConsoleAdventure.logger.AddMassage("File moved to recycle bin successfully.");
                 }
                 else
                 {
-                    Console.WriteLine("File not found.");
+                    ConsoleAdventure.logger.AddMassage("File not found.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                ConsoleAdventure.logger.AddMassage($"An error occurred: {ex.Message}");
             }
         }
 
-        public static (string[] names, int[] seeds) GetWorlds()
+        public static (string[] names, int[] seeds) GetWorlds(bool getSeed = true, bool print = true)
         {
             string fileType = "*.wld";
 
@@ -136,24 +138,29 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 names = Directory.GetFiles(path, fileType);
                 seeds = new int[names.Length];
 
-                Console.WriteLine($"Found {names.Length} file(s) with extension {fileType}:");
+                StringBuilder sb = new();
 
                 for (int i = 0; i < names.Length; i++) 
                 {
                     names[i] = Path.GetFileNameWithoutExtension(names[i]);
+                    if (getSeed)
+                    {
+                        byte[] bytes = File.ReadAllBytes(path + names[i] + ".wld");
+                        byte[] bytesToLoad = Utils.Decompress(bytes);
+                        Tags curTags = new();
+                        curTags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytesToLoad);
+                        seeds[i] = curTags.SafelyGet<int>("Seed");
+                    }
 
-                    byte[] bytes = File.ReadAllBytes(path + names[i] + ".wld");
-                    byte[] bytesToLoad = Utils.Decompress(bytes);
-                    Tags curTags = new();
-                    curTags.Data = SerializeData.Deserialize<Dictionary<string, object>>(bytesToLoad);
-                    seeds[i] = curTags.SafelyGet<int>("Seed");
-
-                    Console.WriteLine(names[i] + " / " + seeds[i]);
+                    if (print)
+                        sb.Append("\n    [" + names[i] + " / " + seeds[i] + "]");
                 }
+
+                ConsoleAdventure.logger.AddMassage($"Found {names.Length} world(s):{sb}\n");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                ConsoleAdventure.logger.AddMassage($"An error occurred: {ex.Message}");
             }
 
             return (names, seeds);

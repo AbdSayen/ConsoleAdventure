@@ -69,7 +69,7 @@ namespace ConsoleAdventure.WorldEngine
             renderer = new Renderer();
             new Cursor();
 
-            inputField = new TextInputField(new Point(0, 0), Color.White, 173, 0, "Введите комманду...", 0, new char[1] { '\r' });
+            inputField = new TextInputField(new Point(0, 0), Color.White, 173, 0, "Введите текст...", 0, new char[1] { '\r' });
             inputField.Position = new Vector2(18, ConsoleAdventure.Height - (19 * 2) - 19);
             inputField.isHover = true;
 
@@ -181,7 +181,7 @@ namespace ConsoleAdventure.WorldEngine
                 timer = 0;
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(InputConfig.Cmd) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Cmd))
+            if (Input.PostClick(InputConfig.Cmd))
             {
                 if (!isCmdOpen)
                 {
@@ -191,7 +191,7 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(Keys.Escape) && ConsoleAdventure.prekstate.IsKeyDown(Keys.Escape))
+            if (Input.PostClick(InputConfig.WorldExit))
             {
                 if (isCmdOpen)
                 {
@@ -213,7 +213,7 @@ namespace ConsoleAdventure.WorldEngine
                 inputField.Update();
                 inputField.Draw(ConsoleAdventure._spriteBatch);
 
-                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter))
+                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && inputField.text != "")
                 {
                     if (inputField.text[0] == '/')
                     {

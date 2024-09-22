@@ -191,56 +191,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (Input.PostClick(InputConfig.ChestMinus) && holdChestItemIndex > 0 && !ConsoleAdventure.BlockHotKey)
                 holdChestItemIndex--;
 
-            if (Input.PostClick(InputConfig.RecipeOpen) && !ConsoleAdventure.BlockHotKey)
-            {
-                if (isCraftOpen)
-                    isCraftOpen = false;
-
-                else if (!isCraftOpen)
-                    isCraftOpen = true;
-
-                Display.recipesUI.type = 0;
-            }
-
-            if (Input.PostClick(InputConfig.RecipeBookOpen) && !ConsoleAdventure.BlockHotKey)
-            {
-                if (isCraftOpen)
-                {
-                    isCraftOpen = false;
-                    Display.recipesUI.type = 0;
-                }
-
-
-                else if (!isCraftOpen )
-                {
-                    isCraftOpen = true;
-                    Display.recipesUI.type = 1;
-                }
-            }
+            Recipes();
 
             if (Input.PostClick(InputConfig.DropItem) && !ConsoleAdventure.BlockHotKey)
             {
                 DropSlot(holdItemIndex);
                 NetworkManager.SendDataAsync(NetworkFuncType.dropItem, (short)holdItemIndex, NetworkManager.Id);
-            }
-
-            if (isCraftOpen)
-            {
-                List<Recipe> recipes = Display.recipesUI.type == 1 ? ConsoleAdventure.recipes : ConsoleAdventure.availableRecipes;
-
-                if (Input.PostClick(InputConfig.RecipeListRight) && Display.recipesUI.cursorPos < recipes.Count - 1)
-                {
-                    Display.recipesUI.cursorPos++;
-                }
-
-                if (Input.PostClick(InputConfig.RecipeListLeft) && Display.recipesUI.cursorPos > 0)
-                {
-                    Display.recipesUI.cursorPos--;
-                }
-
-                Display.recipesUI.cursorPos = Math.Min(Display.recipesUI.cursorPos, recipes.Count - 1);
-
-                Display.recipesUI.Update();
             }
 
             if (inventory.slots.Count > 0)
@@ -249,33 +205,36 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (chest.slots?.Count > 0)
                 holdChestItemIndex = Math.Min(holdChestItemIndex, chest.slots.Count - 1);
 
-            Item curItem = inventory.slots[holdItemIndex].item;
-            if (curItem.damageClass == 1 && curItem.damage > 0 && ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use))
+            if (holdItemIndex > 0 && holdItemIndex < inventory.slots.Count)
             {
-                for (int i = 0; i < world.entities.Count; i++)
+                Item curItem = inventory.slots[holdItemIndex].item;
+                if (curItem.damageClass == 1 && curItem.damage > 0 && ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use))
                 {
-                    if (world.entities[i].maxLife > 0)
+                    for (int i = 0; i < world.entities.Count; i++)
                     {
-                        Position pos = world.entities[i].position;
-                        if (pos >= position + new Position(-1, -1) && pos <= position + new Position(1, 1) && pos != position && world.entities[i].w == w)
+                        if (world.entities[i].maxLife > 0)
                         {
-                            if (world.entities[i].invulnerabilityTime <= 0)
-                                world.entities[i].Hit(1);
+                            Position pos = world.entities[i].position;
+                            if (pos >= position + new Position(-1, -1) && pos <= position + new Position(1, 1) && pos != position && world.entities[i].w == w)
+                            {
+                                if (world.entities[i].invulnerabilityTime <= 0)
+                                    world.entities[i].Hit(1);
+                            }
                         }
+                    }
+                }
+
+                if (curItem.canUse && !ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Use))
+                {
+                    curItem.UseItem();
+                    if (curItem.consume)
+                    {
+                        inventory.RemoveAt(holdItemIndex, 1);
                     }
                 }
             }
 
-            if (curItem.canUse && !ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Use))
-            {
-                curItem.UseItem();
-                if (curItem.consume)
-                {
-                    inventory.RemoveAt(holdItemIndex, 1);
-                }
-            }
-
-            if (Input.PostClick(InputConfig.TakeInInventoryStack) && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0 && inventory.slots.Count < inventory.maxCount)
+            if (Input.PostClick(InputConfig.TakeInInventoryStack) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0 && inventory.slots.Count < inventory.maxCount)
             {
                 inventory.PickUpItems(new() { chest.slots[holdChestItemIndex] });
                 if(chest.slots[holdChestItemIndex].count <= 0)
@@ -284,7 +243,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if (Input.PostClick(InputConfig.TakeInChestStack) && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0 && chest.slots.Count < chest.maxCount)
+            if (Input.PostClick(InputConfig.TakeInChestStack) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0 && chest.slots.Count < chest.maxCount)
             {
                 chest.PickUpItems(new() { inventory.slots[holdItemIndex] });
                 if (inventory.slots[holdItemIndex].count <= 0)
@@ -307,6 +266,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             if (life <= 0)
             {
+                life = 0;
                 postKullTimer = 300;
                 isActive = false;
             }
@@ -322,11 +282,63 @@ namespace ConsoleAdventure.Content.Scripts.Player
             }
         }
 
+        private void Recipes()
+        {
+            if (Input.PostClick(InputConfig.RecipeOpen) && !ConsoleAdventure.BlockHotKey)
+            {
+                if (isCraftOpen)
+                    isCraftOpen = false;
+
+                else if (!isCraftOpen)
+                    isCraftOpen = true;
+
+                Display.recipesUI.type = 0;
+            }
+
+            if (Input.PostClick(InputConfig.RecipeBookOpen) && !ConsoleAdventure.BlockHotKey)
+            {
+                if (isCraftOpen)
+                {
+                    isCraftOpen = false;
+                    Display.recipesUI.type = 0;
+                }
+
+
+                else if (!isCraftOpen)
+                {
+                    isCraftOpen = true;
+                    Display.recipesUI.type = 1;
+                }
+            }
+
+            if (isCraftOpen)
+            {
+                List<Recipe> recipes = Display.recipesUI.type == 1 ? ConsoleAdventure.recipes : ConsoleAdventure.availableRecipes;
+
+                if (Input.PostClick(InputConfig.RecipeListRight) && Display.recipesUI.cursorPos < recipes.Count - 1)
+                {
+                    Display.recipesUI.cursorPos++;
+                }
+
+                if (Input.PostClick(InputConfig.RecipeListLeft) && Display.recipesUI.cursorPos > 0)
+                {
+                    Display.recipesUI.cursorPos--;
+                }
+
+                Display.recipesUI.cursorPos = Math.Min(Display.recipesUI.cursorPos, recipes.Count - 1);
+
+                Display.recipesUI.Update();
+            }
+        }
+
         public void DropSlot(int slot)
         {
-            Stack stack = inventory.slots[slot];
-            new Loot(position, w, new List<Stack>() { stack });
-            inventory.RemoveAt(slot, stack.count);
+            if(inventory.slots.Count > 0 && slot > -1 && slot < inventory.slots.Count)
+            {
+                Stack stack = inventory.slots[slot];
+                new Loot(position, w, new List<Stack>() { stack });
+                inventory.RemoveAt(slot, stack.count);
+            }
         }
 
         public void CraftItem(int slot)
@@ -375,31 +387,37 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             if (Input.IsKeyDown(InputConfig.Use) && inventory.slots?.Count > 0 && holdItemIndex < inventory.slots.Count && !ConsoleAdventure.BlockHotKey)
             {
-                Item item = inventory.slots[holdItemIndex].item;
-                if (item.placeType > -1 )
+                Item item0 = inventory.slots[holdItemIndex].item;
+
+                if (item0.GetType().BaseType == typeof(PlaceableItem))
                 {
-                    if (item.placeLayer == World.BlocksLayerId && CanBuildAt(targetPosition, World.BlocksLayerId))
-                    {
-                        Place(item);
-                        return;
-                    }
+                    PlaceableItem item = (PlaceableItem)item0;
 
-                    if (item.placeLayer == World.FloorLayerId && CanBuildAt(targetPosition, World.FloorLayerId))
+                    if (item.placeType > -1)
                     {
-                        Place(item);
-                        return;
-                    }
+                        if (item.placeLayer == World.BlocksLayerId && CanBuildAt(targetPosition, World.BlocksLayerId))
+                        {
+                            Place(item);
+                            return;
+                        }
 
-                    if (item.placeLayer == World.ItemsLayerId && CanBuildAt(targetPosition, World.ItemsLayerId))
-                    {
-                        Place(item);
-                        return;
-                    }
+                        if (item.placeLayer == World.FloorLayerId && CanBuildAt(targetPosition, World.FloorLayerId))
+                        {
+                            Place(item);
+                            return;
+                        }
 
-                    if (item.placeLayer == World.MobsLayerId && CanBuildAt(targetPosition, World.MobsLayerId))
-                    {
-                        Place(item);
-                        return;
+                        if (item.placeLayer == World.ItemsLayerId && CanBuildAt(targetPosition, World.ItemsLayerId))
+                        {
+                            Place(item);
+                            return;
+                        }
+
+                        if (item.placeLayer == World.MobsLayerId && CanBuildAt(targetPosition, World.MobsLayerId))
+                        {
+                            Place(item);
+                            return;
+                        }
                     }
                 }
 
@@ -429,7 +447,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            void Place(Item item)
+            void Place(PlaceableItem item)
             {
                 SetObject(item.placeType, targetPosition, w, items: new());
                 inventory.RemoveAt(holdItemIndex, 1);

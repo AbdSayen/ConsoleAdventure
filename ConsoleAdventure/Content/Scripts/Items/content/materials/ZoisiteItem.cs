@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class ZoisiteItem : Item
+    public class ZoisiteItem : PlaceableItem
     {
         public ZoisiteItem()
         {

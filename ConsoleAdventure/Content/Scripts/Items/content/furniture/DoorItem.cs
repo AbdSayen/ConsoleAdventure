@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class DoorItem : Item
+    public class DoorItem : PlaceableItem
     {
         public DoorItem()
         {
