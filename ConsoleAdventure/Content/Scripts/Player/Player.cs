@@ -132,11 +132,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 if (postKullTimer > 0)
                 {
                     postKullTimer--;
+                    life = 0;
 
                     if (postKullTimer == 0)
                     {
                         Loger.AddLog(Localization.GetTranslation("Events", "DeadPlayer"));
-                        SetPosition(new(4, 4));
+                        SetPosition(new(4, 4), 1);
                         life = maxLife;
                         buffs.Clear();
                         isActive = true;
@@ -208,7 +209,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (holdItemIndex > 0 && holdItemIndex < inventory.slots.Count)
             {
                 Item curItem = inventory.slots[holdItemIndex].item;
-                if (curItem.damageClass == 1 && curItem.damage > 0 && ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use))
+                if (curItem.damageClass == 1 && curItem.damage > 0 && ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use.key))
                 {
                     for (int i = 0; i < world.entities.Count; i++)
                     {
@@ -224,7 +225,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     }
                 }
 
-                if (curItem.canUse && !ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Use))
+                if (curItem.canUse && !ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use.key) && ConsoleAdventure.prekstate.IsKeyDown(InputConfig.Use.key))
                 {
                     curItem.UseItem();
                     if (curItem.consume)

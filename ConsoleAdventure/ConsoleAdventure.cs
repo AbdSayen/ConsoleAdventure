@@ -120,6 +120,9 @@ namespace ConsoleAdventure
 
             //  Тут такая же система как в локализации.
 
+            InputConfig.Init();
+            InputConfig.Load();
+
             if (File.Exists(Program.pcIdPath)) // create pc id
                 NetworkManager.pcId = File.ReadAllText(Program.pcIdPath);
             else
@@ -241,7 +244,7 @@ namespace ConsoleAdventure
                 
                 world.ListenEvents();
 
-                if (kstate.IsKeyDown(InputConfig.WorldExit) && !world.isCmdOpen)
+                if (kstate.IsKeyDown(InputConfig.WorldExit.key) && !world.isCmdOpen)
                 {
                     NetworkManager.DisconectClient();
                     if (NetworkManager.Id == 0 || NetworkManager.Id == -1) WorldIO.Save(world.name);
@@ -250,7 +253,7 @@ namespace ConsoleAdventure
                     Loger.ClearLogs();
                 }
 
-                if (!kstate.IsKeyDown(InputConfig.Pause) && prekstate.IsKeyDown(InputConfig.Pause) && !ConsoleAdventure.BlockHotKey)
+                if (!kstate.IsKeyDown(InputConfig.Pause.key) && prekstate.IsKeyDown(InputConfig.Pause.key) && !ConsoleAdventure.BlockHotKey)
                 {
                     if (!isPause)
                         isPause = true;

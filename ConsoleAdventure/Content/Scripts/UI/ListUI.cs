@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.Content.Scripts.InputLogic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -11,11 +12,11 @@ namespace ConsoleAdventure.Content.Scripts.UI
     {
         public List<BaseUI> elements = new List<BaseUI>();
 
-        private int drawBuffer = 5;
+        public int drawBuffer = 5;
+        public int startList = 0;
+        public int endList = 5;
 
-        private int startList = 0;
-
-        private int endList = 5;
+        public int waitTime = 5;
 
         public ListUI(string text, Vector2 position, List<BaseUI> elements, Color color) : base(text, position, color)
         {
@@ -44,13 +45,13 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public void Update(ref int timer)
         {
-            int waitTime = Utils.StabilizeTicks(10);
+            int waitTime = Utils.StabilizeTicks(this.waitTime);
 
             if (elements.Count > 0)
             {
                 for (int i = 0; i < elements.Count; i++)
                 {
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && timer >= waitTime && (i - 1) != -1)
+                    if (Input.IsKeyDown(InputConfig.NavigationUp) && timer >= waitTime && (i - 1) != -1)
                     {
                         if (elements[i].isHover)
                         {
@@ -69,7 +70,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && timer >= waitTime && i < elements.Count - 1)
+                    if (Input.IsKeyDown(InputConfig.NavigationDown) && timer >= waitTime && i < elements.Count - 1)
                     {
                         if (elements[i].isHover)
                         {
@@ -88,7 +89,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= Utils.StabilizeTicks(30))
+                    if (Input.IsKeyDown(InputConfig.NavigationSelect) && timer >= Utils.StabilizeTicks(30))
                     {
                         if (elements[i].isHover)
                         {

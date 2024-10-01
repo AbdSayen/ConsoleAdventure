@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using static System.Windows.Forms.Design.AxImporter;
 
 
 namespace ConsoleAdventure
@@ -13,13 +14,13 @@ namespace ConsoleAdventure
     {
         private static Dictionary<string, Dictionary<string, int>> settings = new Dictionary<string, Dictionary<string, int>>(); // Настройки
 
-        public static void InitSetting(string type, string key)
+        public static void InitSetting(string type, string key, int value = 0)
         {
             if (!settings.ContainsKey(type)) // Если еще нет типа настроек то создать его
                 settings.Add(type, new Dictionary<string, int>());
 
             if (!settings[type].ContainsKey(key)) // Если еще нет ключа настроек то создать его
-                settings[type].Add(key, 0);
+                settings[type].Add(key, value);
                 
         }
 
@@ -40,7 +41,7 @@ namespace ConsoleAdventure
         public static void SaveSettings()
         {
             string fileName = Program.savePath + "settings.json"; // Путь к файлу настроек
-            string jsonString = JsonSerializer.Serialize(settings); // Делаем жисон :)
+            string jsonString = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true }); // Делаем жисон :)
             File.WriteAllText(fileName, jsonString); // Сохранить жисон :)
         }
 

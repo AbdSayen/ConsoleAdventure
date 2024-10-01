@@ -27,8 +27,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private InfoPanel aboutGamePanel = null;
 
-        private InfoPanel aboutControlPanel = null;
-
         private InfoPanel modListPanel = null;
 
         private InfoPanel serverNotFoundPanel = null;
@@ -59,8 +57,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             AboutGameInit();
 
-            AboutControlInit();
-
             ModsPanelInit();
 
             SettingsInit();
@@ -70,6 +66,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             ServerNotFoundPanelInit();
 
             WorldGenMenuInit();
+
+            ControlConfigInit();
         }
 
         public void MenuUpdate()
@@ -86,7 +84,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             WorldGenMenuUpdate();
 
-            if (ConsoleAdventure.kstate.IsKeyDown(Keys.Escape) && timer >= Utils.StabilizeTicks(20))
+            ControlConfigUpdate();
+
+            if (Input.IsKeyDown(InputConfig.NavigationBeck) && timer >= Utils.StabilizeTicks(20))
             {
                 CloseAllPages();
                 timer = 0;
@@ -94,10 +94,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             if (State == MenuState.mainScreen || State == MenuState.settings) // Buttons Sound Play
             {
-                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && !ConsoleAdventure.prekstate.IsKeyDown(Keys.Left) ||
-                    ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && !ConsoleAdventure.prekstate.IsKeyDown(Keys.Right) ||
-                    ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && !ConsoleAdventure.prekstate.IsKeyDown(Keys.Up) ||
-                    ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && !ConsoleAdventure.prekstate.IsKeyDown(Keys.Down))
+                if (Input.OnClick(InputConfig.NavigationLeft) ||
+                    Input.OnClick(InputConfig.NavigationRight) ||
+                    Input.OnClick(InputConfig.NavigationUp) ||
+                    Input.OnClick(InputConfig.NavigationDown))
                 {
                     TickSound();
                 }
@@ -158,7 +158,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 {
                     int waitTime = Utils.StabilizeTicks(20);
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && timer >= waitTime) //прокрутка 
+                    if (Input.IsKeyDown(InputConfig.NavigationRight)&& timer >= waitTime) //прокрутка 
                     {
                         if (menuButtons[i].isHover)
                         {
@@ -173,7 +173,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && timer >= waitTime)
+                    if (Input.IsKeyDown(InputConfig.NavigationLeft) && timer >= waitTime)
                     {
                         if (menuButtons[i].isHover)
                         {
@@ -188,7 +188,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    if (menuButtons[i].isHover && ConsoleAdventure.kstate.IsKeyDown(Keys.Enter))
+                    if (menuButtons[i].isHover && Input.IsKeyDown(InputConfig.NavigationSelect))
                     {
                         if (menuButtons[i].type == 0)
                         {
@@ -216,7 +216,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 }
             }
 
-            if (Input.PostClick(Keys.L))
+            if (Input.PostClick(InputConfig.OpenLogs) && State == MenuState.mainScreen)
             {
                 string logPath = Program.savePath + "Logs\\";
                 if (Directory.Exists(logPath))
@@ -257,7 +257,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     {
                         int waitTime = Utils.StabilizeTicks(10);
 
-                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && timer >= waitTime && (i - 1) != -1) //прокрутка
+                        if (Input.IsKeyDown(InputConfig.NavigationUp) && timer >= waitTime && (i - 1) != -1) //прокрутка
                         {
                             if (worldPanels[i].isHover)
                             {
@@ -276,7 +276,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             }
                         }
 
-                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && timer >= waitTime && i < worldPanels.Count - 1)
+                        if (Input.IsKeyDown(InputConfig.NavigationDown) && timer >= waitTime && i < worldPanels.Count - 1)
                         {
                             if (worldPanels[i].isHover)
                             {
@@ -295,7 +295,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             }
                         }
 
-                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= 30) //теперь, тут не как по другому
+                        if (Input.IsKeyDown(InputConfig.NavigationSelect) && timer >= 30) //теперь, тут не как по другому
                         {
                             if (worldPanels[i].curssor == 0 && worldPanels[i].isHover)
                             {
@@ -331,7 +331,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && timer >= Utils.StabilizeTicks(15)) //прокрутка кнопок мира
+                    if (Input.IsKeyDown(InputConfig.NavigationLeft) && timer >= Utils.StabilizeTicks(15)) //прокрутка кнопок мира
                     {
                         for (int i = 0; i < worldPanels.Count; i++)
                         {
@@ -340,7 +340,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         timer = 0;
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && timer >= Utils.StabilizeTicks(15))
+                    if (Input.IsKeyDown(InputConfig.NavigationRight) && timer >= Utils.StabilizeTicks(15))
                     {
                         for (int i = 0; i < worldPanels.Count; i++)
                         {
@@ -385,12 +385,14 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigHelpWorld, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(TextAssets.navigHelpBack).X + 10) + 9 * 12, ConsoleAdventure.Height - 114), Color.Gray);
+                    string navigHelpWorld = TextAssets.navigHelpWorld.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationSelect.key.ToString()));
+                    spriteBatch.DrawString(ConsoleAdventure.Font, navigHelpWorld, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(navigHelpWorld).X + 120) + 9 * 12, ConsoleAdventure.Height - 114), Color.Gray);
                 }
 
                 else
                 {
-                    spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.HelpWorldCreate, new Vector2(ConsoleAdventure.Width / 2 - (ConsoleAdventure.Font.MeasureString(TextAssets.HelpWorldCreate).X / 2), ConsoleAdventure.Height / 2 - 180), Color.Gray);
+                    string hwc = TextAssets.HelpWorldCreate.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.WorldGen.key.ToString()));
+                    spriteBatch.DrawString(ConsoleAdventure.Font, hwc, new Vector2(ConsoleAdventure.Width / 2 - (ConsoleAdventure.Font.MeasureString(hwc).X / 2), ConsoleAdventure.Height / 2 - 180), Color.Gray);
                 }
             }
         }
@@ -446,7 +448,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     if (menuSettingsButtons[i].isHover && i == 0)
                     {
 
-                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && timer >= waitTime)
+                        if (Input.IsKeyDown(InputConfig.NavigationRight) && timer >= waitTime)
                         {
                             if (selectedLanguage < 1)
                                 selectedLanguage += 1;
@@ -456,7 +458,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                             timer = 0;
                         }
-                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && timer >= waitTime)
+                        if (Input.IsKeyDown(InputConfig.NavigationLeft) && timer >= waitTime)
                         {
                             if (selectedLanguage > 0)
                                 selectedLanguage -= 1;
@@ -470,7 +472,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         menuSettingsButtons[i].UpdateRectToTextSize();
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && timer >= waitTime)
+                    if (Input.IsKeyDown(InputConfig.NavigationUp) && timer >= waitTime)
                     {
                         if (menuSettingsButtons[i].isHover)
                         {
@@ -485,7 +487,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && timer >= waitTime)
+                    if (Input.IsKeyDown(InputConfig.NavigationDown) && timer >= waitTime)
                     {
                         if (menuSettingsButtons[i].isHover)
                         {
@@ -500,7 +502,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    if (menuSettingsButtons[i].isHover && ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= Utils.StabilizeTicks(30))
+                    if (menuSettingsButtons[i].isHover && Input.IsKeyDown(InputConfig.NavigationSelect) && timer >= Utils.StabilizeTicks(30))
                     {
                         if (menuSettingsButtons[i].type == 1)
                         {
@@ -515,7 +517,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     }
                 }
 
-                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Left) && timer >= Utils.StabilizeTicks(15)) //прокрутка кнопок мира
+                if (Input.IsKeyDown(InputConfig.NavigationLeft) && timer >= Utils.StabilizeTicks(15)) //прокрутка кнопок мира
                 {
                     for (int i = 0; i < worldPanels.Count; i++)
                     {
@@ -524,7 +526,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     timer = 0;
                 }
 
-                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Right) && timer >= Utils.StabilizeTicks(15))
+                if (Input.IsKeyDown(InputConfig.NavigationRight) && timer >= Utils.StabilizeTicks(15))
                 {
                     for (int i = 0; i < worldPanels.Count; i++)
                     {
@@ -537,7 +539,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private void SettingsDraw(SpriteBatch spriteBatch)
         {
-            if (State == MenuState.settings || State == MenuState.aboutGame || State == MenuState.aboutControl)
+            if (State == MenuState.settings || State == MenuState.aboutGame)
             {
                 for (int i = 0; i < menuSettingsButtons.Length; i++)
                 {
@@ -558,21 +560,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
             if (State == MenuState.aboutGame)
             {
                 aboutGamePanel.Draw(spriteBatch);
-            }
-        }
-        #endregion
-
-        #region AboutControl
-        private void AboutControlInit()
-        {
-            aboutControlPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Control, TextAssets.AboutControl);
-        }
-
-        private void AboutControlDraw(SpriteBatch spriteBatch)
-        {
-            if (State == MenuState.aboutControl)
-            {
-                aboutControlPanel.Draw(spriteBatch);
             }
         }
         #endregion
@@ -620,7 +607,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         {
             if (State == MenuState.mods)
             {
-                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter) && timer >= Utils.StabilizeTicks(30))
+                if (Input.IsKeyDown(InputConfig.NavigationSelect) && timer >= Utils.StabilizeTicks(30))
                 {
                     Utils.OpenExplorerAtFolder(CaModLoader.modsDirPath);
                     timer = 0;
@@ -633,7 +620,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             if (State == MenuState.mods)
             {
                 modListPanel.Draw(spriteBatch);
-                spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigModFolderHelp, new Vector2(ConsoleAdventure.Width / 2 - ConsoleAdventure.Font.MeasureString(TextAssets.navigHelp).X, ConsoleAdventure.Height - 25), Color.Gray);
+                string navModHelp = TextAssets.navigModFolderHelp.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationSelect.key.ToString()));
+                spriteBatch.DrawString(ConsoleAdventure.Font, navModHelp, new Vector2(ConsoleAdventure.Width / 2 - ConsoleAdventure.Font.MeasureString(navModHelp).X, ConsoleAdventure.Height - 25), Color.Gray);
             }
         }
         #endregion
@@ -731,11 +719,12 @@ namespace ConsoleAdventure.Content.Scripts.UI
         {
             if (State == MenuState.wordGenMenu)
             {
+                ConsoleAdventure.BlockHotKey = true;
                 for (int i = 0; i < worldGenTextFields.Length; i++)
                 {
                     int waitTime = Utils.StabilizeTicks(20);
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Down) && timer >= waitTime) //прокрутка 
+                    if (Input.IsKeyDown(InputConfig.NavigationDown) && timer >= waitTime) //прокрутка 
                     {
                         if (worldGenTextFields[i].isHover)
                         {
@@ -750,7 +739,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.Up) && timer >= waitTime)
+                    if (Input.IsKeyDown(InputConfig.NavigationUp) && timer >= waitTime)
                     {
                         if (worldGenTextFields[i].isHover)
                         {
@@ -766,7 +755,12 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     }
                 }
 
-                if (ConsoleAdventure.kstate.IsKeyDown(Keys.Enter))
+                if (Input.IsKeyDown(InputConfig.NavigationBeck))
+                {
+                    ConsoleAdventure.BlockHotKey = false;
+                }
+
+                if (Input.IsKeyDown(InputConfig.NavigationSelect))
                 {
                     //Thread gen = new Thread(new ThreadStart(Gen));
                     //gen.Start();
@@ -795,6 +789,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text)); //"World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000)
                         WorldIO.Save(ConsoleAdventure.world.name);
                         worldPanels.Clear();
+                        ConsoleAdventure.BlockHotKey = false;
                         WorldMenuInit();
                     }
 
@@ -834,6 +829,80 @@ namespace ConsoleAdventure.Content.Scripts.UI
         }
         #endregion
 
+        #region ControlConfig
+
+        ControlConfig controlConfig = null;
+
+        private void ControlConfigInit()
+        {
+            List<BaseUI> keys = new();
+
+            for (int i = 0; i < InputConfig.AllKeys.Count; i++)
+            {
+                keys.Add(new KeyPanel(new(0, 0, 80 * 9, 4 * 19), InputConfig.AllKeys[i]));
+            }
+
+            controlConfig = new("", new(ConsoleAdventure.Width / 3.5f, ConsoleAdventure.Height / 4 + 50), keys, Color.White);
+            controlConfig.elements[0].isHover = true;
+            controlConfig.drawBuffer = 10;
+            controlConfig.endList = 10;
+        }
+
+        int controlTimer;
+        private void ControlConfigUpdate()
+        {
+            if (State == MenuState.aboutControl)
+            {
+                if (Input.PostClick(InputConfig.ControlEdit) && controlTimer > 60)
+                {
+                    for(int i = 0; i < controlConfig.elements.Count; i++)
+                    {
+                        if (controlConfig.elements[i].isHover)
+                        {
+                            if (!((KeyPanel)controlConfig.elements[i]).flag) ((KeyPanel)controlConfig.elements[i]).flag = true;
+                            else if (((KeyPanel)controlConfig.elements[i]).flag) ((KeyPanel)controlConfig.elements[i]).flag = false;
+                            controlTimer = 0;
+                        }
+                    }
+                }
+
+                if (Input.PostClick(InputConfig.ControlReset) && controlTimer > 60)
+                {
+                    for (int i = 0; i < controlConfig.elements.Count; i++)
+                    {
+                        if (controlConfig.elements[i].isHover)
+                        {
+                            ((KeyPanel)controlConfig.elements[i]).key.key = Keys.None;
+                        }
+                    }
+                }
+
+                controlConfig.Update(ref controlTimer);
+                controlConfig.isHover = true;
+            }
+
+            if (State != MenuState.aboutControl)
+                controlConfig.isHover = false;
+
+            controlTimer++;
+        }
+
+        private void ControlConfigDraw(SpriteBatch spriteBatch)
+        {
+            if (State == MenuState.aboutControl)
+            {
+                controlConfig.Draw(spriteBatch);
+
+                string navControl1Help = TextAssets.navigHelpControl1.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.ControlEdit.key.ToString()));
+                spriteBatch.DrawString(ConsoleAdventure.Font, navControl1Help, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(navControl1Help).X + 10), ConsoleAdventure.Height - 100), Color.Gray);
+                string navControl2Help = TextAssets.navigHelpControl2.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.ControlReset.key.ToString()));
+                spriteBatch.DrawString(ConsoleAdventure.Font, navControl2Help, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(navControl2Help).X + 10), ConsoleAdventure.Height - 75), Color.Gray);
+
+            }
+        }
+
+        #endregion
+
         public void CloseAllPages()
         {
             State = 0;
@@ -861,12 +930,18 @@ namespace ConsoleAdventure.Content.Scripts.UI
             // Draw Version
             spriteBatch.DrawString(ConsoleAdventure.Font, Docs.GetInfo(), new Vector2(10, ConsoleAdventure.Height - 25), Color.White);
             // Draw navigation help
-            spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(TextAssets.navigHelp).X + 10), ConsoleAdventure.Height - 25), Color.Gray);
+            string navHelp = TextAssets.navigHelp.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationLeft.key.ToString()))
+                                                 .Replace("[2]", Localization.GetTranslation("Keys", InputConfig.NavigationRight.key.ToString()))
+                                                 .Replace("[3]", Localization.GetTranslation("Keys", InputConfig.NavigationUp.key.ToString()))
+                                                 .Replace("[4]", Localization.GetTranslation("Keys", InputConfig.NavigationDown.key.ToString()))
+                                                 .Replace("[5]", Localization.GetTranslation("Keys", InputConfig.NavigationSelect.key.ToString()));
+            spriteBatch.DrawString(ConsoleAdventure.Font, navHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(navHelp).X + 10), ConsoleAdventure.Height - 25), Color.Gray);
             
             if (State > 0)
             {
                 // Draw Esc Help
-                spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.navigHelpBack, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(TextAssets.navigHelpBack).X + 10), ConsoleAdventure.Height - 50), Color.Gray);
+                string navBeckHelp = TextAssets.navigHelpBack.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationBeck.key.ToString()));
+                spriteBatch.DrawString(ConsoleAdventure.Font, navBeckHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(navBeckHelp).X + 10), ConsoleAdventure.Height - 50), Color.Gray);
             }
 
             MainScreenDraw(spriteBatch);
@@ -877,8 +952,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             AboutGameDraw(spriteBatch);
 
-            AboutControlDraw(spriteBatch);
-
             ModsPanelDraw(spriteBatch);
 
             WorldLoadingProgressDraw(spriteBatch);
@@ -886,6 +959,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             ServerNotFoundPanelDraw(spriteBatch);
 
             WorldGenMenuDraw(spriteBatch);
+
+            ControlConfigDraw(spriteBatch);
             
             spriteBatch.End();
         }

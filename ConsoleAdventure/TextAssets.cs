@@ -10,6 +10,10 @@
 
         public static string navigHelpWorld = Localization.GetTranslation("UI", "NavigationWorld");
 
+        public static string navigHelpControl1 = Localization.GetTranslation("UI", "NavigationControl1");
+
+        public static string navigHelpControl2 = Localization.GetTranslation("UI", "NavigationControl2");
+
         public static string Name = Localization.GetTranslation("UI", "Name");
 
         public static string Seed = Localization.GetTranslation("UI", "Seed");
@@ -32,7 +36,7 @@
 
         public static string Control = Localization.GetTranslation("UI", "Control");
 
-        public static string AboutControl = Localization.GetTranslation("About", "Control");
+        //public static string AboutControl = Localization.GetTranslation("About", "Control");
 
         public static string HelpWorldCreate = Localization.GetTranslation("UI", "HelpWorldCreate");
 
@@ -79,6 +83,8 @@
             navigHelp = Localization.GetTranslation("UI", "Navigation");
             navigHelpBack = Localization.GetTranslation("UI", "NavigationBack");
             navigHelpWorld = Localization.GetTranslation("UI", "NavigationWorld");
+            navigHelpControl1 = Localization.GetTranslation("UI", "NavigationControl1");
+            navigHelpControl2 = Localization.GetTranslation("UI", "NavigationControl2");
             Name = Localization.GetTranslation("UI", "Name");
             Seed = Localization.GetTranslation("UI", "Seed");
             Version = Localization.GetTranslation("UI", "Version");
@@ -90,7 +96,7 @@
             About = Localization.GetTranslation("UI", "About");
             AboutGame = Localization.GetTranslation("About", "Game");
             Control = Localization.GetTranslation("UI", "Control");
-            AboutControl = Localization.GetTranslation("About", "Control");
+            //AboutControl = Localization.GetTranslation("About", "Control");
             HelpWorldCreate = Localization.GetTranslation("UI", "HelpWorldCreate");
             Mods = Localization.GetTranslation("UI", "Mods");
 

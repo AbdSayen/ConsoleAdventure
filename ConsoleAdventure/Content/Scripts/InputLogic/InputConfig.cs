@@ -1,50 +1,124 @@
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Diagnostics;
 
-namespace ConsoleAdventure.Content.Scripts.InputLogic;
-
-public static class InputConfig
+namespace ConsoleAdventure.Content.Scripts.InputLogic
 {
-    #region Movement
 
-    public static Keys Up = Keys.W;
-    public static Keys Down = Keys.S;
-    public static Keys Left = Keys.A;
-    public static Keys Right = Keys.D;
-    public static Keys Run = Keys.LeftShift;
+    public static class InputConfig
+    {
+        public static List<Key> AllKeys { get; internal set; } = new List<Key>();
 
-    #endregion
+        #region Movement
 
-    #region Building
+        public static Key Up = new(Keys.W, "Movement.Up");
+        public static Key Down = new(Keys.S, "Movement.Down");
+        public static Key Left = new(Keys.A, "Movement.Left");
+        public static Key Right = new(Keys.D, "Movement.Right");
+        public static Key Run = new(Keys.LeftShift, "Movement.Run");
 
-    public static Keys CursorUp = Keys.Up;
-    public static Keys CursorDown = Keys.Down;
-    public static Keys CursorLeft = Keys.Left;
-    public static Keys CursorRight = Keys.Right;
+        #endregion
 
-    #endregion
+        #region Building
 
-    public static Keys WorldGen = Keys.N;
-    public static Keys WorldExit = Keys.Escape;
-    public static Keys PickUp = Keys.L;
-    public static Keys Cursor = Keys.Space;
-    public static Keys Pause = Keys.P;
-    public static Keys Cmd = Keys.OemTilde;
-    public static Keys Interaction = Keys.E;   
-    public static Keys InventoryPlus = Keys.OemPlus;
-    public static Keys InventoryMinus = Keys.OemMinus;
-    public static Keys ChestPlus = Keys.NumPad6;
-    public static Keys ChestMinus = Keys.NumPad4;
-    public static Keys RecipeOpen = Keys.R;
-    public static Keys RecipeBookOpen = Keys.C;
-    public static Keys RecipeListLeft = Keys.NumPad7;
-    public static Keys RecipeListRight = Keys.NumPad9;
-    public static Keys DropItem = Keys.Q;
-    public static Keys TakeInInventory = Keys.U;
-    public static Keys TakeInChest = Keys.J;
-    public static Keys TakeInInventoryStack = Keys.I;
-    public static Keys TakeInChestStack = Keys.O;
-    public static Keys Use = Keys.B;
-    public static Keys BuffsPlus = Keys.NumPad3;
-    public static Keys BuffsMinus = Keys.NumPad1;
+        public static Key CursorUp = new(Keys.Up, "Cursor.Up");
+        public static Key CursorDown = new(Keys.Down, "Cursor.Down");
+        public static Key CursorLeft = new(Keys.Left, "Cursor.Left");
+        public static Key CursorRight = new(Keys.Right, "Cursor.Right");
+        public static Key Cursor = new(Keys.Space, "Cursor.Call");
+
+        #endregion
+
+        #region Inventory
+
+        public static Key InventoryPlus = new(Keys.OemPlus, "Inventory.ListedDown");
+        public static Key InventoryMinus = new(Keys.OemMinus, "Inventory.ListedUp");
+        public static Key PickUp = new(Keys.L, "Inventory.PickUp");
+        public static Key DropItem = new(Keys.Q, "Inventory.Drop");
+        public static Key Use = new(Keys.B, "Inventory.Use");
+
+        #endregion
+
+        #region Chest
+
+        public static Key ChestPlus = new(Keys.NumPad6, "Chest.ListDown");
+        public static Key ChestMinus = new(Keys.NumPad4, "Chest.ListUp");
+        public static Key TakeInInventory = new(Keys.U, "Chest.TakeInInventory");
+        public static Key TakeInChest = new(Keys.J, "Chest.TakeInChest");
+        public static Key TakeInInventoryStack = new(Keys.I, "Chest.TakeInInventoryStack");
+        public static Key TakeInChestStack = new(Keys.O, "Chest.TakeInChestStack");
+
+        #endregion
+
+        #region Recipe
+
+        public static Key RecipeOpen = new(Keys.R, "Recipe.Open");
+        public static Key RecipeBookOpen = new(Keys.C, "Recipe.BookOpen");
+        public static Key RecipeListLeft = new(Keys.NumPad7, "Recipe.ListedLeft");
+        public static Key RecipeListRight = new(Keys.NumPad9, "Recipe.ListedRight");
+
+        #endregion
+
+        #region Menu
+
+        public static Key NavigationUp = new(Keys.Up, "Menu.NavigationUp");
+        public static Key NavigationDown = new(Keys.Down, "Menu.NavigationDown");
+        public static Key NavigationLeft = new(Keys.Left, "Menu.NavigationLeft");
+        public static Key NavigationRight = new(Keys.Right, "Menu.NavigationRight");
+        public static Key NavigationSelect = new(Keys.Enter, "Menu.NavigationSelect");
+        public static Key NavigationBeck = new(Keys.Escape, "Menu.NavigationBeck");
+        public static Key OpenLogs = new(Keys.L, "Menu.OpenLogs");
+        public static Key WorldGen = new(Keys.N, "Menu.WorldGen");
+        public static Key ControlEdit = new(Keys.Space, "Menu.ControlKeyEdit");
+        public static Key ControlReset = new(Keys.Delete, "Menu.ControlReset");
+
+        #endregion
+
+        #region Misc
+
+        public static Key Pause = new(Keys.P, "Misc.Pause");
+        public static Key Cmd = new(Keys.OemTilde, "Misc.Cmd");
+        public static Key Interaction = new(Keys.E, "Misc.Interaction");
+        public static Key BuffsPlus = new(Keys.NumPad3, "Misc.BuffsListedRight");
+        public static Key BuffsMinus = new(Keys.NumPad1, "Misc.BuffsListedLeft");
+        public static Key WorldExit = new(Keys.Escape, "Misc.WorldExit");
+
+        #endregion
+
+        internal static void Init()
+        {
+            for (int i = 0; i < AllKeys.Count; i++)
+            {
+                SettingsSystem.InitSetting("Control", AllKeys[i].name, (int)AllKeys[i].key);
+            }
+        }
+
+        internal static void Load()
+        {
+            for (int i = 0; i < AllKeys.Count; i++)
+            {
+                AllKeys[i].key = (Keys)SettingsSystem.GetSetting("Control", AllKeys[i].name);
+            }
+        }
+    }
+
+    public class Key
+    {
+        public Keys key;
+        public string name;
+        //public string mod;
+
+        public Key(Keys key, string name, bool saveToList = true)
+        {
+            this.key = key;
+            this.name = name;
+
+            if (InputConfig.AllKeys == null) InputConfig.AllKeys = new List<Key>();
+
+            if (saveToList)
+            {
+                InputConfig.AllKeys.Add(this);
+            }
+        }
+    }
 }

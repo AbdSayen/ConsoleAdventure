@@ -24,9 +24,9 @@ namespace ConsoleAdventure
                    );
         }
 
-        public new string GetDescription()
-        {
-            return Localization.GetTranslation("ItemDescription", GetType().Name);
-        }
+        //public new string GetDescription()
+        //{
+        //    return Localization.GetTranslation("ItemDescription", GetType().Name);
+        //}
     }
 }

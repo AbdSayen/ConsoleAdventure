@@ -41,6 +41,7 @@ namespace ConsoleAdventure.Content.Scripts
         private static int height = 31;
 
         public static bool onPlaceLightSource = false;
+        public static bool hackLight;
 
         public static void Update(Position start)
         {
@@ -52,9 +53,10 @@ namespace ConsoleAdventure.Content.Scripts
             Color color = Color.Black;
 
             if (w == ConsoleAdventure.StartDeep)
-            {
                 color = Color.White;
-            }
+
+            if (hackLight)
+                color = Color.White;
 
             /*Light.Clear();
             StringPaint.Clear();

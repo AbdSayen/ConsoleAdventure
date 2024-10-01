@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Settings;
+using ConsoleAdventure.WorldEngine;
 using SharpDX.DirectWrite;
 using System;
 using System.Collections.Generic;
@@ -24,33 +25,40 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
 
         public override void Logic(string[] args, short id = -2)
         {
-            string name = GetStringArg(args, "name");
-            int count = GetIntArg(args, "count");
-            string namespace_ = "ConsoleAdventure";
-            if (args.Length >= 3)
-                namespace_ = GetStringArg(args, "namespace");
-
             try
             {
-                Type[] type = new Type[2] { Type.GetType(namespace_ + "." + name), Type.GetType(namespace_ + "." + name + "Item") };
+                string name = GetStringArg(args, "name");
+                int count = GetIntArg(args, "count");
+                string namespace_ = "ConsoleAdventure";
+                if (args.Length >= 3)
+                    namespace_ = GetStringArg(args, "namespace");
 
-                for (int i = 0; i < type.Length; i++)
+                try
                 {
-                    if (type[i] != null && type[i].IsSubclassOf(typeof(Item)))
-                    {
-                        if (count < 1) count = 1;
+                    Type[] type = new Type[2] { Type.GetType(namespace_ + "." + name), Type.GetType(namespace_ + "." + name + "Item") };
 
-                        Item item = (Item)Activator.CreateInstance(type[i]);
-                        if (id == -2) id = NetworkManager.Id;
-                        if (id == -1) id = 0;
-                        Player.Player pl = ConsoleAdventure.world.players[id];
-                        pl.inventory.PickUpItems(new List<Stack>() { new Stack(item, count) });
-                        break;
+                    for (int i = 0; i < type.Length; i++)
+                    {
+                        if (type[i] != null && type[i].IsSubclassOf(typeof(Item)))
+                        {
+                            if (count < 1) count = 1;
+
+                            Item item = (Item)Activator.CreateInstance(type[i]);
+                            if (id == -2) id = NetworkManager.Id;
+                            if (id == -1) id = 0;
+                            Player.Player pl = ConsoleAdventure.world.players[id];
+                            pl.inventory.PickUpItems(new List<Stack>() { new Stack(item, count) });
+                            break;
+                        }
                     }
                 }
-            }
 
-            catch (Exception) { }
+                catch (Exception) { }
+            }
+            catch 
+            {
+                Loger.AddLog("Неверный формат аргумента!");
+            }
         }
     }
 }
