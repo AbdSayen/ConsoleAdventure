@@ -235,7 +235,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if (Input.PostClick(InputConfig.TakeInInventoryStack) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0 && inventory.slots.Count < inventory.maxCount)
+            if (Input.PostClick(InputConfig.TakeInInventoryStack) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0) //&& inventory.slots.Count < inventory.maxCount)
             {
                 inventory.PickUpItems(new() { chest.slots[holdChestItemIndex] });
                 if(chest.slots[holdChestItemIndex].count <= 0)
@@ -244,7 +244,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if (Input.PostClick(InputConfig.TakeInChestStack) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0 && chest.slots.Count < chest.maxCount)
+            if (Input.PostClick(InputConfig.TakeInChestStack) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0) //&& chest.slots.Count < chest.maxCount)
             {
                 chest.PickUpItems(new() { inventory.slots[holdItemIndex] });
                 if (inventory.slots[holdItemIndex].count <= 0)
@@ -253,10 +253,23 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
             }
 
-            if (Input.PostClick(InputConfig.BuffsPlus) && buffCursor < buffs.Count - 1 && !ConsoleAdventure.BlockHotKey)
-                buffCursor++;
-            if (Input.PostClick(InputConfig.BuffsMinus) && buffCursor > 0 && !ConsoleAdventure.BlockHotKey)
-                buffCursor--;
+            if (Input.PostClick(InputConfig.TakeInInventory) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0) //&& inventory.slots.Count < inventory.maxCount)
+            {
+                chest.slots[holdChestItemIndex] = inventory.AddItem(chest.slots[holdChestItemIndex], 1);             
+                if (chest.slots[holdChestItemIndex].count <= 0)
+                {
+                    chest.slots.RemoveAt(holdChestItemIndex);
+                }
+            }
+
+            if (Input.PostClick(InputConfig.TakeInChest) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0) //&& chest.slots.Count < chest.maxCount)
+            {
+                inventory.slots[holdItemIndex] = chest.AddItem(inventory.slots[holdItemIndex], 1);
+                if (inventory.slots[holdItemIndex].count <= 0)
+                {
+                    inventory.slots.RemoveAt(holdItemIndex);
+                }
+            }
 
             if (chestPosition != new Vector3(position.x, position.y, w))
             {
@@ -264,6 +277,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 chestPosition = new Vector3(-1, -1, -1);
                 isChestOpen = false;
             }
+            
+            if (Input.PostClick(InputConfig.BuffsPlus) && buffCursor < buffs.Count - 1 && !ConsoleAdventure.BlockHotKey && chest == null)
+                buffCursor++;
+            if (Input.PostClick(InputConfig.BuffsMinus) && buffCursor > 0 && !ConsoleAdventure.BlockHotKey && chest == null)
+                buffCursor--;
 
             if (life <= 0)
             {
@@ -423,7 +441,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
 
                 Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId, w).content;
-                if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].item.pick > 0)
+                if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].item.pick > 0 && t.hardness > 0)
                 {
                     t.degreeDestruction += (byte)Math.Abs(inventory.slots[holdItemIndex].item.pick / t.hardness);
                     if (t.degreeDestruction >= 100)

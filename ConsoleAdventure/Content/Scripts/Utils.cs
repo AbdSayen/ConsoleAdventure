@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -197,6 +198,21 @@ namespace ConsoleAdventure
             return objs[random.Next(objs.Length)];
         }
 
+        public static double NextDouble(this Random random, double min, double max)
+        {
+            return SharpDX.RandomUtil.NextDouble(random, min, max);
+        }
+
+        public static float NextFloat(this Random random, float min, float max)
+        {
+            return SharpDX.RandomUtil.NextFloat(random, min, max);
+        }
+
+        public static long NextLong(this Random random, long min, long max)
+        {
+            return SharpDX.RandomUtil.NextLong(random, min, max);
+        }
+
         public static Vector2 Rotated(this Vector2 point, double radians)
         {
             float cos = (float)Math.Cos(radians);
@@ -224,19 +240,19 @@ namespace ConsoleAdventure
 
         public static string StringMaxLengthOnLine(string str, int maxLengthOnLine)
         {
-            string resultStr = "";
+            StringBuilder resultStr = new();
             int curThreshold = maxLengthOnLine;
             for (int i = 0; i < str.Length; i++)
             {
                 if (i < curThreshold)
-                    resultStr += str[i];
+                    resultStr.Append(str[i]);
                 else
                 {
-                    resultStr += str[i] + "\r\n";
+                    resultStr.Append(str[i] + "\r\n");
                     curThreshold += maxLengthOnLine;
                 }
             }
-            return resultStr;
+            return resultStr.ToString();
         }
 
         public static Vector2 Move(this Vector2 position, double radians)

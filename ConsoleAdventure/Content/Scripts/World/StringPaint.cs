@@ -35,6 +35,8 @@ namespace ConsoleAdventure.WorldEngine
 
         internal static void DrawUnits(Vector2 startPos)
         {
+            ConsoleAdventure.world.rain.Draw();
+
             int playerW = ConsoleAdventure.world.GetLocalPlayer().w;
             for (int i = 0; i < drawableUnits.Count; i++)
             {

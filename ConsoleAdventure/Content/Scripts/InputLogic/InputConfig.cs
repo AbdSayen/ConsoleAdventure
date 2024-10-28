@@ -41,8 +41,8 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
 
         #region Chest
 
-        public static Key ChestPlus = new(Keys.NumPad6, "Chest.ListDown");
-        public static Key ChestMinus = new(Keys.NumPad4, "Chest.ListUp");
+        public static Key ChestPlus = new(Keys.OemCloseBrackets, "Chest.ListDown");
+        public static Key ChestMinus = new(Keys.OemOpenBrackets, "Chest.ListUp");
         public static Key TakeInInventory = new(Keys.U, "Chest.TakeInInventory");
         public static Key TakeInChest = new(Keys.J, "Chest.TakeInChest");
         public static Key TakeInInventoryStack = new(Keys.I, "Chest.TakeInInventoryStack");
@@ -54,8 +54,8 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
 
         public static Key RecipeOpen = new(Keys.R, "Recipe.Open");
         public static Key RecipeBookOpen = new(Keys.C, "Recipe.BookOpen");
-        public static Key RecipeListLeft = new(Keys.NumPad7, "Recipe.ListedLeft");
-        public static Key RecipeListRight = new(Keys.NumPad9, "Recipe.ListedRight");
+        public static Key RecipeListLeft = new(Keys.OemOpenBrackets, "Recipe.ListedLeft");
+        public static Key RecipeListRight = new(Keys.OemCloseBrackets, "Recipe.ListedRight");
 
         #endregion
 
@@ -79,8 +79,8 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
         public static Key Pause = new(Keys.P, "Misc.Pause");
         public static Key Cmd = new(Keys.OemTilde, "Misc.Cmd");
         public static Key Interaction = new(Keys.E, "Misc.Interaction");
-        public static Key BuffsPlus = new(Keys.NumPad3, "Misc.BuffsListedRight");
-        public static Key BuffsMinus = new(Keys.NumPad1, "Misc.BuffsListedLeft");
+        public static Key BuffsPlus = new(Keys.OemCloseBrackets, "Misc.BuffsListedRight");
+        public static Key BuffsMinus = new(Keys.OemOpenBrackets, "Misc.BuffsListedLeft");
         public static Key WorldExit = new(Keys.Escape, "Misc.WorldExit");
 
         #endregion

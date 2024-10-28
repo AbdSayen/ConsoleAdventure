@@ -106,6 +106,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
         }
 
         #region MainScreen
+        //FormatString fs = new("Форматированый текст [color:ff0000=\"Вау\"][color:00ff00=\"!\"]\nКрута! [color:0000ff=\"Вау!!\"] [color:23d8d1=\"∑\"] [item:ConsoleAdventure.Apple][item:ConsoleAdventure.TorchItem][item:ConsoleAdventure.IronPick][item:ConsoleAdventure.RubyItem][item:ConsoleAdventure.FurnaceItem]", new(), Color.White);
+
+        FormatString fs = new(" [color:999999=\"T\"][color:dddddd=\"h\"][color:999999=\"e\"] [color:999999=\"Co\"][color:dddddd=\"nso\"][color:999999=\"le\"] [color:999999=\"Ad\"][color:dddddd=\"ventu\"][color:999999=\"re\"] [item:ConsoleAdventure.IronPick] ", new(), Color.White);
         private void MainScreenInit()
         {
             byte[] menuButtonTypes = new byte[4] { 0, 1, 3, 2 };
@@ -230,6 +233,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             {
                 menuButtons[i].Draw(spriteBatch);
             }
+            fs.Draw(spriteBatch);
         }
         #endregion
 
@@ -353,17 +357,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 if (Input.PostClick(InputConfig.WorldGen))
                 {
                     State = MenuState.wordGenMenu;
-                }
-
-                if (!ConsoleAdventure.kstate.IsKeyDown(Keys.F) && ConsoleAdventure.prekstate.IsKeyDown(Keys.F))
-                {
-                    timer = 0;
-                    State = 0;
-                    for (int i = 0; i < menuButtons.Length; i++)
-                    {
-                        menuButtons[i].cursorColor = Color.Yellow;
-                    }
-                    Melody();
                 }
             }
         }
@@ -968,119 +961,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
         public async static void TickSound()
         {
             await SoundEngine.PlaySound(SoundEngine.BubbleWave, 500, 0.1f, TimeSpan.FromMilliseconds(500));   
-        }
-
-        public async static void Melody()
-        {
-            await SoundEngine.PlaySound(SoundEngine.FadeInWhiteNoiseWave, 500, 0.25f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.4f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.SawtootWave, 146, 0.10f, TimeSpan.FromMilliseconds(2250));
-            SoundEngine.PlaySound(SoundEngine.SawtootWave, 73, 0.10f, TimeSpan.FromMilliseconds(2250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 293, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 293, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 293, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 293, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 587, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 587, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 440, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 440, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 440, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 440, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 415, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 415, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 392, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 392, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 349, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 349, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 293, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 293, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 349, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 349, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 392, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 392, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.SawtootWave, 130, 0.10f, TimeSpan.FromMilliseconds(2250));
-            SoundEngine.PlaySound(SoundEngine.SawtootWave, 65, 0.10f, TimeSpan.FromMilliseconds(2250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 261, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 261, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 261, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 261, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 587, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 587, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 440, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 440, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 440, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 440, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 415, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 415, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 392, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 392, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 349, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 349, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 293, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 293, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 349, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 349, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 392, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 392, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.SawtootWave, 61, 0.10f, TimeSpan.FromMilliseconds(2250));
-            SoundEngine.PlaySound(SoundEngine.SawtootWave, 61, 0.10f, TimeSpan.FromMilliseconds(2250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 246, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 246, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 246, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 246, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 587, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 587, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 440, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 440, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 440, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 440, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 415, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 415, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 392, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 392, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 349, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 349, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 293, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 293, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 349, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 349, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 392, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 392, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.SawtootWave, 58, 0.10f, TimeSpan.FromMilliseconds(2250));
-            SoundEngine.PlaySound(SoundEngine.SawtootWave, 58, 0.10f, TimeSpan.FromMilliseconds(2250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 233, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 233, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 233, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 233, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 587, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 587, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 440, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 440, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 440, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 440, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 415, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 415, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 392, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 392, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.FadeOutWhiteNoiseWave, 500, 0.35f, TimeSpan.FromMilliseconds(500));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 349, 0.20f, TimeSpan.FromMilliseconds(250));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 349, 0.25f, TimeSpan.FromMilliseconds(250));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 293, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 293, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 349, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 349, 0.25f, TimeSpan.FromMilliseconds(125));
-            SoundEngine.PlaySound(SoundEngine.TriangleWave, 392, 0.20f, TimeSpan.FromMilliseconds(125));
-            await SoundEngine.PlaySound(SoundEngine.SineWave, 392, 0.25f, TimeSpan.FromMilliseconds(125));
         }
 
         public async static void ErrorSound()

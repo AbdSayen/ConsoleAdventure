@@ -10,5 +10,11 @@ namespace ConsoleAdventure
     {
         public int placeType = -1;
         public int placeLayer = World.BlocksLayerId;
+
+        public new string GetDescription()
+        {
+            description = Localization.GetTranslation("Generic", "CanBePlaced");
+            return description;
+        }
     }
 }

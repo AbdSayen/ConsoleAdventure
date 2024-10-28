@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using ConsoleAdventure.Content.Scripts.Entities.StateMachine;
 using System.Reflection;
 using System.Threading;
+using ConsoleAdventure.Settings;
 
 namespace ConsoleAdventure.Content.Scripts
 {
@@ -72,6 +73,7 @@ namespace ConsoleAdventure.Content.Scripts
                                         if (ConsoleAdventure.rand.Next(0, powers[j]) > powers[j] / 2)
                                         {
                                             ConsoleAdventure.world.RemoveSubject(transform, World.BlocksLayerId);
+
                                         }
 
                                         else
@@ -81,6 +83,32 @@ namespace ConsoleAdventure.Content.Scripts
                                         }
                                     }
                                 }
+
+                                /*if(transform == null)
+                                {
+                                    int hole = 0;
+                                    for (int m = -1; m < 2; m++)
+                                    {
+                                        for (int n = -1; n < 2; n++)
+                                        {
+                                            Transform t = world.GetField(destroyPos.x + m, destroyPos.y + n, World.BlocksLayerId, w)?.content;
+                                            if (t != null && t.type == (int)RenderFieldType.climb) { hole = 1; }
+                                            else if (t != null && t.type == (int)RenderFieldType.descent) { hole = 2; }
+                                        }
+                                    }
+
+                                    if (hole == 1)
+                                    {
+                                        new Climb(destroyPos, w, World.BlocksLayerId);
+                                        new Descent(destroyPos, w + 1, World.BlocksLayerId);
+                                    }
+
+                                    else if (hole == 2)
+                                    {
+                                        new Climb(destroyPos, w - 1, World.BlocksLayerId);
+                                        new Descent(destroyPos, w, World.BlocksLayerId);
+                                    }
+                                }*/
                                 
                                 if(ConsoleAdventure.world.GetField(destroyPos.x, destroyPos.y, World.MobsLayerId, w)?.content == null)
                                     ConsoleAdventure.world.entities.Add(new Explosion(destroyPos, w));
@@ -100,7 +128,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         public override void OnTheScreen()
         {
-            Light.Add(position.x, position.y, w, new Color(255, 255, 255), 8.5f);
+            Light.Add(position.x, position.y, w, new Color(255, 255, 255), ConsoleAdventure.rand.NextFloat(-0.5f, 0.5f) + 8.5f);
         }
     }
 }

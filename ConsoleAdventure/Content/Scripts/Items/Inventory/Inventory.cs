@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
 using ConsoleAdventure.CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Player;
 
@@ -20,7 +22,16 @@ namespace ConsoleAdventure
 
         public void PickUpItems(List<Stack> items)
         {
-            Dictionary<Item, int> skippedItems = new Dictionary<Item, int>();
+            for (int i = 0; i < items.Count; i++)
+            {
+                items[i] = AddItem(items[i]);
+                if (items[i].count == 0) 
+                { 
+                    items.RemoveAt(i);
+                    i--;
+                }
+            }
+            /*Dictionary<Item, int> skippedItems = new Dictionary<Item, int>();
 
             for (int i = 0; i < items.Count; i++)
             {
@@ -68,7 +79,7 @@ namespace ConsoleAdventure
                     }
                     else
                     {
-                        Drop(new List<Stack> { new Stack(items[i].item, items[i].count) });
+                        //Drop(new List<Stack> { new Stack(items[i].item, items[i].count) });
                         break;
                     }
                 }
@@ -76,7 +87,7 @@ namespace ConsoleAdventure
 
             foreach (Item itm in skippedItems.Keys)
             {
-                Drop(new List<Stack> { new Stack(itm, skippedItems[itm]) });
+                //Drop(new List<Stack> { new Stack(itm, skippedItems[itm]) });
             }
 
             for (int i = 0; i < slots.Count; i++)
@@ -84,10 +95,47 @@ namespace ConsoleAdventure
                 if (slots[i].count > slots[i].maxStackCount)
                 {
                     int surplus = slots[i].count - slots[i].maxStackCount;
-                    slots[i].count = slots[i].maxStackCount;
-                    Drop(new List<Stack> { new Stack(slots[i].item, surplus) });
+                    //slots[i].count = slots[i].maxStackCount;
+                    //Drop(new List<Stack> { new Stack(slots[i].item, surplus) });
+                }
+            }*/
+        }
+
+        public Stack AddItem(Stack item, int count = -1)
+        {
+            if (!item.item.CanBePickedUp()) return item; //Пропускаем если предмет нельзя поднять
+
+            Stack newItem = item;
+            int addCount;
+
+            if (count == -1) addCount = item.count; 
+            else addCount = count;
+
+            Type itemType = newItem.item.GetType();
+            for (int i = 0; i < slots.Count; i++)  //Бегаем по инвентарю
+            {
+                if (slots[i].item.GetType() == itemType) //Проверяем, что тип предмета в слоте равен типу добавляемого
+                {
+                    int maxCount = slots[i].maxStackCount;
+                    if (slots[i].count < maxCount)
+                    {
+                        int realAddCount = Math.Min(addCount, slots[i].maxStackCount - slots[i].count); //это нужно чтобы не добавить больше максимума стака
+                        slots[i].count += realAddCount;
+                        newItem.count -= realAddCount;
+                        addCount -= realAddCount;
+                    }
                 }
             }
+
+            if (newItem.count > 0 && slots.Count < maxCount && addCount > 0) //это нужно чтобы новые итемы добавлялись
+            {
+                int realAddCount = Math.Min(addCount, maxCount); //это нужно чтобы не добавить больше максимума стака
+                slots.Add(new(newItem.item, realAddCount));
+                newItem.count -= realAddCount;
+                addCount -= realAddCount;
+            }
+
+            return newItem;
         }
 
         public void Drop(List<Stack> items)

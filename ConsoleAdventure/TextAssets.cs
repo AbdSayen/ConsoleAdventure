@@ -1,7 +1,9 @@
 ﻿namespace ConsoleAdventure
 {
     internal class TextAssets
-    {   
+    {
+        public static string StartLogo = "";
+
         public static string logo = "The  .####    .####.   ###   ##   .####.   .####.   ##        .#### \r\n    ###   \"  ###  ###  ####  ##  ###*  *  ###  ###  ##       ###   ##\r\n    ##       ##    ##  ## ## ##  *#####.  ##    ##  ##       ##  *##*\r\n    ###   .  ###  ###  ##  ####  .  .###  ###  ###  ##,,,,,  ###    .\r\n     *####    *####*   ##   ###   ####*    *####*   #######   *##### \r\n\r\n                           `-*Adventure*-´           ";
 
         public static string navigHelp = Localization.GetTranslation("UI", "Navigation");

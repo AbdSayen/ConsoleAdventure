@@ -56,7 +56,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public Dictionary<string, byte[]> playersDat;
 
-        public int rainForce;
+        public Rain rain = new Rain();
 
         public World(string name, int seed)
         {
@@ -145,7 +145,6 @@ namespace ConsoleAdventure.WorldEngine
         }
 
         int timer;
-        int rainDelay;
         public void ListenEvents()
         {
             if (!ConsoleAdventure.isPause)
@@ -165,13 +164,16 @@ namespace ConsoleAdventure.WorldEngine
                     entities[i].InteractWithWorld();
                 }
 
-                Field field = GetField(ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, CountOfLayers), ConsoleAdventure.rand.Next(0, Chunk.maxDeep));
-                if(field?.content != null)
+                for (int i = 0; i < 20; i++)
                 {
-                    field.content.RandomUpdate();
+                    Field field = GetField(ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, CountOfLayers), ConsoleAdventure.rand.Next(0, Chunk.maxDeep));
+                    if (field?.content != null)
+                    {
+                        field.content.RandomUpdate();
+                    }
                 }
 
-                rainDelay++;
+                rain.Update();
             }
 
             if (timer > (10 * 60 * 60) && NetworkManager.Id <= 0)

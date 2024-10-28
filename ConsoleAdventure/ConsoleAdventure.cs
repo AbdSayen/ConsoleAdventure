@@ -1,3 +1,4 @@
+using CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Audio;
 using ConsoleAdventure.Content.Scripts.Debug.Commands;
 using ConsoleAdventure.Content.Scripts.InputLogic;
@@ -10,6 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using SharpDX.Direct3D9;
 using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
@@ -192,6 +194,8 @@ namespace ConsoleAdventure
 
             SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
             Command.InitCommands();
+
+            //ModCreator.CreateMod("GraphicsMod");
         }
 
         protected override void LoadContent()
@@ -208,6 +212,40 @@ namespace ConsoleAdventure
             CaModLoader.PreLoadMods();
             CaModLoader.LoadMods();
             logger.AddMassage("Done!");
+
+            StringBuilder sb = new StringBuilder();
+            Texture2D logo = Content.Load<Texture2D>("logoAnim");
+
+            Color[] colors = new Color[logo.Width * logo.Height];
+            logo.GetData(colors);
+
+
+            for (int y = 0; y < logo.Height; y++)
+            {
+                for (int x = 0; x < logo.Width; x++)
+                {
+                    Color color = colors[x + y * logo.Width];
+
+                    if      (Equals(color, new(255, 255, 255))) sb.Append("##");
+                    else if (Equals(color, new(167, 167, 167))) sb.Append("≈≈");
+                    else if (Equals(color, new(96, 96, 96)))    sb.Append("::");
+                    else if (Equals(color, new(33, 33, 33)))    sb.Append("..");
+                    else if (Equals(color, new(255, 250, 199))) sb.Append("♦♦");
+                    else if (Equals(color, new(255, 233, 0)))   sb.Append("✶ ");
+                    else if (Equals(color, new(255, 156, 0)))   sb.Append("☼ ");
+                    else if (Equals(color, new(255, 104, 0)))   sb.Append("◌ ");
+                    else                                        sb.Append("  ");
+                }
+
+                sb.Append("\r\n");
+            }
+
+            TextAssets.StartLogo = sb.ToString();
+
+            bool Equals(Color c1, Color c2)
+            {
+                return c1.R == c2.R && c1.G == c2.G && c1.B == c2.B;
+            }
         }
 
         protected override void Update(GameTime gameTime)
@@ -261,10 +299,10 @@ namespace ConsoleAdventure
                         isPause = false;
                 }
 
-                if (world.GetLocalPlayer().w == 0)
+                if ((world.GetLocalPlayer().w == 0 || world.rain.rainForce > 0) && InWorld)
                     MusicEngine.ChangeSong("ConsoleAdventure.ItsMagicRain");
 
-                if (world.GetLocalPlayer().w == 1 || !InWorld)
+                if ((world.GetLocalPlayer().w == 1 && world.rain.rainForce == 0) || !InWorld)
                     MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld");
             }
 
@@ -280,7 +318,8 @@ namespace ConsoleAdventure
 
             base.Update(gameTime);
         }
-
+        int animTimer;
+        int frame;
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(bg);
@@ -307,7 +346,37 @@ namespace ConsoleAdventure
 
             else
             {
-                menu.Draw(_spriteBatch);
+                if (kstate.IsKeyDown(Keys.C) && kstate.IsKeyDown(Keys.A) && kstate.IsKeyDown(Keys.Space) && menu.State == MenuState.mainScreen)
+                {
+                    _spriteBatch.Begin();
+
+                    int length = (64 * 32) + 64;
+                    StringBuilder sb = new();
+                    int start = frame + length;
+                    for (int i = 0; i < length; i++)
+                    {
+                        sb.Append(TextAssets.StartLogo[i + start]);
+                    }
+
+                    _spriteBatch.DrawString(font, sb.ToString(), new((Width / 2) - (32 * 9), (Height / 2) - (16 * 19)), Color.White);
+
+                    if (animTimer % 7 == 0)
+                    {
+                        frame += length;
+                    }
+
+                    if (frame + length >= TextAssets.StartLogo.Length) frame = 0;
+
+                    _spriteBatch.End();
+
+                    animTimer++;
+                }
+
+                else
+                {
+                    menu.Draw(_spriteBatch);
+                    frame = 0;
+                }
             }
 
             CaModLoader.PostDrawMods(_spriteBatch, gameTime);
