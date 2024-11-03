@@ -37,7 +37,6 @@ namespace ConsoleAdventure.WorldEngine
             if (world.GetLocalPlayer().SetPosition(world.GetLocalPlayer().position, 0))
             {
                 ConsoleAdventure.curDeep = 0;
-                NetworkManager.SendDataAsync(NetworkFuncType.setPlayerW, (short)ConsoleAdventure.curDeep, NetworkManager.Id);
             }
         }
     }

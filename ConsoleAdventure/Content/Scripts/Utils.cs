@@ -119,7 +119,7 @@ namespace ConsoleAdventure
             cmd.StandardInput.Flush();
             cmd.StandardInput.Close();
             cmd.WaitForExit();
-            ConsoleAdventure.logger.AddMassage(cmd.StandardOutput.ReadToEnd());
+            ConsoleAdventure.logger.AddMessage(cmd.StandardOutput.ReadToEnd());
         }
 
         /// <summary>

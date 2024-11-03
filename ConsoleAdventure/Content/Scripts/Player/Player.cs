@@ -43,7 +43,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public int buffCursor = 0;
 
-        public int postKullTimer = 0;
+        public int postKillTimer = 0;
 
         public Player(short id, string pcid, Position position, int w, int worldLayer = -1) : base(position, w)
         {
@@ -110,7 +110,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         Color bgColor = new(0, 0, 0, 0);
         public override Color? GetBGColor()
         {
-            if(postKullTimer > 0)
+            if(postKillTimer > 0)
                 return bgColor = Color.Lerp(bgColor, Color.Red, 0.1f);
 
             bgColor = new(0, 0, 0, 0);
@@ -129,12 +129,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
         {
             if (!isActive) 
             { 
-                if (postKullTimer > 0)
+                if (postKillTimer > 0)
                 {
-                    postKullTimer--;
+                    postKillTimer--;
                     life = 0;
 
-                    if (postKullTimer == 0)
+                    if (postKillTimer == 0)
                     {
                         Loger.AddLog(Localization.GetTranslation("Events", "DeadPlayer"));
                         SetPosition(new(4, 4), 1);
@@ -150,15 +150,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
             UpdateBuffs();
 
             timer.Start();
-
-            if (frames < 2)
-                frames++;
-            else
-            {
-                if (oldPos.x != position.x || oldPos.y != position.y)
-                    NetworkManager.SendDataAsync(NetworkFuncType.setPlayerPos, position, NetworkManager.Id, 0);
-                frames = 0;
-            }
 
             if (Input.IsKeyDown(InputConfig.Run) && timer.Elapsed.TotalMilliseconds > 15 && !ConsoleAdventure.BlockHotKey)
             {
@@ -197,7 +188,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (Input.PostClick(InputConfig.DropItem) && !ConsoleAdventure.BlockHotKey)
             {
                 DropSlot(holdItemIndex);
-                NetworkManager.SendDataAsync(NetworkFuncType.dropItem, (short)holdItemIndex, NetworkManager.Id);
             }
 
             if (inventory.slots.Count > 0)
@@ -286,7 +276,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (life <= 0)
             {
                 life = 0;
-                postKullTimer = 300;
+                postKillTimer = 300;
                 isActive = false;
             }
 
@@ -447,7 +437,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     if (t.degreeDestruction >= 100)
                     {
                         world.RemoveSubject(t, World.BlocksLayerId);
-                        NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w, (short)0);
                     }
                 }
 
@@ -455,14 +444,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 if (t1?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.FloorLayerId) && inventory.slots[holdItemIndex].item.hammer > 0)
                 {
                     world.RemoveSubject(t1, World.FloorLayerId);
-                    NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w, (short)0);
                 }
 
                 Transform t2 = world.GetField(targetPosition.x, targetPosition.y, World.ItemsLayerId, w).content;
                 if (t2?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.ItemsLayerId) && t2 is Chest && inventory.slots[holdItemIndex].item.pick > 0)
                 {
                     world.RemoveSubject(t2, World.ItemsLayerId);
-                    NetworkManager.SendDataAsync(NetworkFuncType.breakTransform, targetPosition, w, (short)0);
                 }
             }
 
@@ -470,7 +457,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
             {
                 SetObject(item.placeType, targetPosition, w, items: new());
                 inventory.RemoveAt(holdItemIndex, 1);
-                NetworkManager.SendDataAsync(NetworkFuncType.buildTransform, targetPosition, NetworkManager.Id, BitConverter.ToInt16(new byte[] { w, (byte)holdItemIndex }));
             }
         }
 
@@ -495,8 +481,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             if (Input.IsKeyDown(InputConfig.PickUp) && !ConsoleAdventure.BlockHotKey)
             {
-                if (TryPickUp())
-                    NetworkManager.SendDataAsync(NetworkFuncType.pickUpItem, position, NetworkManager.Id);
+                if (TryPickUp()) { }
             }
         }
 

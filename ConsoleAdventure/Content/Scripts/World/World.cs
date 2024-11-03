@@ -97,7 +97,6 @@ namespace ConsoleAdventure.WorldEngine
             if (playersDat.ContainsKey(NetworkManager.pcId))
             {
                 GetLocalPlayer().LoadPlayerFromBytes(playersDat[NetworkManager.pcId]);
-                NetworkManager.SendDataAsync(NetworkFuncType.syncPlayerDataLoading, playersDat[NetworkManager.pcId], NetworkManager.Id);
             }
         }
 
@@ -120,6 +119,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public void ConnectLocalPlayer()
         {
+            ConsoleAdventure.logger.AddMessage("Creating local player");
             short id = NetworkManager.Id;
             ConnectPlayer(id, NetworkManager.pcId);
             GetLocalPlayer().isActive = true;
@@ -220,13 +220,12 @@ namespace ConsoleAdventure.WorldEngine
                     if (inputField.text[0] == '/')
                     {
                         Command.Find(inputField.text.Remove(0, 1));
-                        await NetworkManager.SendDataAsync(NetworkFuncType.sendCommand, inputField.text.Remove(0, 1), NetworkManager.Id);
                     }
                     else
                     {
                         string pre = "You";
                         Loger.AddLog(Utils.StringMaxLengthOnLine(pre + ": " + inputField.text, 24));
-                        NetworkManager.SendDataAsync(NetworkFuncType.sendChatMsg, Encoding.UTF8.GetBytes(inputField.text), NetworkManager.Id);
+                        NetworkManager.SendMessage(NetworkManager.RequestTypes.chatMessage, Encoding.UTF8.GetBytes(inputField.text));
                     }
                     inputField.text = "";
                     inputField.cursorPos = new();

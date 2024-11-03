@@ -27,7 +27,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
         {
             lock (locker)
             {
-                ConsoleAdventure.logger.AddMassage($"The world {name} saving...");
+                ConsoleAdventure.logger.AddMessage($"The world {name} saving...");
 
                 if (!Directory.Exists(path))
                 {
@@ -44,11 +44,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 }
                 else
                 {
-                    ConsoleAdventure.logger.AddMassage("There was a problem when serializing tags (the byte array cannot be null)");
+                    ConsoleAdventure.logger.AddMessage("There was a problem when serializing tags (the byte array cannot be null)");
                     return;
                 }
 
-                ConsoleAdventure.logger.AddMassage("The world was successfully saved!");
+                ConsoleAdventure.logger.AddMessage("The world was successfully saved!");
             }
         }
 
@@ -66,7 +66,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             {
                 ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadFile");
 
-                ConsoleAdventure.logger.AddMassage($"The world {name} loading...");
+                ConsoleAdventure.logger.AddMessage($"The world {name} loading...");
 
                 if (!Directory.Exists(path))
                 {
@@ -83,7 +83,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 else
                 {
-                    ConsoleAdventure.logger.AddMassage($"The world {name} was not found");
+                    ConsoleAdventure.logger.AddMessage($"The world {name} was not found");
                     return;
                 }
 
@@ -94,7 +94,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 ConsoleAdventure.world.Loaded();
 
-                ConsoleAdventure.logger.AddMassage("The world was successfully loaded!");
+                ConsoleAdventure.logger.AddMessage("The world was successfully loaded!");
             }
         }
 
@@ -107,22 +107,22 @@ namespace ConsoleAdventure.Content.Scripts.IO
         public static void Delete(string name)
         {
             string worldPath = path + name + ".wld";
-            ConsoleAdventure.logger.AddMassage($"The world {name} deleting...");
+            ConsoleAdventure.logger.AddMessage($"The world {name} deleting...");
             try
             {
                 if (File.Exists(worldPath))
                 {
                     FileSystem.DeleteFile(worldPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
-                    ConsoleAdventure.logger.AddMassage("File moved to recycle bin successfully.");
+                    ConsoleAdventure.logger.AddMessage("File moved to recycle bin successfully.");
                 }
                 else
                 {
-                    ConsoleAdventure.logger.AddMassage("File not found.");
+                    ConsoleAdventure.logger.AddMessage("File not found.");
                 }
             }
             catch (Exception ex)
             {
-                ConsoleAdventure.logger.AddMassage($"An error occurred: {ex.Message}");
+                ConsoleAdventure.logger.AddMessage($"An error occurred: {ex.Message}");
             }
         }
 
@@ -156,11 +156,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
                         sb.Append("\n    [" + names[i] + " / " + seeds[i] + "]");
                 }
 
-                ConsoleAdventure.logger.AddMassage($"Found {names.Length} world(s):{sb}\n");
+                ConsoleAdventure.logger.AddMessage($"Found {names.Length} world(s):{sb}\n");
             }
             catch (Exception ex)
             {
-                ConsoleAdventure.logger.AddMassage($"An error occurred: {ex.Message}");
+                ConsoleAdventure.logger.AddMessage($"An error occurred: {ex.Message}");
             }
 
             return (names, seeds);

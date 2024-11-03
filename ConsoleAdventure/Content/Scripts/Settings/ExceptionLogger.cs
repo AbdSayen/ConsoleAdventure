@@ -36,9 +36,9 @@ namespace ConsoleAdventure.Content.Scripts.Settings
             Console.WriteLine(text);
         }
 
-        public void AddMassage(string massage)
+        public void AddMessage(string message)
         {
-            AddText($"{DateTime.Now}: {massage}\n");
+            AddText($"{DateTime.Now}: {message}\n");
         }
 
         public void AddException(Exception ex)

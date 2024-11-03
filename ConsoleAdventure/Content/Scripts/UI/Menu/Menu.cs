@@ -318,8 +318,11 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                                 void LoadWorld()
                                 {
-                                    bool inm = false;
+                                    bool inm = false; // in multiplayer
+                                    bool ish = false; // is host
                                     if (ConsoleAdventure.kstate.IsKeyDown(Keys.M)) inm = true;
+                                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.H)) { ish = true; inm = true; }
+                                    NetworkManager.isHost = ish;
                                     ConsoleAdventure.CreateWorld(name, 1234, false, inm);
                                     if (ConsoleAdventure.world != null) WorldIO.Load(name);
                                 }

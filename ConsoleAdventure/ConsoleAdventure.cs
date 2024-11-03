@@ -15,6 +15,7 @@ using SharpDX.Direct3D9;
 using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -106,8 +107,8 @@ namespace ConsoleAdventure
             //Task task = new Task(UpdateLogs);
             //task.Start();
 
-            logger.AddMassage("Starting...");
-            logger.AddMassage("Settings loading ...");
+            logger.AddMessage("Starting...");
+            logger.AddMessage("Settings loading ...");
             if (File.Exists(Program.savePath + "settings.json")) // Если файл существует
                 SettingsSystem.LoadSettings(); // Загружаем сохраненные настройки
 
@@ -136,8 +137,8 @@ namespace ConsoleAdventure
             }
 
             _graphics = new GraphicsDeviceManager(this);
-            Localization.Load();
 
+            Localization.Load();
         }
 
         /*int LogIterationCount;
@@ -163,13 +164,14 @@ namespace ConsoleAdventure
         {
             world = new World(name, seed);
             world.inMultiplayer = inMultiplayer;
+   
             world.Initialize(isfullGenerate);
             display = new Display(world);
         }
 
         protected override void Initialize()
         {
-            logger.AddMassage("Initializing...");
+            logger.AddMessage("Initializing...");
             display = new Display(world);
 
             Content.RootDirectory = "Content";
@@ -200,7 +202,7 @@ namespace ConsoleAdventure
 
         protected override void LoadContent()
         {
-            logger.AddMassage("Content loading...");
+            logger.AddMessage("Content loading...");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/font");
 
@@ -211,7 +213,7 @@ namespace ConsoleAdventure
 
             CaModLoader.PreLoadMods();
             CaModLoader.LoadMods();
-            logger.AddMassage("Done!");
+            logger.AddMessage("Done!");
 
             StringBuilder sb = new StringBuilder();
             Texture2D logo = Content.Load<Texture2D>("logoAnim");
@@ -322,6 +324,7 @@ namespace ConsoleAdventure
         int frame;
         protected override void Draw(GameTime gameTime)
         {
+            
             GraphicsDevice.Clear(bg);
             CaModLoader.PreDrawMods(_spriteBatch, gameTime);
 

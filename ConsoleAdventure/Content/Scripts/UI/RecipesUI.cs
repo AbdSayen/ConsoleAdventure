@@ -64,7 +64,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
             if (!ConsoleAdventure.kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter) && ConsoleAdventure.prekstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter) && cursorPos > -1 && cursorPos < ConsoleAdventure.availableRecipes.Count)
             {
                 ConsoleAdventure.world.GetLocalPlayer().CraftItem(cursorPos);
-                await NetworkManager.SendDataAsync(NetworkFuncType.craftItem, ConsoleAdventure.world.GetLocalPlayer().GetPlayerBytes(), NetworkManager.Id);
             }
 
             timer++;
