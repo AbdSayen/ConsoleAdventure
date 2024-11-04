@@ -21,6 +21,7 @@ namespace ConsoleAdventure
         public bool canUse;
         public byte damageClass;
         public bool consume;
+        public int maxCount = 50;
 
         public static int lastTypeId = 0;
 

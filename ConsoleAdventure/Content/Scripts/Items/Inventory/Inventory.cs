@@ -127,9 +127,9 @@ namespace ConsoleAdventure
                 }
             }
 
-            if (newItem.count > 0 && slots.Count < maxCount && addCount > 0) //это нужно чтобы новые итемы добавлялись
+            if (newItem.count > 0 && slots.Count < newItem.item.maxCount && addCount > 0) //это нужно чтобы новые итемы добавлялись
             {
-                int realAddCount = Math.Min(addCount, maxCount); //это нужно чтобы не добавить больше максимума стака
+                int realAddCount = Math.Min(addCount, newItem.item.maxCount); //это нужно чтобы не добавить больше максимума стака
                 slots.Add(new(newItem.item, realAddCount));
                 newItem.count -= realAddCount;
                 addCount -= realAddCount;
