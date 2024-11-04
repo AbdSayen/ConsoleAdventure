@@ -1,21 +1,11 @@
-﻿using ConsoleAdventure.Content.Scripts;
-using ConsoleAdventure.Content.Scripts.Debug.Commands;
-using ConsoleAdventure.Content.Scripts.IO;
-using ConsoleAdventure.Content.Scripts.Player;
-using ConsoleAdventure.Content.Scripts.Settings;
-using ConsoleAdventure.Networks;
+﻿using ConsoleAdventure.Networks;
 using ConsoleAdventure.Settings;
-using ConsoleAdventure.WorldEngine;
-using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ConsoleAdventure
 {
@@ -32,15 +22,11 @@ namespace ConsoleAdventure
         public static short Id = -1;
         public static bool isHost = false;
 
-        private static Position dropItemPos;
-        private static short dropItemDeep;
-        private static short dropItemPlayerId;
-
         public static string pcId = string.Empty;
 
         private static Server server = null;
 
-        public enum RequestTypes
+        public enum ActionID
         {
             chatMessage
         }
@@ -111,24 +97,26 @@ namespace ConsoleAdventure
             ConsoleAdventure.logger.AddMessage("Starting server...OK");
         }
 
-        public static async void SendMessage(RequestTypes rt, byte[] buffer)
+        public static async void SendMessage(ActionID act, byte[] buffer)
         {
+            if (Id == -1) return;
+
             List<byte> dat = new List<byte>();
 
-            dat.AddRange(BitConverter.GetBytes((short)rt)); // 2
-            dat.AddRange(BitConverter.GetBytes(buffer.Length)); // 4    2 + 4 = 6       16 - 6 = 10
-            dat.AddRange(new byte[10]); // 16 bytes header
+            dat.AddRange(BitConverter.GetBytes((short)act)); // 2
+            dat.AddRange(BitConverter.GetBytes(buffer.Length)); // 4    2 + 4 = 6
+            dat.AddRange(BitConverter.GetBytes(Id)); // 2    6 + 2 = 8       16 - 8 = 8
+            dat.AddRange(new byte[8]); // 16 bytes header
+
+            dat.AddRange(buffer);
 
             await stream.WriteAsync(dat.ToArray());
-            await stream.FlushAsync();
-
-            await stream.WriteAsync(buffer); // other data
             await stream.FlushAsync();
         }
 
         public static async Task ReceiveMainDataAsync()
         {
-            ConsoleAdventure.logger.AddMessage("Started client listener cycle");
+            ConsoleAdventure.logger.AddMessage("Started client listener cycle!");
 
             while (true)
             {
@@ -136,17 +124,15 @@ namespace ConsoleAdventure
                 {
                     byte[] dat = new byte[16];
                     /*
-                     * [0] : 2 - requestType(short)
+                     * [0] : 2 - ActionID (short)
                      * [2] : 4 - next packet data size (int32)
-                     * [6] : 2 - sender id
+                     * [6] : 2 - sender id (short)
                     */
                     int bytes = await stream.ReadAsync(dat, 0, 16);
 
-                    short rt = BitConverter.ToInt16(dat, 0);
+                    short act = BitConverter.ToInt16(dat, 0);
                     int nextDatSize = BitConverter.ToInt32(dat, 2);
                     short senderId = BitConverter.ToInt16(dat, 6);
-
-                    ConsoleAdventure.logger.AddMessage($"Getting Request: request info -> nextDatSize : {nextDatSize}, rt : {rt}");
 
                     byte[] buffer = new byte[nextDatSize];
                     if (nextDatSize > 0)
@@ -154,11 +140,11 @@ namespace ConsoleAdventure
                         bytes = await stream.ReadAsync(buffer, 0, nextDatSize);
                     }
 
-                    switch (rt)
+                    switch (act)
                     {
-                        case (short)RequestTypes.chatMessage:
-                            Loger.AddLog(senderId.ToString() + ": " + Encoding.UTF8.GetString(buffer));
-                            return;
+                        case (short)ActionID.chatMessage:
+                            Loger.AddLog(Utils.StringMaxLengthOnLine(senderId.ToString() + ": " + Encoding.UTF8.GetString(buffer), 24));
+                            break;
                     }
                 }
                 catch

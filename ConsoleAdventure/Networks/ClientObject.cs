@@ -49,11 +49,21 @@ namespace ConsoleAdventure.Networks
                     int bytes = await stream.ReadAsync(dat, 0, 16);
 
                     await server.BroadcastDataAsync(dat, Id);
+
+                    int additionDataLength = BitConverter.ToInt32(dat, 2);
+
+                    if (additionDataLength > 0)
+                    {
+                        byte[] buffer = new byte[additionDataLength];
+                        await stream.ReadAsync(buffer, 0, additionDataLength);
+
+                        await server.BroadcastDataAsync(buffer, Id);
+                    }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
+                
             }
             finally
             {

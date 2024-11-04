@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text;
 
 namespace ConsoleAdventure.Networks
 {
@@ -57,7 +58,11 @@ namespace ConsoleAdventure.Networks
         }
         protected internal async Task BroadcastDataAsync(byte[] dat, short id)
         {
-            //Console.WriteLine($"Command: ({dat.Length})  {BitConverter.ToInt16(dat, 0)}, {BitConverter.ToInt16(dat, 2)}\n  {BitConverter.ToInt16(dat, 4)}");
+            string s_ = "[ ";
+            for (int i = 0; i < dat.Length; i++)
+                s_ += dat[i].ToString() + ", ";
+            s_ += "]    '" + Encoding.UTF8.GetString(dat) + "'";
+            ConsoleAdventure.logger.AddMessage($"SERVER: Command: ({dat.Length})\n    " + s_); // {BitConverter.ToInt16(dat, 0)}, {BitConverter.ToInt32(dat, 2)}, {BitConverter.ToInt16(dat, 6)}\n    
             for (int i = 0; i < clients.Count; i++)
             {
                 ClientObject client = clients[i];

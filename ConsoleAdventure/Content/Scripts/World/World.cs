@@ -11,7 +11,6 @@ using Microsoft.Xna.Framework.Input;
 using ConsoleAdventure.Content.Scripts.Debug.Commands;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 
 namespace ConsoleAdventure.WorldEngine
@@ -225,7 +224,7 @@ namespace ConsoleAdventure.WorldEngine
                     {
                         string pre = "You";
                         Loger.AddLog(Utils.StringMaxLengthOnLine(pre + ": " + inputField.text, 24));
-                        NetworkManager.SendMessage(NetworkManager.RequestTypes.chatMessage, Encoding.UTF8.GetBytes(inputField.text));
+                        NetworkManager.SendMessage(NetworkManager.ActionID.chatMessage, Encoding.UTF8.GetBytes(inputField.text));
                     }
                     inputField.text = "";
                     inputField.cursorPos = new();
