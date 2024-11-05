@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Text.Json;
 using ConsoleAdventure.Content.Scripts;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace ConsoleAdventure
 {
@@ -17,7 +20,8 @@ namespace ConsoleAdventure
     {
         public static readonly string modsDirPath = Directory.GetCurrentDirectory() + @"\Content\mods";
 
-        private static List<string> libs = new List<string> { "SecondMod", "TestMod", "NewMod" };//, "GraphicsMod" 
+        private static List<string> enabledMods = new List<string> { };
+        private static List<string> disabledMods = new List<string> { };//, "GraphicsMod"  "NewMod"
         private static string[] modsPath;
         private static List<Mod> mods = new List<Mod>();
         internal static List<IMod> allMods = new List<IMod>();
@@ -30,18 +34,102 @@ namespace ConsoleAdventure
 
         public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();  // [0] - items, [1] - blocks
 
+        public static void EnableMod(string mod)
+        {
+            enabledMods.Add(mod);
+        }
+
+        public static void DisableMod(string mod)
+        {
+            enabledMods.Remove(mod);
+        }
+
+        public static List<string> ReadSavedEnabledMods()
+        {
+            string enabledModsFile = modsDirPath + @"\enabled-mods.json";
+
+            if (!File.Exists(enabledModsFile))
+            {
+                string data = JsonSerializer.Serialize(new List<string>());
+                File.WriteAllText(enabledModsFile, data);
+            }
+
+            string json = File.ReadAllText(enabledModsFile);
+
+            return JsonSerializer.Deserialize<List<string>>(json);
+        }
+
+        public static void SaveEnabledMods()
+        {
+            string enabledModsFile = modsDirPath + @"\enabled-mods.json";
+
+            if (File.Exists(enabledModsFile))
+            {
+                string data = JsonSerializer.Serialize(enabledMods);
+                File.WriteAllText(enabledModsFile, data);
+            }
+        }
 
         public static void PreLoadMods()
         {
+            enabledMods = ReadSavedEnabledMods();
+
             modsPath = Directory.GetDirectories(modsDirPath); // Получаем все папки из папки модов
         }
 
-        public static void LoadMods()
+        public static Task ReloadMods()
         {
+            ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadMods");
+            ConsoleAdventure.progressBar.Progress = 0;
+            ConsoleAdventure.menu.State = Content.Scripts.UI.MenuState.worldLoadingProgress;
+
+            Thread load = new Thread(new ThreadStart(Load));
+            load.Start();
+
+            void Load()
+            {
+                LoadMods(true);
+            }
+
+            return Task.Run(() => load.Join());
+        }
+
+        public static void LoadMods(bool reload = false)
+        {
+            if (reload)
+            {
+                disabledMods = new();
+                modsIdsMap = new();
+                modItems = new();
+                modGlobalItems = new();
+                modTransforms = new();
+                modLoadedContentCount = new();
+                mods = new();
+                allMods = new();
+                Main.modTypesInitialized = new();
+                Main.modTransformTypesOffset = new();
+            }
+
+            for (int i = 0; i < modsPath.Length; i++)
+            {
+                string dirName = modsPath[i].Replace("\\", "/").Split("/").Last();
+                if (!enabledMods.Contains(dirName))
+                {
+                    disabledMods.Add(dirName);
+                }
+            }
+
             int transformsFromAllMods = 0;
 
-            foreach (string path in modsPath)
+            for (int i = 0; i < modsPath.Length; i++)
             {
+                string path = modsPath[i];
+
+                if (reload)
+                {
+                    ConsoleAdventure.progressBar.Progress = (uint)((float)(i + 1) / modsPath.Length * 100);
+                }
+
                 string[] modFiles = Directory.GetFiles(path); // Получаем все файлы из папки модов
                 string dirName = Path.GetFileName(path);
 
@@ -63,7 +151,8 @@ namespace ConsoleAdventure
                             var modSettings = build["Settings"];
 
                             EmptyMod modData = new() // балванка мода, чтобы показовались и выключенные моды
-                            { 
+                            {
+                                dirName = dirName,
                                 modName = modSettings["Name"],
                                 modAuthor = modSettings["Author"],
                                 modVersion = modSettings["Version"],
@@ -71,14 +160,15 @@ namespace ConsoleAdventure
                                 modIcon = CharTexture.Read(modSettings["Icon"])
                             };
 
-                            foreach (string lib in libs) // Пропускаем все библиотеки
-                                if (fileName == lib) { allMods.Add(modData); goto SkipLoop;  }
+                            foreach (string modName in disabledMods) // Пропускаем выключенные моды
+                                if (fileName == modName) { allMods.Add(modData); goto SkipLoop;  }
 
                             // Загрузка сборки DLL
                             Assembly assembly = Assembly.LoadFrom(file);
 
                             Type type = assembly.GetType(fileName + "." + fileName); // Получение типа класса из загруженной сборки
                             Mod mod = (Mod)Activator.CreateInstance(type);
+                            mod.dirName = dirName;
                             mod.modName = modData.modName;
                             mod.modAuthor = modData.modAuthor;
                             mod.modVersion = modData.modVersion;
@@ -122,6 +212,14 @@ namespace ConsoleAdventure
                         }
                     }
                 }
+            }
+
+            if (reload)
+            {
+                ConsoleAdventure.menu.State = Content.Scripts.UI.MenuState.mainScreen;
+
+                InitializeMods();
+                RunMods();
             }
         }
 

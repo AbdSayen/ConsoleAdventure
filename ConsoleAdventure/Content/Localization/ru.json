@@ -136,7 +136,8 @@
     "LoadFile": "Чтение файла мира...",
     "LoadGenericData": "Загрузка общих данных...",
     "LoadObjectData": "Загрузка объектов...",
-    "LoadEntityData": "Загрузка сущностей..."
+    "LoadEntityData": "Загрузка сущностей...",
+    "LoadMods": "Загружаем моды..."
   },
 
   "MProgress": {
@@ -184,6 +185,7 @@
     "Menu.WorldGen": "Открыть меню генерации мира",
     "Menu.ControlKeyEdit": "Изменить клавишу",
     "Menu.ControlReset": "Сбросить клавишу",
+    "Menu.ModToggle": "Включить/выключить мод",
 
     "Misc.Pause": "Пауза",
     "Misc.Cmd": "Открыть консоль",

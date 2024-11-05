@@ -10,6 +10,11 @@ namespace ConsoleAdventure.CaModLoaderAPI
     public interface IMod
     {
         /// <summary>
+        ///  Название папки мода
+        /// </summary>
+        public string dirName { get; set; }
+
+        /// <summary>
         ///  Название мода
         /// </summary>
         public string modName { get; set; }

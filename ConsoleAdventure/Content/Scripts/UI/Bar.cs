@@ -32,10 +32,14 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             set
             {
-                if (value > Size)
+                if (value > 100)
+                {
                     progress = Size;
+                }
                 else
-                    progress = value;
+                {
+                    progress = (uint)(Size * ((float)value / 100));
+                }
             }
         }
 

@@ -63,7 +63,7 @@ namespace ConsoleAdventure
         public void DrawBars()
         {
             Player player = world.GetLocalPlayer();
-            hpBar.Progress = (uint)(player.life);
+            hpBar.Progress = (uint)((float)player.life / player.maxLife * 100);
 
             ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "♥", barsPos, Color.Red);
             ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, $"[{player.life}/{player.maxLife}]", barsPos + new Vector2(18, -19), new Color(80, 80, 80));

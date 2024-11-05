@@ -44,9 +44,3 @@
 /processorParam:TextureFormat=Color
 /build:logoAnim.png
 
-#begin mods/SecondMod.dll
-/copy:mods/SecondMod.dll
-
-#begin mods/TestMod.dll
-/copy:mods/TestMod.dll
-

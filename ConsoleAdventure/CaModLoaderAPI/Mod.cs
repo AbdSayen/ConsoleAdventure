@@ -11,6 +11,11 @@ namespace CaModLoaderAPI
     public abstract class Mod : IMod // Главный класс модификации
     {
         /// <summary>
+        ///  Название папки мода
+        /// </summary>
+        public string dirName { get; set; }
+
+        /// <summary>
         ///  Название мода
         /// </summary>
         public string modName { get; set; } = "undefined";

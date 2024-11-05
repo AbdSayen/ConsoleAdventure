@@ -71,6 +71,7 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
         public static Key WorldGen = new(Keys.N, "Menu.WorldGen");
         public static Key ControlEdit = new(Keys.Space, "Menu.ControlKeyEdit");
         public static Key ControlReset = new(Keys.Delete, "Menu.ControlReset");
+        public static Key ModToggle = new(Keys.E, "Menu.ModToggle");
 
         #endregion
 

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace ConsoleAdventure.Content.Scripts.UI
@@ -71,7 +72,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             ControlConfigInit();
         }
 
-        public void MenuUpdate()
+        public async void MenuUpdate()
         {
             MainScreenUpdate();
 
@@ -89,8 +90,17 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             if (Input.IsKeyDown(InputConfig.NavigationBeck) && timer >= Utils.StabilizeTicks(20))
             {
+                bool modsOpened = (State == MenuState.mods);
+
                 CloseAllPages();
                 timer = 0;
+
+                if (modsOpened)
+                {
+                    await CaModLoader.ReloadMods();
+                    CaModLoader.SaveEnabledMods();
+                    ModsPanelInit();
+                }
             }
 
             if (State == MenuState.mainScreen || State == MenuState.settings) // Buttons Sound Play
@@ -578,7 +588,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             }
 
             modList = new("", new(ConsoleAdventure.Width / 2.78f, ConsoleAdventure.Height / 4 + 50), mods, Color.White);
-            modList.elements[0].isHover = true;
+            if (modList.elements.Count > 0)
+                modList.elements[0].isHover = true;
             modList.drawBuffer = 5;
             modList.endList = 5;
         }

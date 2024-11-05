@@ -1,0 +1,9 @@
+{
+  "Settings": {
+    "Name": "Graphics Mod",
+    "Version": "0.2",
+    "Author": "Defi",
+    "Description": "Adds graphics to the game to make it more understandable\nand enjoyable to play",
+    "Icon": "add'^'#ffff00:4.5x0.0*0;add' ¾¾\n¾¾¾¾'#064c0a:10x0.0*0;add'╨'#5e3d26:24x38*0;"
+  }
+}

@@ -136,7 +136,8 @@
     "LoadFile": "Read world file...",
     "LoadGenericData": "Load generic data...",
     "LoadObjectData": "Loading objects...",
-    "LoadEntityData": "Loading entities..."
+    "LoadEntityData": "Loading entities...",
+    "LoadMods": "Загружаем моды..."
   },
 
   "MProgress": {
@@ -184,6 +185,7 @@
     "Menu.WorldGen": "Open world generation menu",
     "Menu.ControlKeyEdit": "Edit this key",
     "Menu.ControlReset": "Reset this key",
+    "Menu.ModToggle": "Enable/disable mod",
 
     "Misc.Pause": "Pause",
     "Misc.Cmd": "Open console",

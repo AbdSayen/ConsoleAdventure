@@ -90,18 +90,26 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                     }
 
-                    if (Input.IsKeyDown(InputConfig.NavigationSelect) && timer >= Utils.StabilizeTicks(30))
+                    if (Input.IsKeyDown(InputConfig.NavigationSelect) && !Input.IsOldKeyDown(InputConfig.NavigationSelect))
                     {
                         if (elements[i].isHover)
                         {
                             ElementActions(elements[i]);
                         }
                     }
+
+                    if (elements[i].isHover)
+                        ElementHandleInput(elements[i]);
                 }
             }
         }
 
         public virtual void ElementActions(BaseUI element)
+        {
+
+        }
+
+        public virtual void ElementHandleInput(BaseUI element)
         {
 
         }

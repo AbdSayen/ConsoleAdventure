@@ -1,0 +1,9 @@
+{
+  "Settings": {
+	  "Name": "NewMod",
+    "Version": "0.1",
+    "Author": "None",
+    "Description": "Write a description of the mod",
+    "Icon": "add'\n │ │ \n '#ffffff:4.5x0.0*0;add' ___\n- М -\n ‾‾‾'#ffffff:0.5x0.0*0;"
+  }
+}
