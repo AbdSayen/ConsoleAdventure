@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace ConsoleAdventure
 {
@@ -12,11 +13,20 @@ namespace ConsoleAdventure
 
         static string GetModClass(string name)
         {
-            return $"using CaModLoaderAPI;\r\nusing ConsoleAdventure.WorldEngine;\r\nusing ConsoleAdventure;\r\nusing Microsoft.Xna.Framework;\r\n\r\nnamespace {name}\r\n{{\r\n    public class {name} : Mod\r\n    {{\r\n        public override void Init()\r\n        {{\r\n            modName = \"{name}\";\r\n            modVersion = \"0.0.1\";\r\n            modAuthor = \"\";\r\n            modDescription = \"\";\r\n        }}\r\n\r\n        public override void Run()\r\n        {{\r\n\r\n        }}\r\n\r\n        public override void WorldLoaded(World world)\r\n        {{\r\n\r\n        }}\r\n    }}\r\n}}";
+            return $"using CaModLoaderAPI;\r\nusing ConsoleAdventure.WorldEngine;\r\nusing ConsoleAdventure;\r\nusing Microsoft.Xna.Framework;\r\n\r\nnamespace {name}\r\n{{\r\n    public class {name} : Mod\r\n    {{\r\n        public override void Run()\r\n        {{\r\n\r\n        }}\r\n    }}\r\n}}";
+        }
+
+        static string GetBuildFile(string name, string author) 
+        { 
+            StringBuilder sb = new StringBuilder();
+            sb.Append("{\n  \"Settings\": {\n    ");
+            sb.Append($"\"Name\": \"{name}\",\n    \"Version\": \"0.1\",\n    \"Author\": \"{author}\",\n    \"Description\": \"Write a description of the mod\",\n    \"Icon\": \"add'\\n │ │ \\n '#ffffff:4.5x0.0*0;add' ___\\n- М -\\n ‾‾‾'#ffffff:0.5x0.0*0;\"\n");
+            sb.Append("  }\n}");
+            return sb.ToString();
         }
 
 
-        public static bool CreateMod(string name)
+        public static bool CreateMod(string name, string author)
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -32,6 +42,7 @@ namespace ConsoleAdventure
 
             File.WriteAllText(modDirectory + name + ".csproj", csprojText);
             File.WriteAllText(modDirectory + name + ".cs", GetModClass(name));
+            File.WriteAllText(modDirectory + "build.json", GetBuildFile(name, author));
 
             return true;
         }

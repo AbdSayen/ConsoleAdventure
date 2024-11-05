@@ -15,6 +15,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         public int drawBuffer = 5;
         public int startList = 0;
         public int endList = 5;
+        public int height = 38;
 
         public int waitTime = 5;
 
@@ -114,7 +115,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 {
                     if (i < elements.Count)
                     {
-                        elements[i].Position = Position + new Vector2(0, (number * 38));
+                        elements[i].Position = Position + new Vector2(0, (number * height));
                         elements[i].Draw(spriteBatch);
                         number++;
                     }

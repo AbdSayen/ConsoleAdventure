@@ -197,7 +197,7 @@ namespace ConsoleAdventure
             SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
             Command.InitCommands();
 
-            //ModCreator.CreateMod("GraphicsMod");
+            //ModCreator.CreateMod("NewMod", "None");
         }
 
         protected override void LoadContent()

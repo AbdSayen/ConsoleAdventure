@@ -284,5 +284,30 @@ namespace ConsoleAdventure
                 B > 255 ? 255 : B
             );
         }
+
+        public static Color HexToColor(string hex)
+        {
+            if (string.IsNullOrEmpty(hex)) throw new ArgumentNullException(nameof(hex));
+            if (hex.Length != 6) throw new Exception($"{hex} Hex length must be 6 characters");
+
+            Color color = Color.White;
+            string[] hexs = new string[3];
+            char[] chars = hex.ToCharArray();
+
+            for (int i = 0; i < hexs.Length; i++)
+            {
+                hexs[i] = chars[i * 2].ToString() + chars[i * 2 + 1].ToString();
+            }
+
+            try
+            {
+                color.R = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+                color.G = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+                color.B = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+            }
+            catch { }
+
+            return color;
+        }
     }
 }

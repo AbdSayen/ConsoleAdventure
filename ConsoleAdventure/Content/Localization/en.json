@@ -108,7 +108,8 @@
     "WorldNameField": "Name",
     "WorldSeedField": "Seed",
     "WorldSizeField": "Size",
-    "WorldPlayerNameField": "Player name"
+    "WorldPlayerNameField": "Player name",
+    "Author": "Author:"
   },
 
   "About": {

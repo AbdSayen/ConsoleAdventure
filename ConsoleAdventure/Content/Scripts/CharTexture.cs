@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ConsoleAdventure.Content.Scripts
 {
@@ -73,6 +75,46 @@ namespace ConsoleAdventure.Content.Scripts
             {
                 spriteBatch.DrawString(ConsoleAdventure.Font, strings[i], position + offsets[i], colors[i], rotations[i], new(), 1f, 0, 0);
             }
+        }
+
+        public static CharTexture Read(string text)
+        {
+            CharTexture texture = new CharTexture();
+
+            List<string> layers = new();
+
+            StringBuilder buffer = new();
+            for (int i = 0; i < text.Length; i++)
+            {
+                buffer.Append(text[i]);
+                if(text[i] == ';')
+                {
+                    layers.Add(buffer.ToString());
+                    buffer.Clear();
+                }
+            }
+
+            for (int i = 0; i < layers.Count; i++)
+            {
+                try
+                {
+                    Match match = Regex.Match(layers[i], @"add'(.*?)'#([a-fA-F0-9]{6}):(.*?)x(.*?)\*(.*?);", RegexOptions.Singleline);
+
+                    string chars = match.Groups[1].Value.Replace("\\n", "\n");
+                    Color color = Utils.HexToColor(match.Groups[2].Value);
+
+                    float x = float.Parse(match.Groups[3].Value.Replace('.', ','));
+                    float y = float.Parse(match.Groups[4].Value.Replace('.', ','));
+
+                    float rotation = float.Parse(match.Groups[5].Value.Replace('.', ','));
+
+                    texture.AddLayer(chars, color, new(x, y), rotation);
+                }
+
+                catch { }
+            }
+
+            return texture;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -6,27 +8,32 @@ using System.Runtime.CompilerServices;
 
 namespace CaModLoaderAPI
 {
-    public abstract class Mod // Главный класс модификации
+    public abstract class Mod : IMod // Главный класс модификации
     {
         /// <summary>
         ///  Название мода
         /// </summary>
-        public string modName = "undefined";
+        public string modName { get; set; } = "undefined";
 
         /// <summary>
         /// Версия мода
         /// </summary>
-        public string modVersion = "1.0.0";
+        public string modVersion { get; set; } = "1.0.0";
 
         /// <summary>
         /// Описание мода
         /// </summary>
-        public string modDescription = "No description";
+        public string modDescription { get; set; } = "No description";
 
         /// <summary>
         /// Автор мода
         /// </summary>
-        public string modAuthor = "Anonymous";
+        public string modAuthor { get; set; } = "Anonymous";
+
+        /// <summary>
+        /// Иконка мода
+        /// </summary>
+        public CharTexture modIcon { get; set; }
 
         public string GetModString()
         {
@@ -70,6 +77,11 @@ namespace CaModLoaderAPI
         }
 
         public virtual void PostDrawWorld(SpriteBatch spriteBatch, GameTime gameTime, World world)
+        {
+
+        }
+
+        public virtual void PostDrawModPanel(SpriteBatch spriteBatch, Vector2 position)
         {
 
         }

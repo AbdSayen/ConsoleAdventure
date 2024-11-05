@@ -1,4 +1,5 @@
 ﻿using CaModLoaderAPI;
+using ConsoleAdventure.CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Audio;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
@@ -234,6 +235,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 menuButtons[i].Draw(spriteBatch);
             }
             fs.Draw(spriteBatch);
+            //ModPanel modPanel = new ModPanel(new(), "Mod", "Void Defi", "0.01");
+            //modPanel.Draw(spriteBatch);
         }
         #endregion
 
@@ -561,43 +564,26 @@ namespace ConsoleAdventure.Content.Scripts.UI
         #endregion
 
         #region ModsPanel
+
+        ModList modList = null;
+
         private void ModsPanelInit()
         {
-            modsListText = String.Empty;
-            foreach (Mod mod in CaModLoader.GetActiveMods())
+            List<BaseUI> mods = new();
+
+            for (int i = 0; i < CaModLoader.allMods.Count; i++)
             {
-                string newDescription = String.Empty;
-                int symbolsThreshold = 50;
-                int currentThreshold = symbolsThreshold;
-                int oldLineLength = 0;
-                foreach (string word in mod.modDescription.Replace("\n", " _ ").Split(" "))
-                {
-                    oldLineLength = newDescription.Split("\n").Last().Length;
-                    if (word == "_")
-                    {
-                        newDescription += "\n    ";
-                        currentThreshold += oldLineLength - 1;
-                        continue;
-                    }
-                    else if ((newDescription + word).Length > currentThreshold)
-                    {
-                        newDescription += "\n    ";
-                        currentThreshold += symbolsThreshold;
-                    }
-                    newDescription += word + " ";
-                }
-
-                string itemsInMod = CaModLoader.modLoadedContentCount[mod.GetType()][0].ToString();
-                string blocksInMod = CaModLoader.modLoadedContentCount[mod.GetType()][1].ToString();
-
-                string textItems = CaModLoader.modLoadedContentCount[mod.GetType()][0] != 1 ? TextAssets.ItemsGenitive : TextAssets.Item;
-                string textBlocks = CaModLoader.modLoadedContentCount[mod.GetType()][1] != 1 ? TextAssets.BlocksGenitive : TextAssets.Block; ;
-
-                modsListText += " - " + mod.modName + " v" + mod.modVersion + " by " + mod.modAuthor + "   | " + itemsInMod + " " + textItems + " " + blocksInMod + " " + textBlocks + "\n    " + newDescription + "\n\n";
+                IMod modData = CaModLoader.allMods[i];
+                mods.Add(new ModPanel(new(0, 0, 0, 0), modData));
             }
 
-            modListPanel = new InfoPanel(new Rectangle((ConsoleAdventure.screenWidth / 2) - 28 * 9, (ConsoleAdventure.screenHeight / 2) - 20 * 18, 64, 30), TextAssets.Mods, modsListText);
+            modList = new("", new(ConsoleAdventure.Width / 2.78f, ConsoleAdventure.Height / 4 + 50), mods, Color.White);
+            modList.elements[0].isHover = true;
+            modList.drawBuffer = 5;
+            modList.endList = 5;
         }
+        
+        int modsTimer;
 
         private void ModsPanelUpdate()
         {
@@ -608,18 +594,69 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     Utils.OpenExplorerAtFolder(CaModLoader.modsDirPath);
                     timer = 0;
                 }
+                
+                modList.Update(ref modsTimer);
+                modList.isHover = true;
             }
+            
+            else
+                modList.isHover = false;
+
+            modsTimer++;
         }
+        
+        
 
         private void ModsPanelDraw(SpriteBatch spriteBatch)
         {
             if (State == MenuState.mods)
             {
-                modListPanel.Draw(spriteBatch);
-                string navModHelp = TextAssets.navigModFolderHelp.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationSelect.key.ToString()));
-                spriteBatch.DrawString(ConsoleAdventure.Font, navModHelp, new Vector2(ConsoleAdventure.Width / 2 - ConsoleAdventure.Font.MeasureString(navModHelp).X, ConsoleAdventure.Height - 25), Color.Gray);
-            }
+                //modListPanel.Draw(spriteBatch);
+                //string navModHelp = TextAssets.navigModFolderHelp.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationSelect.key.ToString()));
+                //spriteBatch.DrawString(ConsoleAdventure.Font, navModHelp, new Vector2(ConsoleAdventure.Width / 2 - ConsoleAdventure.Font.MeasureString(navModHelp).X, ConsoleAdventure.Height - 25), Color.Gray);
+                
+                modList.Draw(spriteBatch);
+                
+            }    
         }
+
+        /*private void ControlConfigUpdate()
+        {
+            if (State == MenuState.aboutControl)
+            {
+                if (Input.PostClick(InputConfig.ControlEdit) && controlTimer > 60)
+                {
+                    for (int i = 0; i < controlConfig.elements.Count; i++)
+                    {
+                        if (controlConfig.elements[i].isHover)
+                        {
+                            if (!((KeyPanel)controlConfig.elements[i]).flag) ((KeyPanel)controlConfig.elements[i]).flag = true;
+                            else if (((KeyPanel)controlConfig.elements[i]).flag) ((KeyPanel)controlConfig.elements[i]).flag = false;
+                            controlTimer = 0;
+                        }
+                    }
+                }
+
+                if (Input.PostClick(InputConfig.ControlReset) && controlTimer > 60)
+                {
+                    for (int i = 0; i < controlConfig.elements.Count; i++)
+                    {
+                        if (controlConfig.elements[i].isHover)
+                        {
+                            ((KeyPanel)controlConfig.elements[i]).key.key = Keys.None;
+                        }
+                    }
+                }
+
+                controlConfig.Update(ref controlTimer);
+                controlConfig.isHover = true;
+            }
+
+            if (State != MenuState.aboutControl)
+                controlConfig.isHover = false;
+
+            controlTimer++;
+        }*/
         #endregion
 
         #region WorldLoadingProgress

@@ -108,7 +108,8 @@
     "WorldNameField": "Имя",
     "WorldSeedField": "Сид",
     "WorldSizeField": "Размер",
-    "WorldPlayerNameField": "Имя игрока"
+    "WorldPlayerNameField": "Имя игрока",
+    "Author": "Автор:"
   },
 
   "About": {

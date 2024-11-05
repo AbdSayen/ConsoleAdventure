@@ -20,6 +20,8 @@
 
         public static string Seed = Localization.GetTranslation("UI", "Seed");
 
+        public static string Author = Localization.GetTranslation("UI", "Author");
+
         public static string Version = Localization.GetTranslation("UI", "Version");
 
         public static string Inventory = Localization.GetTranslation("UI", "Inventory");
@@ -89,6 +91,7 @@
             navigHelpControl2 = Localization.GetTranslation("UI", "NavigationControl2");
             Name = Localization.GetTranslation("UI", "Name");
             Seed = Localization.GetTranslation("UI", "Seed");
+            Author = Localization.GetTranslation("UI", "Author");
             Version = Localization.GetTranslation("UI", "Version");
             Inventory = Localization.GetTranslation("UI", "Inventory");
             Day = Localization.GetTranslation("UI", "Day");
