@@ -11,13 +11,14 @@ public static class Spawner
 {
     private static List<SpawnCondition> SpawnConditions = new List<SpawnCondition>();
 
-    public static Entity Spawn(Entity entity)
+    public static void SpawnClone(Entity entity)
     {
-        Entity spawnEntity = new Entity(Position.Zero(), entity.w);
-        spawnEntity = entity.Copy<Entity>();
-        ConsoleAdventure.world.SetSubjectPosition(spawnEntity, entity.worldLayer, entity.position.x, entity.position.y);
+        Spawn(entity.Copy<Entity>());
+    }
 
-        return spawnEntity;
+    public static void Spawn(Entity entity)
+    {
+        ConsoleAdventure.world.entities.Add(entity);
     }
 
     public static void SpawnSuitableMob(Player player)

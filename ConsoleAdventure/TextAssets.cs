@@ -16,6 +16,8 @@
 
         public static string navigHelpControl2 = Localization.GetTranslation("UI", "NavigationControl2");
 
+        public static string modCreateHelp = Localization.GetTranslation("UI", "HelpModCreate");
+
         public static string Name = Localization.GetTranslation("UI", "Name");
 
         public static string Seed = Localization.GetTranslation("UI", "Seed");
@@ -89,6 +91,7 @@
             navigHelpWorld = Localization.GetTranslation("UI", "NavigationWorld");
             navigHelpControl1 = Localization.GetTranslation("UI", "NavigationControl1");
             navigHelpControl2 = Localization.GetTranslation("UI", "NavigationControl2");
+            modCreateHelp = Localization.GetTranslation("UI", "HelpModCreate");
             Name = Localization.GetTranslation("UI", "Name");
             Seed = Localization.GetTranslation("UI", "Seed");
             Author = Localization.GetTranslation("UI", "Author");

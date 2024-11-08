@@ -9,7 +9,7 @@ using System.Xml;
 
 namespace ConsoleAdventure
 {
-    internal class Display
+    public class Display
     {
         internal static RecipesUI recipesUI;
         public static Bar hpBar;

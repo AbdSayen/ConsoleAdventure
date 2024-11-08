@@ -15,21 +15,50 @@ namespace ConsoleAdventure.Content.Scripts.UI
             height = 34 * 3;
         }
 
-        public override void ElementHandleInput(BaseUI element)
+        public override void ElementHandleInput(BaseUI element, ref int timer)
         {
             ModPanel modPanel = element as ModPanel;
 
-            if (Input.OnClick(InputConfig.ModToggle))
+            if (Input.OnClick(InputConfig.NavigationSelect) && timer >= 5)
             {
-                modPanel.enabled = !modPanel.enabled;
+                if (modPanel.cursor == 0)
+                {
+                    modPanel.enabled = !modPanel.enabled;
 
-                if (modPanel.enabled)
-                {
-                    CaModLoader.EnableMod(modPanel.mod.dirName);
+                    if (modPanel.enabled)
+                    {
+                        CaModLoader.EnableMod(modPanel.mod.dirName);
+                    }
+                    else
+                    {
+                        CaModLoader.DisableMod(modPanel.mod.dirName);
+                    }
+                    timer = 0;
                 }
-                else
+
+                else if (modPanel.cursor == 1)
                 {
-                    CaModLoader.DisableMod(modPanel.mod.dirName);
+                    ConsoleAdventure.menu.OpenModDescription(modPanel.mod.modDescription);
+                    timer = 0;
+                }
+            }
+
+            if (isHover)
+            {
+                if (Input.OnClick(InputConfig.NavigationRight))
+                {
+                    for (int i = 0; i < elements.Count; i++)
+                    {
+                        ((ModPanel)elements[i]).cursor = 1;
+                    }
+                }                
+                
+                if (Input.OnClick(InputConfig.NavigationLeft))
+                {
+                    for (int i = 0; i < elements.Count; i++)
+                    {
+                        ((ModPanel)elements[i]).cursor = 0;
+                    }
                 }
             }
         }

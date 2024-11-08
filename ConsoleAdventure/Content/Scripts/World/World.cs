@@ -209,6 +209,11 @@ namespace ConsoleAdventure.WorldEngine
         {
             renderer.Render(GetLocalPlayer(), Cursor.Instance.CursorPosition, Color.OrangeRed);
 
+            ChatDraw();
+        }
+
+        public void ChatDraw()
+        {
             if (isCmdOpen)
             {
                 inputField.Update();

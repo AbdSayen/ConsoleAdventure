@@ -26,7 +26,7 @@ namespace ConsoleAdventure
         }
 
 
-        public static bool CreateMod(string name, string author)
+        public static bool CreateMod(string name, string author, bool openFolder = true)
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -43,6 +43,11 @@ namespace ConsoleAdventure
             File.WriteAllText(modDirectory + name + ".csproj", csprojText);
             File.WriteAllText(modDirectory + name + ".cs", GetModClass(name));
             File.WriteAllText(modDirectory + "build.json", GetBuildFile(name, author));
+
+            if (openFolder)
+            {
+                Utils.OpenExplorerAtFolder(modDirectory);
+            }
 
             return true;
         }
