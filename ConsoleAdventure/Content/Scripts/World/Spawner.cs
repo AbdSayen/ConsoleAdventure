@@ -1,5 +1,6 @@
 using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Content.Scripts.Entities;
+using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.Player;
 using ConsoleAdventure.WorldEngine;
 using System;
@@ -11,13 +12,33 @@ public static class Spawner
 {
     private static List<SpawnCondition> SpawnConditions = new List<SpawnCondition>();
 
-    public static Entity Spawn(Entity entity)
+    public static void Spawn(Entity entity, bool net = false)
     {
-        Entity spawnEntity = new Entity(Position.Zero(), entity.w);
-        spawnEntity = entity.Copy<Entity>();
-        ConsoleAdventure.world.SetSubjectPosition(spawnEntity, entity.worldLayer, entity.position.x, entity.position.y);
+        ConsoleAdventure.world.entities.Add(entity);
+        if (!net) return; //NetworkManager.Id != 0 && 
+        entity.SetNetID();
+        SpawnSync(entity);
+    }
+
+    public static Entity SpawnClone(Entity entity)
+    {
+        Entity spawnEntity = entity.Copy<Entity>();
+        Spawn(spawnEntity);
 
         return spawnEntity;
+    }
+
+    private static void SpawnSync(Entity spawnEntity)
+    {
+        List<byte> data = new List<byte>();
+
+        data.AddRange(BitConverter.GetBytes((short)spawnEntity.netID)); // 2
+        data.AddRange(BitConverter.GetBytes(spawnEntity.position.x)); // 2 4
+        data.AddRange(BitConverter.GetBytes(spawnEntity.position.y)); // 2 6
+        data.Add(spawnEntity.w); // 1 7
+        data.Add(spawnEntity.type); //1 8
+
+        NetworkManager.SendMessage(NetworkManager.ActionID.entitySpawned, data.ToArray(), new byte[0]);
     }
 
     public static void SpawnSuitableMob(Player player)

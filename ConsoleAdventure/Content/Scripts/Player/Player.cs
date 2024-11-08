@@ -128,7 +128,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         public override void InteractWithWorld()
         {
             if (!isActive) 
-            { 
+            {
                 if (postKillTimer > 0)
                 {
                     postKillTimer--;
@@ -288,6 +288,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 Walk();
                 CheckPickUpItems();
                 timer.Restart();
+            }
+
+            if (NetworkManager.isHost)
+            {
+                //Sync();
             }
         }
 

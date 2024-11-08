@@ -128,7 +128,7 @@ namespace ConsoleAdventure.Content.Scripts
             {
                 if(world.GetField(x, y, World.MobsLayerId, w)?.content == null)
                 {
-                    ConsoleAdventure.world.entities.Add(new Fire(new Position(x, y), w));
+                    Spawner.Spawn(new Fire(new Position(x, y), w));
                 }
             }
         }

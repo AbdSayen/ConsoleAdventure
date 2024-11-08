@@ -70,7 +70,7 @@ namespace ConsoleAdventure.Generate.Structures
                     }
                     else if (random.Next(0, 320) == 0)
                     {
-                        world.entities.Add(new Cat(new Position(x, y), ConsoleAdventure.StartDeep));
+                        Spawner.Spawn(new Cat(new Position(x, y), ConsoleAdventure.StartDeep));
                     }
                 }
             }

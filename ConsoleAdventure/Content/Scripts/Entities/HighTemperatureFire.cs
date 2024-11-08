@@ -134,7 +134,7 @@ namespace ConsoleAdventure.Content.Scripts
                 {
                     HighTemperatureFire fire = new HighTemperatureFire(new Position(x, y), w);
                     fire.maxBreed = maxBreed - 1;
-                    ConsoleAdventure.world.entities.Add(fire);
+                    Spawner.Spawn(fire);
                 }
             }
         }

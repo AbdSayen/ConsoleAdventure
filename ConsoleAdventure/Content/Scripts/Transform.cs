@@ -29,6 +29,8 @@ namespace ConsoleAdventure
         public byte degreeDestruction = 0;
         public float hardness = 1;
 
+        public int netID = -1;
+
         /// <summary>
         /// хранит тип горения трансформ:<br/>  
         /// null - негорит.<br/> 0 - горит от обычного огня.<br/> 1 - горит от высокотемпературного огня.
@@ -197,7 +199,7 @@ namespace ConsoleAdventure
             object[] args = BuildConstructorArgs(type, position, w, items, parameters);
 
             if (type.IsSubclassOf(typeof(Entity)) || type == typeof(Entity))
-                ConsoleAdventure.world.entities.Add((Entity)Activator.CreateInstance(type, args));
+                Spawner.Spawn((Entity)Activator.CreateInstance(type, args));
             else
                 Activator.CreateInstance(type, args);
         }

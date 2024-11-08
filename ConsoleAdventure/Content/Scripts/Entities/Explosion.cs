@@ -62,7 +62,7 @@ namespace ConsoleAdventure.Content.Scripts
                 
                 if(ConsoleAdventure.rand.Next(0, 21) == 20)
                 {
-                    ConsoleAdventure.world.entities.Add(new Fire(position, w));
+                    Spawner.Spawn(new Fire(position, w));
                 }
             }
 

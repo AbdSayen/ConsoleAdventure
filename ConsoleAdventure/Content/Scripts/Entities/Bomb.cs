@@ -111,7 +111,7 @@ namespace ConsoleAdventure.Content.Scripts
                                 }*/
                                 
                                 if(ConsoleAdventure.world.GetField(destroyPos.x, destroyPos.y, World.MobsLayerId, w)?.content == null)
-                                    ConsoleAdventure.world.entities.Add(new Explosion(destroyPos, w));
+                                    Spawner.Spawn(new Explosion(destroyPos, w));
                             }
                         }
 

@@ -39,8 +39,24 @@ namespace ConsoleAdventure.Content.Scripts
             StateMachine = new StateMachine(this);
 
             AddTypeToMap<Entity>(type);
-            
+
             ConsoleAdventure.world.Start += Start;
+            //ConsoleAdventure.world.Start += SetNetID;
+        }
+
+        public void SetNetID()
+        {
+            netID = NetworkManager.RegisterNetID(this);
+        }
+
+        protected void Sync()
+        {
+            List<byte> data = new List<byte>();
+            data.AddRange(BitConverter.GetBytes((short)netID));
+            data.AddRange(BitConverter.GetBytes(position.x));
+            data.AddRange(BitConverter.GetBytes(position.y));
+            data.AddRange(BitConverter.GetBytes((short)life));
+            NetworkManager.SendMessage(NetworkManager.ActionID.entitySync, data.ToArray(), new byte[0]);
         }
 
         protected virtual void Start()
@@ -60,7 +76,7 @@ namespace ConsoleAdventure.Content.Scripts
 
 
         /// <summary>
-        /// Обновление сущьности в мире
+        /// Обновление сущности в мире
         /// </summary>
         public virtual void InteractWithWorld()
         {
@@ -75,7 +91,7 @@ namespace ConsoleAdventure.Content.Scripts
         }
 
         /// <summary>
-        /// Искуственный интилект сущьности
+        /// Искуственный интеллект сущности
         /// </summary>
         public virtual void AI() 
         { 
@@ -83,11 +99,13 @@ namespace ConsoleAdventure.Content.Scripts
         }
 
         /// <summary>
-        /// Убивает сущьность 
+        /// Убивает сущность 
         /// </summary>
         public void Kill()
         {
             ConsoleAdventure.world.Start -= Start;
+            //ConsoleAdventure.world.Start -= SetNetID;
+            NetworkManager.RemoveTransformNetID(netID);
             ConsoleAdventure.world.RemoveSubject(this, worldLayer);
             ConsoleAdventure.world.entities.Remove(this);
         }

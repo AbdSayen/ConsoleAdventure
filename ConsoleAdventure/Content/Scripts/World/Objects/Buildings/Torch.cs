@@ -59,7 +59,7 @@ namespace ConsoleAdventure.WorldEngine
                         Transform mob = world.GetField(position.x + i, position.y + j, World.MobsLayerId, w)?.content;
                         if (transform?.burnType == 0 && mob == null)
                         {
-                            ConsoleAdventure.world.entities.Add(new Fire(position + new Position(i, j), w));
+                            Spawner.Spawn(new Fire(position + new Position(i, j), w));
                         }
                     }
                 }

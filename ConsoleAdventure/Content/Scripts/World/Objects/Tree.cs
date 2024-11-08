@@ -58,7 +58,7 @@ namespace ConsoleAdventure.WorldEngine
             {
                 Position pos = new(ConsoleAdventure.rand.Next(position.x - 3, position.x + 4), ConsoleAdventure.rand.Next(position.y - 3, position.y + 4));
                 if (ConsoleAdventure.world.GetField(pos.x, pos.y, World.MobsLayerId, w)?.content == null)
-                    ConsoleAdventure.world.entities.Add(new Leaves(pos, w));
+                    Spawner.Spawn(new Leaves(pos, w));
             }
 
             int lootCount = ConsoleAdventure.rand.Next(1, 5);
@@ -141,7 +141,7 @@ namespace ConsoleAdventure.WorldEngine
                 Position pos = new Position(ConsoleAdventure.rand.Next(-3, 4) + position.x, ConsoleAdventure.rand.Next(-3, 4) + position.y);
                 if (world.GetField(pos.x, pos.y, World.MobsLayerId, w)?.content == null)
                 {
-                    ConsoleAdventure.world.entities.Add(new Fire(pos, w));
+                    Spawner.Spawn(new Fire(pos, w));
                 }
             }
         }

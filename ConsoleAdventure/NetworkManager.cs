@@ -1,5 +1,7 @@
-﻿using ConsoleAdventure.Networks;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Networks;
 using ConsoleAdventure.Settings;
+using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,9 +28,15 @@ namespace ConsoleAdventure
 
         private static Server server = null;
 
+        /* ---- */
+        public static int globalTransformsNetID = 0;
+        private static Dictionary<int, Transform> NetIDToTransform = new Dictionary<int, Transform>();
+
         public enum ActionID
         {
-            chatMessage
+            chatMessage,
+            entitySync,
+            entitySpawned
         }
 
         public static async Task<bool> ConnectClient()
@@ -87,6 +95,25 @@ namespace ConsoleAdventure
             }
         }
 
+        public static int RegisterNetID(Transform transform)
+        {
+            NetIDToTransform.Add(globalTransformsNetID++, transform);
+            return globalTransformsNetID;
+        }
+
+        public static Transform GetTransformByNetID(int netID)
+        {
+            if (NetIDToTransform.ContainsKey(netID))
+                return NetIDToTransform[netID];
+            return null;
+        }
+
+        public static void RemoveTransformNetID(int netID)
+        {
+            if (NetIDToTransform.ContainsKey(netID))
+                NetIDToTransform.Remove(netID);
+        }
+
         public static void HostClient()
         {
             ConsoleAdventure.logger.AddMessage("Starting server...");
@@ -97,7 +124,7 @@ namespace ConsoleAdventure
             ConsoleAdventure.logger.AddMessage("Starting server...OK");
         }
 
-        public static async void SendMessage(ActionID act, byte[] buffer)
+        public static async void SendMessage(ActionID act, byte[] header, byte[] buffer)
         {
             if (Id == -1) return;
 
@@ -106,7 +133,10 @@ namespace ConsoleAdventure
             dat.AddRange(BitConverter.GetBytes((short)act)); // 2
             dat.AddRange(BitConverter.GetBytes(buffer.Length)); // 4    2 + 4 = 6
             dat.AddRange(BitConverter.GetBytes(Id)); // 2    6 + 2 = 8       16 - 8 = 8
-            dat.AddRange(new byte[8]); // 16 bytes header
+
+            dat.AddRange(header);
+            dat.AddRange(new byte[8 - header.Length]); // 16 bytes header
+            
 
             dat.AddRange(buffer);
 
@@ -140,15 +170,40 @@ namespace ConsoleAdventure
                         bytes = await stream.ReadAsync(buffer, 0, nextDatSize);
                     }
 
-                    switch (act)
+                    switch ((ActionID)act)
                     {
-                        case (short)ActionID.chatMessage:
+                        case ActionID.chatMessage:
                             Loger.AddLog(Utils.StringMaxLengthOnLine(senderId.ToString() + ": " + Encoding.UTF8.GetString(buffer), 24));
+                            break;
+                        case ActionID.entitySync:
+                            int netID = BitConverter.ToInt16(dat, 8);
+                            int x = BitConverter.ToInt16(dat, 10);
+                            int y = BitConverter.ToInt16(dat, 12);
+                            int life = BitConverter.ToInt16(dat, 14);
+
+                            Entity entity = (Entity)GetTransformByNetID(netID);
+
+                            entity.position = new Position(x, y);
+                            entity.life = life;
+
+                            break;
+                        case ActionID.entitySpawned:
+                            netID = BitConverter.ToInt16(dat, 8);
+                            x = BitConverter.ToInt16(dat, 10);
+                            y = BitConverter.ToInt16(dat, 12);
+                            byte w = dat[14];
+                            byte type = dat[15];
+
+                            globalTransformsNetID = netID;
+                            Entity newEntity = (Entity)Activator.CreateInstance(Transform.TypeMapping[type], new object[] { new Position(x, y), w, null });
+                            newEntity.SetNetID();
+                            Spawner.Spawn(newEntity);
                             break;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    ConsoleAdventure.logger.AddException(ex);
                     break;
                 }
             }

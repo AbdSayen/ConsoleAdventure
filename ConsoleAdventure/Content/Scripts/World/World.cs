@@ -209,6 +209,11 @@ namespace ConsoleAdventure.WorldEngine
         {
             renderer.Render(GetLocalPlayer(), Cursor.Instance.CursorPosition, Color.OrangeRed);
 
+            if (Input.OnClick(Keys.B))
+            {
+                Spawner.Spawn((Entity)Activator.CreateInstance(typeof(Explosion), new object[] { new Position(3, 3), ConsoleAdventure.StartDeep, null }), true); //new Explosion(new Position(3, 3), ConsoleAdventure.StartDeep)
+            }
+
             if (isCmdOpen)
             {
                 inputField.Update();
@@ -224,7 +229,7 @@ namespace ConsoleAdventure.WorldEngine
                     {
                         string pre = "You";
                         Loger.AddLog(Utils.StringMaxLengthOnLine(pre + ": " + inputField.text, 24));
-                        NetworkManager.SendMessage(NetworkManager.ActionID.chatMessage, Encoding.UTF8.GetBytes(inputField.text));
+                        NetworkManager.SendMessage(NetworkManager.ActionID.chatMessage, new byte[0], Encoding.UTF8.GetBytes(inputField.text));
                     }
                     inputField.text = "";
                     inputField.cursorPos = new();
