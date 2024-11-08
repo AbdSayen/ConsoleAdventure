@@ -209,11 +209,11 @@ namespace ConsoleAdventure.WorldEngine
         {
             renderer.Render(GetLocalPlayer(), Cursor.Instance.CursorPosition, Color.OrangeRed);
 
-            if (Input.OnClick(Keys.B))
-            {
-                Spawner.Spawn((Entity)Activator.CreateInstance(typeof(Explosion), new object[] { new Position(3, 3), ConsoleAdventure.StartDeep, null }), true); //new Explosion(new Position(3, 3), ConsoleAdventure.StartDeep)
-            }
+            ChatDraw();
+        }
 
+        public void ChatDraw()
+        {
             if (isCmdOpen)
             {
                 inputField.Update();

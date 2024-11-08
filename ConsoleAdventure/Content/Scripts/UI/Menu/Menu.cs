@@ -29,11 +29,15 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private InfoPanel aboutGamePanel = null;
 
-        private InfoPanel modListPanel = null;
+        private InfoPanel modDescription = null;
+
+        private TextListUI modDescriptionList = null;
 
         private InfoPanel serverNotFoundPanel = null;
 
         private TextInputField[] worldGenTextFields = new TextInputField[2];
+
+        private TextInputField[] modTextFields = new TextInputField[2];
 
         public int serverNotFoundTimer = 0;
 
@@ -70,6 +74,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             WorldGenMenuInit();
 
             ControlConfigInit();
+
+            ModCreateMenuInit();
         }
 
         public async void MenuUpdate()
@@ -87,6 +93,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
             WorldGenMenuUpdate();
 
             ControlConfigUpdate();
+
+            ModCreateMenuUpdate();
+
+            ModDescriptionUpdate();
 
             if (Input.IsKeyDown(InputConfig.NavigationBeck) && timer >= Utils.StabilizeTicks(20))
             {
@@ -600,74 +610,94 @@ namespace ConsoleAdventure.Content.Scripts.UI
         {
             if (State == MenuState.mods)
             {
-                if (Input.IsKeyDown(InputConfig.NavigationSelect) && timer >= Utils.StabilizeTicks(30))
+                if (Input.IsKeyDown(InputConfig.OpenLogs) && timer >= Utils.StabilizeTicks(30))
                 {
-                    Utils.OpenExplorerAtFolder(CaModLoader.modsDirPath);
+                    Utils.OpenExplorerAtFolder(AppDomain.CurrentDomain.BaseDirectory + "Content\\mods\\");
                     timer = 0;
                 }
-                
+
+                if (Input.PostClick(InputConfig.ModCreate))
+                {
+                    State = MenuState.modCreateMenu;
+                }
+
                 modList.Update(ref modsTimer);
                 modList.isHover = true;
+                modsTimer++;
             }
-            
-            else
-                modList.isHover = false;
 
-            modsTimer++;
-        }
-        
-        
+            else
+            {
+                modList.isHover = false;
+                modsTimer = 0;
+            }
+        }     
 
         private void ModsPanelDraw(SpriteBatch spriteBatch)
         {
             if (State == MenuState.mods)
             {
                 //modListPanel.Draw(spriteBatch);
-                //string navModHelp = TextAssets.navigModFolderHelp.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationSelect.key.ToString()));
-                //spriteBatch.DrawString(ConsoleAdventure.Font, navModHelp, new Vector2(ConsoleAdventure.Width / 2 - ConsoleAdventure.Font.MeasureString(navModHelp).X, ConsoleAdventure.Height - 25), Color.Gray);
-                
-                modList.Draw(spriteBatch);
-                
+                string ModNavHelp = Localization.GetTranslation("UI", "NavigationMod").Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationLeft.key.ToString())).Replace("[2]", Localization.GetTranslation("Keys", InputConfig.NavigationRight.key.ToString()));
+                spriteBatch.DrawString(ConsoleAdventure.Font, ModNavHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(ModNavHelp).X + 10), ConsoleAdventure.Height - 125), Color.Gray);
+                string ModNavHelp2 = Localization.GetTranslation("UI", "NavigationMod2").Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationSelect.key.ToString()));
+                spriteBatch.DrawString(ConsoleAdventure.Font, ModNavHelp2, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(ModNavHelp2).X + 10), ConsoleAdventure.Height - 175), Color.Gray);
+
+                string navModHelp = TextAssets.navigModFolderHelp.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.OpenLogs.key.ToString()));
+                spriteBatch.DrawString(ConsoleAdventure.Font, navModHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(navModHelp).X + 10), ConsoleAdventure.Height - 100), Color.Gray);
+                string ModNewHelp = TextAssets.modCreateHelp.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.WorldGen.key.ToString()));
+                spriteBatch.DrawString(ConsoleAdventure.Font, ModNewHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(ModNewHelp).X + 10), ConsoleAdventure.Height - 75), Color.Gray);
+
+                modList.Draw(spriteBatch);       
             }    
         }
 
-        /*private void ControlConfigUpdate()
+        internal void OpenModDescription(string text)
         {
-            if (State == MenuState.aboutControl)
+            modDescriptionList = new(text, 40, new(ConsoleAdventure.Width / 2 - (21 * 9), ConsoleAdventure.Height / 3), Color.White);
+            modDescriptionList.drawBuffer = 20;
+            modDescriptionList.startList = 0;
+            modDescriptionList.endList = 20;
+            modDescriptionList.height = 19;
+            State = MenuState.modDescription;
+        }
+
+        internal void CloseModDescription()
+        {
+            modDescriptionList = null;
+            State = MenuState.mods;
+        }
+
+        
+        private void ModDescriptionDraw(SpriteBatch spriteBatch)
+        {
+            if (modDescriptionList != null && State == MenuState.modDescription)
             {
-                if (Input.PostClick(InputConfig.ControlEdit) && controlTimer > 60)
-                {
-                    for (int i = 0; i < controlConfig.elements.Count; i++)
-                    {
-                        if (controlConfig.elements[i].isHover)
-                        {
-                            if (!((KeyPanel)controlConfig.elements[i]).flag) ((KeyPanel)controlConfig.elements[i]).flag = true;
-                            else if (((KeyPanel)controlConfig.elements[i]).flag) ((KeyPanel)controlConfig.elements[i]).flag = false;
-                            controlTimer = 0;
-                        }
-                    }
-                }
+                modDescriptionList.Draw(spriteBatch);
 
-                if (Input.PostClick(InputConfig.ControlReset) && controlTimer > 60)
-                {
-                    for (int i = 0; i < controlConfig.elements.Count; i++)
-                    {
-                        if (controlConfig.elements[i].isHover)
-                        {
-                            ((KeyPanel)controlConfig.elements[i]).key.key = Keys.None;
-                        }
-                    }
-                }
+                float sliderY = (((float)modDescriptionList.startList / (float)(modDescriptionList.elements.Count - 21)) * 19f);
+                Vector2 sliderPos = new Vector2(modDescriptionList.Position.X + (42 * 9), modDescriptionList.Position.Y + sliderY * 19);
 
-                controlConfig.Update(ref controlTimer);
-                controlConfig.isHover = true;
+                spriteBatch.DrawString(ConsoleAdventure.Font, "▴", new(sliderPos.X + 2, modDescriptionList.Position.Y - 15), Color.White);
+                spriteBatch.DrawString(ConsoleAdventure.Font, "█", sliderPos, Color.White);
+                spriteBatch.DrawString(ConsoleAdventure.Font, "▾", new(sliderPos.X + 2, modDescriptionList.Position.Y + 5 + 19.5f * 19), Color.White);
             }
+        }
 
-            if (State != MenuState.aboutControl)
-                controlConfig.isHover = false;
+        private void ModDescriptionUpdate()
+        {
+            if (modDescriptionList != null && State == MenuState.modDescription)
+            {
+                modDescriptionList.Update(ref timer);
+   
 
-            controlTimer++;
-        }*/
+                if (Input.PostClick(InputConfig.NavigationBeck))
+                {
+                    CloseModDescription();
+                }
+            }
+        }
+
         #endregion
 
         #region WorldLoadingProgress
@@ -947,6 +977,139 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         #endregion
 
+        #region ModCreateMenu
+
+        int MCErrorType = -1;
+
+        private void ModCreateMenuInit()
+        {
+            byte[] textFieldTypes = new byte[2] { 0, 1 };
+
+            for (int i = 0; i < textFieldTypes.Length; i++)
+            {
+                string text = "";
+                char[] chars = new char[] { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 
+                                            'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 
+                                            'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D',
+                                            'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M' };
+
+                bool charsType = TextInput.WhiteList;
+
+                switch (textFieldTypes[i])
+                {
+                    case 0:
+                        text = Localization.GetTranslation("UI", "ModNameField");
+                        break;
+                    case 1:
+                        text = Localization.GetTranslation("UI", "ModAuthorField");
+                        chars = new char[0];
+                        charsType = false;
+                        break;
+                }
+                int startPos = 400;
+                int indent = 20;
+
+                modTextFields[i] = new TextInputField(new Point((int)(ConsoleAdventure.Width / 2), startPos + (int)(indent * (i - 1.5f))), new Color(255, 255, 255), 15, 1, text, 0, chars, charsType);
+            }
+
+            modTextFields[0].isHover = true;
+        }
+
+        private void ModCreateMenuDraw(SpriteBatch spriteBatch)
+        {
+            if (State == MenuState.modCreateMenu)
+            {
+                for (int i = 0; i < modTextFields.Length; i++)
+                {
+                    modTextFields[i].Draw(spriteBatch);
+                }
+            }
+        }
+
+        private void ModCreateMenuUpdate()
+        {
+            if (State == MenuState.modCreateMenu)
+            {
+                ConsoleAdventure.BlockHotKey = true;
+                for (int i = 0; i < modTextFields.Length; i++)
+                {
+                    int waitTime = Utils.StabilizeTicks(20);
+
+                    if (Input.IsKeyDown(InputConfig.NavigationDown) && timer >= waitTime) //прокрутка 
+                    {
+                        if (modTextFields[i].isHover)
+                        {
+                            modTextFields[i].isHover = false;
+
+                            if (i != modTextFields.Length - 1) //перемещяем курсор
+                                modTextFields[i + 1].isHover = true;
+                            else
+                                modTextFields[0].isHover = true;
+
+                            timer = 0;
+                        }
+                    }
+
+                    if (Input.IsKeyDown(InputConfig.NavigationUp) && timer >= waitTime)
+                    {
+                        if (modTextFields[i].isHover)
+                        {
+                            modTextFields[i].isHover = false;
+
+                            if (i != 0)
+                                modTextFields[i - 1].isHover = true;
+                            else
+                                modTextFields[modTextFields.Length - 1].isHover = true;
+
+                            timer = 0;
+                        }
+                    }
+                }
+
+                if (Input.IsKeyDown(InputConfig.NavigationBeck))
+                {
+                    ConsoleAdventure.BlockHotKey = false;
+                }
+
+                if (Input.IsKeyDown(InputConfig.NavigationSelect))
+                {
+                    if (MCErrorType == -1)
+                    {
+                        ModCreator.CreateMod(modTextFields[0].text, modTextFields[1].text);
+                        ConsoleAdventure.BlockHotKey = false;      
+                    }
+
+                    else
+                    {
+                        return;
+                    }
+
+                    for (int i = 0; i < modTextFields.Length; i++)
+                    {
+                        modTextFields[i].text = "";
+                        modTextFields[i].cursorPos = new();
+                        modTextFields[i].isHover = false;
+                        modTextFields[i].color = Color.White;
+                        MCErrorType = -1;
+                    }
+
+                    modTextFields[0].isHover = true;
+
+                    State = MenuState.mods;
+                }
+
+                for (int i = 0; i < modTextFields.Length; i++)
+                {
+                    modTextFields[i].Update();
+                }
+
+                if (modTextFields[0].text == "") { MCErrorType = 0; }
+                else if (modTextFields[1].text == "") { MCErrorType = 0; }
+                else { MCErrorType = -1; }
+            }
+        }
+        #endregion
+
         public void CloseAllPages()
         {
             State = 0;
@@ -1005,6 +1168,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
             WorldGenMenuDraw(spriteBatch);
 
             ControlConfigDraw(spriteBatch);
+
+            ModCreateMenuDraw(spriteBatch);
+
+            ModDescriptionDraw(spriteBatch);
             
             spriteBatch.End();
         }

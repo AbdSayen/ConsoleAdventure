@@ -10,6 +10,8 @@
         mods,
         worldLoadingProgress,
         worldGenProgress,
-        wordGenMenu
+        wordGenMenu,
+        modCreateMenu,
+        modDescription,
     }
 }

@@ -99,7 +99,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     }
 
                     if (elements[i].isHover)
-                        ElementHandleInput(elements[i]);
+                    {
+                        ElementHandleInput(elements[i], ref timer);
+                        
+                    }
                 }
             }
         }
@@ -109,7 +112,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         }
 
-        public virtual void ElementHandleInput(BaseUI element)
+        public virtual void ElementHandleInput(BaseUI element, ref int timer)
         {
 
         }

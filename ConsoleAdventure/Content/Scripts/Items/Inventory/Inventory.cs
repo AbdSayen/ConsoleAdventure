@@ -111,6 +111,8 @@ namespace ConsoleAdventure
             if (count == -1) addCount = item.count; 
             else addCount = count;
 
+            loop:
+
             Type itemType = newItem.item.GetType();
             for (int i = 0; i < slots.Count; i++)  //Бегаем по инвентарю
             {
@@ -133,6 +135,8 @@ namespace ConsoleAdventure
                 slots.Add(new(newItem.item, realAddCount));
                 newItem.count -= realAddCount;
                 addCount -= realAddCount;
+
+                goto loop;
             }
 
             return newItem;

@@ -1,5 +1,6 @@
 ﻿using CaModLoaderAPI;
 using ConsoleAdventure.CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -32,12 +33,14 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+
+
             SpriteFont font = ConsoleAdventure.Font;
 
             if(isHover)
             {
                 cursorColor = Color.Yellow;
-                spriteBatch.DrawString(font, ">", Position + (new Vector2(9 * (46), 16 * (1 + cursor * 2))), Color.Yellow);
+                spriteBatch.DrawString(font, ">", Position + (new Vector2(9 * (46) - (cursor == 1 ? 9 : 0), 16 * (cursor == 0 ? 1 : 3))), Color.Yellow);
             }
 
             else

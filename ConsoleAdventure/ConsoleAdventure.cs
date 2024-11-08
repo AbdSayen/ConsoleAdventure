@@ -30,8 +30,8 @@ namespace ConsoleAdventure
         public static SpriteBatch _spriteBatch;
         private static SpriteFont font;
 
-        internal static World world;
-        internal static Display display;
+        public static World world;
+        public static Display display;
 
         public static List<Recipe> recipes = new List<Recipe>();
         public static List<Recipe> availableRecipes = new List<Recipe>();

@@ -115,7 +115,7 @@ namespace ConsoleAdventure
             cmd.StartInfo.UseShellExecute = false;
             cmd.Start();
 
-            cmd.StandardInput.WriteLine("explorer " + absolutePath);
+            cmd.StandardInput.WriteLine("explorer \"" + absolutePath + "\"");
             cmd.StandardInput.Flush();
             cmd.StandardInput.Close();
             cmd.WaitForExit();
