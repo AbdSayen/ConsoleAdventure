@@ -1,4 +1,5 @@
 ﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Networks;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,7 +38,8 @@ namespace ConsoleAdventure
         {
             chatMessage,
             entitySync,
-            entitySpawned
+            entitySpawned,
+            fieldContent
         }
 
         public static async Task<bool> ConnectClient()
@@ -198,6 +201,34 @@ namespace ConsoleAdventure
                             Entity newEntity = (Entity)Activator.CreateInstance(Transform.TypeMapping[type], new object[] { new Position(x, y), w, null });
                             newEntity.SetNetID();
                             Spawner.Spawn(newEntity);
+                            break;
+                        case ActionID.fieldContent:
+                            x = BitConverter.ToInt16(dat, 8);
+                            y = BitConverter.ToInt16(dat, 10);
+                            byte worldLayer = dat[12];
+                            w = dat[13];
+                            type = dat[14];
+                            byte isNull = dat[15];
+
+                            if (isNull == 1)
+                            {
+                                Loger.AddLog("isNull == 1 " + ConsoleAdventure.world.time.ToString());
+                                Field field = ConsoleAdventure.world.GetField(x, y, worldLayer, w);
+                                ConsoleAdventure.world.RemoveSubject(field.content, worldLayer);
+                            }
+                            else
+                            {
+                                Type t = Transform.TypeMapping[type];
+                                if (t == typeof(Loot))
+                                {
+                                    ConsoleAdventure.world.GetField(x, y, worldLayer, w).content = (Transform)Activator.CreateInstance(t, new object[] { new Position(x, y), w, SerializeData.Deserialize<List<Stack>>(buffer), -1 });
+                                }
+                                else
+                                {
+                                    ConsoleAdventure.world.GetField(x, y, worldLayer, w).content = (Transform)Activator.CreateInstance(t, new object[] { new Position(x, y), w, null });
+                                }
+                            }
+
                             break;
                     }
                 }

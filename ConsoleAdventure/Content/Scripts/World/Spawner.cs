@@ -15,7 +15,9 @@ public static class Spawner
     public static void Spawn(Entity entity, bool net = false)
     {
         ConsoleAdventure.world.entities.Add(entity);
-        if (!net) return; //NetworkManager.Id != 0 && 
+        if (!net) return;
+        if (NetworkManager.Id != 0)
+            return; //NetworkManager.Id != 0 && 
         entity.SetNetID();
         SpawnSync(entity);
     }

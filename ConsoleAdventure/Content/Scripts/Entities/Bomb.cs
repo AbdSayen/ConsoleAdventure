@@ -60,29 +60,7 @@ namespace ConsoleAdventure.Content.Scripts
                         {
                             for (int l = 0; l < 3; l++)
                             {
-                                Position destroyPos = new(positions[j].ToPosition().x - 1 + k, positions[j].ToPosition().y - 1 + l);
-                                Transform transform = ConsoleAdventure.world.GetField(destroyPos.x, destroyPos.y, World.BlocksLayerId, w)?.content;
-
-                                if (transform != null && transform.CanBeDestroyed())
-                                {
-                                    transform.degreeDestruction += (byte)(powers[j] - (int)transform.hardness);
-                                    powers[j] -= (byte)transform.hardness;
-
-                                    if (transform.degreeDestruction > 100)
-                                    {
-                                        if (ConsoleAdventure.rand.Next(0, powers[j]) > powers[j] / 2)
-                                        {
-                                            ConsoleAdventure.world.RemoveSubject(transform, World.BlocksLayerId);
-
-                                        }
-
-                                        else
-                                        {
-                                            transform.degreeDestruction /= 2;
-                                            transform.degreeDestruction = (byte)Math.Abs(transform.degreeDestruction);
-                                        }
-                                    }
-                                }
+                                if (NetworkManager.Id <= 0) Explosion(positions, powers, k, j, l);
 
                                 /*if(transform == null)
                                 {
@@ -109,9 +87,6 @@ namespace ConsoleAdventure.Content.Scripts
                                         new Descent(destroyPos, w, World.BlocksLayerId);
                                     }
                                 }*/
-                                
-                                if(ConsoleAdventure.world.GetField(destroyPos.x, destroyPos.y, World.MobsLayerId, w)?.content == null)
-                                    Spawner.Spawn(new Explosion(destroyPos, w));
                             }
                         }
 
@@ -124,6 +99,35 @@ namespace ConsoleAdventure.Content.Scripts
             }
 
             timer++;
+        }
+
+        private void Explosion(Vector2[] positions, byte[] powers, int k, int j, int l)
+        {
+            Position destroyPos = new(positions[j].ToPosition().x - 1 + k, positions[j].ToPosition().y - 1 + l);
+            Transform transform = ConsoleAdventure.world.GetField(destroyPos.x, destroyPos.y, World.BlocksLayerId, w)?.content;
+
+            if (transform != null && transform.CanBeDestroyed())
+            {
+                transform.degreeDestruction += (byte)(powers[j] - (int)transform.hardness);
+                powers[j] -= (byte)transform.hardness;
+
+                if (transform.degreeDestruction > 100)
+                {
+                    if (ConsoleAdventure.rand.Next(0, powers[j]) > powers[j] / 2)
+                    {
+                        ConsoleAdventure.world.RemoveSubject(transform, World.BlocksLayerId);
+                    }
+
+                    else
+                    {
+                        transform.degreeDestruction /= 2;
+                        transform.degreeDestruction = (byte)Math.Abs(transform.degreeDestruction);
+                    }
+                }
+            }
+
+            if (ConsoleAdventure.world.GetField(destroyPos.x, destroyPos.y, World.MobsLayerId, w)?.content == null)
+                Spawner.Spawn(new Explosion(destroyPos, w), true);
         }
 
         public override void OnTheScreen()

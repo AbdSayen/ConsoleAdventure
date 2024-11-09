@@ -45,6 +45,8 @@ namespace ConsoleAdventure.WorldEngine
 
         internal bool isInitialized = false;
 
+        public bool isLoaded = false;
+
         private bool _isFirstFrame = true;
 
         public bool isCmdOpen;
@@ -93,6 +95,8 @@ namespace ConsoleAdventure.WorldEngine
 
         public void Loaded()
         {
+            isLoaded = true;
+
             if (playersDat.ContainsKey(NetworkManager.pcId))
             {
                 GetLocalPlayer().LoadPlayerFromBytes(playersDat[NetworkManager.pcId]);
@@ -208,6 +212,11 @@ namespace ConsoleAdventure.WorldEngine
         public async void Render()
         {
             renderer.Render(GetLocalPlayer(), Cursor.Instance.CursorPosition, Color.OrangeRed);
+
+            if (Input.OnClick(Keys.Y))
+            {
+                Spawner.Spawn(new Bomb(new Position(5, 5), GetLocalPlayer().w), true);
+            }
 
             ChatDraw();
         }

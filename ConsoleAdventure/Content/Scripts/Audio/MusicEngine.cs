@@ -11,6 +11,7 @@ namespace ConsoleAdventure.Content.Scripts.Audio
     {
         public static Dictionary<string, Song> Songs {  get; private set; } = new Dictionary<string, Song>();
         public static string currentSong { get; private set; } = string.Empty;
+        private static int currentPriority = -1;
 
         private static float targetVolume = 1.0f;
         private static float fadeSpeed = 0.01f;
@@ -43,10 +44,12 @@ namespace ConsoleAdventure.Content.Scripts.Audio
             MediaPlayer.IsRepeating = true;
         }
 
-        public static async void ChangeSong(string newSong)
+        public static async void ChangeSong(string newSong, int priority = 0)
         {
-            if (currentSong == newSong || !Songs.ContainsKey(newSong))
+            if (currentSong == newSong || !Songs.ContainsKey(newSong) || priority < currentPriority)
                 return;
+
+            currentPriority = priority;
 
             // Плавное затухание текущего трека
             targetVolume = 0.0f;
@@ -59,6 +62,18 @@ namespace ConsoleAdventure.Content.Scripts.Audio
             Start(newSong);
 
             targetVolume = 1.0f;
+        }
+
+        public static async void StopSong()
+        {
+            currentPriority = -1;
+            targetVolume = 0.0f;
+            while (MediaPlayer.Volume > 0.0f)
+            {
+                await Task.Delay(10);
+            }
+
+            MediaPlayer.Stop();
         }
     }
 }
