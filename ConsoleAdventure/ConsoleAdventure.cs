@@ -196,12 +196,11 @@ namespace ConsoleAdventure
 
             CaModLoader.InitializeMods();
             menu = new Menu();
-            CaModLoader.RunMods();
 
             SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
             Command.InitCommands();
 
-            //ModCreator.CreateMod("NewMod", "None");
+            CaModLoader.RunMods();
         }
 
         protected override void LoadContent()

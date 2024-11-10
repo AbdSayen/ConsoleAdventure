@@ -30,7 +30,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             for (int i = 0; i < text.Length; i++)
             {
                 buffer.Append(text[i]);
-
+                
                 if (text[i] == ' ') 
                 {
                     lastSpace = buffer.Length;

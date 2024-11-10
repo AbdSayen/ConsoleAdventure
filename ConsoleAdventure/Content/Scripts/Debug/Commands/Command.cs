@@ -20,15 +20,23 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
         
         }
 
+        public static void addCommand(Command cmd)
+        {
+            if (!Commands.ContainsKey(cmd.Name))
+                Commands.Add(cmd.Name, cmd);
+        }
+
         public static void InitCommands()
         {
+            Commands.Clear();
+
             Type baseType = typeof(Command);
             IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType));
             
             foreach (Type type in list)
             {
                 Command cmd = (Command)Activator.CreateInstance(type);
-                Commands.Add(cmd.Name, cmd);
+                addCommand(cmd);
             }
         }
 
