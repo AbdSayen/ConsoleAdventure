@@ -198,7 +198,10 @@
     "Misc.Interaction": "Interact",
     "Misc.BuffsListedRight": "Buffs scrolling right",
     "Misc.BuffsListedLeft": "Buffs scrolling left",
-    "Misc.WorldExit": "Exit from world"
+    "Misc.WorldExit": "Exit from world",
+    "Misc.MapOpen": "Open/Close a map",
+    "Misc.MapZoom": "Map scale",
+    "Misc.MapW": "Change map level"
   },
 
   "Keys": {

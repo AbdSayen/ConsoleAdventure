@@ -84,6 +84,9 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
         public static Key BuffsPlus = new(Keys.OemCloseBrackets, "Misc.BuffsListedRight");
         public static Key BuffsMinus = new(Keys.OemOpenBrackets, "Misc.BuffsListedLeft");
         public static Key WorldExit = new(Keys.Escape, "Misc.WorldExit");
+        public static Key MapOpen = new (Keys.M, "Misc.MapOpen");
+        public static Key MapZoom = new(Keys.N, "Misc.MapZoom");
+        public static Key MapW = new(Keys.V, "Misc.MapW");
 
         #endregion
 

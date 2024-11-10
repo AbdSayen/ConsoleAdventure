@@ -75,6 +75,8 @@ namespace ConsoleAdventure
 
         public static ExceptionLogger logger;
 
+        public static Texture2D pixel;
+
         public static bool BlockHotKey { get; internal set; } = false;
 
         public static SpriteFont Font => font;
@@ -187,8 +189,10 @@ namespace ConsoleAdventure
             _graphics.ApplyChanges();
 
             Window.AllowUserResizing = true;
-
             base.Initialize();
+
+            pixel = new Texture2D(ConsoleAdventure._graphics.GraphicsDevice, 1, 1);
+            pixel.SetData(new Color[] { Color.Black });
 
             CaModLoader.InitializeMods();
             menu = new Menu();
@@ -332,8 +336,6 @@ namespace ConsoleAdventure
             {
                 _spriteBatch.Begin();
 
-                _spriteBatch.DrawString(font, $"FPS: {(int)frameRate}", new Vector2(10, _graphics.PreferredBackBufferHeight - 30), Color.White);
-
                 _spriteBatch.DrawString(font, display.DisplayInfo(), new Vector2(10, 10), Color.Gray);
                 _spriteBatch.DrawString(font, display.TransformTooltip(), new Vector2(197, 10), Color.Gray);
 
@@ -343,6 +345,8 @@ namespace ConsoleAdventure
                 CaModLoader.PostDrawWorldMods(_spriteBatch, gameTime, world);
 
                 display.DisplayInventory(new Vector2(_graphics.PreferredBackBufferWidth - 240, 10));
+
+                _spriteBatch.DrawString(font, $"FPS: {(int)frameRate}", new Vector2(10, _graphics.PreferredBackBufferHeight - 30), Color.White);
 
                 _spriteBatch.End();
             }

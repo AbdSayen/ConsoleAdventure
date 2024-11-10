@@ -125,6 +125,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
             }
         }
 
+        public Map map = new(); ////
+
         public override void InteractWithWorld()
         {
             if (!isActive) 
@@ -146,6 +148,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
                 return; 
             }
+
+            map.Update();
 
             UpdateBuffs();
 

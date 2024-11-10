@@ -30,6 +30,9 @@ namespace ConsoleAdventure
 
         private static Server server = null;
 
+
+
+
         /* ---- */
         public static int globalTransformsNetID = 0;
         private static Dictionary<int, Transform> NetIDToTransform = new Dictionary<int, Transform>();

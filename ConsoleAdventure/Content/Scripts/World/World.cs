@@ -213,10 +213,10 @@ namespace ConsoleAdventure.WorldEngine
         {
             renderer.Render(GetLocalPlayer(), Cursor.Instance.CursorPosition, Color.OrangeRed);
 
-            if (Input.OnClick(Keys.Y))
-            {
-                Spawner.Spawn(new Bomb(new Position(5, 5), GetLocalPlayer().w), true);
-            }
+            //if (Input.OnClick(Keys.Y))
+            //{
+            //    Spawner.Spawn(new Bomb(new Position(5, 5), GetLocalPlayer().w), true);
+            //}
 
             ChatDraw();
         }

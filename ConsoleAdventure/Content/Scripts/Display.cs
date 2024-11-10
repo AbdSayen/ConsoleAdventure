@@ -1,10 +1,14 @@
 ﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.Player;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace ConsoleAdventure
@@ -18,6 +22,12 @@ namespace ConsoleAdventure
 
         private World world;
         private static Vector2 barsPos;
+
+        public bool mapFlag = false;
+        public Point mapPos = new Point();
+        public bool zoom = true;
+        private Dictionary<Point, MapChunk> mapBuffer = new();
+        public int mapW = 1;
 
         public Display(World world)
         {
@@ -68,6 +78,113 @@ namespace ConsoleAdventure
             ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "♥", barsPos, Color.Red);
             ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, $"[{player.life}/{player.maxLife}]", barsPos + new Vector2(18, -19), new Color(80, 80, 80));
             hpBar.Draw(ConsoleAdventure._spriteBatch);
+        }
+
+        public void DrawMap()
+        {
+            Player player = world.GetLocalPlayer();
+
+            if (Input.PostClick(InputConfig.MapOpen) && !ConsoleAdventure.BlockHotKey)
+            {
+                if (mapFlag) mapFlag = false;
+                else if (!mapFlag) mapFlag = true;
+            }
+
+            if (mapFlag)
+            {
+                ConsoleAdventure._spriteBatch.Draw(ConsoleAdventure.pixel, Vector2.Zero, null, Color.Black, 0, Vector2.Zero, new Vector2(ConsoleAdventure.Width, ConsoleAdventure.Height), 0, 1);
+
+                mapBuffer.Clear();
+
+                if (Input.PostClick(InputConfig.NavigationUp)) mapPos.Y--;
+                if (Input.PostClick(InputConfig.NavigationDown)) mapPos.Y++;
+                if (Input.PostClick(InputConfig.NavigationLeft)) mapPos.X--;
+                if (Input.PostClick(InputConfig.NavigationRight)) mapPos.X++;
+
+                if (Input.PostClick(InputConfig.MapZoom) && !ConsoleAdventure.BlockHotKey)
+                {
+                    if (zoom) zoom = false;
+                    else if (!zoom) zoom = true;
+                }
+
+                if (Input.PostClick(InputConfig.MapW) && !ConsoleAdventure.BlockHotKey)
+                {
+                    if (mapW == 1) mapW = 0;
+                    else if (mapW == 0) mapW = 1;
+                }
+
+                if (zoom)
+                {
+                    for (int i = 0; i < player.map.data.Count; i++)
+                    {
+                        var chunk = player.map.data.ElementAt(i);
+
+                        if (chunk.Key.X >= mapPos.X && chunk.Key.X <= mapPos.X + 6 && chunk.Key.Y >= mapPos.Y && chunk.Key.Y <= mapPos.Y + 3)
+                        {
+                            mapBuffer.Add(chunk.Key, chunk.Value);
+                        }
+                    }
+
+                    for (int g = 0; g < mapBuffer.Count; g++)
+                    {
+                        var chunk = mapBuffer.ElementAt(g);
+
+                        for (int i = 0; i < 16; i++)
+                        {
+                            for (int j = 0; j < 16; j++)
+                            {
+                                MapField? mapField = chunk.Value.fields[i, j, mapW];
+                                if (mapField != null)
+                                {
+                                    byte l = mapField.Value.color.A;
+                                    ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "██", new(((chunk.Key.X - mapPos.X) * 18 * 16) + (i * 18), ((chunk.Key.Y - mapPos.Y) * 19 * 16) + (j * 19)), (mapField.Value.color.ToVector3() * (new Color(l, l, l)).ToVector3()).ToColor());
+                                }
+
+                            }
+                        }
+                    }
+
+                    if(player.w == mapW)
+                        ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "☻", new((player.position.x - (mapPos.X * 16)) * 18, (player.position.y - (mapPos.Y * 16)) * 19), Color.Yellow);
+                }
+
+                else
+                {
+                    for (int i = 0; i < player.map.data.Count; i++)
+                    {
+                        var chunk = player.map.data.ElementAt(i);
+
+                        if (chunk.Key.X >= mapPos.X && chunk.Key.X <= mapPos.X + 8 * 16 && chunk.Key.Y >= mapPos.Y && chunk.Key.Y <= mapPos.Y + 4 * 16)
+                        {
+                            mapBuffer.Add(chunk.Key, chunk.Value);
+                        }
+                    }
+
+                    for (int g = 0; g < mapBuffer.Count; g++)
+                    {
+                        var chunk = mapBuffer.ElementAt(g);
+
+                        MapField? mapField = chunk.Value.fields[0, 0, mapW];
+                        if (mapField != null)
+                        {
+                            byte l = mapField.Value.color.A;
+                            ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "██", new(((chunk.Key.X - mapPos.X) * 18), ((chunk.Key.Y - mapPos.Y) * 19)), (mapField.Value.color.ToVector3() * (new Color(l, l, l)).ToVector3()).ToColor());
+                        }
+                    }
+                    if (player.w == mapW)
+                        ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "☻", new(((player.position.x / 16) - mapPos.X) * 18, ((player.position.y / 16) - mapPos.Y) * 19), Color.Yellow);
+                }
+
+                string text = $"X:{mapPos.X * 16} Y:{mapPos.Y * 16} W:{mapW} ";
+                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, text, new(ConsoleAdventure.Width - ConsoleAdventure.Font.MeasureString(text).X, 0), Color.White);
+                string text1 = (zoom ? "1x1 " : "1x16 ");
+                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, text1, new(ConsoleAdventure.Width - ConsoleAdventure.Font.MeasureString(text1).X, 19), Color.White);
+            }
+
+            else
+            {
+                mapPos = ((player.position / 16) - new Position(1, 1)).ToPoint();
+            }
         }
 
         public void DisplayInventory(Vector2 position)
@@ -144,6 +261,8 @@ namespace ConsoleAdventure
             }
 
             ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "──────────────────────────\n" + Loger.GetLogs(), startLogs , Color.White);
+
+            DrawMap();
         }
 
         private Vector2 DrawItems(Inventory inventory, Vector2 position, int cursor)
