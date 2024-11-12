@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace ConsoleAdventure
 {
@@ -40,6 +41,16 @@ namespace ConsoleAdventure
                 hour++;
                 minute -= 60;
             }
+        }
+
+        public int GetDaySeconds()
+        {
+            return ((hour * 3600) + (minute * 60) + second);
+        }
+
+        public int GetAllSeconds()
+        {
+            return (day * 86400) + (hour * 3600) + (minute * 60) + second;
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ConsoleAdventure.WorldEngine;
 using System.ComponentModel;
 using System.Xaml.Permissions;
+using System.Threading;
 
 namespace ConsoleAdventure.Content.Scripts
 {
@@ -43,9 +44,39 @@ namespace ConsoleAdventure.Content.Scripts
         public static bool onPlaceLightSource = false;
         public static bool hackLight;
 
+        private static Color dayColor = Color.White;
+        private static Color nightColor = new(25, 25, 25);
+
+        public static Color GetSunLightColor()
+        {
+            Time time = ConsoleAdventure.world.time;
+            Color color = Color.Black;
+
+            if (time.hour >= 4 && time.hour <= 6)
+            {
+                int seconds = time.GetDaySeconds();
+                float amount = ((float)(seconds - (3600 * 4)) / 2) / 3600f;
+                color = Color.Lerp(nightColor, dayColor, amount);
+            }
+
+            else if (time.hour >= 20 && time.hour <= 22)
+            {
+                int seconds = time.GetDaySeconds();
+                float amount = ((float)(seconds - (3600 * 20)) / 2) / 3600f;
+                color = Color.Lerp(dayColor, nightColor, amount);
+            }
+
+            else if (time.hour > 6 && time.hour < 20)
+                color = dayColor;
+
+            else if (time.hour > 22 || time.hour < 4)
+                color = nightColor;
+
+            return color;
+        }
+
         public static void Update(Position start)
         {
-
             x = start.x - 30;
             y = start.y - 15;
             w = ConsoleAdventure.world.GetLocalPlayer().w;
@@ -53,7 +84,9 @@ namespace ConsoleAdventure.Content.Scripts
             Color color = Color.Black;
 
             if (w == ConsoleAdventure.StartDeep)
-                color = Color.White;
+            {
+                color = GetSunLightColor();
+            }
 
             if (hackLight)
                 color = Color.White;

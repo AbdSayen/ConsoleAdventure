@@ -42,7 +42,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void OnTheScreen()
         {
-            Light.Add(position.x, position.y, w, new Color(255, 255, 255), 8.5f);
+            Light.Add(position.x, position.y, w, Light.GetSunLightColor(), 8.5f);
         }
     }
 }
