@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using System.Linq;
@@ -38,8 +38,8 @@ namespace ConsoleAdventure.Content.Scripts
         private static int x;
         private static int y;
         private static int w;
-        private static int width = 61;
-        private static int height = 31;
+        public static int width = 61;
+        public static int height = 31;
 
         public static bool onPlaceLightSource = false;
         public static bool hackLight;
@@ -55,14 +55,14 @@ namespace ConsoleAdventure.Content.Scripts
             if (time.hour >= 4 && time.hour <= 6)
             {
                 int seconds = time.GetDaySeconds();
-                float amount = ((float)(seconds - (3600 * 4)) / 2) / 3600f;
+                float amount = ((float)(seconds - (3600 * 4)) / 3) / 3600f;
                 color = Color.Lerp(nightColor, dayColor, amount);
             }
 
             else if (time.hour >= 20 && time.hour <= 22)
             {
                 int seconds = time.GetDaySeconds();
-                float amount = ((float)(seconds - (3600 * 20)) / 2) / 3600f;
+                float amount = ((float)(seconds - (3600 * 20)) / 3) / 3600f;
                 color = Color.Lerp(dayColor, nightColor, amount);
             }
 
@@ -112,6 +112,8 @@ namespace ConsoleAdventure.Content.Scripts
                     }
                 }
             }*/
+
+            colors = new Color[width, height];
 
             for (int i = 0; i < width; i++)
             {
