@@ -1,6 +1,6 @@
 ﻿namespace ConsoleAdventure
 {
-    internal class TextAssets
+    public class TextAssets
     {
         public static string StartLogo = "";
 
