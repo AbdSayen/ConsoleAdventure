@@ -5,6 +5,7 @@ using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
+using ConsoleAdventure.Content.Scripts.WorldEngine.Events;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
