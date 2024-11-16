@@ -1,4 +1,4 @@
-﻿using ConsoleAdventure.Settings;
+using ConsoleAdventure.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,13 +9,26 @@ namespace ConsoleAdventure
 {
     public static class Localization
     {
-        static string[] localizeFiles = new string[2];
+        private static string[] localizeFiles = new string[2];
+        public static Dictionary<string, Dictionary<string, string>>[] Localizations = new Dictionary<string, Dictionary<string, string>>[2];
 
         public static void Load()
         {
-            
             localizeFiles[(int)Language.english] = File.ReadAllText("Content\\Localization\\en.json");
             localizeFiles[(int)Language.russian] = File.ReadAllText("Content\\Localization\\ru.json");
+
+            Localizations = new Dictionary<string, Dictionary<string, string>>[2];
+
+            for (int i = 0; i < localizeFiles.Length; i++)
+            {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+
+                Localizations[i] = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(localizeFiles[i], options);
+            }
         }
 
         public static string GetLanguageName(int id)
@@ -30,21 +43,6 @@ namespace ConsoleAdventure
             string languageName = language == (int)Language.english ? "English"
                                 : language == (int)Language.russian ? "Russian"
                                 : "None";
-
-            Dictionary<string, Dictionary<string, string>>[] Localizations = new Dictionary<string, Dictionary<string, string>>[2];
-
-            Load();
-
-            for (int i = 0; i < localizeFiles.Length; i++)
-            {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-
-                Localizations[i] = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(localizeFiles[i], options);
-            }
 
             if (language < 0 || language >= Localizations.Length)
             {
