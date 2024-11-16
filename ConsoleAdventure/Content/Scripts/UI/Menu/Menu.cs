@@ -41,6 +41,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public int serverNotFoundTimer = 0;
 
+        public bool onlineMods = false;
+
         private static int worldDrawBuffer = 6;
 
         private int startWList, endWList = worldDrawBuffer;
@@ -587,14 +589,39 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         ModList modList = null;
 
-        private void ModsPanelInit()
+        public async void ModsPanelInit()
         {
             List<BaseUI> mods = new();
 
-            for (int i = 0; i < CaModLoader.allMods.Count; i++)
+            if (onlineMods)
             {
-                IMod modData = CaModLoader.allMods[i];
-                mods.Add(new ModPanel(new(0, 0, 0, 0), modData));
+                connectingToOnlineMods = true;
+                List<IMod> onlineModsInst = await CaModLoader.GetOnlineMods();
+
+                if (onlineModsInst == null)
+                {
+                    cantGetOnlineMods = 180;
+
+                    onlineMods = false;
+                    connectingToOnlineMods = false;
+                    ConsoleAdventure.menu.State = MenuState.mainScreen;
+                    return;
+                }
+
+                for (int i = 0; i < onlineModsInst.Count; i++)
+                {
+                    IMod modData = onlineModsInst[i];
+                    mods.Add(new OnlineModPanel(new(0, 0, 0, 0), modData));
+                }
+                connectingToOnlineMods = false;
+            }
+            else
+            {
+                for (int i = 0; i < CaModLoader.allMods.Count; i++)
+                {
+                    IMod modData = CaModLoader.allMods[i];
+                    mods.Add(new ModPanel(new(0, 0, 0, 0), modData));
+                }
             }
 
             modList = new("", new(ConsoleAdventure.Width / 2.78f, ConsoleAdventure.Height / 4 + 50), mods, Color.White);
@@ -605,11 +632,21 @@ namespace ConsoleAdventure.Content.Scripts.UI
         }
         
         int modsTimer;
+        bool connectingToOnlineMods = false;
+        int cantGetOnlineMods = 0;
+        public int connectionLost = 0;
 
         private void ModsPanelUpdate()
         {
             if (State == MenuState.mods)
             {
+                if (Input.IsKeyDown(Keys.O) && timer >= Utils.StabilizeTicks(30))
+                {
+                    onlineMods = !onlineMods;
+                    ModsPanelInit();
+                    timer = 0;
+                }
+
                 if (Input.IsKeyDown(InputConfig.OpenLogs) && timer >= Utils.StabilizeTicks(30))
                 {
                     Utils.OpenExplorerAtFolder(AppDomain.CurrentDomain.BaseDirectory + "Content\\mods\\");
@@ -635,21 +672,41 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private void ModsPanelDraw(SpriteBatch spriteBatch)
         {
+            if (cantGetOnlineMods > 0)
+            {
+                cantGetOnlineMods--;
+                string ModConnectingInfo = "Cant connect to online mods list :(";
+                spriteBatch.DrawString(ConsoleAdventure.Font, ModConnectingInfo, new Vector2(ConsoleAdventure.Width / 2 - ConsoleAdventure.Font.MeasureString(ModConnectingInfo).X / 2, ConsoleAdventure.Height - 50), Color.Gray);
+            }
+
+            if (connectionLost > 0)
+            {
+                connectionLost--;
+                string ModConnectingInfo = "Connection lost while mod downloading :(";
+                spriteBatch.DrawString(ConsoleAdventure.Font, ModConnectingInfo, new Vector2(ConsoleAdventure.Width / 2 - ConsoleAdventure.Font.MeasureString(ModConnectingInfo).X / 2, ConsoleAdventure.Height - 50), Color.Gray);
+            }
+
             if (State == MenuState.mods)
             {
                 //modListPanel.Draw(spriteBatch);
                 string ModNavHelp = Localization.GetTranslation("UI", "NavigationMod").Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationLeft.key.ToString())).Replace("[2]", Localization.GetTranslation("Keys", InputConfig.NavigationRight.key.ToString()));
                 spriteBatch.DrawString(ConsoleAdventure.Font, ModNavHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(ModNavHelp).X + 10), ConsoleAdventure.Height - 125), Color.Gray);
                 string ModNavHelp2 = Localization.GetTranslation("UI", "NavigationMod2").Replace("[1]", Localization.GetTranslation("Keys", InputConfig.NavigationSelect.key.ToString()));
-                spriteBatch.DrawString(ConsoleAdventure.Font, ModNavHelp2, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(ModNavHelp2).X + 10), ConsoleAdventure.Height - 175), Color.Gray);
+                spriteBatch.DrawString(ConsoleAdventure.Font, ModNavHelp2, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(ModNavHelp2).X + 10), ConsoleAdventure.Height - 200), Color.Gray);
 
                 string navModHelp = TextAssets.navigModFolderHelp.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.OpenLogs.key.ToString()));
                 spriteBatch.DrawString(ConsoleAdventure.Font, navModHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(navModHelp).X + 10), ConsoleAdventure.Height - 100), Color.Gray);
                 string ModNewHelp = TextAssets.modCreateHelp.Replace("[1]", Localization.GetTranslation("Keys", InputConfig.WorldGen.key.ToString()));
                 spriteBatch.DrawString(ConsoleAdventure.Font, ModNewHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(ModNewHelp).X + 10), ConsoleAdventure.Height - 75), Color.Gray);
 
+                if (connectingToOnlineMods)
+                {
+                    string ModConnectingInfo = "Connecting to server and try get online mods...";
+                    spriteBatch.DrawString(ConsoleAdventure.Font, ModConnectingInfo, new Vector2(ConsoleAdventure.Width/2 - ConsoleAdventure.Font.MeasureString(ModConnectingInfo).X/2, ConsoleAdventure.Height - 50), Color.Gray);
+                }
+
                 modList.Draw(spriteBatch);       
-            }    
+            }
         }
 
         internal void OpenModDescription(string text)

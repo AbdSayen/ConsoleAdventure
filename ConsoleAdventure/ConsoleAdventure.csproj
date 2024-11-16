@@ -31,6 +31,7 @@
   <ItemGroup>
     <Folder Include="Content\AudioFiles\Music\" />
     <Folder Include="Content\Effects\" />
+    <Folder Include="Content\mods\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

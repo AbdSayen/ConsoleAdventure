@@ -13,6 +13,13 @@ using ConsoleAdventure.Content.Scripts;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Net.Http;
+using System.IO.Compression;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection.Metadata;
+using System.Security.Policy;
+using System.Text;
 
 namespace ConsoleAdventure
 {
@@ -33,6 +40,125 @@ namespace ConsoleAdventure
         public static List<Type> modTransforms = new List<Type>();
 
         public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();  // [0] - items, [1] - blocks
+
+        public static async Task DownloadMod(string modName)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                ConsoleAdventure.progressBar.stepText = $"Downloading mod '{modName}'";
+                ConsoleAdventure.progressBar.Progress = 0;
+                ConsoleAdventure.menu.State = Content.Scripts.UI.MenuState.worldLoadingProgress;
+
+                //string s = await client.GetStringAsync("https://consoleadventureofficial.github.io/bins/" + modName);
+
+                long? responseLength = 0;
+                StringBuilder sb = null;
+
+                try
+                {
+                    using (HttpResponseMessage response = await client.GetAsync("https://consoleadventureofficial.github.io/bins/" + modName, HttpCompletionOption.ResponseHeadersRead))
+                    {
+                        responseLength = response.Content.Headers.ContentLength;
+                        if (responseLength.HasValue)
+                        {
+                            using (Stream responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                            using (StreamReader rdr = new StreamReader(responseStream))
+                            {
+                                sb = new StringBuilder(capacity: (int)responseLength.Value); // Note that `capacity` is in 16-bit UTF-16 chars, but responseLength is in bytes, though assuming UTF-8 it evens-out.
+
+                                Char[] charBuffer = new Char[4096];
+                                while (true)
+                                {
+                                    int read = await rdr.ReadAsync(charBuffer).ConfigureAwait(false);
+                                    sb.Append(charBuffer, 0, read);
+
+                                    if (read == 0)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        lock (sb)
+                                        {
+                                            //Program.game.Window.Title = String.Format(CultureInfo.CurrentCulture, "Read {0:N0} / {1:N0} chars (or bytes).", sb.Length, responseLength.Value);
+                                            ConsoleAdventure.progressBar.Progress = (uint)(((float)sb.Length / responseLength.Value) * 100f);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    ConsoleAdventure.menu.connectionLost = 180;
+                    ConsoleAdventure.menu.CloseAllPages();
+                    return;
+                }
+
+                byte[] data = Convert.FromBase64String(sb.ToString());
+
+                using (MemoryStream memoryStream = new MemoryStream(data))
+                {
+                    using (ZipArchive zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Read))
+                    {
+                        string modDirPath = modsDirPath + "\\" + modName;
+                        if (Directory.Exists(modDirPath))
+                            Directory.Delete(modDirPath, true);
+                        Directory.CreateDirectory(modDirPath);
+                        zipArchive.ExtractToDirectory(modDirPath);
+                    }
+                }
+            }
+
+            ConsoleAdventure.menu.onlineMods = false;
+            PreLoadMods();
+            await ReloadMods();
+            ConsoleAdventure.menu.ModsPanelInit();
+            ConsoleAdventure.menu.State = Content.Scripts.UI.MenuState.mods;
+        }
+
+        public static async Task<List<IMod>> GetOnlineMods()
+        {
+            Dictionary<string, Dictionary<string, Dictionary<string, string>>> modb = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+
+            using (HttpClient client = new HttpClient())
+            {
+                string s = "";
+                try
+                {
+                    s = await client.GetStringAsync("https://consoleadventureofficial.github.io/mods");
+                }
+                catch (HttpRequestException ex)
+                {
+                    return null;
+                }
+                modb = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(s);
+            }
+
+            List<IMod> onlineMods = new List<IMod>();
+
+            for (int i = 0; i < modb.Count; i++)
+            {
+                string modDir = modb.Keys.ToArray()[i];
+
+                var modSettings = modb[modDir]["Settings"];
+
+                EmptyMod modData = new()
+                {
+                    dirName = modDir,
+                    modName = modSettings["Name"],
+                    modAuthor = modSettings["Author"],
+                    modVersion = modSettings["Version"],
+                    modDescription = modSettings["Description"],
+                    modIcon = CharTexture.Read(modSettings["Icon"])
+                };
+
+                onlineMods.Add(modData);
+            }
+
+            return onlineMods;
+        }
 
         public static void EnableMod(string mod)
         {

@@ -19,7 +19,10 @@ using System.Collections.Generic;
 using System.Drawing.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Security.Policy;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -172,7 +175,7 @@ namespace ConsoleAdventure
             display = new Display(world);
         }
 
-        protected override void Initialize()
+        protected override async void Initialize()
         {
             logger.AddMessage("Initializing...");
             display = new Display(world);

@@ -2,20 +2,25 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleAdventure.Content.Scripts.UI
 {
     internal class ModList : ListUI
     {
+
         public ModList(string text, Vector2 position, List<BaseUI> elements, Color color) : base(text, position, elements, color)
         {
             height = 34 * 3;
         }
 
-        public override void ElementHandleInput(BaseUI element, ref int timer)
+        public override async void ElementHandleInput(BaseUI element, int timer)
         {
             ModPanel modPanel = element as ModPanel;
 
@@ -23,16 +28,30 @@ namespace ConsoleAdventure.Content.Scripts.UI
             {
                 if (modPanel.cursor == 0)
                 {
-                    modPanel.enabled = !modPanel.enabled;
-
-                    if (modPanel.enabled)
+                    if (!ConsoleAdventure.menu.onlineMods)
                     {
-                        CaModLoader.EnableMod(modPanel.mod.dirName);
+                        modPanel.enabled = !modPanel.enabled;
+
+                        if (modPanel.enabled)
+                        {
+                            CaModLoader.EnableMod(modPanel.mod.dirName);
+                        }
+                        else
+                        {
+                            CaModLoader.DisableMod(modPanel.mod.dirName);
+                        }
                     }
                     else
                     {
-                        CaModLoader.DisableMod(modPanel.mod.dirName);
+                        // Seting up the http client used to download the data
+                        using (var client = new HttpClient())
+                        {
+                            //client.Timeout = TimeSpan.FromMinutes(5);
+
+                            await CaModLoader.DownloadMod(modPanel.mod.dirName);
+                        }
                     }
+                    
                     timer = 0;
                 }
 

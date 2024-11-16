@@ -10,10 +10,12 @@ namespace ConsoleAdventure
         public static readonly string savePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleAdventure\\";
         public static readonly string pcIdPath = savePath + "pc.id";
 
+        public static ConsoleAdventure game = new ConsoleAdventure();
+
         [STAThreadAttribute]
         public static void Main()
         {
-            var game = new ConsoleAdventure();
+            game = new ConsoleAdventure();
 
             try
             {
