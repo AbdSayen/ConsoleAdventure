@@ -14,6 +14,7 @@ namespace ConsoleAdventure
             description = GetDescription();
             damage = 1;
             damageClass = 1;
+            maxCount = 1;
             AddTypeToMap<IronSword>();
         }
 

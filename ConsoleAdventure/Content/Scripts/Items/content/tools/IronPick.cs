@@ -13,6 +13,7 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Items", "IronPick");
             description = GetDescription();
             pick = 10;
+            maxCount = 1;
             AddTypeToMap<IronPick>();
         }
 

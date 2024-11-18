@@ -272,7 +272,7 @@ namespace ConsoleAdventure
 
             for (int i = 0; i < inventory.slots.Count; i++)
             {
-                inventory.slots[i].item.Draw(ConsoleAdventure._spriteBatch, position + new Vector2(0, i * 19));
+                inventory.slots[i].Item.Draw(ConsoleAdventure._spriteBatch, position + new Vector2(0, i * 19));
 
                 Color color = Color.White;
 
@@ -280,13 +280,13 @@ namespace ConsoleAdventure
                 {
                     color = Color.Yellow;
                     ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, ">", position + new Vector2(-18, i * 19), color);
-                    string description = "──────────────────────────\n" + inventory.slots[i].item.description;
+                    string description = "──────────────────────────\n" + inventory.slots[i].Item.description;
                     ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, description, startDescription, Color.White);
                     startLogs.Y += ConsoleAdventure.Font.MeasureString(description).Y;
 
                 }
 
-                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, inventory.slots[i].item.name + (inventory.slots[i].count > 1 ? $" ({inventory.slots[i].count})" : ""), position + new Vector2(18, i * 19), color);
+                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, inventory.slots[i].Item.name + (inventory.slots[i].count > 1 ? $" ({inventory.slots[i].count})" : ""), position + new Vector2(18, i * 19), color);
             }
 
             return startLogs;

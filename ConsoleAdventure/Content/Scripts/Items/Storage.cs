@@ -36,7 +36,7 @@ namespace ConsoleAdventure
 
             for (int i = 0; i < items.Count; i++)
             {
-                output += $"{items[i].item.name} {items[i].count}\n";
+                output += $"{items[i].Item.name} {items[i].count}\n";
             }
 
             return output;

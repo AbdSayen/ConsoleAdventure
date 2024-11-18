@@ -23,7 +23,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         {
             SpriteFont font = ConsoleAdventure.Font;
 
-            if(isHover)
+            if (isHover)
             {
                 cursorColor = Color.Yellow;
                 spriteBatch.DrawString(font, ">", Position + (new Vector2(9 * (46) - (cursor == 1 ? 9 : 0), 16 * (cursor == 0 ? 1 : 3))), Color.Yellow);
@@ -38,18 +38,42 @@ namespace ConsoleAdventure.Content.Scripts.UI
             spriteBatch.DrawFrame(font, Utils.GetPanel(new(50, 5), 0), Position, cursorColor);
             spriteBatch.DrawFrame(font, Utils.GetPanel(new(9, 5), 0), Position, cursorColor);
             //spriteBatch.DrawString(font, " Λ \n╱ ╲", Position + (new Vector2(14, 19) * 1), Color.White);
-            
-            if(mod == null) return;
-            
+
+            if (mod == null) return;
+
             mod.modIcon.Draw(spriteBatch, Position + (new Vector2(14, 19) * 1));
 
             spriteBatch.DrawString(font, TextAssets.Name + mod.modName, Position + (new Vector2(9 * 10, 19 * 1)), Color.White);
             spriteBatch.DrawString(font, TextAssets.Author + mod.modAuthor, Position + (new Vector2(9 * 10, 19 * 2)), Color.White);
             spriteBatch.DrawString(font, TextAssets.Version + mod.modVersion, Position + (new Vector2(9 * 10, 19 * 3)), Color.Gray);
 
-            spriteBatch.DrawString(font, "↓", Position + (new Vector2(9 * 47, 19 * 0.8f)), Color.LightBlue);
-            spriteBatch.DrawString(font, "_", Position + (new Vector2(9 * 47, 19 * 0.8f)), Color.LightBlue);
-            spriteBatch.DrawString(font, "...", Position + (new Vector2(9 * 45.5f, 19 * 3)), Color.White);
+            bool isDownloaded = false;
+
+            if (mod != null)
+            {
+                for (int i = 0; i < CaModLoader.allMods.Count; i++)
+                {
+                    if (CaModLoader.allMods[i].modName == mod.modName)
+                    {
+                        isDownloaded = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!isDownloaded)
+            {
+                spriteBatch.DrawString(font, "↓", Position + (new Vector2(9 * 47 + 1, 19 * 0.8f)), Color.LightBlue);
+                spriteBatch.DrawString(font, "_", Position + (new Vector2(9 * 47, 19 * 0.8f)), Color.LightBlue);
+                spriteBatch.DrawString(font, "...", Position + (new Vector2(9 * 45.5f, 19 * 3)), Color.White);
+            }
+
+            else
+            {
+                spriteBatch.DrawString(font, "↓", Position + (new Vector2(9 * 47 - 2, 19 * 0.9f)), Color.LightBlue);
+                spriteBatch.DrawString(font, "↑", Position + (new Vector2(9 * 47 + 4 , 19 * 0.9f)), Color.LightBlue);
+                spriteBatch.DrawString(font, "...", Position + (new Vector2(9 * 45.5f, 19 * 3)), Color.White);
+            }
         
             if(mod is Mod)
             {

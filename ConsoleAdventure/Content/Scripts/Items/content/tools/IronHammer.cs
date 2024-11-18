@@ -13,6 +13,7 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Items", "IronHammer");
             description = GetDescription();
             hammer = 1;
+            maxCount = 1;
             AddTypeToMap<IronHammer>();
         }
 

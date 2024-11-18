@@ -119,7 +119,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public override void OnTheScreen()
         {
-            if (inventory.slots.Count > 0 && holdItemIndex > -1 && holdItemIndex < inventory.slots.Count && inventory.slots[holdItemIndex].item is TorchItem)
+            if (inventory.slots.Count > 0 && holdItemIndex > -1 && holdItemIndex < inventory.slots.Count && inventory.slots[holdItemIndex].Item is TorchItem)
             {
                 Light.Add(position, w, Color.White);
             }
@@ -202,7 +202,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             if (holdItemIndex > 0 && holdItemIndex < inventory.slots.Count)
             {
-                Item curItem = inventory.slots[holdItemIndex].item;
+                Item curItem = inventory.slots[holdItemIndex].Item;
                 if (curItem.damageClass == 1 && curItem.damage > 0 && ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use.key))
                 {
                     for (int i = 0; i < world.entities.Count; i++)
@@ -405,7 +405,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             if (Input.IsKeyDown(InputConfig.Use) && inventory.slots?.Count > 0 && holdItemIndex < inventory.slots.Count && !ConsoleAdventure.BlockHotKey)
             {
-                Item item0 = inventory.slots[holdItemIndex].item;
+                Item item0 = inventory.slots[holdItemIndex].Item;
 
                 if (item0.GetType().BaseType == typeof(PlaceableItem))
                 {
@@ -440,9 +440,9 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
 
                 Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId, w).content;
-                if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].item.pick > 0 && t.hardness > 0)
+                if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].Item.pick > 0 && t.hardness > 0)
                 {
-                    t.degreeDestruction += (byte)Math.Abs(inventory.slots[holdItemIndex].item.pick / t.hardness);
+                    t.degreeDestruction += (byte)Math.Abs(inventory.slots[holdItemIndex].Item.pick / t.hardness);
                     if (t.degreeDestruction >= 100)
                     {
                         world.RemoveSubject(t, World.BlocksLayerId);
@@ -450,13 +450,13 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
 
                 Transform t1 = world.GetField(targetPosition.x, targetPosition.y, World.FloorLayerId, w).content;
-                if (t1?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.FloorLayerId) && inventory.slots[holdItemIndex].item.hammer > 0)
+                if (t1?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.FloorLayerId) && inventory.slots[holdItemIndex].Item.hammer > 0)
                 {
                     world.RemoveSubject(t1, World.FloorLayerId);
                 }
 
                 Transform t2 = world.GetField(targetPosition.x, targetPosition.y, World.ItemsLayerId, w).content;
-                if (t2?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.ItemsLayerId) && t2 is Chest && inventory.slots[holdItemIndex].item.pick > 0)
+                if (t2?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.ItemsLayerId) && t2 is Chest && inventory.slots[holdItemIndex].Item.pick > 0)
                 {
                     world.RemoveSubject(t2, World.ItemsLayerId);
                 }

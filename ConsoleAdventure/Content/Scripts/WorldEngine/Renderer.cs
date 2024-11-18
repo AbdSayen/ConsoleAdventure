@@ -5,11 +5,13 @@ using ConsoleAdventure.Content.Scripts.Player;
 using System.Threading;
 using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Content.Scripts.IO;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ConsoleAdventure.WorldEngine
 {
     public class Renderer
     {
+        private World world;
         private int viewDistanceY = 30;
         private int viewDistanceX = 60;
 
@@ -25,7 +27,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public Renderer()
         {
-          
+
         }
 
         int timer;
@@ -33,10 +35,15 @@ namespace ConsoleAdventure.WorldEngine
         int oldW;
         public void Render(Transform observer, Position cursorPosition, Color cursorColor)
         {
+            world = ConsoleAdventure.world;
+
             ConsoleAdventure.startDisplay = observer.position - new Position(30, 15);
             ConsoleAdventure.endDisplay = observer.position + new Position(30, 15);
 
-            int X = 0, Y = 0;
+            SpriteBatch spriteBatch = ConsoleAdventure._spriteBatch;
+            SpriteFont font = ConsoleAdventure.Font;
+            Vector2 worldPos = ConsoleAdventure.worldPos;
+            Vector2 cellSize = ConsoleAdventure.cellSize;
 
             Light.Clear();
             StringPaint.Clear();
@@ -45,67 +52,80 @@ namespace ConsoleAdventure.WorldEngine
             {
                 for (int j = -11; j < 61 + 11; j++)
                 {
-                    Field field = ConsoleAdventure.world.GetField(i + ConsoleAdventure.startDisplay.x, j + ConsoleAdventure.startDisplay.y, World.BlocksLayerId, observer.w);
-                    Field field1 = ConsoleAdventure.world.GetField(i + ConsoleAdventure.startDisplay.x, j + ConsoleAdventure.startDisplay.y, World.MobsLayerId, observer.w);
+                    int x = i + ConsoleAdventure.startDisplay.x;
+                    int y = j + ConsoleAdventure.startDisplay.y;
 
-                    if (field?.content != null)
+                    Transform t1 = ConsoleAdventure.world.GetField(x, y, World.BlocksLayerId, observer.w)?.content;
+                    Transform t2 = ConsoleAdventure.world.GetField(x, y, World.MobsLayerId, observer.w)?.content;
+
+                    if (t1 != null)
                     {
-                        field.content.OnTheScreen();
+                        t1.OnTheScreen();
                     }
 
-                    if (field1?.content != null)
+                    if (t2 != null)
                     {
-                        field1.content.OnTheScreen();
+                        t2.OnTheScreen();
                     }
                 }
             }
 
-            ConsoleAdventure._spriteBatch.DrawFrame(ConsoleAdventure.Font, Utils.GetPanel(new(122, 32)), new(ConsoleAdventure.worldPos.X - (ConsoleAdventure.cellSize.X / 2) + 4, ConsoleAdventure.worldPos.Y - ConsoleAdventure.cellSize.Y), new Color(50, 50, 50));
-            
-            if (observer.position != oldPosition || observer.w != oldW)
-                Light.Update(observer.position);
+            spriteBatch.DrawFrame(font, Utils.GetPanel(new(122, 32)), new(worldPos.X - (cellSize.X / 2) + 4, worldPos.Y - cellSize.Y), new Color(50, 50, 50));
 
-            else if (timer % 5 == 0)
-                Light.Update(observer.position);
-
-            for (int y = observer.position.y - viewDistanceY / 2; y < observer.position.y + viewDistanceY / 2; y++)
+            if (observer.position != oldPosition || observer.w != oldW || timer % 5 == 0)
             {
-                if (y >= 0 && y < ConsoleAdventure.world.chunks.GetLength(1) * Chunk.Size)
+                Light.Update(observer.position);
+            }
+
+            int noClampedStartY = observer.position.y - viewDistanceY / 2;
+            int noClampedStartX = observer.position.x - viewDistanceX / 2;
+
+            int startY = Math.Clamp(noClampedStartY, 0, world.size);
+            int startX = Math.Clamp(noClampedStartX, 0, world.size);
+            int endY = Math.Clamp(observer.position.y + viewDistanceY / 2, 0, world.size);
+            int endX = Math.Clamp(observer.position.x + viewDistanceX / 2, 0, world.size);
+
+            int nx = 0;
+            int X = 0;
+            int Y = 0;
+       
+            if (noClampedStartX < 0) { nx = -noClampedStartX; X = nx; }
+            if (noClampedStartY < 0) { Y = -noClampedStartY; }
+
+            for (int y = startY; y < endY; y++)
+            {
+                for (int x = startX; x < endX; x++)
                 {
-                    for (int x = observer.position.x - viewDistanceX / 2; x < observer.position.x + viewDistanceX / 2; x++)
+                    Chunk chunk = GetChunk(x, y);
+                    Vector3 lightColor = Light.colors[X, Y].ToVector3();
+
+                    for (int z = 0; z < World.CountOfLayers; z++)
                     {
-                        if (x >= 0 && x < ConsoleAdventure.world.chunks.GetLength(0) * Chunk.Size)
+                        Field field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, z, observer.w);
+
+                        if (field?.content != null)
                         {
-                            var chunk = GetChunk(x, y);
-                            Vector3 lightColor = Light.colors[X, Y].ToVector3();
-                            for (int z = 0; z < World.CountOfLayers; z++)
+                            Transform transform = field.content;
+                            Vector2 drawPos = new Vector2((X * cellSize.X) + worldPos.X, (Y * cellSize.Y) + worldPos.Y);
+
+                            if (transform.GetBGColor() != null)
                             {
-                                var field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, z, observer.w);
+                                spriteBatch.DrawString(font, "██", drawPos, (((Color)transform.GetBGColor()).ToVector3() * lightColor).ToColor());
+                            }
 
-                                if (field != null && field.content != null)
-                                {
+                            spriteBatch.DrawString(font, field.GetSymbol(), drawPos, (Color)((transform.GetColor()).ToVector3() * lightColor).ToColor());
 
-                                    if (field.content?.GetBGColor() != null)
-                                    {
-                                        ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "██", new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), (((Color)field.content.GetBGColor()).ToVector3() * lightColor).ToColor());
-                                    }
-
-                                    ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, field.GetSymbol(), new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), (Color)((field.content.GetColor()).ToVector3() * lightColor).ToColor());
-                                
-                                    if(field.content.degreeDestruction > 16)
-                                    {
-                                        int destroyIndex = (int)(((float)field.content.degreeDestruction) / 16);
-                                        destroyIndex = destroyIndex > 5 ? 5 : destroyIndex;
-                                        ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, destroys[destroyIndex], new Vector2((X * ConsoleAdventure.cellSize.X) + ConsoleAdventure.worldPos.X, (Y * ConsoleAdventure.cellSize.Y) + ConsoleAdventure.worldPos.Y), Color.Black);
-                                    }
-                                }
+                            if (transform.degreeDestruction > 16)
+                            {
+                                int destroyIndex = (int)(((float)transform.degreeDestruction) / 16);
+                                destroyIndex = destroyIndex > 5 ? 5 : destroyIndex;
+                                spriteBatch.DrawString(font, destroys[destroyIndex], drawPos, Color.Black);
                             }
                         }
-                        X++;
                     }
+                    X++;
                 }
-                Y++;
-                X = 0;
+                Y++; X = nx;
             }
 
             StringPaint.DrawUnits((ConsoleAdventure.startDisplay).ToVector2());
@@ -132,9 +152,10 @@ namespace ConsoleAdventure.WorldEngine
         {
             int chunkX = x / Chunk.Size;
             int chunkY = y / Chunk.Size;
-            if (chunkX >= 0 && chunkX < ConsoleAdventure.world.chunks.GetLength(0) && chunkY >= 0 && chunkY < ConsoleAdventure.world.chunks.GetLength(1))
+
+            if (chunkX >= 0 && chunkX < world.chunks.GetLength(0) && chunkY >= 0 && chunkY < world.chunks.GetLength(1))
             {
-                return ConsoleAdventure.world.chunks[chunkX, chunkY];
+                return world.chunks[chunkX, chunkY];
             }
             return null;
         }

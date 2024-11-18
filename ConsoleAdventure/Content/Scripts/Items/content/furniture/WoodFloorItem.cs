@@ -14,6 +14,7 @@ namespace ConsoleAdventure
             description = GetDescription();
             placeType = (int)RenderFieldType.woodFloor;
             placeLayer = World.FloorLayerId;
+            maxCount = 100;
             AddTypeToMap<WoodFloorItem>();
         }
 

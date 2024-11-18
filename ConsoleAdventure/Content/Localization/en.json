@@ -100,7 +100,7 @@
     "NavigationMod": "press \"[1],[2]\" to switch between \"x/√\",\"...\"",
     "NavigationModFolder": "press \"[1]\" to open mods folder",
     "NavigationWorld": "        press \"[1]\" for '►' for play\n      press \"[1]\" for '≡' for rename\npress \"[1]\" for 'Ս' for delete world",
-    "NavigationMod2": "      press \"O\" to switch between \"Online/Local\" Mods\n         нажмите \"[1]\" на \"x/√\", чтобы вкл/выкл мод\nнажмите \"[1]\" на \"...\", чтобы открыть описание мода",
+    "NavigationMod2": "      press \"O\" to switch between \"Online/Local\" Mods\n          press \"[1]\" for \"x/√\", for on/off the mod\n    press \"[1]\" for \"...\", for open mod description",
     "Paused": "*Paused*",
     "Play": "Play",
     "RecipeBook": "Recipe book",

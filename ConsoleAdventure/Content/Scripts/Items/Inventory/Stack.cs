@@ -6,18 +6,35 @@ namespace ConsoleAdventure
     [Serializable]
     public class Stack
     {
-        public Item item { get; private set; }
+        private Item item { get; set; }
+
+        public Item Item 
+        {
+            get
+            {
+                return item;
+            } 
+            
+            private set
+            {
+                item = value;
+                maxStackCount = item.maxCount;
+            } 
+        }
+
         public int count { get; set; }
+
         public int maxStackCount { get; private set; } = 50;
+
         public Stack(Item item, int count = 1)
         {
-            this.item = item;
+            this.Item = item;
             this.count = count;
         }
 
         public string GetInfo()
         {
-            return $"{((Item)item).name} ({count})";
+            return $"{((Item)Item).name} ({count})";
         }
 
         public void AddItems(int count = 1)
@@ -31,9 +48,9 @@ namespace ConsoleAdventure
         public Stack Copy()
         {
             Stack copy = (Stack)MemberwiseClone();
-            if (item != null)
+            if (Item != null)
             {
-                copy.item = item;
+                copy.Item = Item;
             }
 
             return copy;

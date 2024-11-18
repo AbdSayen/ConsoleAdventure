@@ -178,7 +178,7 @@ namespace ConsoleAdventure.Content.Scripts
                 if (xA == x && yA == y) break;
 
                 Transform transform = ConsoleAdventure.world.GetField(xA, yA, World.BlocksLayerId, w)?.content;
-                if (transform != null && transform.isObstacle == true)
+                if (transform?.isObstacle == true)
                 {
                     wallCount++;
                 }

@@ -6,30 +6,30 @@ using System.Collections.Generic;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class FloorItem : PlaceableItem
+    public class GraniteFloorItem : PlaceableItem
     {
-        public FloorItem()
+        public GraniteFloorItem()
         {
-            name = Localization.GetTranslation("Transforms", "Floor");
+            name = Localization.GetTranslation("Transforms", "GraniteFloorItem");
             description = GetDescription();
-            placeType = (int)RenderFieldType.floor;
+            placeType = (int)RenderFieldType.graniteFloor;
             placeLayer = World.FloorLayerId;
             maxCount = 100;
-            AddTypeToMap<FloorItem>();
+            AddTypeToMap<GraniteFloorItem>();
         }
 
         public override (List<string>, List<Color>) GetTexture()
         {
             return (
-                    new List<string>() { "." },
-                    new List<Color>() { Color.Gray}
+                    new List<string>() { "~" },
+                    new List<Color>() { new(45, 45, 45) }
                    );
         }
 
         public override Recipe AddRecipe()
         {
             Recipe recipe = new Recipe(new Stack(this, 2));
-            recipe.AddIngredient(new StoneItem(), 1);
+            recipe.AddIngredient(new GraniteItem(), 1);
             recipe.AddStation((int)RenderFieldType.workbench);
             return recipe;
         }

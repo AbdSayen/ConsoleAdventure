@@ -100,7 +100,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             for (int i = 0; i < recipes.Count; i++)
             {
-                recipes[i].OutItem.item.Draw(spriteBatch, Position + new Vector2(x * 18, y * 19));
+                recipes[i].OutItem.Item.Draw(spriteBatch, Position + new Vector2(x * 18, y * 19));
 
                 if (i == cursorPos)
                 {
@@ -119,8 +119,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             if (cursorPos >= 0 && cursorPos < recipes.Count)
             {
                 Recipe recipe = recipes[cursorPos];
-                recipe.OutItem.item.Draw(spriteBatch, Position + new Vector2(18, size.Y * 19));
-                string name = recipe.OutItem.item.name + (recipes[cursorPos].OutItem.count > 1 ? $" ({recipe.OutItem.count})" : "") + " :";
+                recipe.OutItem.Item.Draw(spriteBatch, Position + new Vector2(18, size.Y * 19));
+                string name = recipe.OutItem.Item.name + (recipes[cursorPos].OutItem.count > 1 ? $" ({recipe.OutItem.count})" : "") + " :";
                 spriteBatch.DrawString(ConsoleAdventure.Font, name, Position + new Vector2(36, size.Y * 19), color);
 
                 Vector2 nameSize = ConsoleAdventure.Font.MeasureString(name);

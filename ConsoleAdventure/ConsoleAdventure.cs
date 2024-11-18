@@ -263,7 +263,6 @@ namespace ConsoleAdventure
             kstate = Keyboard.GetState();
 
             MouseState currentMouseState = Mouse.GetState();
-
             if (currentMouseState.X != mouse.X || currentMouseState.Y != mouse.Y)
                 mousePosition = new Vector2(currentMouseState.X, currentMouseState.Y);
 

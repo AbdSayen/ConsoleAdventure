@@ -103,7 +103,7 @@ namespace ConsoleAdventure
 
         public Stack AddItem(Stack item, int count = -1)
         {
-            if (!item.item.CanBePickedUp()) return item; //Пропускаем если предмет нельзя поднять
+            if (!item.Item.CanBePickedUp()) return item; //Пропускаем если предмет нельзя поднять
 
             Stack newItem = item;
             int addCount;
@@ -113,10 +113,10 @@ namespace ConsoleAdventure
 
             loop:
 
-            Type itemType = newItem.item.GetType();
+            Type itemType = newItem.Item.GetType();
             for (int i = 0; i < slots.Count; i++)  //Бегаем по инвентарю
             {
-                if (slots[i].item.GetType() == itemType) //Проверяем, что тип предмета в слоте равен типу добавляемого
+                if (slots[i].Item.GetType() == itemType) //Проверяем, что тип предмета в слоте равен типу добавляемого
                 {
                     int maxCount = slots[i].maxStackCount;
                     if (slots[i].count < maxCount)
@@ -131,8 +131,8 @@ namespace ConsoleAdventure
 
             if (newItem.count > 0 && slots.Count < maxCount && addCount > 0) //это нужно чтобы новые итемы добавлялись
             {
-                int realAddCount = Math.Min(addCount, newItem.item.maxCount); //это нужно чтобы не добавить больше максимума стака
-                slots.Add(new(newItem.item, realAddCount));
+                int realAddCount = Math.Min(addCount, newItem.Item.maxCount); //это нужно чтобы не добавить больше максимума стака
+                slots.Add(new(newItem.Item, realAddCount));
                 newItem.count -= realAddCount;
                 addCount -= realAddCount;
 
@@ -161,7 +161,7 @@ namespace ConsoleAdventure
             int total = 0;
             foreach (var slot in slots)
             {
-                if (slot.item.name == item.name)
+                if (slot.Item.GetType() == item.GetType())
                 {
                     total += slot.count;
                     if (total >= count)
@@ -182,7 +182,7 @@ namespace ConsoleAdventure
                 int itemsToRemove = count;
                 for (int i = 0; i < slots.Count; i++)
                 {
-                    if (slots[i].item.name == item.name)
+                    if (slots[i].Item.name == item.name)
                     {
                         if (slots[i].count <= itemsToRemove)
                         {
