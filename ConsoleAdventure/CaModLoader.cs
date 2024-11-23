@@ -229,6 +229,8 @@ namespace ConsoleAdventure
         {
             if (reload)
             {
+                UnloadMods();
+
                 disabledMods = new();
                 modsIdsMap = new();
                 modItems = new();
@@ -416,6 +418,14 @@ namespace ConsoleAdventure
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].PostDrawWorld(spriteBatch, gameTime, world);
+            }
+        }
+
+        public static void UnloadMods()
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].Unload();
             }
         }
 

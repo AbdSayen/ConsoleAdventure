@@ -99,5 +99,10 @@ namespace CaModLoaderAPI
         {
             
         }
+
+        public virtual void Unload()
+        {
+            
+        }
     }
 }
