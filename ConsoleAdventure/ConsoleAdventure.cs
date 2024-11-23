@@ -195,7 +195,7 @@ namespace ConsoleAdventure
             Window.AllowUserResizing = true;
             base.Initialize();
 
-            pixel = new Texture2D(ConsoleAdventure._graphics.GraphicsDevice, 1, 1);
+            pixel = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             pixel.SetData(new Color[] { Color.Black });
 
             CaModLoader.InitializeMods();
@@ -323,7 +323,6 @@ namespace ConsoleAdventure
                     Exit();
                 }
             }
-
             base.Update(gameTime);
         }
         int animTimer;

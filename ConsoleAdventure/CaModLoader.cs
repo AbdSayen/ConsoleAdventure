@@ -200,6 +200,11 @@ namespace ConsoleAdventure
         {
             enabledMods = ReadSavedEnabledMods();
 
+            if (!Directory.Exists(modsDirPath)) 
+            {
+                Directory.CreateDirectory(modsDirPath);
+            }
+
             modsPath = Directory.GetDirectories(modsDirPath); // Получаем все папки из папки модов
         }
 

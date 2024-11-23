@@ -184,6 +184,8 @@ namespace ConsoleAdventure.WorldEngine
                         GameEvent.Events[i].Update();
                     }
                 }
+
+                Spawner.Update();
             }
 
             if (timer > (10 * 60 * 60) && NetworkManager.Id <= 0)

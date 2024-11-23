@@ -133,14 +133,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
             string[] names = new string[1];
             int[] seeds = new int[1];
 
-            try
+            names = Directory.GetFiles(path, fileType);
+            seeds = new int[names.Length];
+
+            StringBuilder sb = new();
+
+            for (int i = 0; i < names.Length; i++)
             {
-                names = Directory.GetFiles(path, fileType);
-                seeds = new int[names.Length];
-
-                StringBuilder sb = new();
-
-                for (int i = 0; i < names.Length; i++) 
+                try
                 {
                     names[i] = Path.GetFileNameWithoutExtension(names[i]);
                     if (getSeed)
@@ -155,13 +155,13 @@ namespace ConsoleAdventure.Content.Scripts.IO
                     if (print)
                         sb.Append("\n    [" + names[i] + " / " + seeds[i] + "]");
                 }
+                catch (Exception ex)
+                {
+                    ConsoleAdventure.logger.AddMessage($"An error occurred: {ex.Message}");
+                }
+            }
 
-                ConsoleAdventure.logger.AddMessage($"Found {names.Length} world(s):{sb}\n");
-            }
-            catch (Exception ex)
-            {
-                ConsoleAdventure.logger.AddMessage($"An error occurred: {ex.Message}");
-            }
+            ConsoleAdventure.logger.AddMessage($"Found {names.Length} world(s):{sb}\n");
 
             return (names, seeds);
         }

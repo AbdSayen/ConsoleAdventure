@@ -11,18 +11,16 @@ namespace ConsoleAdventure.WorldEngine
     public struct SpawnCondition
     {
         private short mobType = (short)RenderFieldType.entity;
-        private short probability = 0;
-        public Range wRange = new(-1, -1);
-        public List<short> bioms = new();
+        private double probability = 0;
+        public Range wRange = new(0, 0);
+        public List<short> biomes = new();
 
-        public short Probability
+        public double Probability
         {
             get { return probability; }
             set
             {
-                if (value < 0) probability = 0;
-                else if (value > 100) probability = 100;
-                else probability = value;
+                probability = Math.Clamp(value, 0, 1);
             }
         }
 
@@ -42,11 +40,11 @@ namespace ConsoleAdventure.WorldEngine
             }
         }
 
-        public SpawnCondition(short mobType, Range wRange, List<short> bioms, short probability)
+        public SpawnCondition(short mobType, Range wRange, List<short> biomes, double probability)
         {
             MobType = mobType;
             this.wRange = wRange; 
-            this.bioms = bioms; 
+            this.biomes = biomes; 
             Probability = probability;
         }
     }
