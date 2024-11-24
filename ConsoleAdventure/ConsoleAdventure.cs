@@ -175,7 +175,7 @@ namespace ConsoleAdventure
             display = new Display(world);
         }
 
-        protected override async void Initialize()
+        protected override void Initialize()
         {
             logger.AddMessage("Initializing...");
             display = new Display(world);
