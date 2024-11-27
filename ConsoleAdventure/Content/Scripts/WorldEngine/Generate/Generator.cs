@@ -1,6 +1,8 @@
 ﻿using ConsoleAdventure.Content.Scripts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +14,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
         private readonly int size;
         private readonly World world;
 
+        private Dictionary<int, List<EmptyGenerator>> generatorsPriorityMatrix = new Dictionary<int, List<EmptyGenerator>>();
         private List<EmptyGenerator> pipeline = new List<EmptyGenerator>();
 
         public static Random GenRand { get; private set; }
@@ -22,18 +25,42 @@ namespace ConsoleAdventure.WorldEngine.Generate
             this.size = size;
             this.world = world;
 
-            AddGeneratorToPipeline(new LandspaceGenerator());
-            AddGeneratorToPipeline(new StructureGenerator());
-            AddGeneratorToPipeline(new CaveGenerator());
+            if (CaModLoader.WorldGeneratorPreBuildPipelineMods(this))
+            {
+                AddGeneratorToPipeline(new StructureGenerator(), 100);
+                AddGeneratorToPipeline(new LandspaceGenerator(), 200);
+                AddGeneratorToPipeline(new CaveGenerator(), 300);
+            }
+
+            CaModLoader.WorldGeneratorBuildPipelineMods(this);
         }
 
-        public void AddGeneratorToPipeline(EmptyGenerator generator)
+        public void AddGeneratorToPipeline(EmptyGenerator generator, int order = -1)
         {
-            pipeline.Add(generator);
+            if (!generatorsPriorityMatrix.ContainsKey(order))
+                generatorsPriorityMatrix.Add(order, new List<EmptyGenerator> { generator });
+            else
+                generatorsPriorityMatrix[order].Add(generator);
+        }
+
+        private void ConvertPrioritiesToPipeline()
+        {
+            SortedDictionary<int, List<EmptyGenerator>> srtd = new SortedDictionary<int, List<EmptyGenerator>>(generatorsPriorityMatrix);
+            List<int> keys = srtd.Keys.ToList();
+            for (int i = 0; i < keys.Count; i++)
+            {
+                List<EmptyGenerator> v = srtd[keys[i]];
+                for (int j = 0; j < v.Count; j++)
+                {
+                    pipeline.Add(v[j]);
+                }
+            }
         }
 
         public async Task Generate(int seed, bool isfullGenerate = true)
         {
+            ConvertPrioritiesToPipeline();
+
             GenRand = new Random(seed);
             ConsoleAdventure.world.seed = seed;
 

@@ -21,6 +21,7 @@ using System.Reflection.Metadata;
 using System.Security.Policy;
 using System.Text;
 using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.WorldEngine.Generate;
 
 namespace ConsoleAdventure
 {
@@ -379,6 +380,27 @@ namespace ConsoleAdventure
             {
                 mods[i].WorldLoaded(world);
             }
+        }
+
+        public static void WorldGeneratorBuildPipelineMods(Generator generator)
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].WorldGeneratorBuildPipeline(generator);
+            }
+        }
+
+        public static bool WorldGeneratorPreBuildPipelineMods(Generator generator)
+        {
+            bool generate = true;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                bool d = mods[i].WorldGeneratorPreBuildPipeline(generator);
+                if (generate)
+                    generate = d;
+            }
+
+            return generate;
         }
 
         public static void WorldPostGenerateMods(World world)

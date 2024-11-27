@@ -1,6 +1,7 @@
 ﻿using ConsoleAdventure.CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.WorldEngine.Generate;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -101,6 +102,16 @@ namespace CaModLoaderAPI
         }
 
         public virtual void WorldPostGenerate(World world)
+        {
+
+        }
+
+        public virtual bool WorldGeneratorPreBuildPipeline(Generator generator)
+        {
+            return true;
+        }
+
+        public virtual void WorldGeneratorBuildPipeline(Generator generator)
         {
 
         }
