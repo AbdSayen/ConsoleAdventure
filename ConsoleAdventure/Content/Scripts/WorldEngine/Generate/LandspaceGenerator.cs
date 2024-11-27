@@ -3,16 +3,17 @@ using ConsoleAdventure.Settings;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {
-    public class LandspaceGenerator
+    public class LandspaceGenerator : EmptyGenerator
     {
-        private World world;
-
-        public void Generate(World world)
+        public override async Task Generate(World world)
         {
-            this.world = world;
+            await base.Generate(world);
+
+            processHint = "Generating trees...";
 
             //new Chest(new(1, 1), ConsoleAdventure.StartDeep, new List<Stack>() { new Stack(new Apple(), 50) });
 
@@ -56,6 +57,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                             }
                         }
                     }
+
+                    processProgress = (int)((float)(y * world.size + x) / (world.size * world.size) * 100);
                 }
             }
         }

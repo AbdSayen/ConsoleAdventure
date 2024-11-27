@@ -166,12 +166,12 @@ namespace ConsoleAdventure
             } 
         }*/
 
-        public static void CreateWorld(string name, int seed, bool isfullGenerate = true, bool inMultiplayer = false)
+        public static async Task CreateWorld(string name, int seed, bool isfullGenerate = true, bool inMultiplayer = false)
         {
             world = new World(name, seed);
             world.inMultiplayer = inMultiplayer;
    
-            world.Initialize(isfullGenerate);
+            await world.Initialize(isfullGenerate);
             display = new Display(world);
         }
 

@@ -9,7 +9,7 @@ namespace ConsoleAdventure
         static string path = Program.savePath + "ModSources\\";
         static string dll = "ConsoleAdventure.dll";
 
-        static string csprojText = "<Project Sdk=\"Microsoft.NET.Sdk\">\r\n\r\n  <PropertyGroup>\r\n    <TargetFramework>net6.0-windows</TargetFramework>\r\n    <ImplicitUsings>enable</ImplicitUsings>\r\n    <Nullable>enable</Nullable>\r\n  </PropertyGroup>\r\n\r\n  <ItemGroup>\r\n    <PackageReference Include=\"MonoGame.Framework.DesktopGL\" Version=\"3.8.1.303\" />\r\n  </ItemGroup>\r\n\r\n  <ItemGroup>\r\n    <Reference Include=\"ConsoleAdventure\">\r\n      <HintPath>..\\ConsoleAdventure.dll</HintPath>\r\n    </Reference>\r\n  </ItemGroup>\r\n\r\n</Project>";
+        static string csprojText = "<Project Sdk=\"Microsoft.NET.Sdk\">\r\n\r\n  <PropertyGroup>\r\n    <TargetFramework>net6.0-windows</TargetFramework>\r\n    <ImplicitUsings>enable</ImplicitUsings>\r\n    <Nullable>enable</Nullable>\r\n  </PropertyGroup>\r\n\r\n  <ItemGroup>\r\n    <PackageReference Include=\"MonoGame.Framework.DesktopGL\" Version=\"3.8.1.303\" />\r\n  </ItemGroup>\r\n\r\n  <ItemGroup>\r\n    <Reference Include=\"ConsoleAdventure\">\r\n      <HintPath>..\\..\\ConsoleAdventure.dll</HintPath>\r\n    </Reference>\r\n  </ItemGroup>\r\n\r\n</Project>";
 
         static string GetModClass(string name)
         {
@@ -38,7 +38,7 @@ namespace ConsoleAdventure
 
             Directory.CreateDirectory(modDirectory);
 
-            File.Copy(AppDomain.CurrentDomain.BaseDirectory + dll, path + name + "\\" + dll);
+            File.Copy(AppDomain.CurrentDomain.BaseDirectory + dll, path + "\\" + dll);
 
             File.WriteAllText(modDirectory + name + ".csproj", csprojText);
             File.WriteAllText(modDirectory + name + ".cs", GetModClass(name));

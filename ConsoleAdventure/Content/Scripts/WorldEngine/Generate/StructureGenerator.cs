@@ -1,19 +1,23 @@
 ﻿using ConsoleAdventure.Generate.Structures;
+using System.Threading.Tasks;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {
-    public class StructureGenerator
+    public class StructureGenerator : EmptyGenerator
     {
-        private World world;
-        public void Generate(World world) 
+        public override async Task Generate(World world) 
         {
-            this.world = world;
+            await base.Generate(world);
+
+            processHint = "Building Houses...";
 
             //House.Build(new Position(30, 30), 10, 10, Rotation.up);
             //GenerateHouses();
 
             Position startPosition = new Position(30, 30);
             new House(startPosition, 25, 25);
+
+            processProgress = 100;
         }
 
         /*private bool CheckGeneratePossibility(Position startPosition, int sizeX, int sizeY)

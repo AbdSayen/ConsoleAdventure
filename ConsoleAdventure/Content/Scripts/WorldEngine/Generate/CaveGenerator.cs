@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {
-    public class CaveGenerator
+    public class CaveGenerator : EmptyGenerator
     {
-        private World world;
-
         int walkerCount = 45;
         int descentCount = 5;
 
@@ -21,9 +19,12 @@ namespace ConsoleAdventure.WorldEngine.Generate
         int[] S = new int[] { 3, 5, 6, 7, 8 }; //
         int steps = 15;
 
-        public void Generate(World world)
+        public override async Task Generate(World world)
         {
-            this.world = world;
+            await base.Generate(world);
+
+            processHint = "Digging Caves...";
+
             GenStone(0);
         }
 
@@ -35,6 +36,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 {
                     new Floor(new(i, j), w);
                     new Stone(new(i, j), w);
+
+                    processProgress = (int)((float)(i * world.size + j) / (world.size * world.size) * 100);
                 }
             }
 
@@ -42,6 +45,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
             {
                 Vector2 diraction = new(((float)Generator.GenRand.Next(0, 100)) / 10f, ((float)Generator.GenRand.Next(0, 100)) / 10f);
                 WorldGenUtils.RandomWalker(Generator.GenRand.Next(0, ConsoleAdventure.world.size), Generator.GenRand.Next(0, ConsoleAdventure.world.size), w, Generator.GenRand.Next(40, 101), diraction, MathHelper.ToDegrees(5), Generator.GenRand.Next(3, 7), 0, World.BlocksLayerId);
+
+                processProgress = (int)((float)i / walkerCount * 100);
             }
 
             //постоброботка.
@@ -61,6 +66,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     {
                         world.GetField(i, j, 1, w).content = null;
                     }
+
+                    processProgress = (int)((float)(i * cells.GetLength(0) + j) / (cells.GetLength(0) * cells.GetLength(1)) * 100);
                 }
             }
 
@@ -88,6 +95,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     {
                         new Quartz(new(i, j), w);
                     }
+
+                    processProgress = (int)((float)(i * world.size + j) / (world.size * world.size) * 100);
                 }
             }
 
@@ -109,6 +118,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
                 new Climb(descentPos, w);
                 new Descent(descentPos, w + 1);
+
+                processProgress = (int)((float)i / descentCount * 100);
             }
 
             for (int i = 0; i < 70; i++)
@@ -143,6 +154,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                         }
                     }
                 }
+
+                processProgress = (int)((float)i / 70 * 100);
             }
 
             for (int i = 1; i < world.size - 1; i++)
@@ -154,6 +167,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     {
                         new Water(new(i, j), w);
                     }
+
+                    processProgress = (int)((float)(i * world.size + j) / (world.size * world.size) * 100);
                 }
             }
 
@@ -165,6 +180,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 {
                     GenerateStalactitesArea(stalactitePos + new Position(Generator.GenRand.Next(-15, 15), Generator.GenRand.Next(-15, 15)), Generator.GenRand.Next(5, 25), Generator.GenRand.Next(5, 25), w);
                 }
+
+                processProgress = (int)((float)i / 21 * 100);
             }
 
             for (int i = 0; i < 8; i++)
@@ -187,6 +204,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     {
                         new Stalactite(curPos, w);
                     }
+
+                    processProgress = (int)((float)(i * width + j) / (width * height) * 100);
                 }
             }
         }

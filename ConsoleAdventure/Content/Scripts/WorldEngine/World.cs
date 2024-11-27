@@ -12,6 +12,7 @@ using ConsoleAdventure.Content.Scripts.Debug.Commands;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using System.Text;
 using ConsoleAdventure.Content.Scripts.WorldEngine.Events;
+using System.Threading.Tasks;
 
 
 namespace ConsoleAdventure.WorldEngine
@@ -79,17 +80,19 @@ namespace ConsoleAdventure.WorldEngine
             playersDat = new Dictionary<string, byte[]>();
         }
 
-        public void Initialize(bool isfullGenerate = true)
+        public async Task Initialize(bool isfullGenerate = true)
         {
             if (!isInitialized)
             {
-                generator.Generate(seed, isfullGenerate);
+                ConsoleAdventure.menu.State = MenuState.worldLoadingProgress;
+                await Task.Run(() => generator.Generate(seed, isfullGenerate));
+                ConsoleAdventure.menu.State = MenuState.worldMenu;
+                CaModLoader.WorldPostGenerateMods(this);
                 LoadInMultiplayer();
 
                 if (players.Count > 0)
                 {
                     GameEvent.InitEvents();
-                    CaModLoader.WorldLoadedMods(this);
                     isInitialized = true;
                 }
             }
@@ -103,6 +106,8 @@ namespace ConsoleAdventure.WorldEngine
             {
                 GetLocalPlayer().LoadPlayerFromBytes(playersDat[NetworkManager.pcId]);
             }
+
+            CaModLoader.WorldLoadedMods(this);
         }
 
         private async void LoadInMultiplayer()

@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Reflection.Metadata;
 using System.Security.Policy;
 using System.Text;
+using ConsoleAdventure.Content.Scripts.IO;
 
 namespace ConsoleAdventure
 {
@@ -358,25 +359,33 @@ namespace ConsoleAdventure
 
         public static void InitializeMods()
         {
-            foreach (Mod mod in mods)
+            for (int i = 0; i < mods.Count; i++)
             {
-                mod.Init();
+                mods[i].Init();
             }
         }
 
         public static void RunMods()
         {
-            foreach (Mod mod in mods)
+            for (int i = 0; i < mods.Count; i++)
             {
-                mod.Run();
+                mods[i].Run();
             }
         }
 
         public static void WorldLoadedMods(World world)
         {
-            foreach (Mod mod in mods)
+            for (int i = 0; i < mods.Count; i++)
             {
-                mod.WorldLoaded(world);
+                mods[i].WorldLoaded(world);
+            }
+        }
+
+        public static void WorldPostGenerateMods(World world)
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].WorldPostGenerate(world);
             }
         }
 

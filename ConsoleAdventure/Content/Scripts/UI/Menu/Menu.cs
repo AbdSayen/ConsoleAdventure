@@ -846,7 +846,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             }
         }
 
-        private void WorldGenMenuUpdate()
+        private async Task WorldGenMenuUpdate()
         {
             if (State == MenuState.wordGenMenu)
             {
@@ -917,7 +917,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             name += countIdenticalWorldName;
                         }
                         
-                        ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text)); //"World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000)
+                        await ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text)); //"World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000)
                         WorldIO.Save(ConsoleAdventure.world.name);
                         worldPanels.Clear();
                         ConsoleAdventure.BlockHotKey = false;

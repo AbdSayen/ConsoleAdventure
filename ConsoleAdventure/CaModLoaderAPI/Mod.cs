@@ -100,6 +100,11 @@ namespace CaModLoaderAPI
             
         }
 
+        public virtual void WorldPostGenerate(World world)
+        {
+
+        }
+
         public virtual void Unload()
         {
             

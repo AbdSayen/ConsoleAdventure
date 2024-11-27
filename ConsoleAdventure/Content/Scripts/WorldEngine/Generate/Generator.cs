@@ -1,6 +1,8 @@
 ﻿using ConsoleAdventure.Content.Scripts;
 using System;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace ConsoleAdventure.WorldEngine.Generate
@@ -10,9 +12,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
         private readonly int size;
         private readonly World world;
 
-        private LandspaceGenerator landspaceGenerator = new LandspaceGenerator();
-        private StructureGenerator structureGenerator = new StructureGenerator();
-        private CaveGenerator caveGenerator = new CaveGenerator();
+        private List<EmptyGenerator> pipeline = new List<EmptyGenerator>();
 
         public static Random GenRand { get; private set; }
         private static readonly object locker = new object();
@@ -21,29 +21,41 @@ namespace ConsoleAdventure.WorldEngine.Generate
         {
             this.size = size;
             this.world = world;
+
+            AddGeneratorToPipeline(new LandspaceGenerator());
+            AddGeneratorToPipeline(new StructureGenerator());
+            AddGeneratorToPipeline(new CaveGenerator());
         }
 
-        public void Generate(int seed, bool isfullGenerate = true)
+        public void AddGeneratorToPipeline(EmptyGenerator generator)
+        {
+            pipeline.Add(generator);
+        }
+
+        public async Task Generate(int seed, bool isfullGenerate = true)
         {
             GenRand = new Random(seed);
             ConsoleAdventure.world.seed = seed;
 
-            Generate(isfullGenerate);
+            await Generate(isfullGenerate);
         }
 
-
-        public void Generate(bool isfullGenerate = true)
+        public async Task Generate(bool isfullGenerate = true)
         {
-            lock (locker)
-            {
-                world.InitializeChunks();
-                GenerateBarriers();
+            //lock (locker)
+            //{
+            //}
 
-                if (isfullGenerate)
+            world.InitializeChunks();
+
+            // Generators
+            GenerateBarriers();
+
+            if (isfullGenerate)
+            {
+                for (int i = 0; i < pipeline.Count; i++)
                 {
-                    structureGenerator.Generate(world);
-                    landspaceGenerator.Generate(world);
-                    caveGenerator.Generate(world);
+                    await pipeline[i].Generate(world);
                 }
             }
         }
