@@ -9,7 +9,7 @@ namespace ConsoleAdventure
         static string path = Program.savePath + "ModSources\\";
         static string dll = "ConsoleAdventure.dll";
 
-        static string csprojText = "<Project Sdk=\"Microsoft.NET.Sdk\">\r\n\r\n  <PropertyGroup>\r\n    <TargetFramework>net6.0-windows</TargetFramework>\r\n    <ImplicitUsings>enable</ImplicitUsings>\r\n    <Nullable>enable</Nullable>\r\n  </PropertyGroup>\r\n\r\n  <ItemGroup>\r\n    <PackageReference Include=\"MonoGame.Framework.DesktopGL\" Version=\"3.8.1.303\" />\r\n  </ItemGroup>\r\n\r\n  <ItemGroup>\r\n    <Reference Include=\"ConsoleAdventure\">\r\n      <HintPath>..\\..\\ConsoleAdventure.dll</HintPath>\r\n    </Reference>\r\n  </ItemGroup>\r\n\r\n</Project>";
+        static string csprojText = "<Project Sdk=\"Microsoft.NET.Sdk\">\r\n\r\n  <PropertyGroup>\r\n    <TargetFramework>net6.0-windows</TargetFramework>\r\n    <ImplicitUsings>enable</ImplicitUsings>\r\n    <Nullable>enable</Nullable>\r\n  </PropertyGroup>\r\n\r\n  <ItemGroup>\r\n    <PackageReference Include=\"MonoGame.Framework.DesktopGL\" Version=\"3.8.1.303\" />\r\n  </ItemGroup>\r\n\r\n  <ItemGroup>\r\n    <Reference Include=\"ConsoleAdventure\">\r\n      <HintPath>..\\..\\ConsoleAdventure.dll</HintPath>\r\n    </Reference>\r\n  </ItemGroup>\r\n\r\n <Target Name=\"PostBuild\" AfterTargets=\"PostBuildEvent\"><Exec Command=\"if not exist &quot;$(SolutionDir)bin\\build&quot; mkdir $(SolutionDir)bin\\build&#xD;&#xA;if not exist &quot;$(SolutionDir)bin\\build\\$(SolutionName)&quot; mkdir $(SolutionDir)bin\\build\\$(SolutionName)&#xD;&#xA;copy /y /b &quot;$(SolutionDir)bin\\Debug\\net6.0-windows\\$(SolutionName).dll&quot; &quot;$(SolutionDir)bin\\build\\$(SolutionName)&quot;&#xD;&#xA;copy /y /b &quot;$(SolutionDir)build.json&quot; &quot;$(SolutionDir)bin\\build\\$(SolutionName)&quot;&#xD;&#xA;robocopy &quot;$(SolutionDir)Content&quot; &quot;$(SolutionDir)bin\\build\\$(SolutionName)\\Content&quot; /e\" /></Target> </Project>";
 
         static string GetModClass(string name)
         {
@@ -36,8 +36,14 @@ namespace ConsoleAdventure
 
             string modDirectory = path + name + "\\" + name + "\\";
 
-            Directory.CreateDirectory(modDirectory);
+            if (!Directory.Exists(modDirectory))
+                Directory.CreateDirectory(modDirectory);
 
+            if (!Directory.Exists(modDirectory + "Content"))
+                Directory.CreateDirectory(modDirectory + "Content");
+
+            if (File.Exists(path + "\\" + dll))
+                File.Delete(path + "\\" + dll);
             File.Copy(AppDomain.CurrentDomain.BaseDirectory + dll, path + "\\" + dll);
 
             File.WriteAllText(modDirectory + name + ".csproj", csprojText);

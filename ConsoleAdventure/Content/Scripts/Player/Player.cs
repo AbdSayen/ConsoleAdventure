@@ -58,6 +58,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 slots =
                 {
                     new Stack( new IronPick(), 1),
+                    new Stack( new TorchItem(), 1),
                 }
             };
 
