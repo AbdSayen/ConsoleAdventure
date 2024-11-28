@@ -202,7 +202,7 @@ namespace ConsoleAdventure
         {
             enabledMods = ReadSavedEnabledMods();
 
-            if (!Directory.Exists(modsDirPath)) 
+            if (!Directory.Exists(modsDirPath))
             {
                 Directory.CreateDirectory(modsDirPath);
             }
@@ -231,6 +231,7 @@ namespace ConsoleAdventure
         {
             if (reload)
             {
+                UnloadMods();
                 disabledMods = new();
                 modsIdsMap = new();
                 modItems = new();
@@ -294,7 +295,7 @@ namespace ConsoleAdventure
                             };
 
                             foreach (string modName in disabledMods) // Пропускаем выключенные моды
-                                if (fileName == modName) { allMods.Add(modData); goto SkipLoop;  }
+                                if (fileName == modName) { allMods.Add(modData); goto SkipLoop; }
 
                             // Загрузка сборки DLL
                             Assembly assembly = Assembly.LoadFrom(file);
@@ -450,6 +451,13 @@ namespace ConsoleAdventure
             }
         }
 
+        public static void UnloadMods()
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].Unload();
+            }
+        }
 
         public static List<Mod> GetActiveMods()
         {
