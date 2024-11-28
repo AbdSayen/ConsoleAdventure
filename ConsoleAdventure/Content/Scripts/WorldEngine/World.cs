@@ -29,7 +29,6 @@ namespace ConsoleAdventure.WorldEngine
         public List<Entity> entities = new List<Entity>();
 
         public Time time = new Time();
-        public int timeSpeed = 1;
 
         [NonSerialized]
         public Generator generator;
@@ -165,7 +164,7 @@ namespace ConsoleAdventure.WorldEngine
                     _isFirstFrame = false;
                 }
                 
-                time.PassTime(timeSpeed);
+                time.PassTime(1);
 
                 GetLocalPlayer().InteractWithWorld();
 

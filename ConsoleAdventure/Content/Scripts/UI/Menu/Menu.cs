@@ -263,7 +263,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         #endregion
 
         #region WorldMenu
-        public void WorldMenuInit()
+        public void WorldMenuInit(int index = -1)
         {
             var worlds = WorldIO.GetWorlds();
 
@@ -272,8 +272,13 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 worldPanels.Add(new WorldPanel(new Rectangle(), worlds.names[i], worlds.seeds[i].ToString()));
             }
 
+            if (index >= worldPanels.Count) index = worldPanels.Count - 1;
+
             if (worldPanels.Count > 0)
-                worldPanels[0].isHover = true;
+            {
+                if (index == -1) worldPanels[0].isHover = true;
+                else worldPanels[index].isHover = true; 
+            }
         }
 
         private void WorldMenuUpdate()
@@ -328,6 +333,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         {
                             if (worldPanels[i].curssor == 0 && worldPanels[i].isHover)
                             {
+                                CloseWorldError();
                                 ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadFile");
                                 ConsoleAdventure.progressBar.Progress = 0;
 
@@ -343,21 +349,38 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                                 void LoadWorld()
                                 {
-                                    bool inm = false; // in multiplayer
-                                    bool ish = false; // is host
-                                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.M)) inm = true;
-                                    if (ConsoleAdventure.kstate.IsKeyDown(Keys.H)) { ish = true; inm = true; }
-                                    NetworkManager.isHost = ish;
-                                    ConsoleAdventure.CreateWorld(name, 1234, false, inm);
-                                    if (ConsoleAdventure.world != null) WorldIO.Load(name);
+                                    try 
+                                    {
+                                        bool inm = false; // in multiplayer
+                                        bool ish = false; // is host
+                                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.M)) inm = true;
+                                        if (ConsoleAdventure.kstate.IsKeyDown(Keys.H)) { ish = true; inm = true; }
+                                        NetworkManager.isHost = ish;
+                                        ConsoleAdventure.CreateWorld(name, 1234, false, inm);
+                                        if (ConsoleAdventure.world != null) WorldIO.Load(name);
+                                    }
+
+                                    catch (Exception ex)
+                                    {
+                                        string error = $"{Localization.GetTranslation("UI", "WorldLoadError")}\n\n{ex.GetType()}: {ex.Message}\n{ex.InnerException}\n{ex.StackTrace}\n{ex.Source}\n{ex.TargetSite}";
+                                        OpenWorldError(error);
+                                        ConsoleAdventure.logger.AddException(error);
+                                    }
                                 }
                             }
 
                             if (worldPanels[i].curssor == 2 && worldPanels[i].isHover)
                             {
                                 WorldIO.Delete(worldPanels[i].name);
+
+                                int index = -1;
+                                for (int j = 0; j < worldPanels.Count; j++)
+                                {
+                                    if (worldPanels[j].isHover) index = j;
+                                }
+
                                 worldPanels.Clear();
-                                WorldMenuInit();
+                                WorldMenuInit(index);
                                 timer = 0;
                             }
                         }
@@ -758,6 +781,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
         #endregion
 
         #region WorldLoadingProgress
+
+
+        private TextListUI worldErrorList = null;
+
         private void WorldLoadingProgressInit()
         {
             ConsoleAdventure.progressBar = new ProgressBar(new Rectangle(new Point((int)ConsoleAdventure.Width / 2, ((int)ConsoleAdventure.Height / 2) - 120), new Point(50 * 9, 19)), Color.LightGreen, 50, ProgressBar.PercentRight);
@@ -767,9 +794,57 @@ namespace ConsoleAdventure.Content.Scripts.UI
         {
             if (State == MenuState.worldLoadingProgress)
             {
+                if(worldErrorList != null)
+                {
+                    ConsoleAdventure.progressBar.color = Color.Red;
+
+                    WorldErrorUpdate();
+                    WorldErrorDraw(spriteBatch);
+                }
+
                 ConsoleAdventure.progressBar.Draw(spriteBatch);
             }
+
+            ConsoleAdventure.progressBar.color = Color.LightGreen;
         }
+
+        private void OpenWorldError(string text)
+        {
+            worldErrorList = new(text, 120, new(ConsoleAdventure.Width / 2 - (61 * 9), ConsoleAdventure.Height / 2.5f), Color.White);
+            worldErrorList.drawBuffer = 20;
+            worldErrorList.startList = 0;
+            worldErrorList.endList = 20;
+            worldErrorList.height = 19;
+        }
+
+        private void CloseWorldError()
+        {
+            worldErrorList = null;
+        }
+
+
+        private void WorldErrorDraw(SpriteBatch spriteBatch)
+        {
+            worldErrorList.Draw(spriteBatch);
+
+            float sliderY = (((float)worldErrorList.startList / (float)(worldErrorList.elements.Count - 21)) * 19f);
+            Vector2 sliderPos = new Vector2(worldErrorList.Position.X + (122 * 9), worldErrorList.Position.Y + sliderY * 19);
+
+            spriteBatch.DrawString(ConsoleAdventure.Font, "▴", new(sliderPos.X + 2, worldErrorList.Position.Y - 15), Color.White);
+            spriteBatch.DrawString(ConsoleAdventure.Font, "█", sliderPos, Color.White);
+            spriteBatch.DrawString(ConsoleAdventure.Font, "▾", new(sliderPos.X + 2, worldErrorList.Position.Y + 5 + 19.5f * 19), Color.White);
+        }
+
+        private void WorldErrorUpdate()
+        {
+            worldErrorList.Update(ref timer);
+
+            if (Input.PostClick(InputConfig.NavigationBeck))
+            {
+                CloseWorldError();
+            }
+        }
+
         #endregion
 
         #region ServerNotFoundPanel
@@ -919,9 +994,16 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         
                         await ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text)); //"World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000)
                         WorldIO.Save(ConsoleAdventure.world.name);
+
+                        int index = -1;
+                        for (int i = 0; i < worldPanels.Count; i++)
+                        {
+                            if (worldPanels[i].isHover) index = i;
+                        }
+
                         worldPanels.Clear();
                         ConsoleAdventure.BlockHotKey = false;
-                        WorldMenuInit();
+                        WorldMenuInit(index);
                     }
 
                     else

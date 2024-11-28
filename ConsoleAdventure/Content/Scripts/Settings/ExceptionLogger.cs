@@ -41,6 +41,12 @@ namespace ConsoleAdventure.Content.Scripts.Settings
             AddText($"{DateTime.Now}: {message}\n");
         }
 
+        public void AddException(string error)
+        {
+            string exceptionMessage = $"{DateTime.Now}: [EXCEPTION] {error}";
+            AddText(exceptionMessage + Environment.NewLine);
+        }
+
         public void AddException(Exception ex)
         {
             string exceptionMessage = $"{DateTime.Now}: [EXCEPTION] {ex.GetType()}: {ex.Message}\n{ex.InnerException}\n{ex.StackTrace}\n{ex.Source}\n{ex.TargetSite}";
