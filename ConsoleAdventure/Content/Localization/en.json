@@ -114,7 +114,8 @@
     "WorldNameField": "Name",
     "WorldPlayerNameField": "Player name",
     "WorldSeedField": "Seed",
-    "WorldSizeField": "Size"
+    "WorldSizeField": "Size",
+    "WorldLoadError": "An error occurred while loading the world, most likely this is a mod problem, the world was created in an old version of the game or its file was damaged:"
   },
 
   "About": {
