@@ -25,7 +25,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             this.size = size;
             this.world = world;
 
-            if (CaModLoader.WorldGeneratorPreBuildPipelineMods(this) && false)
+            if (CaModLoader.WorldGeneratorPreBuildPipelineMods(this))
             {
                 AddGeneratorToPipeline(new StructureGenerator(), 100);
                 AddGeneratorToPipeline(new LandspaceGenerator(), 200);
