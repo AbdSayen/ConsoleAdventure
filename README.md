@@ -1,6 +1,6 @@
 # The Console Adventure
 
-**The Console Adventure** is a project created pn May 16 2024.
+**The Console Adventure** is a project created on May 16 2024.
 This game should be a *RPG*.
 
 ## Game features
