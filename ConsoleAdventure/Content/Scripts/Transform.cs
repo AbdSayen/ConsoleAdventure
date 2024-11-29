@@ -7,6 +7,7 @@ using ConsoleAdventure.Content.Scripts.Player;
 using System.Reflection;
 using System.Text;
 using System.DirectoryServices;
+using ConsoleAdventure.Settings;
 
 namespace ConsoleAdventure
 {
@@ -209,7 +210,7 @@ namespace ConsoleAdventure
             return hardness > 0;
         }
 
-        public bool CanDraw()
+        public virtual bool CanDraw()
         {
             return position >= ConsoleAdventure.startDisplay && position < ConsoleAdventure.endDisplay;
         }
