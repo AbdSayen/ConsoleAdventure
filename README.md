@@ -6,6 +6,8 @@ This game should be a *RPG*.
 ## Game features
 Currently this game supports features like:
 > Create new, Save/Load World
+>
+> Building
 > 
 > Write, Download and Use Mods
 > 
