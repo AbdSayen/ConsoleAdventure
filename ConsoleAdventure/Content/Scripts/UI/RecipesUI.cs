@@ -130,9 +130,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 {
                     var ingredient = recipe.Ingredients.ElementAt(i);
                     ingredient.Key.Draw(spriteBatch, Position + new Vector2(36 + nameSize.X + (i * 18) + countWidth, size.Y * 19));
-                    spriteBatch.DrawString(ConsoleAdventure.Font, ingredient.Value.ToString(), Position + new Vector2(36 + nameSize.X + ((i + 1) * 18) + countWidth - 9, size.Y * 19), color);
+                    spriteBatch.DrawString(ConsoleAdventure.Font, $" {ingredient.Value}", Position + new Vector2(36 + nameSize.X + ((i + 1) * 18) + countWidth - 9, size.Y * 19), color);
 
-                    countWidth = (int)ConsoleAdventure.Font.MeasureString(ingredient.Value.ToString()).X;
+                    countWidth = (int)ConsoleAdventure.Font.MeasureString($" {ingredient.Value}").X;
                 }
 
                 if (type == 1)
