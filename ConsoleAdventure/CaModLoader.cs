@@ -330,7 +330,7 @@ namespace ConsoleAdventure
 
                             Type[] exportedTypes = assembly.GetExportedTypes();
 
-                            foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(ModItem)))) // Загружаем все предметы из модов
+                            foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(ModItem)) || type.IsSubclassOf(typeof(Item)))) // Загружаем все предметы из модов
                             {
                                 modItems.Add(item);
                                 modLoadedContentCount[type][0]++;

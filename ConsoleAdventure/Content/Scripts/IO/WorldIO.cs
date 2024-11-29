@@ -300,7 +300,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 Light.Clear();
 
                 Type baseType = typeof(Transform);
-                IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType));
+                IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType)).Concat(CaModLoader.modTransforms);
                 foreach (Type type in list)
                 {
                     Transform.Init(type, Position.Zero(), 0, null, null);
@@ -308,7 +308,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 ConsoleAdventure.recipes.Clear();
 
-                IEnumerable<Type> listItem = Assembly.GetAssembly(typeof(Item)).GetTypes().Where(type => type.IsSubclassOf(typeof(Item)));
+                IEnumerable<Type> listItem = Assembly.GetAssembly(typeof(Item)).GetTypes().Where(type => type.IsSubclassOf(typeof(Item))).Concat(CaModLoader.modItems);
+                
                 foreach (Type type in listItem)
                 {
                     if (type.IsAbstract)
