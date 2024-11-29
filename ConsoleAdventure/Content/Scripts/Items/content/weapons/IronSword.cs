@@ -21,7 +21,7 @@ namespace ConsoleAdventure
 
         public override CharTexture GetTexture()
         {
-            return new CharTexture().AddLayer("̸", Color.Gray).AddLayer("₋", Color.Gray);
+            return new CharTexture().AddLayer("̸", Color.Gray).AddLayer("₋", Color.Gray, new Vector2(4.5f, -0.7f), 0.4f);
         }
 
         public override Recipe AddRecipe()
