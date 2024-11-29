@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,12 +18,9 @@ namespace ConsoleAdventure
             AddTypeToMap<IronHammer>();
         }
 
-        public override (List<string>, List<Color>) GetTexture()
+        public override CharTexture GetTexture()
         {
-            return (
-                    new List<string>() { "/", "▬" },
-                    new List<Color>() { new(94, 61, 38), Color.Gray }
-                   );
+            return new CharTexture().AddLayer("/", new(94, 61, 38)).AddLayer("▬", Color.Gray, new(1, -2), 0.25f);
         }
 
         public override Recipe AddRecipe()

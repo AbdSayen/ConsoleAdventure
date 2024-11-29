@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,16 @@ namespace ConsoleAdventure
             AddTypeToMap<TorchItem>();
         }
 
-        public override (List<string>, List<Color>) GetTexture()
+        int timer;
+
+        public override CharTexture GetTexture()
         {
-            return (
-                    new List<string>() { "/", "*" },
-                    new List<Color>() { new(94, 61, 38), Color.OrangeRed}
-                   );
+            timer++;
+            return new CharTexture().AddLayer("/", new(94, 61, 38))
+                                    .AddLayer("●", Color.OrangeRed, new(-0.58f + 2, -0.03f - 2.5f))
+                                    .AddLayer("•", Color.OrangeRed * 0.8f, new Vector2(0.42f + (float)(Math.Sin(timer / 30 * Math.PI) / 2) + 2, -2.4f - 2.5f))
+                                    .AddLayer("•", Color.Orange * (float)(1 + Math.Sin(timer / 60 * Math.PI) / 4), new Vector2(0.2f + 2, -0.03f - 2.5f))
+;
         }
 
         public override Recipe AddRecipe()

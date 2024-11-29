@@ -98,8 +98,8 @@ namespace ConsoleAdventure
             get
             {
                 Vector2 offset = (worldPos + ((new Vector2(30, 15) - world.GetLocalPlayer().position.ToVector2()) * cellSize));
-                Vector2 feildPos = ((mousePosition - offset) / cellSize).ToPoint().ToVector2();
-                return feildPos.ToPosition();
+                Vector2 fieldPos = ((mousePosition - offset) / cellSize).ToPoint().ToVector2();
+                return fieldPos.ToPosition();
             }
         }
 

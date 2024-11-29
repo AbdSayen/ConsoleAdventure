@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,9 @@ namespace ConsoleAdventure
             AddTypeToMap<ZoisiteItem>();
         }
 
-        public override (List<string>, List<Color>) GetTexture()
+        public override CharTexture GetTexture()
         {
-            return (
-                    new List<string>() { "η" },
-                    new List<Color>() { new Color(6, 61, 31) }
-                   );
+            return new CharTexture().AddLayer("η", new Color(6, 61, 31));
         }
     }
 }

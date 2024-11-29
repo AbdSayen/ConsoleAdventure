@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,12 @@ namespace ConsoleAdventure
             AddTypeToMap<FurnaceItem>();
         }
 
-        public override (List<string>, List<Color>) GetTexture()
+        public override CharTexture GetTexture()
         {
-            return (
-                    new List<string>() { "■", "&", "┻", "⌂" },
-                    new List<Color>() { Color.Gray, Color.Gray, Color.Gray, new Color(50, 50, 50) }
-                   );
+            return new CharTexture().AddLayer("■", Color.Gray)
+                                    .AddLayer("&", Color.Gray)
+                                    .AddLayer("┻", Color.Gray)
+                                    .AddLayer("⌂", new Color(50, 50, 50));
         }
 
         public override Recipe AddRecipe()

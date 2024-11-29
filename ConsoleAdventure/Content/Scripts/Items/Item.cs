@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.Content.Scripts;
 
 namespace ConsoleAdventure
 {
@@ -41,12 +42,9 @@ namespace ConsoleAdventure
             return description;
         }
 
-        public virtual (List<string>, List<Color>) GetTexture()
+        public virtual CharTexture GetTexture()
         {
-            return (
-                    new List<string>() {"I"}, 
-                    new List<Color>() { Color.White }
-                   );
+            return new CharTexture().AddLayer("I", Color.White);
         }
 
         public static void AddTypeToMap<T>(int type)
@@ -84,12 +82,7 @@ namespace ConsoleAdventure
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            var texture = GetTexture();
-
-            for (int j = 0; j < texture.Item1.Count; j++)
-            {
-                spriteBatch.DrawString(ConsoleAdventure.Font, texture.Item1[j], position, texture.Item2[j]);
-            }
+            GetTexture().Draw(spriteBatch, position);
         }
 
         public virtual bool CanBePickedUp()

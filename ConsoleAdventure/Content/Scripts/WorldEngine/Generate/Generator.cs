@@ -59,12 +59,22 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         public async Task Generate(int seed, bool isfullGenerate = true)
         {
-            ConvertPrioritiesToPipeline();
+            try
+            {
+                ConvertPrioritiesToPipeline();
 
-            GenRand = new Random(seed);
-            ConsoleAdventure.world.seed = seed;
+                GenRand = new Random(seed);
+                ConsoleAdventure.world.seed = seed;
 
-            await Generate(isfullGenerate);
+                await Generate(isfullGenerate);
+            }
+
+            catch (Exception ex)
+            {
+                string error = $"{Localization.GetTranslation("UI", "WorldLoadError")}\n\n{ex.GetType()}: {ex.Message}\n{ex.InnerException}\n{ex.StackTrace}\n{ex.Source}\n{ex.TargetSite}";
+                ConsoleAdventure.menu.OpenWorldError(error);
+                ConsoleAdventure.logger.AddException(error);
+            }
         }
 
         public async Task Generate(bool isfullGenerate = true)

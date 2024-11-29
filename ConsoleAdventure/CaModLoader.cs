@@ -215,13 +215,24 @@ namespace ConsoleAdventure
             ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadMods");
             ConsoleAdventure.progressBar.Progress = 0;
             ConsoleAdventure.menu.State = Content.Scripts.UI.MenuState.worldLoadingProgress;
+            ConsoleAdventure.menu.worldErrorList = null;
 
             Thread load = new Thread(new ThreadStart(Load));
             load.Start();
 
             void Load()
             {
-                LoadMods(true);
+                try
+                {
+                    LoadMods(true);
+                }
+
+                catch (Exception ex)
+                {
+                    string error = $"{ex.GetType()}: {ex.Message}\n{ex.InnerException}\n{ex.StackTrace}\n{ex.Source}\n{ex.TargetSite}";
+                    ConsoleAdventure.menu.OpenWorldError(error);
+                    ConsoleAdventure.logger.AddException(error);
+                }
             }
 
             return Task.Run(() => load.Join());

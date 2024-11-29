@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,9 @@ namespace ConsoleAdventure
             AddTypeToMap<BrownIronOreItem>();
         }
 
-        public override (List<string>, List<Color>) GetTexture()
+        public override CharTexture GetTexture()
         {
-            return (
-                    new List<string>() { "§" },
-                    new List<Color>() { new Color(206, 83, 33) }
-                   );
+            return new CharTexture().AddLayer("§", new Color(206, 83, 33));
         }
     }
 }

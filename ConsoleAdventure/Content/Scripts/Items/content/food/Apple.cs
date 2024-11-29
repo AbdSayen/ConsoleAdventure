@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.Content.Scripts;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -18,12 +19,9 @@ namespace ConsoleAdventure
             AddTypeToMap<Apple>();
         }
 
-        public override (List<string>, List<Color>) GetTexture()
+        public override CharTexture GetTexture()
         {
-            return (
-                    new List<string>() { "o", "`" },
-                    new List<Color>() { Color.Red, Color.Green }
-                   );
+            return new CharTexture().AddLayer("o", Color.Red).AddLayer("`", Color.Green);
         }
 
         public new string GetDescription()

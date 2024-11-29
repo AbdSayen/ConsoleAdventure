@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,9 @@ namespace ConsoleAdventure
             AddTypeToMap<IronBar>();
         }
 
-        public override (List<string>, List<Color>) GetTexture()
+        public override CharTexture GetTexture()
         {
-            return (
-                    new List<string>() { "■", "▬" },
-                    new List<Color>() { Color.Gray, Color.White }
-                   );
+            return new CharTexture().AddLayer("■", Color.Gray).AddLayer("▬", Color.White);
         }
 
         public override Recipe AddRecipe()

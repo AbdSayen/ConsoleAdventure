@@ -783,7 +783,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         #region WorldLoadingProgress
 
 
-        private TextListUI worldErrorList = null;
+        public TextListUI worldErrorList = null;
 
         private void WorldLoadingProgressInit()
         {
@@ -808,7 +808,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             ConsoleAdventure.progressBar.color = Color.LightGreen;
         }
 
-        private void OpenWorldError(string text)
+        public void OpenWorldError(string text)
         {
             worldErrorList = new(text, 120, new(ConsoleAdventure.Width / 2 - (61 * 9), ConsoleAdventure.Height / 2.5f), Color.White);
             worldErrorList.drawBuffer = 20;
@@ -992,7 +992,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             name += countIdenticalWorldName;
                         }
                         
-                        await ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text)); //"World" + (worldPanels.Count > 0 ? worldPanels.Count : ""), ConsoleAdventure.rand.Next(0, 100000000)
+                        await ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text));
                         WorldIO.Save(ConsoleAdventure.world.name);
 
                         int index = -1;

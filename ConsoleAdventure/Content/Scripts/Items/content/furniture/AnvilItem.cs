@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,9 @@ namespace ConsoleAdventure
             AddTypeToMap<AnvilItem>();
         }
 
-        public override (List<string>, List<Color>) GetTexture()
+        public override CharTexture GetTexture()
         {
-            return (
-                    new List<string>() {"■", "σ" },
-                    new List<Color>() { new(40, 40, 40), Color.Gray}
-                   );
+            return new CharTexture().AddLayer("■", new(40, 40, 40)).AddLayer("σ", Color.Gray);
         }
 
         public override Recipe AddRecipe()

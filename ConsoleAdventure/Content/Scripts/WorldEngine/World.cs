@@ -85,7 +85,9 @@ namespace ConsoleAdventure.WorldEngine
             if (!isInitialized)
             {
                 ConsoleAdventure.menu.State = MenuState.worldLoadingProgress;
+                ConsoleAdventure.menu.worldErrorList = null;
                 await Task.Run(() => generator.Generate(seed, isfullGenerate));
+                //ConsoleAdventure.menu.State = MenuState.worldMenu;
                 CaModLoader.WorldPostGenerateMods(this);
                 LoadInMultiplayer();
 

@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,12 +18,13 @@ namespace ConsoleAdventure
             AddTypeToMap<ChestItem>();
         }
 
-        public override (List<string>, List<Color>) GetTexture()
+        public override CharTexture GetTexture()
         {
-            return (
-                    new List<string>() { "■", "+"/*"̷"*/ },
-                    new List<Color>() { new Color(94, 61, 38), new Color(43, 23, 15)}
-                   );
+            return new CharTexture().AddLayer("■", new Color(43, 23, 15), new Vector2(0, -1))
+                                    .AddLayer("▬", new Color(94, 61, 38), new Vector2(0, 2))
+                                    .AddLayer("▬", new Color(94, 61, 38), new Vector2(0, 5))
+                                    .AddLayer("─", Color.Gray, new Vector2(0, 1))
+                                    .AddLayer("ˈ", Color.Gray, new Vector2(4, 8));
         }
 
         public override Recipe AddRecipe()
