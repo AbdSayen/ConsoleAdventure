@@ -252,7 +252,8 @@ namespace ConsoleAdventure
                 mods = new();
                 allMods = new();
                 Main.modTypesInitialized = new();
-                Main.modTransformTypesOffset = new();
+                Main.AllTransformCount = Main.vanillaTypesInitialized;
+                Main.modTransformTypes.Clear();
             }
 
             for (int i = 0; i < modsPath.Length; i++)
@@ -349,7 +350,7 @@ namespace ConsoleAdventure
                                 modLoadedContentCount[type][1]++;
                             }
 
-                            Main.modTransformTypesOffset.Add(fileName, (byte)transformsFromAllMods);
+                            //Main.modTransformTypesOffset.Add(fileName, (byte)transformsFromAllMods);
 
                             transformsFromAllMods += modLoadedContentCount[type][1];
 

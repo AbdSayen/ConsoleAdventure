@@ -9,12 +9,29 @@ namespace ConsoleAdventure.Content.Scripts.Audio
 {
     public static class MusicEngine
     {
-        public static Dictionary<string, Song> Songs {  get; private set; } = new Dictionary<string, Song>();
+        public static Dictionary<string, Song> Songs { get; private set; } = new Dictionary<string, Song>();
         public static string currentSong { get; private set; } = string.Empty;
         private static int currentPriority = -1;
 
         private static float targetVolume = 1.0f;
         private static float fadeSpeed = 0.01f;
+
+        private static float maxVolume = 1.0f;
+
+        public static float MaxVolume 
+        {
+            get
+            {
+                return maxVolume;
+            }
+
+            set
+            {
+                if(value > 1) maxVolume = 1;
+                else if (value < 0) maxVolume = 0;
+                else maxVolume = value;
+            }
+        }
 
         public static void AddSong(string songName, Song song)
         {
@@ -61,7 +78,7 @@ namespace ConsoleAdventure.Content.Scripts.Audio
             MediaPlayer.Stop();
             Start(newSong);
 
-            targetVolume = 0.0f;
+            targetVolume = maxVolume;
         }
 
         public static async void StopSong()

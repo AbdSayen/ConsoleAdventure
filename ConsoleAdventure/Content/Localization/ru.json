@@ -66,7 +66,8 @@
     "Fire": "огонь",
     "Charcoal": "древесный уголь",
     "CharcoalFloor": "угольный пол",
-    "HighTemperatureFire": "высокотемпературный огонь"
+    "HighTemperatureFire": "высокотемпературный огонь",
+    "Unloaded": "незагруженный трансформ"
   },
 
   "Events": {

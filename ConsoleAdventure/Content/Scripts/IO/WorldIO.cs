@@ -180,7 +180,9 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             tags["Time"] = world.time;
 
-            tags["TransformTypesOffset"] = Main.modTransformTypesOffset;
+            //tags["TransformTypesOffset"] = Main.modTransformTypesOffset;
+            tags["ModTransforms"] = world.modTransforms;
+            tags["VanillaTransforms"] = Main.vanillaTypesInitialized;
 
             Dictionary<string, byte[]> playersDat = new Dictionary<string, byte[]>();
 
@@ -332,15 +334,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 Tags tags = ConsoleAdventure.tags;
 
                 world.seed = tags.SafelyGet<int>("Seed");
-
                 world.size = tags.SafelyGet<int>("Size");
-                //world.seed = (int)tags.SafelyGet("Seed");
-                //world.seed = (int)tags.SafelyGet("Seed");
-
                 world.time = tags.SafelyGet<Time>("Time");
 
-                Main.modTransformTypesOffset = tags.SafelyGet<Dictionary<string, byte>>("TransformTypesOffset");
+                //Main.modTransformTypesOffset = tags.SafelyGet<Dictionary<string, byte>>("TransformTypesOffset");
+                world.modTransforms = tags.SafelyGet<Dictionary<string, int>>("ModTransforms");
+                int lastVanillaTransformCount = tags.SafelyGet<int>("VanillaTransforms");
 
+                Main.InitTransformsTypes(lastVanillaTransformCount);
                 InitContent();
 
                 ConsoleAdventure.world.playersDat = tags.SafelyGet<Dictionary<string, byte[]>>("PlayersData");
@@ -363,7 +364,10 @@ namespace ConsoleAdventure.Content.Scripts.IO
                                     byte type = fields[i, j, k, l];
                                     if (type != (byte)RenderFieldType.loot && type != (byte)RenderFieldType.chest)
                                     {
-                                        Transform.SetObject(type, new(j, k), i, l); //загружаем ячейки из тега
+                                        if (!Transform.SetObject(type, new(j, k), i, l)) //загружаем ячейки из тега
+                                        {
+                                            new UnloadedTransform(new(j, k), i, l, type); //создаём незагруженный трансформ 
+                                        }
                                     }
 
                                     else

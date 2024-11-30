@@ -66,7 +66,8 @@
     "Fire": "fire",
     "Charcoal": "charcoal",
     "CharcoalFloor": "charcoal floor",
-    "HighTemperatureFire": "high temperature fire"
+    "HighTemperatureFire": "high temperature fire",
+    "Unloaded": "unloaded transform"
   },
 
   "Events": {

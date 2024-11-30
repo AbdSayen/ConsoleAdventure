@@ -132,6 +132,8 @@ namespace ConsoleAdventure
 
             if (field?.content == null) return Localization.GetTranslation("Transforms", "None");
 
+            if (field.content is UnloadedTransform) return Localization.GetTranslation("Transforms", "Unloaded") + $" ({100 - (int)field.content.degreeDestruction} / 100)";
+
             string text = "";
             if (showData)
             {
@@ -165,12 +167,14 @@ namespace ConsoleAdventure
             return Localization.GetTranslation("Transforms", field.content.GetType().Name) + text;
         }
 
-        public static void SetObject(int type, Position position, int w, int layer = -1, List<Stack> items = null, List<object> parameters = null)
+        public static bool SetObject(int type, Position position, int w, int layer = -1, List<Stack> items = null, List<object> parameters = null)
         {
             if (position.x < 0) { position.x = 0; }
             if (position.y < 0) { position.y = 0; }
             if (position.x > ConsoleAdventure.world.size) { position.x = (short)ConsoleAdventure.world.size; }
             if (position.y > ConsoleAdventure.world.size) { position.y = (short)ConsoleAdventure.world.size; }
+
+            if (type == 0) return true;
 
             if (typeMapping.TryGetValue(type, out Type objectType))
             {
@@ -178,12 +182,15 @@ namespace ConsoleAdventure
                 {
                     Transform content = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, w).content;
                     ConsoleAdventure.world.RemoveSubject(content, layer, false);
-                    return;
+                    return true;
                 }
 
                 //ConstructorInfo constructor = GetConstructor(objectType, items != null, parameters != null);
                 Init(objectType, position, w, items, parameters);
+                return true;
             }
+
+            return false;
         }
 
         internal static object[] BuildConstructorArgs(Type objectType, Position position, int w, List<Stack> items, List<object> parameters)
@@ -200,7 +207,7 @@ namespace ConsoleAdventure
 
         internal static void Init(Type type, Position position, int w, List<Stack> items, List<object> parameters)
         {
-            if(type == typeof(Storage) || type == typeof(Player))
+            if(type == typeof(Storage) || type == typeof(Player) || type == typeof(UnloadedTransform))
             {
                 return;
             }

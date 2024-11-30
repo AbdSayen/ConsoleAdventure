@@ -48,7 +48,7 @@ namespace CaModLoaderAPI
 
         public int GetModTransform<T>()
         {
-            return Main.GetModTransform<T>(GetModString());
+            return Main.GetModTransform<T>();
         }
 
         /// <summary>

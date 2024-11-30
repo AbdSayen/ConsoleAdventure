@@ -2,6 +2,7 @@
 using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
+using ConsoleAdventureMain = ConsoleAdventure.ConsoleAdventure;
 
 namespace CaModLoaderAPI
 {
@@ -10,8 +11,10 @@ namespace CaModLoaderAPI
         public static int vanillaTypesInitialized = Enum.GetNames(typeof(RenderFieldType)).Length;
         public static Dictionary<string, Dictionary<Type, int>> modTypesInitialized = new Dictionary<string, Dictionary<Type, int>>();
 
-        public static Dictionary<string, byte> modTransformTypesOffset = new Dictionary<string, byte>();
+        //public static Dictionary<string, byte> modTransformTypesOffset = new Dictionary<string, byte>();
+        public static Dictionary<Type, byte> modTransformTypes = new Dictionary<Type, byte>();
 
+        public static int AllTransformCount { get; internal set; } = vanillaTypesInitialized;
 
         public static Mod GetModInstance<T>()
         {
@@ -23,11 +26,47 @@ namespace CaModLoaderAPI
             return null;
         }
 
-        public static int GetModTransform<T>(string mod)
+        public static int GetModTransform<T>()
         {
-            int id = modTypesInitialized[mod][typeof(T)];
-            id = vanillaTypesInitialized + modTransformTypesOffset[mod] + id;
-            return id;
+            return modTransformTypes[typeof(T)];
+        }
+
+        public static void InitTransformsTypes(int lastVanillaTransformCount)
+        {
+            AllTransformCount = vanillaTypesInitialized;
+            modTransformTypes.Clear();
+
+            List<Type> newTypes = new List<Type>();
+           
+            if (ConsoleAdventureMain.world.modTransforms != null)
+            {
+                foreach (Type transform in CaModLoader.modTransforms)
+                {
+                    if (ConsoleAdventureMain.world.modTransforms.TryGetValue(transform.Name, out int type))
+                    {
+                        modTransformTypes.Add(transform, (byte)type);
+                        AllTransformCount++;
+                    }
+
+                    else
+                    {
+                        newTypes.Add(transform);
+                    }
+                }
+            }
+
+            else
+            {
+                newTypes = CaModLoader.modTransforms;
+                ConsoleAdventureMain.world.modTransforms = new();
+            }
+
+            foreach (Type transform in newTypes)
+            {
+                modTransformTypes.Add(transform, (byte)AllTransformCount);
+                ConsoleAdventureMain.world.modTransforms.Add(transform.Name, AllTransformCount);
+                AllTransformCount++;
+            }
         }
     }
 }

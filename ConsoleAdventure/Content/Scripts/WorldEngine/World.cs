@@ -60,6 +60,8 @@ namespace ConsoleAdventure.WorldEngine
 
         public Dictionary<string, byte[]> playersDat;
 
+        internal Dictionary<string, int> modTransforms = new Dictionary<string, int>();
+
         public Rain rain = new Rain();
 
         public World(string name, int seed)
