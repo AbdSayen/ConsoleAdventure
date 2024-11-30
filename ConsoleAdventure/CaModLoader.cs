@@ -364,6 +364,7 @@ namespace ConsoleAdventure
                 ConsoleAdventure.menu.State = Content.Scripts.UI.MenuState.mainScreen;
 
                 InitializeMods();
+                WorldIO.InitContent();
                 RunMods();
             }
         }

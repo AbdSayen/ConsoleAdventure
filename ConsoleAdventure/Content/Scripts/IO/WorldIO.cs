@@ -291,35 +291,40 @@ namespace ConsoleAdventure.Content.Scripts.IO
             ConsoleAdventure.tags = tags;
         }
 
+        public static void InitContent()
+        {
+            Transform.ClearTypeMap();
+
+            Light.Clear();
+
+            Type baseType = typeof(Transform);
+            IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType)).ToList().Concat(CaModLoader.modTransforms);
+            foreach (Type type in list)
+            {
+                Transform.Init(type, Position.Zero(), 0, null, null);
+            }
+
+            ConsoleAdventure.recipes.Clear();
+
+            IEnumerable<Type> listItem = Assembly.GetAssembly(typeof(Item)).GetTypes().Where(type => type.IsSubclassOf(typeof(Item))).ToList().Concat(CaModLoader.modItems);
+
+            foreach (Type type in listItem)
+            {
+                if (type.IsAbstract)
+                    continue;
+
+                Item item = (Item)Activator.CreateInstance(type);
+                Recipe recipe = item.AddRecipe();
+                if (recipe != null)
+                    ConsoleAdventure.recipes.Add(recipe);
+            }
+        }
+
         public static void LoadTags()
         {
             lock (locker)
             {
                 ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadGenericData");
-
-                Light.Clear();
-
-                Type baseType = typeof(Transform);
-                IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType)).Concat(CaModLoader.modTransforms);
-                foreach (Type type in list)
-                {
-                    Transform.Init(type, Position.Zero(), 0, null, null);
-                }
-
-                ConsoleAdventure.recipes.Clear();
-
-                IEnumerable<Type> listItem = Assembly.GetAssembly(typeof(Item)).GetTypes().Where(type => type.IsSubclassOf(typeof(Item))).Concat(CaModLoader.modItems);
-                
-                foreach (Type type in listItem)
-                {
-                    if (type.IsAbstract)
-                        continue;
-
-                    Item item = (Item)Activator.CreateInstance(type);
-                    Recipe recipe = item.AddRecipe();
-                    if (recipe != null)
-                        ConsoleAdventure.recipes.Add(recipe);
-                }
 
                 Display.recipesUI = new RecipesUI(new Point(ConsoleAdventure.screenWidth / 2, ConsoleAdventure.screenHeight / 2), new Point(60, 15));
 
@@ -335,6 +340,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 world.time = tags.SafelyGet<Time>("Time");
 
                 Main.modTransformTypesOffset = tags.SafelyGet<Dictionary<string, byte>>("TransformTypesOffset");
+
+                InitContent();
 
                 ConsoleAdventure.world.playersDat = tags.SafelyGet<Dictionary<string, byte[]>>("PlayersData");
 

@@ -360,6 +360,7 @@ namespace ConsoleAdventure.WorldEngine
             int localX = x % Chunk.Size;
             int localY = y % Chunk.Size;
 
+            if (ConsoleAdventure.world.chunks == null) return new();
             if (chunkX >= 0 && chunkX < ConsoleAdventure.world.chunks.GetLength(0) && chunkY >= 0 && chunkY < ConsoleAdventure.world.chunks.GetLength(1))
             {
                 Field field = chunks[chunkX, chunkY].GetField(localX, localY, layer, w);

@@ -204,6 +204,9 @@ namespace ConsoleAdventure
             SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
             Command.InitCommands();
 
+            world = new World("empty", 0);
+            //WorldIO.InitContent();
+
             CaModLoader.RunMods();
         }
 

@@ -61,7 +61,7 @@ namespace ConsoleAdventure.Content.Scripts.Audio
             MediaPlayer.Stop();
             Start(newSong);
 
-            targetVolume = 1.0f;
+            targetVolume = 0.0f;
         }
 
         public static async void StopSong()

@@ -67,8 +67,16 @@ namespace ConsoleAdventure
         
         public static void AddTypeToMap<T>(int type)
         {
-            if(!typeMapping.ContainsKey(type))
+            if (!typeMapping.ContainsKey(type))
+            {
                 typeMapping.Add(type, typeof(T));
+                ConsoleAdventure.logger.AddMessage($"{typeof(T).Namespace}.{typeof(T).Name} inited with id {type}");
+            }
+        }
+
+        public static void ClearTypeMap()
+        {
+            TypeMapping.Clear();
         }
 
         public virtual void Move(int stepSize, Rotation rotation)
