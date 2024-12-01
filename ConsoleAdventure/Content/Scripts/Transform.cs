@@ -174,11 +174,9 @@ namespace ConsoleAdventure
             if (position.x > ConsoleAdventure.world.size) { position.x = (short)ConsoleAdventure.world.size; }
             if (position.y > ConsoleAdventure.world.size) { position.y = (short)ConsoleAdventure.world.size; }
 
-            if (type == 0) return true;
-
-            if (typeMapping.TryGetValue(type, out Type objectType))
+            if (typeMapping.TryGetValue(type, out Type objectType) || type == 0)
             {
-                if (objectType == typeof(Transform))
+                if (objectType == typeof(Transform) || type == 0)
                 {
                     Transform content = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, w).content;
                     ConsoleAdventure.world.RemoveSubject(content, layer, false);
