@@ -341,8 +341,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 world.modTransforms = tags.SafelyGet<Dictionary<string, int>>("ModTransforms");
                 int lastVanillaTransformCount = tags.SafelyGet<int>("VanillaTransforms");
 
-                Main.InitTransformsTypes(lastVanillaTransformCount);
-                InitContent();
+                //Main.InitTransformsTypes(lastVanillaTransformCount);
+                //InitContent();
 
                 ConsoleAdventure.world.playersDat = tags.SafelyGet<Dictionary<string, byte[]>>("PlayersData");
 

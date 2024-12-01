@@ -205,7 +205,8 @@ namespace ConsoleAdventure
             Command.InitCommands();
 
             world = new World("empty", 0);
-            //WorldIO.InitContent();
+            Main.InitTransformsTypes(Main.vanillaTypesInitialized);
+            WorldIO.InitContent();
 
             CaModLoader.RunMods();
         }
