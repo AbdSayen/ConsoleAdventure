@@ -26,7 +26,11 @@ namespace ConsoleAdventure.WorldEngine
 
         public override Color? GetBGColor()
         {
-            return new Color(255, 0, 255);
+            Color color = new Color(255, 0, 255);
+
+            if (worldLayer == 0) color = new Color(90, 0, 90);
+
+            return color;
         }
 
         public override Color GetColor()
