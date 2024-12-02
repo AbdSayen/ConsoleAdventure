@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ConsoleAdventure.CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
@@ -121,6 +122,13 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public override void OnTheScreen()
         {
+            for (int i = 0; i < CaModLoader.modGlobalPlayers.Count; i++)
+            {
+                bool draw = CaModLoader.modGlobalPlayers[i].OnTheScreen(this);
+                if (draw != true)
+                    return;
+            }
+
             if (inventory.slots.Count > 0 && holdItemIndex > -1 && holdItemIndex < inventory.slots.Count && inventory.slots[holdItemIndex].Item is TorchItem)
             {
                 Light.Add(position, w, Color.White);
@@ -364,6 +372,14 @@ namespace ConsoleAdventure.Content.Scripts.Player
         public void CraftItem(int slot)
         {
             Recipe recipe = ConsoleAdventure.availableRecipes[slot];
+
+            for (int i = 0; i < CaModLoader.modGlobalPlayers.Count; i++)
+            {
+                bool craft = CaModLoader.modGlobalPlayers[i].CraftItem(this, recipe);
+                if (craft != true)
+                    return;
+            }
+
             Stack item = recipe.OutItem.Copy();
             inventory.PickUpItems(new List<Stack>() { item });
 
@@ -473,11 +489,23 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private bool CanBuildAt(Position pos, int layer)
         {
+            for (int i = 0; i < CaModLoader.modGlobalPlayers.Count; i++)
+            {
+                bool? build = CaModLoader.modGlobalPlayers[i].CanBuildAt(this, pos, layer);
+                if (build != null)
+                    return (bool)build;
+            }
             return world.GetField(pos.x, pos.y, layer, w).content == null;
         }
 
         private bool CanDestroyAt(Position pos, int layer)
         {
+            for (int i = 0; i < CaModLoader.modGlobalPlayers.Count; i++)
+            {
+                bool? destroy = CaModLoader.modGlobalPlayers[i].CanDestroyAt(this, pos, layer);
+                if (destroy != null)
+                    return (bool)destroy;
+            }
             return world.GetField(pos.x, pos.y, layer, w).content != null;
         }
 

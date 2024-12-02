@@ -39,6 +39,7 @@ namespace ConsoleAdventure
 
         public static List<Type> modItems = new List<Type>();
         public static List<GlobalItem> modGlobalItems = new List<GlobalItem>();
+        public static List<GlobalPlayer> modGlobalPlayers = new List<GlobalPlayer>();
         public static List<Type> modTransforms = new List<Type>();
 
         public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();  // [0] - items, [1] - blocks
@@ -247,6 +248,7 @@ namespace ConsoleAdventure
                 modsIdsMap = new();
                 modItems = new();
                 modGlobalItems = new();
+                modGlobalPlayers = new();
                 modTransforms = new();
                 modLoadedContentCount = new();
                 mods = new();
@@ -341,6 +343,12 @@ namespace ConsoleAdventure
                             {
                                 GlobalItem gi = (GlobalItem)Activator.CreateInstance(item);
                                 modGlobalItems.Add(gi);
+                            }
+
+                            foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalPlayer)))) // Загружаем все глобальных Игроков из модов
+                            {
+                                GlobalPlayer gp = (GlobalPlayer)Activator.CreateInstance(item);
+                                modGlobalPlayers.Add(gp);
                             }
 
                             foreach (Type block in exportedTypes.Where(type => type.IsSubclassOf(typeof(Transform)))) // Загружаем все трансформы из модов

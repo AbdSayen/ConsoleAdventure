@@ -1,7 +1,9 @@
 ﻿using ConsoleAdventure;
+using ConsoleAdventure.CaModLoaderAPI;
 using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ConsoleAdventureMain = ConsoleAdventure.ConsoleAdventure;
 
 namespace CaModLoaderAPI
@@ -22,6 +24,24 @@ namespace CaModLoaderAPI
             {
                 int modId = CaModLoader.modsIdsMap[typeof(T)];
                 return CaModLoader.GetActiveMods()[modId];
+            }
+            return null;
+        }
+
+        public static GlobalPlayer GetModGlobalPlayer<T>()
+        {
+            if (CaModLoader.modGlobalPlayers.Where((item) => item.GetType() == typeof(T)).Count() > 0)
+            {
+                return CaModLoader.modGlobalPlayers.Where((item) => item.GetType() == typeof(T)).FirstOrDefault();
+            }
+            return null;
+        }
+
+        public static GlobalItem GetModGlobalItem<T>()
+        {
+            if (CaModLoader.modGlobalItems.Where((item) => item.GetType() == typeof(T)).Count() > 0)
+            {
+                return CaModLoader.modGlobalItems.Where((item) => item.GetType() == typeof(T)).FirstOrDefault();
             }
             return null;
         }
