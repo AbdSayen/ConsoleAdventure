@@ -105,7 +105,7 @@ namespace ConsoleAdventure
 
         private bool _isFirstUpdate = true;
 
-        public bool WindowActive => IsActive;
+        public static bool WindowActive { get; private set; }
 
         public ConsoleAdventure()
         {
@@ -263,6 +263,8 @@ namespace ConsoleAdventure
 
         protected override void Update(GameTime gameTime)
         {
+            WindowActive = IsActive;
+
             prekstate = kstate;
             kstate = Keyboard.GetState();
 
@@ -291,7 +293,7 @@ namespace ConsoleAdventure
                     world.Start?.Invoke();
                     _isFirstUpdate = false;
                 }
-                
+
                 world.ListenEvents();
 
                 if (kstate.IsKeyDown(InputConfig.WorldExit.key) && !world.isCmdOpen)
@@ -316,6 +318,27 @@ namespace ConsoleAdventure
 
                 if ((world.GetLocalPlayer().w == 1 && world.rain.rainForce == 0) || !InWorld)
                     MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld");
+
+
+                int l = -1;
+                if (Input.PostClick(Keys.F11)) l = 0;
+                if (Input.PostClick(Keys.F12)) l = 1;
+
+                if (l > -1)
+                {
+                    try 
+                    {
+                        System.Drawing.Bitmap bitmap = display.MapScreen(l);
+                        if (!Directory.Exists("Screens")) Directory.CreateDirectory("Screens");
+                        int count = Directory.GetFiles("Screens", "*.png").Length;
+
+                        bitmap.Save($"Screens/map{count}.png");
+                    }
+
+                    catch 
+                    { 
+                    }
+                } 
             }
 
             else

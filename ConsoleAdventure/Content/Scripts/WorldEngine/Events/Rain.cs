@@ -1,6 +1,7 @@
 ﻿using ConsoleAdventure.Content.Scripts.Player;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,7 +47,7 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.Events
         {
             if (delay <= 0)
             {
-                rainForce += (float)(ConsoleAdventure.rand.NextDouble() / 10) * ConsoleAdventure.rand.Next(-1, 1);
+                rainForce += (float)(ConsoleAdventure.rand.NextDouble() / 10) * ConsoleAdventure.rand.Next(-1, 2);
 
                 if (rainForce >= 1)
                     rainForce = 0;
@@ -55,6 +56,7 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.Events
             }
 
             delay--;
+            rainForce = 1;
 
             return rainForce > 0;
         }
@@ -68,9 +70,13 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.Events
                 for (int i = 0; i < rainDrops.Count; i++)
                 {
                     Position dropPos = rainDrops[i].position;
-                    if (dropPos.x > player.position.x - 30 && dropPos.x < player.position.x + 30 && dropPos.y > player.position.y - 15 && dropPos.y < player.position.y + 15)
+                    Position playerPos = player.position;
+
+                    if (dropPos.x > playerPos.x - 30 && dropPos.x < playerPos.x + 30 && dropPos.y > playerPos.y - 15 && dropPos.y < playerPos.y + 15)
                     {
-                        StringPaint.Draw(rainDrops[i].symbol, dropPos, player.w, new(), Color.Blue);
+                        Position tryColorPos = new Position(Math.Clamp(rainDrops[i].position.x - ConsoleAdventure.startDisplay.x, 0, 60), Math.Clamp(rainDrops[i].position.y - ConsoleAdventure.startDisplay.y, 0, 30));
+                        Vector3 light = Light.colors[tryColorPos.x, tryColorPos.y].ToVector3();
+                        StringPaint.Draw(rainDrops[i].symbol, dropPos, player.w, new(), (Color)(Color.Blue.ToVector3() * light).ToColor());
                     }
                 }
             }

@@ -10,7 +10,6 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine
     {
         public Position position;
         public int w;
-
         public Observer(Position pos, int w)
         {
             this.position = pos;

@@ -5,10 +5,12 @@ using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace ConsoleAdventure
@@ -80,6 +82,7 @@ namespace ConsoleAdventure
             hpBar.Draw(ConsoleAdventure._spriteBatch);
         }
 
+        int timer;
         public void DrawMap()
         {
             Player player = world.GetLocalPlayer();
@@ -93,8 +96,6 @@ namespace ConsoleAdventure
             if (mapFlag)
             {
                 ConsoleAdventure._spriteBatch.Draw(ConsoleAdventure.pixel, Vector2.Zero, null, Color.Black, 0, Vector2.Zero, new Vector2(ConsoleAdventure.Width, ConsoleAdventure.Height), 0, 1);
-
-                mapBuffer.Clear();
 
                 if (Input.PostClick(InputConfig.NavigationUp)) mapPos.Y--;
                 if (Input.PostClick(InputConfig.NavigationDown)) mapPos.Y++;
@@ -115,13 +116,19 @@ namespace ConsoleAdventure
 
                 if (zoom)
                 {
-                    for (int i = 0; i < player.map.data.Count; i++)
-                    {
-                        var chunk = player.map.data.ElementAt(i);
 
-                        if (chunk.Key.X >= mapPos.X && chunk.Key.X <= mapPos.X + 6 && chunk.Key.Y >= mapPos.Y && chunk.Key.Y <= mapPos.Y + 3)
+                    if (timer % 10 == 0)
+                    {
+                        mapBuffer.Clear();
+                        for (int i = 0; i < player.map.data.Count; i++)
                         {
-                            mapBuffer.Add(chunk.Key, chunk.Value);
+                            var chunk = player.map.data.ElementAt(i);
+                            Point pos = chunk.Key;
+
+                            if (pos.X >= mapPos.X && pos.X <= mapPos.X + 6 && pos.Y >= mapPos.Y && pos.Y <= mapPos.Y + 3)
+                            {
+                                mapBuffer.Add(pos, chunk.Value);
+                            }
                         }
                     }
 
@@ -139,7 +146,6 @@ namespace ConsoleAdventure
                                     byte l = mapField.Value.color.A;
                                     ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "██", new(((chunk.Key.X - mapPos.X) * 18 * 16) + (i * 18), ((chunk.Key.Y - mapPos.Y) * 19 * 16) + (j * 19)), (mapField.Value.color.ToVector3() * (new Color(l, l, l)).ToVector3()).ToColor());
                                 }
-
                             }
                         }
                     }
@@ -150,13 +156,18 @@ namespace ConsoleAdventure
 
                 else
                 {
-                    for (int i = 0; i < player.map.data.Count; i++)
+                    if (timer % 10 == 0)
                     {
-                        var chunk = player.map.data.ElementAt(i);
-
-                        if (chunk.Key.X >= mapPos.X && chunk.Key.X <= mapPos.X + 8 * 16 && chunk.Key.Y >= mapPos.Y && chunk.Key.Y <= mapPos.Y + 4 * 16)
+                        mapBuffer.Clear();
+                        for (int i = 0; i < player.map.data.Count; i++)
                         {
-                            mapBuffer.Add(chunk.Key, chunk.Value);
+                            var chunk = player.map.data.ElementAt(i);
+                            Point pos = chunk.Key;
+
+                            if (pos.X >= mapPos.X && pos.X <= mapPos.X + 8 * 16 && pos.Y >= mapPos.Y && pos.Y <= mapPos.Y + 4 * 16)
+                            {
+                                mapBuffer.Add(pos, chunk.Value);
+                            }
                         }
                     }
 
@@ -185,6 +196,41 @@ namespace ConsoleAdventure
             {
                 mapPos = ((player.position / 16) - new Position(1, 1)).ToPoint();
             }
+
+            timer++;
+        }
+
+        public System.Drawing.Bitmap MapScreen(int w)
+        {
+            System.Drawing.Bitmap screen = new System.Drawing.Bitmap(world.size, world.size);
+
+            Player player = ConsoleAdventure.world.GetLocalPlayer();
+
+            for (int g = 0; g < player.map.data.Count; g++)
+            {
+                var chunk = player.map.data.ElementAt(g);
+
+                for (int i = 0; i < 16; i++)
+                {
+                    for (int j = 0; j < 16; j++)
+                    {
+                        MapField? mapField = chunk.Value.fields[i, j, w];
+                        if (mapField != null)
+                        {
+                            byte l = mapField.Value.color.A;
+                            Color color = (Color)(mapField.Value.color.ToVector3() * (new Color(l, l, l)).ToVector3()).ToColor();
+                            screen.SetPixel(((chunk.Key.X * 16) + i), ((chunk.Key.Y * 16) + j), System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B));
+                        }
+
+                        else
+                        {
+                            screen.SetPixel(((chunk.Key.X * 16) + i), ((chunk.Key.Y * 16) + j), System.Drawing.Color.FromArgb(255, 0, 0, 0));
+                        }
+                    }
+                }
+            }
+
+            return screen;
         }
 
         public void DisplayInventory(Vector2 position)

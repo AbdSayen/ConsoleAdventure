@@ -23,6 +23,7 @@ using System.Text;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.WorldEngine.Generate;
 using ConsoleAdventure.Content.Scripts.WorldEngine;
+using ConsoleAdventure.Networks;
 
 namespace ConsoleAdventure
 {
@@ -442,7 +443,6 @@ namespace ConsoleAdventure
                 if (ob == null)
                     ob = o;
             }
-
             return ob;
         }
 

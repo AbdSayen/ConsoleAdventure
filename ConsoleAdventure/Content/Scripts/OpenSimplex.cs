@@ -44,6 +44,24 @@ namespace ConsoleAdventure.Content.Scripts
          * Noise Evaluators
          */
 
+        public static float FractalNoise2D(long seed, double x, double y, int octaves, double persistence, double lacunarity)
+        {
+            float total = 0;
+            double frequency = 1;
+            double amplitude = 1;
+            float maxValue = 0;
+
+            for (int i = 0; i < octaves; i++)
+            {
+                total += noise2(seed, x * frequency, y * frequency) * (float)amplitude;
+                maxValue += (float)amplitude;
+                amplitude *= persistence;
+                frequency *= lacunarity;
+            }
+
+            return total / maxValue;
+        }
+
         /**
          * 2D OpenSimplex2S/SuperSimplex noise, standard lattice orientation.
          */

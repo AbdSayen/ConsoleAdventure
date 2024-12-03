@@ -107,12 +107,10 @@ namespace ConsoleAdventure
         {
 
         }
-
         public virtual void Droped()
         {
 
         }
-
         public virtual void PickedUp()
         {
 

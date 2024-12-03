@@ -13,8 +13,8 @@ using ConsoleAdventure.Content.Scripts.InputLogic;
 using System.Text;
 using ConsoleAdventure.Content.Scripts.WorldEngine.Events;
 using System.Threading.Tasks;
+using ConsoleAdventure.Networks;
 using ConsoleAdventure.Content.Scripts.WorldEngine;
-
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -23,7 +23,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Action Start;
         
-        public int size { get; internal set; } = 256;
+        public int size { get; internal set; } = 256 * 2;
 
         public Chunk[,] chunks;
         public Dictionary<short, Player> players = new();

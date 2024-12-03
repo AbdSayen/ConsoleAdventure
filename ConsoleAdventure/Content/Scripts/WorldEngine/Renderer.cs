@@ -45,27 +45,30 @@ namespace ConsoleAdventure.WorldEngine
             Vector2 worldPos = ConsoleAdventure.worldPos;
             Vector2 cellSize = ConsoleAdventure.cellSize;
 
-            Light.Clear();
-            StringPaint.Clear();
-
-            for (int i = -11; i < 61 + 11; i++)
+            if (ConsoleAdventure.WindowActive)
             {
-                for (int j = -11; j < 61 + 11; j++)
+                Light.Clear();
+                StringPaint.Clear();
+
+                for (int i = -11; i < 61 + 11; i++)
                 {
-                    int x = i + ConsoleAdventure.startDisplay.x;
-                    int y = j + ConsoleAdventure.startDisplay.y;
-
-                    Transform t1 = ConsoleAdventure.world.GetField(x, y, World.BlocksLayerId, observerW)?.content;
-                    Transform t2 = ConsoleAdventure.world.GetField(x, y, World.MobsLayerId, observerW)?.content;
-
-                    if (t1 != null)
+                    for (int j = -11; j < 61 + 11; j++)
                     {
-                        t1.OnTheScreen();
-                    }
+                        int x = i + ConsoleAdventure.startDisplay.x;
+                        int y = j + ConsoleAdventure.startDisplay.y;
 
-                    if (t2 != null)
-                    {
-                        t2.OnTheScreen();
+                        Transform t1 = ConsoleAdventure.world.GetField(x, y, World.BlocksLayerId, observerW)?.content;
+                        Transform t2 = ConsoleAdventure.world.GetField(x, y, World.MobsLayerId, observerW)?.content;
+
+                        if (t1 != null)
+                        {
+                            t1.OnTheScreen();
+                        }
+
+                        if (t2 != null)
+                        {
+                            t2.OnTheScreen();
+                        }
                     }
                 }
             }
