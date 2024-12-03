@@ -13,6 +13,7 @@ using ConsoleAdventure.Content.Scripts.InputLogic;
 using System.Text;
 using ConsoleAdventure.Content.Scripts.WorldEngine.Events;
 using System.Threading.Tasks;
+using ConsoleAdventure.Content.Scripts.WorldEngine;
 
 
 namespace ConsoleAdventure.WorldEngine
@@ -63,6 +64,9 @@ namespace ConsoleAdventure.WorldEngine
         internal Dictionary<string, int> modTransforms = new Dictionary<string, int>();
 
         public Rain rain = new Rain();
+
+        public Position observerPos = new Position();
+        public int observerW = 0;
 
         public World(string name, int seed)
         {
@@ -229,12 +233,13 @@ namespace ConsoleAdventure.WorldEngine
 
         public void Render()
         {
-            renderer.Render(GetLocalPlayer(), Cursor.Instance.CursorPosition, Color.OrangeRed);
-
-            //if (Input.OnClick(Keys.Y))
-            //{
-            //    Spawner.Spawn(new Bomb(new Position(5, 5), GetLocalPlayer().w), true);
-            //}
+            Observer observer = CaModLoader.GetWorldObserverMods(this);
+            if (observer == null)
+            {
+                Player p = GetLocalPlayer();
+                observer = new Observer(p.position, p.w);
+            }
+            renderer.Render(observer.position, observer.w, Cursor.Instance.CursorPosition, Color.OrangeRed);
 
             ChatDraw();
         }

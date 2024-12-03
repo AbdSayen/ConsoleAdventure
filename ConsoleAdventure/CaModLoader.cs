@@ -22,6 +22,7 @@ using System.Security.Policy;
 using System.Text;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.WorldEngine.Generate;
+using ConsoleAdventure.Content.Scripts.WorldEngine;
 
 namespace ConsoleAdventure
 {
@@ -430,6 +431,19 @@ namespace ConsoleAdventure
             {
                 mods[i].WorldPostGenerate(world);
             }
+        }
+
+        public static Observer GetWorldObserverMods(World world)
+        {
+            Observer ob = null;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                Observer o = mods[i].GetWorldObserver(world);
+                if (ob == null)
+                    ob = o;
+            }
+
+            return ob;
         }
 
         public static void PreDrawMods(SpriteBatch spriteBatch, GameTime gameTime)

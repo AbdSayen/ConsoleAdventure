@@ -33,12 +33,12 @@ namespace ConsoleAdventure.WorldEngine
         int timer;
         Position oldPosition;
         int oldW;
-        public void Render(Transform observer, Position cursorPosition, Color cursorColor)
+        public void Render(Position observer, int observerW, Position cursorPosition, Color cursorColor)
         {
             world = ConsoleAdventure.world;
 
-            ConsoleAdventure.startDisplay = observer.position - new Position(30, 15);
-            ConsoleAdventure.endDisplay = observer.position + new Position(30, 15);
+            ConsoleAdventure.startDisplay = observer - new Position(30, 15);
+            ConsoleAdventure.endDisplay = observer + new Position(30, 15);
 
             SpriteBatch spriteBatch = ConsoleAdventure._spriteBatch;
             SpriteFont font = ConsoleAdventure.Font;
@@ -55,8 +55,8 @@ namespace ConsoleAdventure.WorldEngine
                     int x = i + ConsoleAdventure.startDisplay.x;
                     int y = j + ConsoleAdventure.startDisplay.y;
 
-                    Transform t1 = ConsoleAdventure.world.GetField(x, y, World.BlocksLayerId, observer.w)?.content;
-                    Transform t2 = ConsoleAdventure.world.GetField(x, y, World.MobsLayerId, observer.w)?.content;
+                    Transform t1 = ConsoleAdventure.world.GetField(x, y, World.BlocksLayerId, observerW)?.content;
+                    Transform t2 = ConsoleAdventure.world.GetField(x, y, World.MobsLayerId, observerW)?.content;
 
                     if (t1 != null)
                     {
@@ -72,18 +72,18 @@ namespace ConsoleAdventure.WorldEngine
 
             spriteBatch.DrawFrame(font, Utils.GetPanel(new(122, 32)), new(worldPos.X - (cellSize.X / 2) + 4, worldPos.Y - cellSize.Y), new Color(50, 50, 50));
 
-            if (observer.position != oldPosition || observer.w != oldW || timer % 5 == 0)
+            if (observer != oldPosition || observerW != oldW || timer % 5 == 0)
             {
-                Light.Update(observer.position);
+                Light.Update(observer);
             }
 
-            int noClampedStartY = observer.position.y - viewDistanceY / 2;
-            int noClampedStartX = observer.position.x - viewDistanceX / 2;
+            int noClampedStartY = observer.y - viewDistanceY / 2;
+            int noClampedStartX = observer.x - viewDistanceX / 2;
 
             int startY = Math.Clamp(noClampedStartY, 0, world.size);
             int startX = Math.Clamp(noClampedStartX, 0, world.size);
-            int endY = Math.Clamp(observer.position.y + viewDistanceY / 2, 0, world.size);
-            int endX = Math.Clamp(observer.position.x + viewDistanceX / 2, 0, world.size);
+            int endY = Math.Clamp(observer.y + viewDistanceY / 2, 0, world.size);
+            int endX = Math.Clamp(observer.x + viewDistanceX / 2, 0, world.size);
 
             int nx = 0;
             int X = 0;
@@ -101,7 +101,7 @@ namespace ConsoleAdventure.WorldEngine
 
                     for (int z = 0; z < World.CountOfLayers; z++)
                     {
-                        Field field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, z, observer.w);
+                        Field field = chunk?.GetField(x % Chunk.Size, y % Chunk.Size, z, observerW);
 
                         if (field?.content != null)
                         {
@@ -135,8 +135,8 @@ namespace ConsoleAdventure.WorldEngine
                 DrawCursor(cursorPosition, cursorColor);
             }
 
-            oldPosition = observer.position;
-            oldW = observer.w;
+            oldPosition = observer;
+            oldW = observerW;
             
             timer++;
         }
