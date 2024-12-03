@@ -25,6 +25,7 @@ namespace ConsoleAdventure
             for (int i = 0; i < items.Count; i++)
             {
                 items[i] = AddItem(items[i]);
+
                 if (items[i].count == 0) 
                 { 
                     items.RemoveAt(i);
@@ -104,6 +105,8 @@ namespace ConsoleAdventure
         public Stack AddItem(Stack item, int count = -1)
         {
             if (!item.Item.CanBePickedUp()) return item; //Пропускаем если предмет нельзя поднять
+
+            item.Item.PickedUp();
 
             Stack newItem = item;
             int addCount;

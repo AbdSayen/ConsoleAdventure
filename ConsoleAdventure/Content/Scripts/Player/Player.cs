@@ -364,6 +364,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if(inventory.slots.Count > 0 && slot > -1 && slot < inventory.slots.Count)
             {
                 Stack stack = inventory.slots[slot];
+                stack.Item.Droped();
                 new Loot(position, w, new List<Stack>() { stack });
                 inventory.RemoveAt(slot, stack.count);
             }
