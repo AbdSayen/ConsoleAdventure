@@ -23,7 +23,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Action Start;
         
-        public int size { get; internal set; } = 256 * 2;
+        public int size { get; internal set; } = 256 * 1;
 
         public Chunk[,] chunks;
         public Dictionary<short, Player> players = new();
