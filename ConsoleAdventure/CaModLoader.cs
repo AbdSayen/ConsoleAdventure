@@ -515,5 +515,21 @@ namespace ConsoleAdventure
                 mods[i].LoadModTags(new ModTags(tags, mods[i].dirName));
             }
         }
+
+        public static void PreSaveWorldMods()
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].PreSaveWorld();
+            }
+        }
+
+        public static void PreLoadWorldMods()
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].PreLoadWorld();
+            }
+        }
     }
 }

@@ -129,7 +129,17 @@ namespace CaModLoaderAPI
             return null;
         }
 
+        public virtual void PreSaveWorld()
+        {
+
+        }
+
         public virtual void SaveModTags(ModTags tags)
+        {
+
+        }
+
+        public virtual void PreLoadWorld()
         {
 
         }

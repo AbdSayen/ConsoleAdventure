@@ -172,6 +172,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
             Tags tags = new();
             int size = world.size;
 
+            CaModLoader.PreSaveWorldMods();
+
             tags["Seed"] = world.seed;
 
             tags["Size"] = size;
@@ -334,6 +336,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 World world = ConsoleAdventure.world;
                 Tags tags = ConsoleAdventure.tags;
+
+                CaModLoader.PreLoadWorldMods();
 
                 world.seed = tags.SafelyGet<int>("Seed");
                 world.size = tags.SafelyGet<int>("Size");
