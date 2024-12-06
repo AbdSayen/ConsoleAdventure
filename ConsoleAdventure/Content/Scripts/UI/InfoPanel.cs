@@ -9,7 +9,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
         Texture2D pixel;
         public bool isVisible { get; set; }
 
-        public InfoPanel(Rectangle rectangle, string name, string text) : base(rectangle, Color.White)
+        private Color nameColor;
+        private Color textColor;
+
+        public InfoPanel(Rectangle rectangle, string name, string text, Color? nameColor = null, Color? textColor = null) : base(rectangle, Color.White)
         {
             this.name = name;
             this.text = text;
@@ -17,6 +20,12 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             pixel = new Texture2D(ConsoleAdventure._graphics.GraphicsDevice, 1, 1);
             pixel.SetData(new Color[] { Color.Black });
+
+            if (nameColor == null) nameColor = Color.White;
+            if (textColor == null) textColor = Color.White;
+
+            this.nameColor = (Color)nameColor;
+            this.textColor = (Color)textColor;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -29,8 +38,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             spriteBatch.DrawFrame(font, Utils.GetPanel(new(rectangle.Width, rectangle.Height), 0), Position, Color.White);
             spriteBatch.DrawFrame(font, Utils.GetPanel(new(rectangle.Width, 3), 0), Position, Color.White);
 
-            spriteBatch.DrawString(font, name, Position + (new Vector2(9 * 8, 19 * 1)), Color.White);
-            spriteBatch.DrawString(font, text, Position + (new Vector2(9 * 3, 19 * 3)), Color.White);
+            spriteBatch.DrawString(font, name, Position + (new Vector2(9 * 8, 19 * 1)), nameColor);
+            spriteBatch.DrawString(font, text, Position + (new Vector2(9 * 3, 19 * 3)), textColor);
         }
     }
 }
