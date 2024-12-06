@@ -290,6 +290,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["EntityTypes"] = EntityTypes;
             tags["EntityParams"] = EntityParams;
 
+            CaModLoader.SaveModTagsMods(tags);
+
             ConsoleAdventure.tags = tags;
         }
 
@@ -421,6 +423,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                     Transform.SetObject(EntityTypes[i], new Position(EntityX[i], EntityY[i]), EntityW[i], parameters: EntityParams[i]);
                 }
+
+                CaModLoader.LoadModTagsMods(tags);
 
                 ConsoleAdventure.progressBar.Progress += 5;
                 ConsoleAdventure.InWorld = true;

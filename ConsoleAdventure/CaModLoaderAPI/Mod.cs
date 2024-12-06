@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Runtime.CompilerServices;
 using ConsoleAdventure.Content.Scripts.WorldEngine;
+using ConsoleAdventure.Content.Scripts.IO;
 
 namespace CaModLoaderAPI
 {
@@ -126,6 +127,16 @@ namespace CaModLoaderAPI
         public virtual Observer GetWorldObserver(World world)
         {
             return null;
+        }
+
+        public virtual void SaveModTags(ModTags tags)
+        {
+
+        }
+
+        public virtual void LoadModTags(ModTags tags)
+        {
+
         }
     }
 }

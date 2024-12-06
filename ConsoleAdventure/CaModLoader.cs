@@ -381,6 +381,11 @@ namespace ConsoleAdventure
             }
         }
 
+        public static List<Mod> GetActiveMods()
+        {
+            return mods;
+        }
+
         public static void InitializeMods()
         {
             for (int i = 0; i < mods.Count; i++)
@@ -495,9 +500,20 @@ namespace ConsoleAdventure
             }
         }
 
-        public static List<Mod> GetActiveMods()
+        public static void SaveModTagsMods(Tags tags)
         {
-            return mods;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].SaveModTags(new ModTags(tags, mods[i].dirName));
+            }
+        }
+
+        public static void LoadModTagsMods(Tags tags)
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].LoadModTags(new ModTags(tags, mods[i].dirName));
+            }
         }
     }
 }
