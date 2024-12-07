@@ -81,7 +81,7 @@ namespace ConsoleAdventure
 
         public static Texture2D pixel;
 
-        public static bool BlockHotKey { get; internal set; } = false;
+        public static bool BlockHotKey { get; set; } = false;
 
         public static SpriteFont Font => font;
 
