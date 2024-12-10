@@ -370,11 +370,11 @@ namespace ConsoleAdventure
                 if (CaModLoader.PreDrawWorldMods(_spriteBatch, gameTime, world))
                     display.DrawWorld();
 
-                CaModLoader.PostDrawWorldMods(_spriteBatch, gameTime, world);
-
                 display.DisplayInventory(new Vector2(_graphics.PreferredBackBufferWidth - 240, 10));
 
                 _spriteBatch.DrawString(font, $"FPS: {(int)frameRate}", new Vector2(10, _graphics.PreferredBackBufferHeight - 30), Color.White);
+
+                CaModLoader.PostDrawWorldMods(_spriteBatch, gameTime, world);
 
                 _spriteBatch.End();
             }

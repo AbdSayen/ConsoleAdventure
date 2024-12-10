@@ -58,12 +58,12 @@ namespace ConsoleAdventure
                 }
                 else
                 {
-                    ConsoleAdventure.logger.AddMessage($"Localization: key \"{key}\" in type \"{type}\" in language \"{languageName}\" was not found.");
+                    //ConsoleAdventure.logger.AddMessage($"Localization: key \"{key}\" in type \"{type}\" in language \"{languageName}\" was not found.");
                 }
             }
             else
             {
-                ConsoleAdventure.logger.AddMessage($"Localization: type \"{type}\" in language \"{languageName}\" was not found.");
+                //ConsoleAdventure.logger.AddMessage($"Localization: type \"{type}\" in language \"{languageName}\" was not found.");
             }
 
             return "";
