@@ -1,4 +1,6 @@
-﻿using ConsoleAdventure.Content.Scripts.Player;
+﻿using ConsoleAdventure.Content.Scripts.Audio;
+using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Content.Scripts.Player;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
@@ -37,9 +39,10 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.Events
                     rainDrops.RemoveAt(i);
                     i--;
                 }
-
                 drop.timer--;
             }
+
+            MusicEngine.ChangeSong("ConsoleAdventure.ItsMagicRain");
         }
 
         int delay = 360;

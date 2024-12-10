@@ -308,17 +308,10 @@ namespace ConsoleAdventure
 
                 if (!kstate.IsKeyDown(InputConfig.Pause.key) && prekstate.IsKeyDown(InputConfig.Pause.key) && !ConsoleAdventure.BlockHotKey)
                 {
-                    if (!isPause)
-                        isPause = true;
-                    else
-                        isPause = false;
+                    isPause = !isPause;
                 }
 
-                if ((world.GetLocalPlayer().w == 0 || world.rain.rainForce > 0) && InWorld)
-                    MusicEngine.ChangeSong("ConsoleAdventure.ItsMagicRain");
-
-                if ((world.GetLocalPlayer().w == 1 && world.rain.rainForce == 0) || !InWorld)
-                    MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld");
+                MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld", -10);
 
 
                 int l = -1;
