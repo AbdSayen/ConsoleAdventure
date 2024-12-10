@@ -303,6 +303,7 @@ namespace ConsoleAdventure
                     InWorld = false;
                     menu.CloseAllPages();
                     Loger.ClearLogs();
+                    world = null;
                 }
 
                 if (!kstate.IsKeyDown(InputConfig.Pause.key) && prekstate.IsKeyDown(InputConfig.Pause.key) && !ConsoleAdventure.BlockHotKey)
