@@ -60,7 +60,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 {
                     new Stack( new IronPick(), 1),
                     new Stack( new TorchItem(), 1),
-                    new Stack( new Log(), 1),
                 }
             };
 
