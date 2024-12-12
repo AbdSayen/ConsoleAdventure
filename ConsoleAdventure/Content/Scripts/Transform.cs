@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.DirectoryServices;
 using ConsoleAdventure.Settings;
+using System.CodeDom;
 
 namespace ConsoleAdventure
 {
@@ -147,20 +148,23 @@ namespace ConsoleAdventure
                     text = $" ({100 - (int)field.content.degreeDestruction} / 100)";
                 }
 
-                else if (((Storage)field.content).GetItems() != null)
+                if (field.content.GetType().IsSubclassOf(typeof(Storage)))
                 {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    int width = Math.Min(((Storage)field.content).GetItems().Count, 5);
-                    for (int i = 0; i < width; i++)
+                    if (((Storage)field.content).GetItems() != null)
                     {
-                        stringBuilder.Append($"{((Storage)field.content).GetItems()[i].GetInfo()}");
-                        if(i != width - 1)
+                        StringBuilder stringBuilder = new StringBuilder();
+                        int width = Math.Min(((Storage)field.content).GetItems().Count, 5);
+                        for (int i = 0; i < width; i++)
                         {
-                            stringBuilder.Append(", ");
+                            stringBuilder.Append($"{((Storage)field.content).GetItems()[i].GetInfo()}");
+                            if (i != width - 1)
+                            {
+                                stringBuilder.Append(", ");
+                            }
                         }
-                    }
 
-                    text = " (" + stringBuilder.ToString() + (((Storage)field.content).GetItems().Count > 5 ? "..." : "") + ")";
+                        text += " (" + stringBuilder.ToString() + (((Storage)field.content).GetItems().Count > 5 ? "..." : "") + ")";
+                    }
                 }
             }
 
@@ -216,6 +220,16 @@ namespace ConsoleAdventure
                 Spawner.Spawn((Entity)Activator.CreateInstance(type, args));
             else
                 Activator.CreateInstance(type, args);
+        }
+
+        public virtual void LoadData(object data)
+        {
+
+        }
+
+        public virtual object SaveData()
+        {
+            return null;
         }
 
         public virtual bool CanBeDestroyed()

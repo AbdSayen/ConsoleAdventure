@@ -14,7 +14,6 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Transforms", "Chest");
             description = GetDescription();
             placeType = (int)RenderFieldType.chest;
-            placeLayer = World.ItemsLayerId;
             AddTypeToMap<ChestItem>();
         }
 

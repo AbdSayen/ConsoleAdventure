@@ -228,6 +228,7 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
 
+            Loot.blinkTimer++;
             timer++;
         }
 

@@ -220,6 +220,7 @@ namespace ConsoleAdventure
             string musicDir = "AudioFiles/Music/";
             MusicEngine.AddSong("ConsoleAdventure.StrangeWorld", Content.Load<Song>(musicDir + "StrangeWorld"));
             MusicEngine.AddSong("ConsoleAdventure.ItsMagicRain", Content.Load<Song>(musicDir + "ItsMagicRain"));
+            MusicEngine.AddSong("ConsoleAdventure.WorldInsideOut", Content.Load<Song>(musicDir + "WorldInsideOut"));
             MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld");
 
             CaModLoader.PreLoadMods();
@@ -303,7 +304,7 @@ namespace ConsoleAdventure
                     InWorld = false;
                     menu.CloseAllPages();
                     Loger.ClearLogs();
-                    world = new("empty", 0);
+                    //world = new World("empty", 0);
                 }
 
                 if (!kstate.IsKeyDown(InputConfig.Pause.key) && prekstate.IsKeyDown(InputConfig.Pause.key) && !ConsoleAdventure.BlockHotKey)
@@ -311,7 +312,11 @@ namespace ConsoleAdventure
                     isPause = !isPause;
                 }
 
-                MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld", -10);
+                if ((world?.GetLocalPlayer().w == 0 || world?.rain.rainForce > 0) && InWorld)
+                    MusicEngine.ChangeSong("ConsoleAdventure.ItsMagicRain");
+
+                if ((world?.GetLocalPlayer().w == 1 && world?.rain.rainForce == 0) || !InWorld)
+                    MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld");
 
 
                 int l = -1;

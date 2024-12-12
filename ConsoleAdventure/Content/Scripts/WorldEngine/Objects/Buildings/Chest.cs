@@ -13,6 +13,7 @@ namespace ConsoleAdventure.WorldEngine
         internal bool isBrake = false;
         public Chest(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, w, items)
         {
+            this.worldLayer = World.BlocksLayerId;
             type = (int)RenderFieldType.chest;
 
             AddTypeToMap<Chest>(type);
@@ -56,7 +57,7 @@ namespace ConsoleAdventure.WorldEngine
             player.isChestOpen = false;
             player.chestPosition = new Vector3(-1, -1, -1);
             isBrake = true;
-            new Loot(position + new Position((int)ConsoleAdventure.rand.Choose(new object[] {-1, 1}), (int)ConsoleAdventure.rand.Choose(new object[] { -1, 1 })), w, new List<Stack>() { new Stack(new ChestItem(), 1) });
+            new Loot(position, w, new List<Stack>() { new Stack(new ChestItem(), 1) });
         }
 
         public override bool CanBeDestroyed()

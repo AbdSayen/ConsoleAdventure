@@ -171,23 +171,23 @@ namespace ConsoleAdventure.Content.Scripts.IO
             World world = ConsoleAdventure.world;
             Tags tags = new();
             int size = world.size;
+            int deep = Chunk.maxDeep;
 
             CaModLoader.PreSaveWorldMods();
 
             tags["Seed"] = world.seed;
 
             tags["Size"] = size;
-            tags["ChunksX"] = world.GetChunkCounts().X;
-            tags["ChunksY"] = world.GetChunkCounts().Y;
+            tags["Deep"] = deep;
+            tags["ChunksWidth"] = world.GetChunkCounts().X; 
+            tags["ChunksHeight"] = world.GetChunkCounts().Y;
 
             tags["Time"] = world.time;
 
-            //tags["TransformTypesOffset"] = Main.modTransformTypesOffset;
             tags["ModTransforms"] = world.modTransforms;
             tags["VanillaTransforms"] = Main.vanillaTypesInitialized;
 
-            Dictionary<string, byte[]> playersDat = new Dictionary<string, byte[]>();
-
+            Dictionary<string, byte[]> playersData = new Dictionary<string, byte[]>();
 
             short[] players = new short[ConsoleAdventure.world.players.Count];
             ConsoleAdventure.world.players.Keys.CopyTo(players, 0);
@@ -195,65 +195,47 @@ namespace ConsoleAdventure.Content.Scripts.IO
             for (int i = 0; i < players.Length; i++)
             {
                 Player.Player player = ConsoleAdventure.world.players[players[i]];
-                if (!playersDat.ContainsKey(player.info.pcId))
-                    playersDat.Add(player.info.pcId, player.GetPlayerBytes());
+                if (!playersData.ContainsKey(player.info.pcId))
+                    playersData.Add(player.info.pcId, player.GetPlayerBytes());
             }
 
-            tags["PlayersData"] = playersDat;
+            tags["PlayersData"] = playersData;
 
-            byte[,,,] fields = new byte[Chunk.maxDeep, size, size, 4]; //w, x, y, z
+            byte[,,,] fields = new byte[deep, size, size, 4]; //w, x, y, z
+             
+            List<object> transformsData = new();
+            List<int> transformsDataX = new(); 
+            List<int> transformsDataY = new();
+            List<byte> transformsDataZ = new();
+            List<byte> transformsDataW = new();
 
-
-            int lootCount = 0;
-            for (int i = 0; i < Chunk.maxDeep; i++) //w, поик количества лута и сундуков
+            for (int w = 0; w < deep; w++)
             {
-                for (int j = 0; j < size; j++) //x
+                for (int x = 0; x < size; x++)
                 {
-                    for (int k = 0; k < size; k++) //y
+                    for (int y = 0; y < size; y++)
                     {
-                        if (world.GetField(j, k, World.ItemsLayerId, i).content != null)
-                        {
-                            lootCount++;
-                        }
-                    }
-                }
-            } 
-            
-            List<Stack>[] loots = new List<Stack>[lootCount];
-            int[] lootX = new int[lootCount];
-            int[] lootY = new int[lootCount];
-            int[] lootW = new int[lootCount];
-            byte[] lootTypes = new byte[lootCount]; //Тип объекта: лут или один из сундуков
-
-            int curLoot = 0;
-
-            for (int i = 0; i < Chunk.maxDeep; i++) //w
-            {
-                for (int j = 0; j < size; j++) //x
-                {
-                    for (int k = 0; k < size; k++) //y
-                    {
-                        for (int l = 0; l < 4; l++) //z
+                        for (int z = 0; z < 3; z++)
                         {
                             byte type = 0;
-                            if (world.GetField(j, k, l, i).content != null) //Поиск ячеяк мира
+                            if (world.GetField(x, y, z, w)?.content != null) //Поиск ячеяк мира
                             {
-                                type = (byte)world.GetField(j, k, l, i).content.type;
+                                Transform transform = world.GetField(x, y, z, w).content;
+                                type = (byte)transform.type;
+
+                                object data = transform.SaveData();
+
+                                if(data != null)
+                                {
+                                    transformsData.Add(data);
+                                    transformsDataX.Add(x);
+                                    transformsDataY.Add(y);
+                                    transformsDataZ.Add((byte)z);
+                                    transformsDataW.Add((byte)w);
+                                }
                             }
 
-                            fields[i, j, k, l] = type;
-                        }
-
-                        Field field = world.GetField(j, k, World.ItemsLayerId, i);
-
-                        if (field.content != null) //Поиск лута и сундуков
-                        {
-                            loots[curLoot] = ((Storage)field.content).GetItems();
-                            lootW[curLoot] = i;
-                            lootX[curLoot] = j;
-                            lootY[curLoot] = k;
-                            lootTypes[curLoot] = field.content.type;
-                            curLoot++;
+                            fields[w, x, y, z] = type;
                         }
                     }
                 }
@@ -261,11 +243,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             tags["Fields"] = fields;
 
-            tags["LootCount"] = lootCount;
-            tags["Loots"] = loots;
-            tags["LootX"] = lootX;
-            tags["LootY"] = lootY;
-            tags["LootW"] = lootW;
+            tags["TransformsData"] = transformsData.ToArray();
+            tags["TransformsDataX"] = transformsDataX.ToArray();
+            tags["TransformsDataY"] = transformsDataY.ToArray();
+            tags["TransformsDataZ"] = transformsDataZ.ToArray();
+            tags["TransformsDataW"] = transformsDataW.ToArray();
 
             int EntityCount = world.entities.Count;
             int[] EntityX = new int[EntityCount];
@@ -343,7 +325,6 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 world.size = tags.SafelyGet<int>("Size");
                 world.time = tags.SafelyGet<Time>("Time");
 
-                //Main.modTransformTypesOffset = tags.SafelyGet<Dictionary<string, byte>>("TransformTypesOffset");
                 world.modTransforms = tags.SafelyGet<Dictionary<string, int>>("ModTransforms");
                 int lastVanillaTransformCount = tags.SafelyGet<int>("VanillaTransforms");
 
@@ -357,45 +338,42 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 ConsoleAdventure.progressBar.Progress += 10;
                 ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadObjectData");
 
-                for (int i = 0; i < Chunk.maxDeep; i++) //w
+                int size = world.size;
+                int deep = Chunk.maxDeep;
+
+                for (int w = 0; w < deep; w++)
                 {
-                    for (int j = 0; j < world.size; j++) //x
+                    for (int x = 0; x < size; x++)
                     {
-                        for (int k = 0; k < world.size; k++) //y
+                        for (int y = 0; y < size; y++)
                         {
-                            for (int l = 0; l < 4; l++) //z
+                            for (int z = 0; z < 3; z++)
                             {
-                                if (l != World.MobsLayerId)
+                                byte type = fields[w, x, y, z];
+                                if (!Transform.SetObject(type, new(x, y), w, z)) //загружаем ячейки из тега
                                 {
-                                    byte type = fields[i, j, k, l];
-                                    if (type != (byte)RenderFieldType.loot && type != (byte)RenderFieldType.chest)
-                                    {
-                                        if (!Transform.SetObject(type, new(j, k), i, l)) //загружаем ячейки из тега
-                                        {
-                                            new UnloadedTransform(new(j, k), i, l, type); //создаём незагруженный трансформ 
-                                        }
-                                    }
-
-                                    else
-                                    {
-                                        List<Stack> items = new List<Stack>();
-
-                                        for (int m = 0; m < tags.SafelyGet<int>("LootCount"); m++)
-                                        {
-                                            Position position = new Position((tags.SafelyGet<int[]>("LootX"))[m], (tags.SafelyGet<int[]>("LootY"))[m]);
-                                            int w = tags.SafelyGet<int[]>("LootW")[m];
-
-                                            if (w == i && position.x == j && position.y == k)
-                                            {
-                                                items = (tags.SafelyGet<List<Stack>[]>("Loots"))[m];
-                                                break;
-                                            }
-                                        }
-
-                                        Transform.SetObject(type, new(j, k), i, items: items); //Загружам лут из мира
-                                    }
+                                    new UnloadedTransform(new(x, y), w, z, type); //создаём незагруженный трансформ 
                                 }
                             }
+                        }
+                    }
+                }
+
+                object[] transformsData = tags.SafelyGet<object[]>("TransformsData");
+                int[] transformsDataX = tags.SafelyGet<int[]>("TransformsDataX");
+                int[] transformsDataY = tags.SafelyGet<int[]>("TransformsDataY");
+                byte[] transformsDataZ = tags.SafelyGet<byte[]>("TransformsDataZ");
+                byte[] transformsDataW = tags.SafelyGet<byte[]>("TransformsDataW");
+
+                if (transformsData != null)
+                {
+                    for (int i = 0; i < transformsData.Length; i++)
+                    {
+                        Transform transform = world.GetField(transformsDataX[i], transformsDataY[i], transformsDataZ[i], transformsDataW[i])?.content;
+
+                        if (transform != null)
+                        {
+                            transform.LoadData(transformsData[i]);
                         }
                     }
                 }

@@ -53,6 +53,8 @@ namespace CaModLoaderAPI
 
         public static void InitTransformsTypes(int lastVanillaTransformCount)
         {
+            if (ConsoleAdventureMain.world == null) return;
+
             AllTransformCount = vanillaTypesInitialized;
             modTransformTypes.Clear();
 

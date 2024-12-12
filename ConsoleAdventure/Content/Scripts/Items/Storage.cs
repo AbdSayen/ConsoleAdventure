@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleAdventure.Content.Scripts.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,9 +16,6 @@ namespace ConsoleAdventure
         {
             this.items = items;
             isObstacle = false;
-
-            if (worldLayer == -1) this.worldLayer = WorldEngine.World.ItemsLayerId;
-            else this.worldLayer = (byte)worldLayer;
         }
 
         public List<Stack> GetItems()
@@ -40,6 +38,19 @@ namespace ConsoleAdventure
             }
 
             return output;
+        }
+
+        public override object SaveData()
+        {
+            return items;
+        }
+
+        public override void LoadData(object data)
+        {
+            if (data is List<Stack>) 
+            { 
+                items = (List<Stack>)data; 
+            }
         }
     }
 }

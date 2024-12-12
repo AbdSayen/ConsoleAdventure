@@ -19,19 +19,21 @@ namespace ConsoleAdventure.WorldEngine
             public Vector2 position;
             public int w;
             public Color color;
+            public float rotation;
 
-            public DrawableUnit(string text, Position worldPos, int w, Vector2 offset, Color color)
+            public DrawableUnit(string text, Position worldPos, int w, Vector2 offset, Color color, float rotation)
             {
                 this.text = text;
                 this.w = w;
                 this.color = color;
                 position = worldPos.ToVector2() + offset;
+                this.rotation = rotation;
             }
         }
 
-        public static void Draw(string text, Position worldPos, int w, Vector2 offset, Color color)
+        public static void Draw(string text, Position worldPos, int w, Vector2 offset, Color color, float rotation = 0)
         {
-            drawableUnits.Add(new(text, worldPos, w, offset, color));
+            drawableUnits.Add(new(text, worldPos, w, offset, color, rotation));
         }
 
         internal static void DrawUnits(Vector2 startPos)
@@ -50,7 +52,8 @@ namespace ConsoleAdventure.WorldEngine
                 DrawableUnit unit = drawableUnits[i];
                 if (unit.w == playerW)
                 {
-                    ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, unit.text, ((unit.position - startPos) * ConsoleAdventure.cellSize) + ConsoleAdventure.worldPos, unit.color); 
+                    Vector2 position = ((unit.position - startPos) * ConsoleAdventure.cellSize) + ConsoleAdventure.worldPos;
+                    ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, unit.text, position, unit.color, unit.rotation, Vector2.Zero, 1, 0, 0); 
                 }
             }
         }
