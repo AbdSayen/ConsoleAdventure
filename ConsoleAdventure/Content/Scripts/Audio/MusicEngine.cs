@@ -16,23 +16,13 @@ namespace ConsoleAdventure.Content.Scripts.Audio
         private static float targetVolume = 1.0f;
         private static float fadeSpeed = 0.01f;
 
-        private static float maxVolume = 1.0f;
+        public static float gameVolume { get; private set; } = 0f;
 
-        public static float MaxVolume 
+
+        public static void Setup()
         {
-            get
-            {
-                return maxVolume;
-            }
-
-            set
-            {
-                if(value > 1) maxVolume = 1;
-                else if (value < 0) maxVolume = 0;
-                else maxVolume = value;
-            }
+            gameVolume = (float)SettingsSystem.GetSetting("Options", "MusicVolume") / 100f;
         }
-
         public static void AddSong(string songName, Song song)
         {
             Songs.Add(songName, song);
@@ -54,6 +44,28 @@ namespace ConsoleAdventure.Content.Scripts.Audio
             }
         }
 
+        public static void SetVolume(float volume)
+        {
+            if (gameVolume > 0)
+            {
+                targetVolume /= gameVolume;
+            }
+            
+            gameVolume = volume;
+            targetVolume *= gameVolume;
+            if (targetVolume == 0 && volume > 0)
+            {
+                targetVolume = volume;
+            }
+
+            SettingsSystem.SetSetting("Options", "MusicVolume", GetVolumePercent());
+        }
+
+        public static int GetVolumePercent()
+        {
+            return (int)(MusicEngine.gameVolume * 100);
+        }
+
         internal static void Start(string song)
         {
             currentSong = song;
@@ -61,10 +73,12 @@ namespace ConsoleAdventure.Content.Scripts.Audio
             MediaPlayer.IsRepeating = true;
         }
 
-        public static async void ChangeSong(string newSong, int priority = 0)
+        public static async void ChangeSong(string newSong, int priority = 0, float volume = 1f)
         {
             if (currentSong == newSong || !Songs.ContainsKey(newSong) || priority < currentPriority)
                 return;
+
+            volume = Math.Clamp(volume, 0f, 1f);
 
             currentPriority = priority;
 
@@ -78,7 +92,7 @@ namespace ConsoleAdventure.Content.Scripts.Audio
             MediaPlayer.Stop();
             Start(newSong);
 
-            targetVolume = maxVolume;
+            targetVolume = volume * gameVolume;
         }
 
         public static async void StopSong()

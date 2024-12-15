@@ -23,7 +23,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         internal MenuButton[] menuButtons = new MenuButton[4];
 
-        internal MenuButton[] menuSettingsButtons = new MenuButton[3];
+        internal MenuButton[] menuSettingsButtons = new MenuButton[4];
 
         private List<WorldPanel> worldPanels = new List<WorldPanel>();
 
@@ -445,7 +445,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         #region Settings
         private void SettingsInit()
         {
-            byte[] menuSettingsButtonTypes = new byte[3] { 0, 1, 2 };
+            byte[] menuSettingsButtonTypes = new byte[4] { 0, 1, 2, 3 };
 
             for (int i = 0; i < menuSettingsButtons.Length; i++)
             {
@@ -462,6 +462,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     case 2:
                         text = "Control";
                         break;
+                    case 3:
+                        text = "MusicVolume";
+                        break;
                 }
                 int startPos = 320;
                 int indent = 25;
@@ -473,6 +476,13 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 if (menuSettingsButtonTypes[i] == 0)
                 {
                     menuSettingsButtons[i].text += Localization.GetLanguageName(selectedLanguage);
+                    menuSettingsButtons[i].Position = SettingButtonPos;
+                    menuSettingsButtons[i].Center = SettingButtonPos;
+                }
+
+                if (menuSettingsButtonTypes[i] == 3)
+                {
+                    menuSettingsButtons[i].text += MusicEngine.GetVolumePercent().ToString() + "%";
                     menuSettingsButtons[i].Position = SettingButtonPos;
                     menuSettingsButtons[i].Center = SettingButtonPos;
                 }
@@ -514,6 +524,33 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                         menuSettingsButtons[i].text = Localization.GetTranslation("UI", "Language") + Localization.GetLanguageName(selectedLanguage);
                         menuSettingsButtons[i].UpdateRectToTextSize();
+                    }
+
+                    if (menuSettingsButtons[i].isHover && i == 3)
+                    {
+
+                        if (Input.IsKeyDown(InputConfig.NavigationRight) && timer >= waitTime)
+                        {
+                            if (MusicEngine.gameVolume < 1f)
+                            {
+                                MusicEngine.SetVolume((MusicEngine.GetVolumePercent() + 5) / 100f);
+                            }
+                            menuSettingsButtons[i].text = Localization.GetTranslation("UI", "MusicVolume") + MusicEngine.GetVolumePercent().ToString() + "%";
+                            menuSettingsButtons[i].UpdateRectToTextSize();
+
+                            timer = 0;
+                        }
+                        if (Input.IsKeyDown(InputConfig.NavigationLeft) && timer >= waitTime)
+                        {
+                            if (MusicEngine.gameVolume > 0f)
+                            {
+                                MusicEngine.SetVolume((MusicEngine.GetVolumePercent() - 5) / 100f);
+                            }
+                            menuSettingsButtons[i].text = Localization.GetTranslation("UI", "MusicVolume") + MusicEngine.GetVolumePercent().ToString() + "%";
+                            menuSettingsButtons[i].UpdateRectToTextSize();
+
+                            timer = 0;
+                        }
                     }
 
                     if (Input.IsKeyDown(InputConfig.NavigationUp) && timer >= waitTime)

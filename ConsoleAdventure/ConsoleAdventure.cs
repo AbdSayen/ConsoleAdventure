@@ -129,6 +129,8 @@ namespace ConsoleAdventure
 
             //  Тут такая же система как в локализации.
 
+            SettingsSystem.InitSetting("Options", "MusicVolume", 100);
+
             InputConfig.Init();
             InputConfig.Load();
 
@@ -199,6 +201,8 @@ namespace ConsoleAdventure
             pixel.SetData(new Color[] { Color.Black });
 
             CaModLoader.InitializeMods();
+
+            MusicEngine.Setup();
             menu = new Menu();
 
             SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
@@ -220,7 +224,6 @@ namespace ConsoleAdventure
             string musicDir = "AudioFiles/Music/";
             MusicEngine.AddSong("ConsoleAdventure.StrangeWorld", Content.Load<Song>(musicDir + "StrangeWorld"));
             MusicEngine.AddSong("ConsoleAdventure.ItsMagicRain", Content.Load<Song>(musicDir + "ItsMagicRain"));
-            MusicEngine.AddSong("ConsoleAdventure.WorldInsideOut", Content.Load<Song>(musicDir + "WorldInsideOut"));
             MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld");
 
             CaModLoader.PreLoadMods();
@@ -260,6 +263,11 @@ namespace ConsoleAdventure
             {
                 return c1.R == c2.R && c1.G == c2.G && c1.B == c2.B;
             }
+        }
+
+        protected override void UnloadContent()
+        {
+            SettingsSystem.SaveSettings(); // Перед выходом нужно сохранить значения настроек
         }
 
         protected override void Update(GameTime gameTime)
@@ -304,7 +312,7 @@ namespace ConsoleAdventure
                     InWorld = false;
                     menu.CloseAllPages();
                     Loger.ClearLogs();
-                    //world = new World("empty", 0);
+                    world = new("empty", 0);
                 }
 
                 if (!kstate.IsKeyDown(InputConfig.Pause.key) && prekstate.IsKeyDown(InputConfig.Pause.key) && !ConsoleAdventure.BlockHotKey)
@@ -312,11 +320,7 @@ namespace ConsoleAdventure
                     isPause = !isPause;
                 }
 
-                if ((world?.GetLocalPlayer().w == 0 || world?.rain.rainForce > 0) && InWorld)
-                    MusicEngine.ChangeSong("ConsoleAdventure.ItsMagicRain");
-
-                if ((world?.GetLocalPlayer().w == 1 && world?.rain.rainForce == 0) || !InWorld)
-                    MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld");
+                MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld", -10);
 
 
                 int l = -1;
@@ -345,7 +349,6 @@ namespace ConsoleAdventure
                 menu.MenuUpdate();
                 if (isExit)
                 {
-                    SettingsSystem.SaveSettings(); // Перед выходом нужно сохранить значения настроек
                     Exit();
                 }
             }
