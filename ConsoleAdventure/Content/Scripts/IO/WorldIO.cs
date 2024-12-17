@@ -289,6 +289,9 @@ namespace ConsoleAdventure.Content.Scripts.IO
             IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType)).ToList().Concat(CaModLoader.modTransforms);
             foreach (Type type in list)
             {
+                if (type.IsAbstract)
+                    continue;
+
                 Transform.Init(type, Position.Zero(), 0, null, null);
             }
 

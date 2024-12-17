@@ -172,7 +172,7 @@ namespace ConsoleAdventure
         {
             world = new World(name, seed);
             world.inMultiplayer = inMultiplayer;
-   
+
             await world.Initialize(isfullGenerate);
             display = new Display(world);
         }
@@ -243,15 +243,15 @@ namespace ConsoleAdventure
                 {
                     Color color = colors[x + y * logo.Width];
 
-                    if      (Equals(color, new(255, 255, 255))) sb.Append("##");
+                    if (Equals(color, new(255, 255, 255))) sb.Append("##");
                     else if (Equals(color, new(167, 167, 167))) sb.Append("≈≈");
-                    else if (Equals(color, new(96, 96, 96)))    sb.Append("::");
-                    else if (Equals(color, new(33, 33, 33)))    sb.Append("..");
+                    else if (Equals(color, new(96, 96, 96))) sb.Append("::");
+                    else if (Equals(color, new(33, 33, 33))) sb.Append("..");
                     else if (Equals(color, new(255, 250, 199))) sb.Append("♦♦");
-                    else if (Equals(color, new(255, 233, 0)))   sb.Append("✶ ");
-                    else if (Equals(color, new(255, 156, 0)))   sb.Append("☼ ");
-                    else if (Equals(color, new(255, 104, 0)))   sb.Append("◌ ");
-                    else                                        sb.Append("  ");
+                    else if (Equals(color, new(255, 233, 0))) sb.Append("✶ ");
+                    else if (Equals(color, new(255, 156, 0))) sb.Append("☼ ");
+                    else if (Equals(color, new(255, 104, 0))) sb.Append("◌ ");
+                    else sb.Append("  ");
                 }
 
                 sb.Append("\r\n");
@@ -329,7 +329,7 @@ namespace ConsoleAdventure
 
                 if (l > -1)
                 {
-                    try 
+                    try
                     {
                         System.Drawing.Bitmap bitmap = display.MapScreen(l);
                         if (!Directory.Exists("Screens")) Directory.CreateDirectory("Screens");
@@ -338,10 +338,10 @@ namespace ConsoleAdventure
                         bitmap.Save($"Screens/map{count}.png");
                     }
 
-                    catch 
-                    { 
+                    catch
+                    {
                     }
-                } 
+                }
             }
 
             else
@@ -358,7 +358,7 @@ namespace ConsoleAdventure
         int frame;
         protected override void Draw(GameTime gameTime)
         {
-            
+
             GraphicsDevice.Clear(bg);
             CaModLoader.PreDrawMods(_spriteBatch, gameTime);
 

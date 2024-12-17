@@ -378,6 +378,21 @@ namespace ConsoleAdventure.WorldEngine
             return new();
         }
 
+        public Field GetField(Position position, int layer, int w)
+        {
+            return GetField(position.x, position.y, layer, w);
+        }
+
+        public Transform GetTransform(int x, int y, int layer, int w)
+        {
+            return GetField(x, y, layer, w)?.content;
+        }
+
+        public Transform GetTransform(Position position, int layer, int w)
+        {
+            return GetField(position.x, position.y, layer, w)?.content;
+        }
+
         /*public List<List<Field>> GetFields(int y, int layer, int w)
         {
             int chunkY = y / Chunk.Size;

@@ -179,12 +179,13 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private void MainScreenUpdate()
         {
-            if (State == MenuState.mainScreen) {
+            if (State == MenuState.mainScreen)
+            {
                 for (int i = 0; i < menuButtons.Length; i++)
                 {
                     int waitTime = Utils.StabilizeTicks(20);
 
-                    if (Input.IsKeyDown(InputConfig.NavigationRight)&& timer >= waitTime) //прокрутка 
+                    if (Input.IsKeyDown(InputConfig.NavigationRight) && timer >= waitTime) //прокрутка 
                     {
                         if (menuButtons[i].isHover)
                         {
@@ -277,7 +278,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             if (worldPanels.Count > 0)
             {
                 if (index == -1) worldPanels[0].isHover = true;
-                else worldPanels[index].isHover = true; 
+                else worldPanels[index].isHover = true;
             }
         }
 
@@ -349,7 +350,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                                 void LoadWorld()
                                 {
-                                    try 
+                                    try
                                     {
                                         bool inm = false; // in multiplayer
                                         bool ish = false; // is host
@@ -690,7 +691,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             modList.drawBuffer = 5;
             modList.endList = 5;
         }
-        
+
         int modsTimer;
         bool connectingToOnlineMods = false;
         int cantGetOnlineMods = 0;
@@ -728,7 +729,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 modList.isHover = false;
                 modsTimer = 0;
             }
-        }     
+        }
 
         private void ModsPanelDraw(SpriteBatch spriteBatch)
         {
@@ -762,10 +763,10 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 if (connectingToOnlineMods)
                 {
                     string ModConnectingInfo = "Connecting to server and try get online mods...";
-                    spriteBatch.DrawString(ConsoleAdventure.Font, ModConnectingInfo, new Vector2(ConsoleAdventure.Width/2 - ConsoleAdventure.Font.MeasureString(ModConnectingInfo).X/2, ConsoleAdventure.Height - 50), Color.Gray);
+                    spriteBatch.DrawString(ConsoleAdventure.Font, ModConnectingInfo, new Vector2(ConsoleAdventure.Width / 2 - ConsoleAdventure.Font.MeasureString(ModConnectingInfo).X / 2, ConsoleAdventure.Height - 50), Color.Gray);
                 }
 
-                modList.Draw(spriteBatch);       
+                modList.Draw(spriteBatch);
             }
         }
 
@@ -785,7 +786,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             State = MenuState.mods;
         }
 
-        
+
         private void ModDescriptionDraw(SpriteBatch spriteBatch)
         {
             if (modDescriptionList != null && State == MenuState.modDescription)
@@ -806,7 +807,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             if (modDescriptionList != null && State == MenuState.modDescription)
             {
                 modDescriptionList.Update(ref timer);
-   
+
 
                 if (Input.PostClick(InputConfig.NavigationBeck))
                 {
@@ -831,7 +832,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
         {
             if (State == MenuState.worldLoadingProgress)
             {
-                if(worldErrorList != null)
+                if (worldErrorList != null)
                 {
                     ConsoleAdventure.progressBar.color = Color.Red;
 
@@ -919,7 +920,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 {
                     case 0:
                         text = Localization.GetTranslation("UI", "WorldNameField");
-                        chars = new char[] {'\\', '|', '/','<', '>', '*', '"', '?', '\n', '\r' };
+                        chars = new char[] { '\\', '|', '/', '<', '>', '*', '"', '?', '\n', '\r' };
                         charsType = TextInput.BlackList;
                         break;
                     case 1:
@@ -1017,18 +1018,19 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                         int countIdenticalWorldName = 0;
                         for (int i = 0; i < worlds.Length; i++)
-                        {   string curEndName = (countIdenticalWorldName > 0 ? countIdenticalWorldName.ToString() : "");
+                        {
+                            string curEndName = (countIdenticalWorldName > 0 ? countIdenticalWorldName.ToString() : "");
                             if (worlds[i] == name + curEndName)
                             {
                                 countIdenticalWorldName++;
                             }
                         }
 
-                        if(countIdenticalWorldName > 0)
+                        if (countIdenticalWorldName > 0)
                         {
                             name += countIdenticalWorldName;
                         }
-                        
+
                         await ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text));
                         WorldIO.Save(ConsoleAdventure.world.name);
 
@@ -1071,7 +1073,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 if (worldGenTextFields[1].text != "" && !int.TryParse(worldGenTextFields[1].text, out int r0)) { worldGenTextFields[1].color = Color.Red; WGErrorType = 0; }
                 else { worldGenTextFields[1].color = Color.White; WGErrorType = -1; }
 
-                if(worldGenTextFields[1].text == "") WGErrorType = 0;
+                if (worldGenTextFields[1].text == "") WGErrorType = 0;
 
                 //if (worldGenTextFields[2].text != "" && !int.TryParse(worldGenTextFields[2].text, out int r1)) worldGenTextFields[2].color = Color.Red;
                 //else worldGenTextFields[2].color = Color.White;
@@ -1105,7 +1107,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             {
                 if (Input.PostClick(InputConfig.ControlEdit) && controlTimer > 60)
                 {
-                    for(int i = 0; i < controlConfig.elements.Count; i++)
+                    for (int i = 0; i < controlConfig.elements.Count; i++)
                     {
                         if (controlConfig.elements[i].isHover)
                         {
@@ -1164,8 +1166,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             for (int i = 0; i < textFieldTypes.Length; i++)
             {
                 string text = "";
-                char[] chars = new char[] { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 
-                                            'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 
+                char[] chars = new char[] { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd',
+                                            'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm',
                                             'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D',
                                             'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M' };
 
@@ -1252,7 +1254,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     if (MCErrorType == -1)
                     {
                         ModCreator.CreateMod(modTextFields[0].text, modTextFields[1].text);
-                        ConsoleAdventure.BlockHotKey = false;      
+                        ConsoleAdventure.BlockHotKey = false;
                     }
 
                     else
@@ -1319,7 +1321,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                                  .Replace("[4]", Localization.GetTranslation("Keys", InputConfig.NavigationDown.key.ToString()))
                                                  .Replace("[5]", Localization.GetTranslation("Keys", InputConfig.NavigationSelect.key.ToString()));
             spriteBatch.DrawString(ConsoleAdventure.Font, navHelp, new Vector2(ConsoleAdventure.Width - (ConsoleAdventure.Font.MeasureString(navHelp).X + 10), ConsoleAdventure.Height - 25), Color.Gray);
-            
+
             if (State > 0)
             {
                 // Draw Esc Help
@@ -1348,13 +1350,13 @@ namespace ConsoleAdventure.Content.Scripts.UI
             ModCreateMenuDraw(spriteBatch);
 
             ModDescriptionDraw(spriteBatch);
-            
+
             spriteBatch.End();
         }
 
         public async static void TickSound()
         {
-            await SoundEngine.PlaySound(SoundEngine.BubbleWave, 500, 0.1f, TimeSpan.FromMilliseconds(500));   
+            await SoundEngine.PlaySound(SoundEngine.BubbleWave, 500, 0.1f, TimeSpan.FromMilliseconds(500));
         }
 
         public async static void ErrorSound()

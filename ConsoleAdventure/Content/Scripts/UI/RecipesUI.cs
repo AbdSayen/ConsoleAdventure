@@ -107,9 +107,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     spriteBatch.DrawString(ConsoleAdventure.Font, "_", Position + new Vector2(x * 18, y * 19), Color.Yellow);
                 }
 
-                if ((i % (size.X - 1)) == (size.X - 1))
+                if ((i % (29)) == (29 - 1))
                 {
-                    x = 1;
+                    x = 0;
                     y++;
                 }
 
@@ -125,14 +125,14 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                 Vector2 nameSize = ConsoleAdventure.Font.MeasureString(name);
 
-                int countWidth = 0;
+                //int countWidth = 0;
                 for (int i = 0; i < recipe.Ingredients.Count; i++)
                 {
                     var ingredient = recipe.Ingredients.ElementAt(i);
-                    ingredient.Key.Draw(spriteBatch, Position + new Vector2(36 + nameSize.X + (i * 18) + countWidth, size.Y * 19));
-                    spriteBatch.DrawString(ConsoleAdventure.Font, $" {ingredient.Value}", Position + new Vector2(36 + nameSize.X + ((i + 1) * 18) + countWidth - 9, size.Y * 19), color);
+                    ingredient.Key.Draw(spriteBatch, Position + new Vector2(36 + nameSize.X + (i * 27), size.Y * 19));
+                    spriteBatch.DrawString(ConsoleAdventure.Font, $" {ingredient.Value}", Position + new Vector2(36 + nameSize.X + ((i) * 27), size.Y * 19), color);
 
-                    countWidth = (int)ConsoleAdventure.Font.MeasureString($" {ingredient.Value}").X;
+                    //countWidth = (int)ConsoleAdventure.Font.MeasureString($" {ingredient.Value}").X;
                 }
 
                 if (type == 1)

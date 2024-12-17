@@ -50,7 +50,7 @@ namespace ConsoleAdventure.Content.Scripts.Audio
             {
                 targetVolume /= gameVolume;
             }
-            
+
             gameVolume = volume;
             targetVolume *= gameVolume;
             if (targetVolume == 0 && volume > 0)
