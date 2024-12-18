@@ -64,10 +64,19 @@ namespace ConsoleAdventure.Content.Scripts.UI
             spriteBatch.DrawString(font, enabled ? "√" : "х", Position + (new Vector2(9 * 47, 19 * 0.8f)), enabled ? Color.Green : Color.Red);
             spriteBatch.DrawString(font, "...", Position + (new Vector2(9 * 45.5f, 19 * 3)), Color.White);
         
-            if(mod is Mod)
+            if(mod is Mod && enabled)
             {
-                Mod _mod = (Mod)mod;
-                _mod.PostDrawModPanel(spriteBatch, Position);
+                Mod trueMod = (Mod)mod;
+                trueMod.PostDrawModPanel(spriteBatch, Position);
+
+                StringBuilder addedContent = new();
+
+                if (trueMod.ItemsCount > 0) addedContent.Append("I");
+                if (trueMod.TransformsCount > 0) addedContent.Append("T");
+                if (trueMod.EntitiesCount > 0) addedContent.Append("E");
+                if (trueMod.BuffsCount > 0) addedContent.Append("B");
+
+                spriteBatch.DrawString(font, addedContent, Position + (new Vector2((9 * 43.5f) - font.MeasureString(addedContent).X, 19 * 3)), Color.Gray);
             }
         }
     }

@@ -39,15 +39,22 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         buffer.Clear(); 
                 }
 
-                if (text[i] == '\n' || counter > maxLength || i >= text.Length - 1)
+                if (counter > maxLength || i >= text.Length - 1)
                 {
                     if(lastSpace > -1)
                     {
                         buffer.Remove(lastSpace, buffer.Length - lastSpace);
-                        i = lastSpaceInText;
-                        lastSpace = -1;
+                        i = lastSpaceInText;lastSpace = -1;
                         lastSpaceInText = -1;
+                        
                     }
+                    counter = 0;
+                    list.Add(new(buffer.ToString(), Vector2.Zero, Color.White));
+                    buffer.Clear();
+                }
+
+                if(text[i] == '\n')
+                {
                     counter = 0;
                     list.Add(new(buffer.ToString(), Vector2.Zero, Color.White));
                     buffer.Clear();

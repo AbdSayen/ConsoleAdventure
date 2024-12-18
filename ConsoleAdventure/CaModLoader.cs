@@ -43,8 +43,9 @@ namespace ConsoleAdventure
         public static List<GlobalItem> modGlobalItems = new List<GlobalItem>();
         public static List<GlobalPlayer> modGlobalPlayers = new List<GlobalPlayer>();
         public static List<Type> modTransforms = new List<Type>();
+        public static List<Buff> modBuffs = new List<Buff>();
 
-        public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();  // [0] - items, [1] - blocks
+        //public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();  // [0] - items, [1] - blocks
 
         public static async Task DownloadMod(string modName)
         {
@@ -252,7 +253,7 @@ namespace ConsoleAdventure
                 modGlobalItems = new();
                 modGlobalPlayers = new();
                 modTransforms = new();
-                modLoadedContentCount = new();
+                modBuffs = new();
                 mods = new();
                 allMods = new();
                 Main.modTypesInitialized = new();
@@ -331,38 +332,60 @@ namespace ConsoleAdventure
 
                             Main.modTypesInitialized.Add(fileName, new Dictionary<Type, int>());
 
-                            modLoadedContentCount.Add(type, new List<int> { 0, 0 }); // [0] - items [1] - transforms
+                            //modLoadedContentCount.Add(type, new List<int> { 0, 0 }); // [0] - items [1] - transforms
 
                             Type[] exportedTypes = assembly.GetExportedTypes();
+                            Type entityType = typeof(Entity);
 
                             foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(ModItem)) || type.IsSubclassOf(typeof(Item)))) // Загружаем все предметы из модов
                             {
                                 modItems.Add(item);
-                                modLoadedContentCount[type][0]++;
+
+                                if(!item.IsAbstract)
+                                    mod.ItemsCount++;
+                                //modLoadedContentCount[type][0]++;
                             }
 
-                            foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalItem)))) // Загружаем все глобальные предметы из модов
+                            foreach (Type gItem in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalItem)))) // Загружаем все глобальные предметы из модов
                             {
-                                GlobalItem gi = (GlobalItem)Activator.CreateInstance(item);
+                                GlobalItem gi = (GlobalItem)Activator.CreateInstance(gItem);
                                 modGlobalItems.Add(gi);
                             }
 
-                            foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalPlayer)))) // Загружаем все глобальных Игроков из модов
+                            foreach (Type player in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalPlayer)))) // Загружаем все глобальных Игроков из модов
                             {
-                                GlobalPlayer gp = (GlobalPlayer)Activator.CreateInstance(item);
+                                GlobalPlayer gp = (GlobalPlayer)Activator.CreateInstance(player);
                                 modGlobalPlayers.Add(gp);
                             }
 
-                            foreach (Type block in exportedTypes.Where(type => type.IsSubclassOf(typeof(Transform)))) // Загружаем все трансформы из модов
+                            foreach (Type transform in exportedTypes.Where(type => type.IsSubclassOf(typeof(Transform)))) // Загружаем все трансформы из модов
                             {
-                                Main.modTypesInitialized[fileName].Add(block, Main.modTypesInitialized[fileName].Keys.Count);
-                                modTransforms.Add(block);
-                                modLoadedContentCount[type][1]++;
+                                Main.modTypesInitialized[fileName].Add(transform, Main.modTypesInitialized[fileName].Keys.Count);
+                                modTransforms.Add(transform);
+
+                                if (!transform.IsAbstract)
+                                {
+                                    mod.TransformsCount++;
+
+                                    if (transform.IsSubclassOf(entityType)) 
+                                    {
+                                        mod.EntitiesCount++;
+                                    }
+                                }
+                            }
+
+                            foreach (Type buff in exportedTypes.Where(type => type.IsSubclassOf(typeof(Buff)))) // Загружаем все бафы из модов
+                            {
+                                Buff aBuff = (Buff)Activator.CreateInstance(buff);
+                                modBuffs.Add(aBuff);
+
+                                if(!buff.IsAbstract)
+                                    mod.BuffsCount++;
                             }
 
                             //Main.modTransformTypesOffset.Add(fileName, (byte)transformsFromAllMods);
 
-                            transformsFromAllMods += modLoadedContentCount[type][1];
+                            transformsFromAllMods += mod.TransformsCount; //modLoadedContentCount[type][1];
 
                         SkipLoop: continue; // Метка для пропуска внешнего цикла
                         }

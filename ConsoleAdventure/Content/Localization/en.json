@@ -117,7 +117,8 @@
     "WorldPlayerNameField": "Player name",
     "WorldSeedField": "Seed",
     "WorldSizeField": "Size",
-    "WorldLoadError": "An error occurred while loading the world, most likely this is a mod problem, the world was created in an old version of the game or its file was damaged:"
+    "WorldLoadError": "An error occurred while loading the world, most likely this is a mod problem, the world was created in an old version of the game or its file was damaged:",
+    "ModContentCounts": "Mod adds:"
   },
 
   "About": {
@@ -133,6 +134,24 @@
     "Blocks-genitive": "Blocks",
     "Block": "Block",
     "Block-genitive": "Block",
+
+    "Transforms": "Transforms",
+    "Transforms-genitive": "Transforms",
+    "Transform": "Transform",
+    "Transform-genitive": "Transform",
+
+    "Entities": "Entities",
+    "Entities-genitive": "Entities",
+    "Entity": "Entity",
+    "Entity-genitive": "Entity",
+
+    "Buffs": "Buffs",
+    "Buffs-genitive": "Buffs",
+    "Buff": "Buff",
+    "Buff-genitive": "Buff",
+
+    "New": "new",
+    "News": "new",
 
     "CanBePlaced": "Can Be Placed",
     "CanBeEaten": "Can Be Eaten",

@@ -232,6 +232,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                         }
                         if (menuButtons[i].type == 3)
                         {
+                            menuButtons[i].cursorColor = Color.Red;
                             State = MenuState.mods;
                             timer = 0;
                         }

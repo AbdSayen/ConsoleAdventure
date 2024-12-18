@@ -44,6 +44,26 @@ namespace CaModLoaderAPI
         /// </summary>
         public CharTexture modIcon { get; set; }
 
+        /// <summary>
+        /// Количество модовых трансформов
+        /// </summary>
+        public int TransformsCount { get; internal set; }
+
+        /// <summary>
+        /// Количество модовых предметов
+        /// </summary>
+        public int ItemsCount { get; internal set; }
+
+        /// <summary>
+        /// Количество модовых сущностей
+        /// </summary>
+        public int EntitiesCount { get; internal set; }
+
+        /// <summary>
+        /// Количество модовых баффов
+        /// </summary>
+        public int BuffsCount { get; internal set; }
+
         public string GetModString()
         {
             return GetType().Name;

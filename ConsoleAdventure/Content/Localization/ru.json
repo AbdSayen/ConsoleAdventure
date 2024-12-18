@@ -117,7 +117,8 @@
     "Author": "Автор:",
     "ModNameField": "Имя мода",
     "ModAuthorField": "Автор мода",
-    "WorldLoadError": "Произошла ошибка при загрузке мира, скорее всего это проблема мода, мир был создан в старой версии игры или его файл был повреждён:"
+    "WorldLoadError": "Произошла ошибка при загрузке мира, скорее всего это проблема мода, мир был создан в старой версии игры или его файл был повреждён:",
+    "ModContentCounts": "Мод добавляет:"
   },
 
   "About": {
@@ -133,6 +134,24 @@
     "Blocks-genitive": "Блоков",
     "Block": "Блок",
     "Block-genitive": "Блока",
+
+    "Transforms": "Трансформы",
+    "Transforms-genitive": "Трансформов",
+    "Transform": "Трансформ",
+    "Transform-genitive": "Трансформа",
+
+    "Entities": "Сущности",
+    "Entities-genitive": "Сущностей",
+    "Entity": "Сущность",
+    "Entity-genitive": "Сущности",
+
+    "Buffs": "Баффы",
+    "Buffs-genitive": "Баффов",
+    "Buff": "Бафф",
+    "Buff-genitive": "Баффа",
+
+    "New": "новый",
+    "News": "новых",
 
     "CanBePlaced": "Можно поставить",
     "CanBeEaten": "Можно съесть",
