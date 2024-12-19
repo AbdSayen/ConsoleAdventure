@@ -259,6 +259,7 @@ namespace ConsoleAdventure
                 Main.modTypesInitialized = new();
                 Main.AllTransformCount = Main.vanillaTypesInitialized;
                 Main.modTransformTypes.Clear();
+                Localization.Load();
             }
 
             for (int i = 0; i < modsPath.Length; i++)
@@ -330,6 +331,8 @@ namespace ConsoleAdventure
                             allMods.Add(mod); // Добавляем в список всех модов
                             modsIdsMap.Add(type, mods.Count - 1);
 
+                            Localization.LoadModTranslations(path + "\\Content\\Localization");
+
                             Main.modTypesInitialized.Add(fileName, new Dictionary<Type, int>());
 
                             //modLoadedContentCount.Add(type, new List<int> { 0, 0 }); // [0] - items [1] - transforms
@@ -400,6 +403,7 @@ namespace ConsoleAdventure
                 InitializeMods();
                 Main.InitTransformsTypes(Main.vanillaTypesInitialized);
                 WorldIO.InitContent();
+                ConsoleAdventure.menu.MenuInit();
                 RunMods();
             }
         }

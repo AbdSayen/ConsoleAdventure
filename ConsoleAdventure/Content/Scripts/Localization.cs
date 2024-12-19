@@ -3,13 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using static System.Windows.Forms.Design.AxImporter;
 
 namespace ConsoleAdventure
 {
     public static class Localization
     {
         private static string[] localizeFiles = new string[2];
+
         public static Dictionary<string, Dictionary<string, string>>[] Localizations = new Dictionary<string, Dictionary<string, string>>[2];
 
         public static void Load()
@@ -28,6 +31,69 @@ namespace ConsoleAdventure
 
 
                 Localizations[i] = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(localizeFiles[i], options);
+            }
+        }
+
+        internal static void LoadModTranslations(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                string[] modLocalizeFiles = new string[2];
+
+                modLocalizeFiles[(int)Language.english] = TryReadAllText(path + "\\en.json");
+                modLocalizeFiles[(int)Language.russian] = TryReadAllText(path + "\\ru.json");
+
+                for (int i = 0; i < localizeFiles.Length; i++)
+                {
+                    if (modLocalizeFiles[i] != null)
+                    {
+                        var translation = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(modLocalizeFiles[i], options);
+
+                        if (translation != null)
+                        {
+                            for (int j = 0; j < translation.Count; j++)
+                            {
+                                var type = translation.ElementAt(j);
+                                if (Localizations[i].ContainsKey(type.Key))
+                                {
+                                    var vanillaType = Localizations[i][type.Key];
+                                    for (int k = 0; k < type.Value.Count; k++)
+                                    {
+                                        var obj = type.Value.ElementAt(k);
+                                        if (vanillaType.ContainsKey(obj.Key))
+                                        {
+                                            vanillaType[obj.Key] = obj.Value;
+                                        }
+
+                                        else
+                                        {
+                                            vanillaType.Add(obj.Key, obj.Value);
+                                        }
+                                    }
+                                }
+
+                                else
+                                {
+                                    Localizations[i].Add(type.Key, type.Value);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            string TryReadAllText(string path)
+            {
+                if (File.Exists(path))
+                {
+                    return File.ReadAllText(path);
+                }
+
+                return null;
             }
         }
 
@@ -50,20 +116,14 @@ namespace ConsoleAdventure
                 return "";
             }
 
-            if (Localizations[language].TryGetValue(type, out var translations))
+            Dictionary<string, Dictionary<string, string>> allTranslations = Localizations[language];
+
+            if (allTranslations != null && allTranslations.TryGetValue(type, out var translations))
             {
                 if (translations.TryGetValue(key, out var text))
                 {
                     return text;
                 }
-                else
-                {
-                    //ConsoleAdventure.logger.AddMessage($"Localization: key \"{key}\" in type \"{type}\" in language \"{languageName}\" was not found.");
-                }
-            }
-            else
-            {
-                //ConsoleAdventure.logger.AddMessage($"Localization: type \"{type}\" in language \"{languageName}\" was not found.");
             }
 
             return "";
