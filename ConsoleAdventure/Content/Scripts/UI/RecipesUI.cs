@@ -45,7 +45,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                 for (int i = 0; i < ConsoleAdventure.recipes.Count; i++)
                 {
-                    if (ConsoleAdventure.recipes[i].IsAvailable())
+                    if (ConsoleAdventure.recipes[i].IsAvailable() || ConsoleAdventure.GodMode)
                     {
                         ConsoleAdventure.availableRecipes.Add(ConsoleAdventure.recipes[i]);
                     }

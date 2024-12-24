@@ -141,8 +141,10 @@ namespace ConsoleAdventure.Content.Scripts
 
                                 if (!accumulatedLight.Equals(lightColor))
                                 {
-                                    if (LightBlock(i + x, j + y, w, source))
+                                    if (LightBlock(i + x, j + y, w, source, out int count))
                                     {
+                                        lightColor *= 1f / (1f + (float)count);
+
                                         accumulatedLight = Utils.AddColors(accumulatedLight, lightColor);
                                     }
                                 }
@@ -158,7 +160,7 @@ namespace ConsoleAdventure.Content.Scripts
         }
         
 
-        private static bool LightBlock(int x, int y, int w, LightSource lightSource)
+        private static bool LightBlock(int x, int y, int w, LightSource lightSource, out int wallsCount)
         {
             int maxWallCount = 1;
             int wallCount = 0;
@@ -185,6 +187,7 @@ namespace ConsoleAdventure.Content.Scripts
 
                 if (wallCount > maxWallCount)
                 {
+                    wallsCount = wallCount;
                     return false;
                 }
 
@@ -202,7 +205,7 @@ namespace ConsoleAdventure.Content.Scripts
                     yA += sy;
                 }
             }
-
+            wallsCount = wallCount;
             return true;
         }
 

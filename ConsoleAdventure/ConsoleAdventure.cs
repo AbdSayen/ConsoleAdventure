@@ -81,6 +81,8 @@ namespace ConsoleAdventure
 
         public static Texture2D pixel;
 
+        public static bool GodMode { get; internal set; }
+
         public static bool BlockHotKey { get; set; } = false;
 
         public static SpriteFont Font => font;
@@ -358,7 +360,6 @@ namespace ConsoleAdventure
         int frame;
         protected override void Draw(GameTime gameTime)
         {
-
             GraphicsDevice.Clear(bg);
             CaModLoader.PreDrawMods(_spriteBatch, gameTime);
 

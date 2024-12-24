@@ -31,6 +31,8 @@ namespace ConsoleAdventure.Content.Scripts.Settings
 
         public void AddText(string text)
         {
+            if (IsFileLocked(logFilePath)) return;
+
             TryLogExist();
             File.AppendAllText(logFilePath, text);
             Console.WriteLine(text);
@@ -64,6 +66,22 @@ namespace ConsoleAdventure.Content.Scripts.Settings
             {
                 File.Create(logFilePath).Dispose();
             }
+        }
+
+        static bool IsFileLocked(string filePath)
+        {
+            try
+            {
+                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                {
+                }
+            }
+            catch (IOException)
+            {
+                // Исключение указывает, что файл используется
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             using (MemoryStream ms = new MemoryStream(data))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-                return (T)formatter.Deserialize(ms);
+                return (T)formatter.Deserialize(ms); 
             }
         }
     }

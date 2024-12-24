@@ -388,9 +388,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 new Loot(position, w, new List<Stack>() { item });
             }
 
-            for (int i = 0; i < recipe.Ingredients.Count; i++)
+            if (!ConsoleAdventure.GodMode) 
             {
-                inventory.RemoveItems(recipe.Ingredients.ElementAt(i).Key, recipe.Ingredients.ElementAt(i).Value);
+                for (int i = 0; i < recipe.Ingredients.Count; i++)
+                {
+                    inventory.RemoveItems(recipe.Ingredients.ElementAt(i).Key, recipe.Ingredients.ElementAt(i).Value);
+                } 
             }
         }
 

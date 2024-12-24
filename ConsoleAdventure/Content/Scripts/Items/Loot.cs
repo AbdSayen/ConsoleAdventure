@@ -98,7 +98,7 @@ namespace ConsoleAdventure
             {
                 if(blinkTimer % blinkPer == delay)
                 {
-                    if(drawItemIndex < items.Count - 1 && drawItemIndex > -1) drawItemIndex++;
+                    if(drawItemIndex < items?.Count - 1 && drawItemIndex > -1) drawItemIndex++;
                     else drawItemIndex = 0;
                 }
 

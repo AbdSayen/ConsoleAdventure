@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text.Json;
 using static System.Windows.Forms.Design.AxImporter;
 
@@ -11,6 +12,36 @@ namespace ConsoleAdventure
 {
     public static class Localization
     {
+        #region Chapters
+
+        public static readonly string ItemsChapter = "Items";
+
+        public static readonly string ItemDescriptionChapter = "ItemDescription";
+
+        public static readonly string BuffsChapter = "Buffs";
+
+        public static readonly string BuffDescriptionChapter = "BuffDescription";
+
+        public static readonly string TransformsChapter = "Transforms";
+
+        public static readonly string EventsChapter = "Events";
+
+        public static readonly string UIChapter = "UI";
+
+        public static readonly string AboutChapter = "About";
+
+        public static readonly string GenericChapter = "Generic";
+
+        public static readonly string ProgressChapter = "Progress";
+
+        public static readonly string MProgressChapter = "MProgress";
+
+        public static readonly string KeysConfigChapter = "KeysConfig";
+        
+        public static readonly string KeysChapter = "Keys";
+
+        #endregion
+
         private static string[] localizeFiles = new string[2];
 
         public static Dictionary<string, Dictionary<string, string>>[] Localizations = new Dictionary<string, Dictionary<string, string>>[2];
