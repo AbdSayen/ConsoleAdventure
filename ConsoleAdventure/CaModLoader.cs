@@ -558,5 +558,13 @@ namespace ConsoleAdventure
                 mods[i].PreLoadWorld();
             }
         }
+
+        public static void PostInitContentMods()
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].PostInitContent();
+            }
+        }
     }
 }

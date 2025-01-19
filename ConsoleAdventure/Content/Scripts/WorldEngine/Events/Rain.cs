@@ -65,7 +65,7 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.Events
         {
             Player.Player player = ConsoleAdventure.world.GetLocalPlayer();
 
-            if (player.w == 1)
+            if (player.w == ConsoleAdventure.StartDeep)
             {
                 for (int i = 0; i < rainDrops.Count; i++)
                 {

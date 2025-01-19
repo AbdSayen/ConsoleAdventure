@@ -68,6 +68,8 @@ namespace ConsoleAdventure.WorldEngine
         public Position observerPos = new Position();
         public int observerW = 0;
 
+        public int spawnW = 1;
+
         public World(string name, int seed)
         {
             this.name = name;
@@ -140,6 +142,11 @@ namespace ConsoleAdventure.WorldEngine
             short id = NetworkManager.Id;
             ConnectPlayer(id, NetworkManager.pcId);
             GetLocalPlayer().isActive = true;
+
+            for (int i = 0; i < CaModLoader.modGlobalPlayers.Count; i++)
+            {
+                CaModLoader.modGlobalPlayers[i].PostConnect(GetLocalPlayer());
+            }
         }
 
         public void ConnectPlayer(short id, string pcId = "")

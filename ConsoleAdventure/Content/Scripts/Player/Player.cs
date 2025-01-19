@@ -54,6 +54,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             info = new PlayerInfo();
             _movement = new PlayerMovement(speed);
+
             inventory = new Inventory(this)
             {
                 slots =
@@ -62,6 +63,13 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     new Stack( new TorchItem(), 1),
                 }
             };
+
+            for (int i = 0; i < CaModLoader.modGlobalPlayers.Count; i++)
+            {
+                List<Stack> modStartInventory = CaModLoader.modGlobalPlayers[i].SetStartItems(inventory.slots);
+                if (modStartInventory != null)
+                    inventory.slots = modStartInventory;
+            }
 
             chest = new Inventory(this);
 
@@ -148,7 +156,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                     if (postKillTimer == 0)
                     {
                         Loger.AddLog(Localization.GetTranslation("Events", "DeadPlayer"));
-                        SetPosition(new(4, 4), 1);
+                        SetPosition(new(4, 4), world.spawnW);
                         life = maxLife;
                         buffs.Clear();
                         isActive = true;
@@ -209,7 +217,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (chest.slots?.Count > 0)
                 holdChestItemIndex = Math.Min(holdChestItemIndex, chest.slots.Count - 1);
 
-            if (holdItemIndex > 0 && holdItemIndex < inventory.slots.Count)
+            if (holdItemIndex >= 0 && holdItemIndex < inventory.slots.Count)
             {
                 Item curItem = inventory.slots[holdItemIndex].Item;
                 if (curItem.damageClass == 1 && curItem.damage > 0 && ConsoleAdventure.kstate.IsKeyDown(InputConfig.Use.key))
@@ -222,7 +230,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                             if (pos >= position + new Position(-1, -1) && pos <= position + new Position(1, 1) && pos != position && world.entities[i].w == w)
                             {
                                 if (world.entities[i].invulnerabilityTime <= 0)
-                                    world.entities[i].Hit(1);
+                                    world.entities[i].Hit(curItem.damage);
                             }
                         }
                     }
@@ -306,6 +314,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
             if (NetworkManager.isHost)
             {
                 //Sync();
+            }
+
+            for (int i = 0; i < CaModLoader.modGlobalPlayers.Count; i++)
+            {
+                CaModLoader.modGlobalPlayers[i].PostInteractWithWorld(this);
             }
         }
 
@@ -417,7 +430,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private void HandleCursorInput()
         {
-            Position targetPosition = new Position(position.x + Cursor.Instance.CursorPosition.x, position.y + Cursor.Instance.CursorPosition.y);
+            Position targetPosition = position + Cursor.Instance.CursorPosition;
 
             if (targetPosition.x <= 0 || targetPosition.x >= world.size || targetPosition.y <= 0 || targetPosition.y >= world.size)
             {

@@ -1,7 +1,9 @@
 ﻿using CaModLoaderAPI;
 using ConsoleAdventure.CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Player;
+using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
+using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
@@ -306,15 +308,35 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 Item item = (Item)Activator.CreateInstance(type);
                 Recipe recipe = item.AddRecipe();
+
+                bool isEdited = false;
+                foreach (GlobalItem globalItem in CaModLoader.modGlobalItems)
+                {
+                    Recipe editRecipe = globalItem.EditRecipes(item);
+                    if (editRecipe != null)
+                    {
+                        if (!isEdited)
+                        {
+                            recipe = editRecipe;
+                            isEdited = true;
+                        }
+
+                        else ConsoleAdventure.recipes.Add(editRecipe);
+                    }               
+                }
+
                 if (recipe != null)
                     ConsoleAdventure.recipes.Add(recipe);
             }
+
+            CaModLoader.PostInitContentMods();
         }
 
         public static void LoadTags()
         {
             lock (locker)
             {
+                Loger.AddLog("start load");
                 ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadGenericData");
 
                 Display.recipesUI = new RecipesUI(new Point(ConsoleAdventure.screenWidth / 2, ConsoleAdventure.screenHeight / 2), new Point(60, 15));
@@ -413,6 +435,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 ConsoleAdventure.progressBar.Progress += 5;
                 ConsoleAdventure.InWorld = true;
+
+                Loger.AddLog("end load");
             }
         }
     }

@@ -94,7 +94,7 @@ namespace ConsoleAdventure
 
         public override void OnTheScreen()
         {
-            if (CanDraw())
+            if (CanDraw() && items != null)
             {
                 if(blinkTimer % blinkPer == delay)
                 {
@@ -104,15 +104,23 @@ namespace ConsoleAdventure
 
                 if (blinkTimer % blinkPer > delay && drawItemIndex > -1)
                 {
-                    CharTexture charTexture = items[drawItemIndex].Item.GetTexture();
-                    Position tryColorPos = new Position(Math.Clamp(position.x - ConsoleAdventure.startDisplay.x, 0, 60), Math.Clamp(position.y - ConsoleAdventure.startDisplay.y, 0, 30));
-
-                    for (int i = 0; i < charTexture.strings.Count; i++)
+                    try 
                     {
-                        Vector2 offset = charTexture.offsets[i];
-                        Color layerColor = (charTexture.colors[i].ToVector3() * Light.colors[tryColorPos.x, tryColorPos.y].ToVector3()).ToColor();
+                        CharTexture charTexture = items[drawItemIndex].Item.GetTexture();
+                        Position tryColorPos = new Position(Math.Clamp(position.x - ConsoleAdventure.startDisplay.x, 0, 60), Math.Clamp(position.y - ConsoleAdventure.startDisplay.y, 0, 30));
 
-                        StringPaint.Draw(charTexture.strings[i], position, w, new((offset.X / 18) + 0.5f, offset.Y / 19), layerColor, charTexture.rotations[i]);
+                        for (int i = 0; i < charTexture.strings.Count; i++)
+                        {
+                            Vector2 offset = charTexture.offsets[i];
+                            Color layerColor = (charTexture.colors[i].ToVector3() * Light.colors[tryColorPos.x, tryColorPos.y].ToVector3()).ToColor();
+
+                            StringPaint.Draw(charTexture.strings[i], position, w, new((offset.X / 18) + 0.5f, offset.Y / 19), layerColor, charTexture.rotations[i]);
+                        }
+                    }
+
+                    catch
+                    {
+
                     }
                 }
             }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.Content.Scripts.Player;
+using Microsoft.Xna.Framework;
 using System;
 using System.Diagnostics;
 
@@ -34,9 +35,11 @@ namespace ConsoleAdventure.WorldEngine
         
         public override void Interaction()
         {
-            if (world.GetLocalPlayer().SetPosition(world.GetLocalPlayer().position, 0))
+            Player player = world.GetLocalPlayer();
+
+            if (player.SetPosition(player.position, player.w--))
             {
-                ConsoleAdventure.curDeep = 0;
+                ConsoleAdventure.curDeep--;
             }
         }
     }

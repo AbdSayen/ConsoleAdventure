@@ -117,6 +117,10 @@ namespace ConsoleAdventure
 
             logger.AddMessage("Starting...");
             logger.AddMessage("Settings loading ...");
+
+            if (Directory.Exists(Program.savePath + "Worlds"))
+                Directory.CreateDirectory(Program.savePath + "Worlds");
+
             if (File.Exists(Program.savePath + "settings.json")) // Если файл существует
                 SettingsSystem.LoadSettings(); // Загружаем сохраненные настройки
 

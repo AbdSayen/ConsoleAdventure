@@ -13,7 +13,7 @@ public static class Spawner
 {
     private static List<SpawnCondition> SpawnConditions = new List<SpawnCondition>();
 
-    private static ushort spawnRate = 5;
+    private static ushort spawnRate = 180;
 
     private static int minX = 30;
     private static int maxX = 40;

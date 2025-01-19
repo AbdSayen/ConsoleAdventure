@@ -13,5 +13,10 @@ namespace ConsoleAdventure.CaModLoaderAPI
         {
             return null;
         }
+
+        public virtual Recipe EditRecipes(Item item)
+        {
+            return null;
+        }
     }
 }

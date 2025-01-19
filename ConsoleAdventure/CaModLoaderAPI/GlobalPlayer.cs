@@ -28,5 +28,20 @@ namespace ConsoleAdventure.CaModLoaderAPI
         {
             return null;
         }
+
+        public virtual void PostInteractWithWorld(Player player)
+        {
+            
+        }
+
+        public virtual List<Stack> SetStartItems(List<Stack> startInventory)
+        {
+            return null;
+        }
+
+        public virtual void PostConnect(Player player)
+        {
+
+        }
     }
 }

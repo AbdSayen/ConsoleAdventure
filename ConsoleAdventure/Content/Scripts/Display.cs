@@ -49,7 +49,7 @@ namespace ConsoleAdventure
             return
                 //$"{Docs.GetInfo()}\n" +
                 $"{world.time.GetTime()}\n" +
-                $"X:{world.GetLocalPlayer().position.x} Y:{world.GetLocalPlayer().position.y}\n" +
+                $"X:{world.GetLocalPlayer().position.x} Y:{world.GetLocalPlayer().position.y} W:{world.GetLocalPlayer().w}\n" +
                 (ConsoleAdventure.isPause ? TextAssets.Paused : "") + "\n\n"
                 ;
         }

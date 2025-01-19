@@ -168,5 +168,10 @@ namespace CaModLoaderAPI
         {
 
         }
+
+        public virtual void PostInitContent()
+        {
+
+        }
     }
 }
