@@ -128,7 +128,11 @@ namespace ConsoleAdventure.WorldEngine
                 return;
             }
             if (await NetworkManager.ConnectClient())
+            {
                 ConnectLocalPlayer();
+                await NetworkManager.ImConnected();
+                await NetworkManager.RequestPlayersData();
+            }
         }
 
         public Point GetChunkCounts()
@@ -152,7 +156,6 @@ namespace ConsoleAdventure.WorldEngine
         public void ConnectPlayer(short id, string pcId = "")
         {
             players.Add(id, new Player(id, pcId, new Position(5 + id, 5 + id), ConsoleAdventure.StartDeep));
-            //Loger.AddLog($"Player {id} has join!");
         }
 
         public void DisconnectPlayer(short id)
@@ -269,7 +272,7 @@ namespace ConsoleAdventure.WorldEngine
                     {
                         string pre = "You";
                         Loger.AddLog(Utils.StringMaxLengthOnLine(pre + ": " + inputField.text, 24));
-                        NetworkManager.SendMessage(NetworkManager.ActionID.chatMessage, new byte[0], Encoding.UTF8.GetBytes(inputField.text));
+                        NetworkManager.SendChatMessage(inputField.text);
                     }
                     inputField.text = "";
                     inputField.cursorPos = new();

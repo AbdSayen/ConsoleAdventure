@@ -31,9 +31,16 @@ namespace ConsoleAdventure.Content.Scripts.Settings
 
         public void AddText(string text)
         {
-            TryLogExist();
-            File.AppendAllText(logFilePath, text);
-            Console.WriteLine(text);
+            try
+            {
+                TryLogExist();
+                File.AppendAllText(logFilePath, text);
+                Console.WriteLine(text);
+            }
+            catch
+            {
+
+            }
         }
 
         public void AddMessage(string message)

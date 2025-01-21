@@ -23,11 +23,6 @@ public static class Spawner
     public static void Spawn(Entity entity, bool net = false)
     {
         ConsoleAdventure.world.entities.Add(entity);
-        if (!net) return;
-        if (NetworkManager.Id != 0)
-            return; //NetworkManager.Id != 0 && 
-        entity.SetNetID();
-        SpawnSync(entity);
     }
 
     public static Entity SpawnClone(Entity entity)
@@ -44,19 +39,6 @@ public static class Spawner
         {
             SpawnConditions.Add(condition);
         }
-    }
-
-    private static void SpawnSync(Entity spawnEntity)
-    {
-        List<byte> data = new List<byte>();
-
-        data.AddRange(BitConverter.GetBytes((short)spawnEntity.netID)); // 2
-        data.AddRange(BitConverter.GetBytes(spawnEntity.position.x)); // 2 4
-        data.AddRange(BitConverter.GetBytes(spawnEntity.position.y)); // 2 6
-        data.Add(spawnEntity.w); // 1 7
-        data.Add(spawnEntity.type); //1 8
-
-        NetworkManager.SendMessage(NetworkManager.ActionID.entitySpawned, data.ToArray(), new byte[0]);
     }
 
     public static void SpawnSuitableMob(Player player)

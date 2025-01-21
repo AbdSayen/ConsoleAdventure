@@ -4,6 +4,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace ConsoleAdventure.Networks
 {
@@ -18,6 +19,7 @@ namespace ConsoleAdventure.Networks
         private Server server;
 
         public string userName;
+        public string pcId = String.Empty;
 
         private int[] position = new int[2];
 
@@ -34,7 +36,10 @@ namespace ConsoleAdventure.Networks
 
         public async Task ProcessAsync()
         {
-            userName = await Reader.ReadLineAsync();
+            string playerData = await Reader.ReadLineAsync();
+            string[] playersDataArray = playerData.Split("|_|");
+            userName = playersDataArray.First();
+            pcId = playersDataArray.Last();
             try
             {
                 string _msg = "";
@@ -48,7 +53,11 @@ namespace ConsoleAdventure.Networks
                     byte[] dat = new byte[16];
                     int bytes = await stream.ReadAsync(dat, 0, 16);
 
-                    await server.BroadcastDataAsync(dat, Id);
+                    short id_ = BitConverter.ToInt16(dat, 6);
+
+                    bool reverseOwner = BitConverter.ToBoolean(dat, 8);
+
+                    await server.BroadcastDataAsync(dat, id_, reverseOwner);
 
                     int additionDataLength = BitConverter.ToInt32(dat, 2);
 
@@ -57,7 +66,7 @@ namespace ConsoleAdventure.Networks
                         byte[] buffer = new byte[additionDataLength];
                         await stream.ReadAsync(buffer, 0, additionDataLength);
 
-                        await server.BroadcastDataAsync(buffer, Id);
+                        await server.BroadcastDataAsync(buffer, id_, reverseOwner);
                     }
                 }
             }

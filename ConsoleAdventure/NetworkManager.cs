@@ -1,13 +1,9 @@
-﻿using ConsoleAdventure.Content.Scripts;
-using ConsoleAdventure.Content.Scripts.IO;
-using ConsoleAdventure.Networks;
+﻿using ConsoleAdventure.Networks;
 using ConsoleAdventure.Settings;
-using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,19 +26,15 @@ namespace ConsoleAdventure
 
         private static Server server = null;
 
-
-
-
-        /* ---- */
-        public static int globalTransformsNetID = 0;
-        private static Dictionary<int, Transform> NetIDToTransform = new Dictionary<int, Transform>();
-
         public enum ActionID
         {
             chatMessage,
-            entitySync,
-            entitySpawned,
-            fieldContent
+
+            onPlayerConnected,
+            onPlayerDisconnected,
+            
+            requestPlayersData,
+            sendPlayerData,
         }
 
         public static async Task<bool> ConnectClient()
@@ -61,8 +53,9 @@ namespace ConsoleAdventure
                 Writer = new StreamWriter(stream);
                 if (Writer is null || Reader is null) return false;
 
-                await Writer.WriteLineAsync(Guid.NewGuid().ToString()); // name
+                await Writer.WriteLineAsync(Guid.NewGuid().ToString() + "|_|" + pcId); // name
                 await Writer.FlushAsync();
+                
                 byte[] buffer = new byte[2];
                 await stream.ReadAsync(buffer, 0, 2);
                 Id = BitConverter.ToInt16(buffer, 0);
@@ -83,8 +76,10 @@ namespace ConsoleAdventure
             return true;
         }
 
-        public static void DisconectClient()
+        public static async void DisconectClient()
         {
+            await ImDisconnected();
+
             if (isHost)
             {
                 server.Disconnect();
@@ -101,25 +96,6 @@ namespace ConsoleAdventure
             }
         }
 
-        public static int RegisterNetID(Transform transform)
-        {
-            NetIDToTransform.Add(globalTransformsNetID++, transform);
-            return globalTransformsNetID;
-        }
-
-        public static Transform GetTransformByNetID(int netID)
-        {
-            if (NetIDToTransform.ContainsKey(netID))
-                return NetIDToTransform[netID];
-            return null;
-        }
-
-        public static void RemoveTransformNetID(int netID)
-        {
-            if (NetIDToTransform.ContainsKey(netID))
-                NetIDToTransform.Remove(netID);
-        }
-
         public static void HostClient()
         {
             ConsoleAdventure.logger.AddMessage("Starting server...");
@@ -130,18 +106,24 @@ namespace ConsoleAdventure
             ConsoleAdventure.logger.AddMessage("Starting server...OK");
         }
 
-        public static async void SendMessage(ActionID act, byte[] header, byte[] buffer)
+        public static async Task SendMessage(ActionID act, byte[] header, byte[] buffer, short id = -2, bool reverseOwner = false)
         {
             if (Id == -1) return;
+
+            if (id == -2)
+            {
+                id = Id;
+            }
 
             List<byte> dat = new List<byte>();
 
             dat.AddRange(BitConverter.GetBytes((short)act)); // 2
             dat.AddRange(BitConverter.GetBytes(buffer.Length)); // 4    2 + 4 = 6
-            dat.AddRange(BitConverter.GetBytes(Id)); // 2    6 + 2 = 8       16 - 8 = 8
+            dat.AddRange(BitConverter.GetBytes(id)); // 2    6 + 2 = 8
+            dat.AddRange(BitConverter.GetBytes(reverseOwner)); // 1     8 + 1 = 9   16 - 9 = 7
 
             dat.AddRange(header);
-            dat.AddRange(new byte[8 - header.Length]); // 16 bytes header
+            dat.AddRange(new byte[7 - header.Length]); // 16 bytes header
             
 
             dat.AddRange(buffer);
@@ -150,11 +132,31 @@ namespace ConsoleAdventure
             await stream.FlushAsync();
         }
 
+        public static async void SendChatMessage(String txt, bool isMessage = true, short senderId = -2)
+        {
+            await SendMessage(ActionID.chatMessage, BitConverter.GetBytes(isMessage), Encoding.UTF8.GetBytes(txt), senderId);
+        }
+
+        public static async Task ImConnected()
+        {
+            await SendMessage(ActionID.onPlayerConnected, BitConverter.GetBytes(Id), new byte[0], 0, true);
+        }
+
+        public static async Task ImDisconnected()
+        {
+            await SendMessage(ActionID.onPlayerDisconnected, BitConverter.GetBytes(Id), new byte[0], 0, true);
+        }
+
+        public static async Task RequestPlayersData()
+        {
+            await SendMessage(ActionID.requestPlayersData, new byte[0], new byte[0]);
+        }
+
         public static async Task ReceiveMainDataAsync()
         {
             ConsoleAdventure.logger.AddMessage("Started client listener cycle!");
 
-            while (true)
+            while (client.Connected)
             {
                 try
                 {
@@ -170,6 +172,8 @@ namespace ConsoleAdventure
                     int nextDatSize = BitConverter.ToInt32(dat, 2);
                     short senderId = BitConverter.ToInt16(dat, 6);
 
+                    int headerIdx = 9;
+
                     byte[] buffer = new byte[nextDatSize];
                     if (nextDatSize > 0)
                     {
@@ -179,65 +183,33 @@ namespace ConsoleAdventure
                     switch ((ActionID)act)
                     {
                         case ActionID.chatMessage:
-                            Loger.AddLog(Utils.StringMaxLengthOnLine(senderId.ToString() + ": " + Encoding.UTF8.GetString(buffer), 24));
-                            break;
-                        case ActionID.entitySync:
-                            int netID = BitConverter.ToInt16(dat, 8);
-                            int x = BitConverter.ToInt16(dat, 10);
-                            int y = BitConverter.ToInt16(dat, 12);
-                            int life = BitConverter.ToInt16(dat, 14);
-
-                            Entity entity = (Entity)GetTransformByNetID(netID);
-
-                            entity.position = new Position(x, y);
-                            entity.life = life;
-
-                            break;
-                        case ActionID.entitySpawned:
-                            netID = BitConverter.ToInt16(dat, 8);
-                            x = BitConverter.ToInt16(dat, 10);
-                            y = BitConverter.ToInt16(dat, 12);
-                            byte w = dat[14];
-                            byte type = dat[15];
-
-                            globalTransformsNetID = netID;
-                            Entity newEntity = (Entity)Activator.CreateInstance(Transform.TypeMapping[type], new object[] { new Position(x, y), w, null });
-                            newEntity.SetNetID();
-                            Spawner.Spawn(newEntity);
-                            break;
-                        case ActionID.fieldContent:
-                            x = BitConverter.ToInt16(dat, 8);
-                            y = BitConverter.ToInt16(dat, 10);
-                            byte worldLayer = dat[12];
-                            w = dat[13];
-                            type = dat[14];
-                            byte isNull = dat[15];
-
-                            if (isNull == 1)
-                            {
-                                Loger.AddLog("isNull == 1 " + ConsoleAdventure.world.time.ToString());
-                                Field field = ConsoleAdventure.world.GetField(x, y, worldLayer, w);
-                                ConsoleAdventure.world.RemoveSubject(field.content, worldLayer);
+                            string pre_ = "";
+                            if (BitConverter.ToBoolean(dat, headerIdx)) {
+                                pre_ = senderId.ToString() + ": ";
                             }
-                            else
-                            {
-                                Type t = Transform.TypeMapping[type];
-                                if (t == typeof(Loot))
-                                {
-                                    ConsoleAdventure.world.GetField(x, y, worldLayer, w).content = (Transform)Activator.CreateInstance(t, new object[] { new Position(x, y), w, SerializeData.Deserialize<List<Stack>>(buffer), -1 });
-                                }
-                                else
-                                {
-                                    ConsoleAdventure.world.GetField(x, y, worldLayer, w).content = (Transform)Activator.CreateInstance(t, new object[] { new Position(x, y), w, null });
-                                }
-                            }
-
+                            Loger.AddLog(Utils.StringMaxLengthOnLine(pre_ + Encoding.UTF8.GetString(buffer), 24));
+                            break;
+                        case ActionID.onPlayerConnected:
+                            short connectedID = BitConverter.ToInt16(dat, headerIdx);
+                            SendChatMessage(connectedID.ToString() + " has been connected", false, 255);
+                            break;
+                        case ActionID.onPlayerDisconnected:
+                            short disconnectedID = BitConverter.ToInt16(dat, headerIdx);
+                            SendChatMessage(disconnectedID.ToString() + " has been disconnected", false, disconnectedID);
+                            break;
+                        case ActionID.requestPlayersData:
+                            if (!isHost) return;
+                            await SendMessage(ActionID.sendPlayerData, new byte[0], Encoding.UTF8.GetBytes("Players Data from server translation"), senderId, true);
+                            break;
+                        case ActionID.sendPlayerData:
+                            Loger.AddLog(Encoding.UTF8.GetString(buffer));
                             break;
                     }
                 }
                 catch (Exception ex)
                 {
                     ConsoleAdventure.logger.AddException(ex);
+                    Loger.AddLog("[Exception, please check Logs]");
                     break;
                 }
             }

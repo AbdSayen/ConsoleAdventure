@@ -44,21 +44,6 @@ namespace ConsoleAdventure.Content.Scripts
             //ConsoleAdventure.world.Start += SetNetID;
         }
 
-        public void SetNetID()
-        {
-            netID = NetworkManager.RegisterNetID(this);
-        }
-
-        protected void Sync()
-        {
-            List<byte> data = new List<byte>();
-            data.AddRange(BitConverter.GetBytes((short)netID));
-            data.AddRange(BitConverter.GetBytes(position.x));
-            data.AddRange(BitConverter.GetBytes(position.y));
-            data.AddRange(BitConverter.GetBytes((short)life));
-            NetworkManager.SendMessage(NetworkManager.ActionID.entitySync, data.ToArray(), new byte[0]);
-        }
-
         protected virtual void Start()
         {
             
@@ -104,8 +89,6 @@ namespace ConsoleAdventure.Content.Scripts
         public void Kill()
         {
             ConsoleAdventure.world.Start -= Start;
-            //ConsoleAdventure.world.Start -= SetNetID;
-            NetworkManager.RemoveTransformNetID(netID);
             ConsoleAdventure.world.RemoveSubject(this, worldLayer);
             ConsoleAdventure.world.entities.Remove(this);
         }

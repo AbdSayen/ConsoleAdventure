@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
+using ConsoleAdventure.Settings;
 
 namespace ConsoleAdventure.Networks
 {
@@ -56,7 +57,7 @@ namespace ConsoleAdventure.Networks
                 Disconnect();
             }
         }
-        protected internal async Task BroadcastDataAsync(byte[] dat, short id)
+        protected internal async Task BroadcastDataAsync(byte[] dat, short id, bool reverseOwner = false)
         {
             string s_ = "[ ";
             for (int i = 0; i < dat.Length; i++)
@@ -66,7 +67,16 @@ namespace ConsoleAdventure.Networks
             for (int i = 0; i < clients.Count; i++)
             {
                 ClientObject client = clients[i];
-                if (client.Id != id)
+                bool isSend = false;
+
+                if (reverseOwner)
+                    isSend = client.Id == id;
+                else
+                    isSend = client.Id != id;
+
+                ConsoleAdventure.logger.AddMessage("CONDITION >>>>>  " + BitConverter.ToBoolean(dat, 8));
+
+                if (isSend)
                 {
                     await client.stream.WriteAsync(dat, 0, dat.Length);
                     await client.stream.FlushAsync();

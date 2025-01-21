@@ -311,11 +311,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 timer.Restart();
             }
 
-            if (NetworkManager.isHost)
-            {
-                //Sync();
-            }
-
             for (int i = 0; i < CaModLoader.modGlobalPlayers.Count; i++)
             {
                 CaModLoader.modGlobalPlayers[i].PostInteractWithWorld(this);
