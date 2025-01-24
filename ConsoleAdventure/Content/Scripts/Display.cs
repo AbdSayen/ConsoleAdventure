@@ -306,7 +306,14 @@ namespace ConsoleAdventure
                 }
             }
 
-            ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "──────────────────────────\n" + Loger.GetLogs(), startLogs , Color.White);
+            try
+            {
+                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "──────────────────────────\n" + Loger.GetLogs(), startLogs, Color.White);
+            }
+            catch
+            {
+
+            }
 
             DrawMap();
         }

@@ -349,7 +349,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                                 timer = 0;
 
-                                void LoadWorld()
+                                async void LoadWorld()
                                 {
                                     try
                                     {
@@ -358,7 +358,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                         if (ConsoleAdventure.kstate.IsKeyDown(Keys.M)) inm = true;
                                         if (ConsoleAdventure.kstate.IsKeyDown(Keys.H)) { ish = true; inm = true; }
                                         NetworkManager.isHost = ish;
-                                        ConsoleAdventure.CreateWorld(name, 1234, false, inm);
+                                        await ConsoleAdventure.CreateWorld(name, 1234, false, inm);
                                         if (ConsoleAdventure.world != null) WorldIO.Load(name);
                                     }
 

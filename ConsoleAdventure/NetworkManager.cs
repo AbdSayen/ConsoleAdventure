@@ -1,8 +1,11 @@
-﻿using ConsoleAdventure.Networks;
+﻿using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Networks;
 using ConsoleAdventure.Settings;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,13 +31,24 @@ namespace ConsoleAdventure
 
         public enum ActionID
         {
-            chatMessage,
-
             onPlayerConnected,
             onPlayerDisconnected,
             
             requestPlayersData,
             sendPlayerData,
+
+            chatMessage,
+        }
+
+        public static byte[] GetPlayerDataBytes()
+        {
+            Dictionary<string, string> myDat = new Dictionary<string, string>
+                {
+                    {"name", Guid.NewGuid().ToString()},
+                    {"pcId", pcId},
+                    {"id", Id.ToString()}
+                };
+            return SerializeData.Serialize(myDat);
         }
 
         public static async Task<bool> ConnectClient()
@@ -53,9 +67,13 @@ namespace ConsoleAdventure
                 Writer = new StreamWriter(stream);
                 if (Writer is null || Reader is null) return false;
 
-                await Writer.WriteLineAsync(Guid.NewGuid().ToString() + "|_|" + pcId); // name
-                await Writer.FlushAsync();
-                
+                byte[] serializedData = GetPlayerDataBytes();
+                List<byte> dataToSend = new List<byte>();
+                dataToSend.AddRange(BitConverter.GetBytes(serializedData.Length)); // 4 bytes
+                dataToSend.AddRange(serializedData);
+                await stream.WriteAsync(dataToSend.ToArray());
+                await stream.FlushAsync();
+
                 byte[] buffer = new byte[2];
                 await stream.ReadAsync(buffer, 0, 2);
                 Id = BitConverter.ToInt16(buffer, 0);
@@ -139,7 +157,7 @@ namespace ConsoleAdventure
 
         public static async Task ImConnected()
         {
-            await SendMessage(ActionID.onPlayerConnected, BitConverter.GetBytes(Id), new byte[0], 0, true);
+            await SendMessage(ActionID.onPlayerConnected, BitConverter.GetBytes(Id), GetPlayerDataBytes(), 0, true);
         }
 
         public static async Task ImDisconnected()
@@ -191,7 +209,12 @@ namespace ConsoleAdventure
                             break;
                         case ActionID.onPlayerConnected:
                             short connectedID = BitConverter.ToInt16(dat, headerIdx);
+                            if (connectedID == Id) break;
+                            Dictionary<string, string> connectedPlayerData = SerializeData.Deserialize<Dictionary<string, string>>(buffer);
+                            
                             SendChatMessage(connectedID.ToString() + " has been connected", false, 255);
+                            ConsoleAdventure.world.ConnectPlayer(connectedID, "");
+                            ConsoleAdventure.world.players[connectedID].LoadPlayerInfo(connectedPlayerData);
                             break;
                         case ActionID.onPlayerDisconnected:
                             short disconnectedID = BitConverter.ToInt16(dat, headerIdx);
@@ -199,10 +222,23 @@ namespace ConsoleAdventure
                             break;
                         case ActionID.requestPlayersData:
                             if (!isHost) return;
-                            await SendMessage(ActionID.sendPlayerData, new byte[0], Encoding.UTF8.GetBytes("Players Data from server translation"), senderId, true);
+                            List<Dictionary<string, string>> serverPlayersDatas = new List<Dictionary<string, string>>();
+                            for (int i = 0; i < server.clients.Count; i++)
+                            {
+                                serverPlayersDatas.Add(server.clients[i].playerData);
+                            }
+                            await SendMessage(ActionID.sendPlayerData, new byte[0], SerializeData.Serialize(serverPlayersDatas), senderId, true);
                             break;
                         case ActionID.sendPlayerData:
-                            Loger.AddLog(Encoding.UTF8.GetString(buffer));
+                            List<Dictionary<string, string>> receivedPlayersDatas = SerializeData.Deserialize<List<Dictionary<string, string>>>(buffer);
+                            for (int i = 0; i < receivedPlayersDatas.Count; i++)
+                            {
+                                short curId = Int16.Parse(receivedPlayersDatas[i]["id"]);
+                                if (curId == Id) continue;
+                                Loger.AddLog("Creating Player -> " + curId.ToString());
+                                ConsoleAdventure.world.ConnectPlayer(curId, "");
+                                ConsoleAdventure.world.players[curId].LoadPlayerInfo(receivedPlayersDatas[i]);
+                            }
                             break;
                     }
                 }

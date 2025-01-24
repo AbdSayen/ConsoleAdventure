@@ -22,7 +22,7 @@ namespace ConsoleAdventure.Networks
         {
             ClientObject? client = clients.FirstOrDefault(c => c.Id == id);
             if (client != null) clients.Remove(client);
-            ConsoleAdventure.logger.AddMessage($"SERVER: client {client?.userName} disconnected");
+            ConsoleAdventure.logger.AddMessage($"SERVER: client {client?.playerData["name"]} disconnected");
             client?.Close();
         }
 
@@ -73,8 +73,6 @@ namespace ConsoleAdventure.Networks
                     isSend = client.Id == id;
                 else
                     isSend = client.Id != id;
-
-                ConsoleAdventure.logger.AddMessage("CONDITION >>>>>  " + BitConverter.ToBoolean(dat, 8));
 
                 if (isSend)
                 {

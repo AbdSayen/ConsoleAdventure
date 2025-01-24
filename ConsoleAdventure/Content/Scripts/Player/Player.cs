@@ -17,7 +17,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
     [Serializable]
     public class Player : Entity
     {
-        public readonly PlayerInfo info;
+        public PlayerInfo info;
         public Inventory inventory;
 
         [NonSerialized]
@@ -80,6 +80,11 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             AddTypeToMap<Player>(type);
             Initialize();
+        }
+
+        public void LoadPlayerInfo(Dictionary<string, string> data)
+        {
+            info = new PlayerInfo(data);
         }
 
         public void ClearChest()

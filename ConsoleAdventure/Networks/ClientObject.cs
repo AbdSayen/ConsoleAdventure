@@ -5,6 +5,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Generic;
+using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Settings;
 
 namespace ConsoleAdventure.Networks
 {
@@ -18,8 +21,7 @@ namespace ConsoleAdventure.Networks
         private TcpClient client;
         private Server server;
 
-        public string userName;
-        public string pcId = String.Empty;
+        public Dictionary<string, string> playerData = new Dictionary<string, string>();
 
         private int[] position = new int[2];
 
@@ -36,15 +38,21 @@ namespace ConsoleAdventure.Networks
 
         public async Task ProcessAsync()
         {
-            string playerData = await Reader.ReadLineAsync();
-            string[] playersDataArray = playerData.Split("|_|");
-            userName = playersDataArray.First();
-            pcId = playersDataArray.Last();
+            byte[] lengthBuffer = new byte[4];
+            await stream.ReadAsync(lengthBuffer, 0, 4);
+            int dataLengthToReceive = BitConverter.ToInt32(lengthBuffer, 0);
+            byte[] playerDataBuffer = new byte[dataLengthToReceive];
+            await stream.ReadAsync(playerDataBuffer, 0, dataLengthToReceive);
+
+            playerData = SerializeData.Deserialize<Dictionary<string, string>>(playerDataBuffer);
+            playerData["id"] = Id.ToString();
+
             try
             {
                 string _msg = "";
                 if (Id == 0) _msg = "as HOST";
-                ConsoleAdventure.logger.AddMessage($"SERVER: client {userName} connected {_msg}");
+                ConsoleAdventure.logger.AddMessage($"SERVER: client {playerData["name"]} connected {_msg}");
+
                 await stream.WriteAsync(BitConverter.GetBytes(Id));
                 await stream.FlushAsync();
 
