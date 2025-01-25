@@ -359,7 +359,17 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                         if (ConsoleAdventure.kstate.IsKeyDown(Keys.H)) { ish = true; inm = true; }
                                         NetworkManager.isHost = ish;
                                         await ConsoleAdventure.CreateWorld(name, 1234, false, inm);
-                                        if (ConsoleAdventure.world != null) WorldIO.Load(name);
+                                        if (ConsoleAdventure.world != null)
+                                        {
+                                            if (NetworkManager.isHost)
+                                            {
+                                                WorldIO.Load(name);
+                                            }
+                                            else
+                                            {
+                                                await NetworkManager.RequestWorldData();
+                                            }
+                                        }
                                     }
 
                                     catch (Exception ex)
@@ -960,7 +970,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             }
         }
 
-        private async Task WorldGenMenuUpdate()
+        private async void WorldGenMenuUpdate()
         {
             if (State == MenuState.wordGenMenu)
             {
@@ -1007,11 +1017,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                 if (Input.IsKeyDown(InputConfig.NavigationSelect))
                 {
-                    //Thread gen = new Thread(new ThreadStart(Gen));
-                    //gen.Start();
-
-                    //void Gen()
-                    //{
                     if (WGErrorType == -1)
                     {
                         string name = worldGenTextFields[0].text;
@@ -1050,7 +1055,6 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     {
                         return;
                     }
-                    //}
 
                     for (int i = 0; i < worldGenTextFields.Length; i++)
                     {

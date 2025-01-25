@@ -37,6 +37,9 @@ namespace ConsoleAdventure
             requestPlayersData,
             sendPlayerData,
 
+            requestWorldData,
+            sendWorldData,
+
             chatMessage,
         }
 
@@ -170,6 +173,13 @@ namespace ConsoleAdventure
             await SendMessage(ActionID.requestPlayersData, new byte[0], new byte[0]);
         }
 
+        public static async Task RequestWorldData()
+        {
+            ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("MProgress", "RequestingServerWorld");
+            ConsoleAdventure.progressBar.Progress = 25 + (uint)ConsoleAdventure.rand.Next(0, 50);
+            await SendMessage(ActionID.requestWorldData, new byte[0], new byte[0]);
+        }
+
         public static async Task ReceiveMainDataAsync()
         {
             ConsoleAdventure.logger.AddMessage("Started client listener cycle!");
@@ -183,6 +193,7 @@ namespace ConsoleAdventure
                      * [0] : 2 - ActionID (short)
                      * [2] : 4 - next packet data size (int32)
                      * [6] : 2 - sender id (short)
+                     * [8] : 1 - reverse owner (byte) (bool)
                     */
                     int bytes = await stream.ReadAsync(dat, 0, 16);
 
@@ -239,6 +250,14 @@ namespace ConsoleAdventure
                                 ConsoleAdventure.world.ConnectPlayer(curId, "");
                                 ConsoleAdventure.world.players[curId].LoadPlayerInfo(receivedPlayersDatas[i]);
                             }
+                            break;
+                        case ActionID.requestWorldData:
+                            if (!isHost) return;
+                            Loger.AddLog("Sending world to " + senderId.ToString());
+                            await SendMessage(ActionID.sendWorldData, new byte[0], WorldIO.GetWorldBytes(), senderId, true);
+                            break;
+                        case ActionID.sendWorldData:
+                            WorldIO.LoadWorldFromPackedBytes(buffer);
                             break;
                     }
                 }

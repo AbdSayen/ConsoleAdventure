@@ -27,6 +27,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
         public static void Save(string name)
         {
+            if (!NetworkManager.isHost) return;
             lock (locker)
             {
                 ConsoleAdventure.logger.AddMessage($"The world {name} saving...");
@@ -100,6 +101,27 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
         }
 
+        public static void LoadWorldFromPackedBytes(byte[] worldBytes)
+        {
+            lock (locker)
+            {
+                ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("MProgress", "LoadingWorld");
+
+                ConsoleAdventure.logger.AddMessage($"The received world loading...");
+
+                SetWorldFromBytes(worldBytes);
+
+                ConsoleAdventure.progressBar.Progress = 5;
+
+                ConsoleAdventure.world.name = "reveivedWorld";
+                LoadTags(); //Загружам данные из тегов в мир
+
+                ConsoleAdventure.world.Loaded();
+
+                ConsoleAdventure.logger.AddMessage("The received world was successfully loaded!");
+            }
+        }
+
         public static void SetWorldFromBytes(byte[] bytes)
         {
             byte[] bytesToLoad = Utils.Decompress(bytes);
@@ -168,7 +190,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             return (names, seeds);
         }
 
-        private static void CreateTags()
+        public static void CreateTags()
         {
             World world = ConsoleAdventure.world;
             Tags tags = new();

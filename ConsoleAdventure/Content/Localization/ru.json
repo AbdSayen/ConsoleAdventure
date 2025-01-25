@@ -168,7 +168,9 @@
   },
 
   "MProgress": {
-    "Connecting": "Подключаемся к серверу..."
+    "Connecting": "Подключаемся к серверу...",
+    "RequestingServerWorld": "Запрашиваем мир у сервера...",
+    "LoadingWorld": "Загружаем мир сервера..."
   },
 
   "KeysConfig": {

@@ -168,7 +168,9 @@
   },
 
   "MProgress": {
-    "Connecting": "Connecting to the server..."
+    "Connecting": "Connecting to the server...",
+    "RequestingServerWorld": "Requesting server world...",
+    "LoadingWorld": "Loading server world..."
   },
 
   "KeysConfig": {
