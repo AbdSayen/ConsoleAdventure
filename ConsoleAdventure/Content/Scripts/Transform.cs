@@ -255,7 +255,7 @@ namespace ConsoleAdventure
             world.RemoveSubject(this, worldLayer, false);
         }
 
-        public virtual byte[] GetBytes()
+        public virtual byte[] GetDataBytes()
         {
             List<byte> data = new List<byte>();
 
@@ -269,7 +269,7 @@ namespace ConsoleAdventure
             return data.ToArray();
         }
 
-        public virtual void SetFromBytes(byte[] data)
+        public virtual void SetDataFromBytes(byte[] data)
         {
             position.x = BitConverter.ToInt16(data, 0);
             position.y = BitConverter.ToInt16(data, 2);

@@ -173,7 +173,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             }
 
             for (int i = 0; i < 21; i++)
-            {                    
+            {
                 Position stalactitePos = new(Generator.GenRand.Next(1, world.size - 1), Generator.GenRand.Next(1, world.size - 1));
 
                 for (int j = 0; j < 3; j++)

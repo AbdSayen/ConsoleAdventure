@@ -187,7 +187,7 @@ namespace ConsoleAdventure.Content.Scripts
             return true;
         }
 
-        public override byte[] GetBytes()
+        public override byte[] GetDataBytes()
         {
             List<byte> data = new List<byte>();
 
@@ -208,7 +208,7 @@ namespace ConsoleAdventure.Content.Scripts
             return data.ToArray();
         }
 
-        public override void SetFromBytes(byte[] data)
+        public override void SetDataFromBytes(byte[] data)
         {
             position.x = BitConverter.ToInt16(data, 0);
             position.y = BitConverter.ToInt16(data, 2);
