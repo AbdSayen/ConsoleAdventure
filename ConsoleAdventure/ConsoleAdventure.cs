@@ -1,29 +1,21 @@
 using CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Content.Scripts.Audio;
 using ConsoleAdventure.Content.Scripts.Debug.Commands;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
-using ConsoleAdventure.Content.Scripts.WorldEngine.Events;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using SharpDX.Direct3D9;
-using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Configuration;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Policy;
 using System.Text;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleAdventure
@@ -310,6 +302,11 @@ namespace ConsoleAdventure
                 }
 
                 world.ListenEvents();
+
+                if (Input.OnClick(Keys.B))
+                {
+                    Spawner.Spawn(new Cat(new(6, 6), 1));
+                }
 
                 if (kstate.IsKeyDown(InputConfig.WorldExit.key) && !world.isCmdOpen)
                 {

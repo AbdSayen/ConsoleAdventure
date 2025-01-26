@@ -361,7 +361,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                         await ConsoleAdventure.CreateWorld(name, 1234, false, inm);
                                         if (ConsoleAdventure.world != null)
                                         {
-                                            if (NetworkManager.isHost)
+                                            if (NetworkManager.isHost || !inm)
                                             {
                                                 WorldIO.Load(name);
                                             }

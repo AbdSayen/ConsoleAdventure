@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.Content.Scripts.IO;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Networks;
 using ConsoleAdventure.Settings;
 using Microsoft.Xna.Framework;
@@ -29,6 +30,9 @@ namespace ConsoleAdventure
 
         private static Server server = null;
 
+        private static int nextNetID;
+        private static Dictionary<int, Entity> netIDMap = new Dictionary<int, Entity>();
+
         public enum ActionID
         {
             onPlayerConnected,
@@ -41,6 +45,21 @@ namespace ConsoleAdventure
             sendWorldData,
 
             chatMessage,
+
+
+        }
+
+        public static int SetNetID(Entity entity)
+        {
+            if (!ConsoleAdventure.InWorld) return -1;
+            ConsoleAdventure.logger.AddMessage(entity.GetType().Name + " added net id -> " + nextNetID.ToString());
+            netIDMap.Add(nextNetID, entity);
+            return nextNetID++;
+        }
+
+        public static Entity GetEntityFromNetID(int netID)
+        {
+            return netIDMap[netID];
         }
 
         public static byte[] GetPlayerDataBytes()
@@ -230,6 +249,7 @@ namespace ConsoleAdventure
                         case ActionID.onPlayerDisconnected:
                             short disconnectedID = BitConverter.ToInt16(dat, headerIdx);
                             SendChatMessage(disconnectedID.ToString() + " has been disconnected", false, disconnectedID);
+                            ConsoleAdventure.world.DisconnectPlayer(disconnectedID);
                             break;
                         case ActionID.requestPlayersData:
                             if (!isHost) return;

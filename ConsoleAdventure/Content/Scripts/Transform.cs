@@ -254,5 +254,29 @@ namespace ConsoleAdventure
         {
             world.RemoveSubject(this, worldLayer, false);
         }
+
+        public virtual byte[] GetBytes()
+        {
+            List<byte> data = new List<byte>();
+
+            data.AddRange(BitConverter.GetBytes(position.x)); // 2b                  = 0
+            data.AddRange(BitConverter.GetBytes(position.y)); // 2b            0 + 2 = 2
+            data.AddRange(BitConverter.GetBytes(isObstacle)); // 1b            2 + 2 = 4
+            data.AddRange(BitConverter.GetBytes(degreeDestruction)); // 1b     4 + 1 = 5
+            data.AddRange(BitConverter.GetBytes(hardness)); // 4b              5 + 1 = 6
+            data.Add(w); // 1b                     6 + 4 = 10
+
+            return data.ToArray();
+        }
+
+        public virtual void SetFromBytes(byte[] data)
+        {
+            position.x = BitConverter.ToInt16(data, 0);
+            position.y = BitConverter.ToInt16(data, 2);
+            isObstacle = BitConverter.ToBoolean(data, 4);
+            degreeDestruction = data[5];
+            hardness = BitConverter.ToSingle(data, 6);
+            w = data[10];
+        }
     }
 }

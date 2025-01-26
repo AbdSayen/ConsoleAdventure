@@ -23,6 +23,7 @@ public static class Spawner
     public static void Spawn(Entity entity, bool net = false)
     {
         ConsoleAdventure.world.entities.Add(entity);
+        entity.PreStart();
     }
 
     public static Entity SpawnClone(Entity entity)
