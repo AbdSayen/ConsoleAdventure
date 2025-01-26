@@ -27,7 +27,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
         public static void Save(string name)
         {
-            if (!NetworkManager.isHost) return;
+            if (!NetworkManager.isHost && ConsoleAdventure.world.inMultiplayer) return;
             lock (locker)
             {
                 ConsoleAdventure.logger.AddMessage($"The world {name} saving...");
