@@ -303,11 +303,6 @@ namespace ConsoleAdventure
 
                 world.ListenEvents();
 
-                if (Input.OnClick(Keys.B))
-                {
-                    Spawner.Spawn(new Cat(new(6, 6), 1));
-                }
-
                 if (kstate.IsKeyDown(InputConfig.WorldExit.key) && !world.isCmdOpen)
                 {
                     NetworkManager.DisconectClient();
