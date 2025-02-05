@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using SharpDX.Direct3D9;
 using System;
@@ -18,28 +18,6 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
 
         private static KeyboardState preCharInput;
         private static KeyboardState curCharInput;
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        public static extern short GetKeyState(int keyCode);
-
-        [DllImport("user32.dll")]
-        private static extern bool GetKeyboardState(byte[] lpKeyState);
-
-        [DllImport("user32.dll")]
-        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetKeyboardLayout(uint idThread);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        private static extern int ToUnicodeEx(
-        uint wVirtKey,
-        uint wScanCode,
-        byte[] lpKeyState,
-        [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] char[] pwszBuff,
-        int cchBuff,
-        uint wFlags,
-        IntPtr dwhkl);
 
         public static string GetInputText(string oldString, Point oldCursor, out Point newCursor, char[] charList = null, bool listType = false)
         {
@@ -239,6 +217,30 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
             
         }
 
+        #if WINDOWS
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern short GetKeyState(int keyCode);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetKeyboardState(byte[] lpKeyState);
+
+        [DllImport("user32.dll")]
+        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetKeyboardLayout(uint idThread);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int ToUnicodeEx(
+        uint wVirtKey,
+        uint wScanCode,
+        byte[] lpKeyState,
+        [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] char[] pwszBuff,
+        int cchBuff,
+        uint wFlags,
+        IntPtr dwhkl);
+
         public static char? GetCharFromKey(Keys key)
         {
             byte[] keyboardState = new byte[256];
@@ -260,5 +262,34 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
 
             return null;
         }
+
+        #else 
+
+        private const string X11Lib = "libX11.so.6";
+
+        [DllImport(X11Lib)]
+        private static extern IntPtr XOpenDisplay(IntPtr display);
+
+        [DllImport(X11Lib)]
+        private static extern int XKeysymToKeycode(IntPtr display, uint keysym);
+
+        [DllImport(X11Lib)]
+        private static extern uint XkbKeycodeToKeysym(IntPtr display, byte keycode, int group, int level);
+
+        [DllImport(X11Lib)]
+        private static extern int XQueryKeymap(IntPtr display, byte[] keys_return);
+
+        public static char? GetCharFromKey(int keycode)
+        {
+            IntPtr display = XOpenDisplay(IntPtr.Zero);
+            if (display == IntPtr.Zero) return null;
+
+            uint keysym = XkbKeycodeToKeysym(display, (byte)keycode, 0, 0);
+            if (keysym == 0) return null;
+
+            return (char)keysym;
+        }
+
+        #endif
     }
 }
