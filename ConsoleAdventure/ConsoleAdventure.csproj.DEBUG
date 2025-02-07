@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+  	<OutputType>Exe</OutputType>
+  	<TargetFrameworks>net6.0-windows</TargetFrameworks>
+		<!--;net6.0-->
+  	<RollForward>Major</RollForward>
+  	<PublishReadyToRun>false</PublishReadyToRun>
+  	<TieredCompilation>false</TieredCompilation>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+  	<UseWindowsForms>true</UseWindowsForms>
+  	<ApplicationManifest>app.manifest</ApplicationManifest>
+  	<ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Content\Localization\en.json" />
+    <None Remove="Content\Localization\ru.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Localization\en.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Localization\ru.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\AudioFiles\Music\" />
+    <Folder Include="Content\Effects\" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+  	<PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+  	<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+  </ItemGroup>
+  
+  <ItemGroup>
+  	<PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+  	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  
+  <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
+  	<Message Text="Restoring dotnet tools" Importance="High" />
+  	<Exec Command="dotnet tool restore" />
+  </Target>
+</Project>
