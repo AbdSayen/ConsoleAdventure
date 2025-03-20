@@ -23,3 +23,7 @@ Currently this game supports features like:
 
 ## Author
 **Youtube channel with dev logs about this project [here](https://youtube.com/@bondscreators?si=1MNw7WM65vtAx_gr)**
+
+## Download the game
+**Telegram channel [click](https://t.me/bondschanel)**
+
