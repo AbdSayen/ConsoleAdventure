@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.brownIronOre;
+            type = (int)VanillaTransforms.brownIronOre;
             isObstacle = true;
             hardness = 0.8f;
             burnType = 1;
@@ -44,6 +44,11 @@ namespace ConsoleAdventure.WorldEngine
         public override Color? GetBGColor()
         {
             return Color.Gray;
+        }
+
+        public override string ModifyTooltip()
+        {
+            return base.GetName() + " {" + Localization.GetTranslation("TooltipAdds", GetType().Name) + " [item:ConsoleAdventure.IronBar]}";
         }
     }
 }

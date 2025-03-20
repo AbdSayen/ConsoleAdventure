@@ -26,7 +26,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         public Fire(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
         {
-            type = (int)RenderFieldType.fire;
+            type = (int)VanillaTransforms.fire;
             SetMaxLife(-1);
 
             AddTypeToMap<Fire>(type);

@@ -26,7 +26,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         public Cat(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
         {
-            type = (int)RenderFieldType.cat;
+            type = (int)VanillaTransforms.cat;
             SetMaxLife(9);
 
             AddTypeToMap<Cat>(type);

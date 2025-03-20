@@ -372,10 +372,20 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 world.size = tags.SafelyGet<int>("Size");
                 world.time = tags.SafelyGet<Time>("Time");
 
-                world.modTransforms = tags.SafelyGet<Dictionary<string, int>>("ModTransforms");
                 int lastVanillaTransformCount = tags.SafelyGet<int>("VanillaTransforms");
+                world.modTransforms = tags.SafelyGet<Dictionary<string, int>>("ModTransforms");
 
-                Main.InitTransformsTypes(lastVanillaTransformCount);
+                int newVanillaTransformsCount = Main.vanillaTypesInitialized - lastVanillaTransformCount;
+
+                if (newVanillaTransformsCount != 0)
+                {
+                    foreach (var key in world.modTransforms.Keys.ToList())
+                    {
+                        world.modTransforms[key] += newVanillaTransformsCount;
+                    }
+                }
+
+                Main.InitTransformsTypes(0);
                 InitContent();
 
                 ConsoleAdventure.world.playersDat = tags.SafelyGet<Dictionary<string, byte[]>>("PlayersData");
@@ -397,6 +407,10 @@ namespace ConsoleAdventure.Content.Scripts.IO
                             for (int z = 0; z < 3; z++)
                             {
                                 byte type = fields[w, x, y, z];
+
+                                if (type > lastVanillaTransformCount - 1)
+                                    type += (byte)newVanillaTransformsCount;
+
                                 if (!Transform.SetObject(type, new(x, y), w, z)) //загружаем ячейки из тега
                                 {
                                     new UnloadedTransform(new(x, y), w, z, type); //создаём незагруженный трансформ 
@@ -450,7 +464,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
                         EntityY[i] = 0;
                     }
 
-                    Transform.SetObject(EntityTypes[i], new Position(EntityX[i], EntityY[i]), EntityW[i], parameters: EntityParams[i]);
+                    int type = EntityTypes[i];
+                    if (type > lastVanillaTransformCount - 1)
+                        type += (byte)newVanillaTransformsCount;
+
+                    Transform.SetObject(type, new Position(EntityX[i], EntityY[i]), EntityW[i], parameters: EntityParams[i]);
                 }
 
                 CaModLoader.LoadModTagsMods(tags);

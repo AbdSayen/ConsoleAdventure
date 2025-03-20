@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.seedling;
+            type = (int)VanillaTransforms.seedling;
             burnType = 0;
 
             AddTypeToMap<Seedling>(type);

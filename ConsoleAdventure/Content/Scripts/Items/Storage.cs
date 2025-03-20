@@ -1,4 +1,7 @@
-﻿using ConsoleAdventure.Content.Scripts.IO;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.WorldEngine;
+using SharpDX.Direct2D1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,10 +50,34 @@ namespace ConsoleAdventure
 
         public override void LoadData(object data)
         {
-            if (data is List<Stack>) 
-            { 
-                items = (List<Stack>)data; 
+            if (data is List<Stack>)
+            {
+                items = (List<Stack>)data;
             }
+        }
+
+        public override string ModifyTooltip()
+        {
+            string text = degreeDestruction > 0 ? $" ({100 - degreeDestruction} / 100)" : "";
+
+            if (items != null && items?.Count > 0)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                int width = Math.Min(items.Count, 5);
+                for (int i = 0; i < width; i++)
+                {
+                    stringBuilder.Append($"[item:{items[i].Item.GetType().FullName}] ");
+                    stringBuilder.Append($"{items[i].GetInfo()}");
+                    if (i != width - 1)
+                    {
+                        stringBuilder.Append(", ");
+                    }
+                }
+
+                text += " [" + stringBuilder.ToString() + (GetItems().Count > 5 ? "..." : "") + "]";
+            }
+
+            return Localization.GetTranslation("Transforms", GetType().Name) + text;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.charcoal;
+            type = (int)VanillaTransforms.charcoal;
             isObstacle = true;
             hardness = 0.6f;
 

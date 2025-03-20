@@ -9,6 +9,7 @@ using System.Text;
 using System.DirectoryServices;
 using ConsoleAdventure.Settings;
 using System.CodeDom;
+using SharpDX.Direct2D1;
 
 namespace ConsoleAdventure
 {
@@ -124,51 +125,39 @@ namespace ConsoleAdventure
 
         }
 
-        public static string GetName(Position pos, int layer, int w, bool showData = false)
+        public static string GetTooltip(Position pos, int layer, int w)
         {
             if (layer < 0) layer = 0;
             if (layer > 3) layer = 3;
 
-            Field field = ConsoleAdventure.world.GetField(pos.x, pos.y, layer, w);
+            Position start = ConsoleAdventure.startDisplay;
+            Position end = ConsoleAdventure.endDisplay;
 
-            if (field?.content == null) return Localization.GetTranslation("Transforms", "None");
+            bool inDisplay = pos.x >= start.x && pos.x <= end.x && pos.y >= start.y && pos.y <= end.y;
 
-            if (field.content is UnloadedTransform) return Localization.GetTranslation("Transforms", "Unloaded") + $" ({100 - (int)field.content.degreeDestruction} / 100)";
-
-            string text = "";
-            if (showData)
+            if (inDisplay)
             {
-                if (layer == World.MobsLayerId)
-                {
-                    text = $" ({((Entity)field.content).life} / {((Entity)field.content).maxLife})";
-                }
+                Color lightColor = Light.colors[pos.x - start.x, pos.y - start.y];
 
-                else if (layer != World.ItemsLayerId)
+                if (lightColor.R > 10 || lightColor.G > 10 || lightColor.B > 10)
                 {
-                    text = $" ({100 - (int)field.content.degreeDestruction} / 100)";
-                }
+                    Field field = ConsoleAdventure.world.GetField(pos.x, pos.y, layer, w);
 
-                if (field.content.GetType().IsSubclassOf(typeof(Storage)))
-                {
-                    if (((Storage)field.content).GetItems() != null)
-                    {
-                        StringBuilder stringBuilder = new StringBuilder();
-                        int width = Math.Min(((Storage)field.content).GetItems().Count, 5);
-                        for (int i = 0; i < width; i++)
-                        {
-                            stringBuilder.Append($"{((Storage)field.content).GetItems()[i].GetInfo()}");
-                            if (i != width - 1)
-                            {
-                                stringBuilder.Append(", ");
-                            }
-                        }
+                    if (field?.content == null)
+                        return Localization.GetTranslation("Transforms", "None");
 
-                        text += " (" + stringBuilder.ToString() + (((Storage)field.content).GetItems().Count > 5 ? "..." : "") + ")";
-                    }
-                }
+                    string typeText = "";
+
+                    if (ConsoleAdventure.ShowTypes)
+                        typeText = $" <{field?.content?.type}:{field?.content?.GetType()?.FullName}>";
+
+                    return field?.content.ModifyTooltip() + typeText;
+                } 
+
+                return "???";
             }
 
-            return Localization.GetTranslation("Transforms", field.content.GetType().Name) + text;
+            return "???";
         }
 
         public static bool SetObject(int type, Position position, int w, int layer = -1, List<Stack> items = null, List<object> parameters = null)
@@ -277,6 +266,22 @@ namespace ConsoleAdventure
             degreeDestruction = data[5];
             hardness = BitConverter.ToSingle(data, 6);
             w = data[10];
+        }
+
+        public virtual string ModifyTooltip()
+        {
+            string degree = degreeDestruction > 0 ? $" ({100 - degreeDestruction} / 100)" : "";
+            return GetName() + degree;
+        }
+
+        public string GetName()
+        {
+            string name = Localization.GetTranslation("Transforms", GetType().Name);
+
+            if (name == "" || name == null)
+                name = GetType().FullName;
+
+            return name;
         }
     }
 }

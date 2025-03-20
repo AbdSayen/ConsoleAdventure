@@ -14,7 +14,7 @@ namespace ConsoleAdventure.WorldEngine
         public Chest(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, w, items)
         {
             this.worldLayer = World.BlocksLayerId;
-            type = (int)RenderFieldType.chest;
+            type = (int)VanillaTransforms.chest;
 
             AddTypeToMap<Chest>(type);
 

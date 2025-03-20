@@ -30,7 +30,7 @@ namespace ConsoleAdventure
         {
             Recipe recipe = new Recipe(new Stack(this, 1));
             recipe.AddIngredient(new BrownIronOreItem(), 3);
-            recipe.AddStation((int)RenderFieldType.furnace);
+            recipe.AddStation((int)VanillaTransforms.furnace);
 
             return recipe;
         }

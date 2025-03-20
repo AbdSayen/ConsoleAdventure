@@ -16,7 +16,7 @@ namespace ConsoleAdventure
         public Loot(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, w, AddItems(items, position.x, position.y, World.ItemsLayerId, w))
         {
             this.worldLayer = World.ItemsLayerId;
-            type = (int)RenderFieldType.loot;
+            type = (int)VanillaTransforms.loot;
 
             AddTypeToMap<Loot>(type);
 

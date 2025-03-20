@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "BrownIronOre");
             description = GetDescription();
-            placeType = (int)RenderFieldType.brownIronOre;
+            placeType = (int)VanillaTransforms.brownIronOre;
             AddTypeToMap<BrownIronOreItem>();
         }
 

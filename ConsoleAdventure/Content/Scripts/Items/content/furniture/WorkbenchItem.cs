@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Workbench");
             description = GetDescription();
-            placeType = (int)RenderFieldType.workbench;
+            placeType = (int)VanillaTransforms.workbench;
             AddTypeToMap<WorkbenchItem>();
         }
 

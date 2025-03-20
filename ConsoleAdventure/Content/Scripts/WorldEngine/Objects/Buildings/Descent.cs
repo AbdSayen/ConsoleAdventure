@@ -14,7 +14,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.descent;
+            type = (int)VanillaTransforms.descent;
             isObstacle = false;
             hardness = -1;
 
@@ -37,10 +37,7 @@ namespace ConsoleAdventure.WorldEngine
         {
             Player player = world.GetLocalPlayer();
 
-            if (player.SetPosition(player.position, player.w--))
-            {
-                ConsoleAdventure.curDeep--;
-            }
+            player.SetPosition(player.position, player.w--);
         }
     }
 }

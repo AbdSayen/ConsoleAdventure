@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Stone");
             description = GetDescription();
-            placeType = (int)RenderFieldType.stone;
+            placeType = (int)VanillaTransforms.stone;
             AddTypeToMap<StoneItem>();
         }
 

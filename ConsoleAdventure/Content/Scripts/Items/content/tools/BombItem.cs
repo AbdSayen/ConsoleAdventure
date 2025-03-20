@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Bomb");
             description = GetDescription();
-            placeType = (int)RenderFieldType.bomb;
+            placeType = (int)VanillaTransforms.bomb;
             placeLayer = World.MobsLayerId;
             AddTypeToMap<BombItem>();
         }

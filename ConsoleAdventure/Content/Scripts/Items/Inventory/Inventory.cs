@@ -147,7 +147,7 @@ namespace ConsoleAdventure
 
         public void Drop(List<Stack> items)
         {
-            new Loot(player.position, ConsoleAdventure.curDeep, items);
+            new Loot(player.position, player.w, items);
         }
 
         public string GetInfo()

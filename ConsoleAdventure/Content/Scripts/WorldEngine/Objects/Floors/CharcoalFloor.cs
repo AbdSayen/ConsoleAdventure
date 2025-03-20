@@ -14,7 +14,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.FloorLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.charcoalFloor;
+            type = (int)VanillaTransforms.charcoalFloor;
             isObstacle = false;
 
             AddTypeToMap<CharcoalFloor>(type);

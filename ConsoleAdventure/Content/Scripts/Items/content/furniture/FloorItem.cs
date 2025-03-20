@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Floor");
             description = GetDescription();
-            placeType = (int)RenderFieldType.floor;
+            placeType = (int)VanillaTransforms.floor;
             placeLayer = World.FloorLayerId;
             maxCount = 100;
             AddTypeToMap<FloorItem>();
@@ -28,7 +28,7 @@ namespace ConsoleAdventure
         {
             Recipe recipe = new Recipe(new Stack(this, 2));
             recipe.AddIngredient(new StoneItem(), 1);
-            recipe.AddStation((int)RenderFieldType.workbench);
+            recipe.AddStation((int)VanillaTransforms.workbench);
             return recipe;
         }
     }

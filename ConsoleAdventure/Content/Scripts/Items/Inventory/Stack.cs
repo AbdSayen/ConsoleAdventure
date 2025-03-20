@@ -34,7 +34,7 @@ namespace ConsoleAdventure
 
         public string GetInfo()
         {
-            return $"{((Item)Item).name} ({count})";
+            return $"{((Item)Item).name}" + (count > 1 ? $" ({count})" : "");
         }
 
         public void AddItems(int count = 1)

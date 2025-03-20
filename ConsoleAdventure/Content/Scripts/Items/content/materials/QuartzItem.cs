@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Quartz");
             description = GetDescription();
-            placeType = (int)RenderFieldType.quartz;
+            placeType = (int)VanillaTransforms.quartz;
             AddTypeToMap<QuartzItem>();
         }
 

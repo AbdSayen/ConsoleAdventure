@@ -14,7 +14,7 @@ namespace ConsoleAdventure.Content.Scripts
     {
         public Bomb(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
         {
-            type = (int)RenderFieldType.bomb;
+            type = (int)VanillaTransforms.bomb;
             SetMaxLife(-1);
             
             AddTypeToMap<Bomb>(type);

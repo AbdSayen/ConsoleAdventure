@@ -15,6 +15,10 @@
     "Log": "Можно поставить"
   },
 
+  "TooltipAdds": {
+    "BrownIronOre": "руда на железо"
+  },
+
   "Buffs": {
     "Buff": "Бафф",
     "InTheFlames": "В пламени!"
@@ -67,7 +71,8 @@
     "Charcoal": "древесный уголь",
     "CharcoalFloor": "угольный пол",
     "HighTemperatureFire": "высокотемпературный огонь",
-    "Unloaded": "незагруженный трансформ"
+    "Unloaded": "незагруженный трансформ",
+    "Biotite": "биотит"
   },
 
   "Events": {
@@ -151,6 +156,7 @@
     "Buff-genitive": "Баффа",
 
     "New": "новый",
+    "NewShe": "новая",
     "News": "новых",
 
     "CanBePlaced": "Можно поставить",

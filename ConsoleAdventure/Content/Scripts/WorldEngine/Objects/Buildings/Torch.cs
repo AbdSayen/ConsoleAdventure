@@ -14,7 +14,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.torch;
+            type = (int)VanillaTransforms.torch;
             isObstacle = false;
 
             AddTypeToMap<Torch>(type);

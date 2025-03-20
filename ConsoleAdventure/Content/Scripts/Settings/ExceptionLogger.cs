@@ -35,7 +35,7 @@ namespace ConsoleAdventure.Content.Scripts.Settings
             {
                 TryLogExist();
                 File.AppendAllText(logFilePath, text);
-                Console.WriteLine(text);
+                Console.Write(text);
             }
             catch
             {

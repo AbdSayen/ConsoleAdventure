@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.granite;
+            type = (int)VanillaTransforms.granite;
             isObstacle = true;
             hardness = 2;
             burnType = 1;

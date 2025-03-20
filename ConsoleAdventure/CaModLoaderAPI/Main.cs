@@ -10,7 +10,7 @@ namespace CaModLoaderAPI
 {
     public static class Main
     {
-        public static int vanillaTypesInitialized = Enum.GetNames(typeof(RenderFieldType)).Length;
+        public static int vanillaTypesInitialized = Enum.GetNames(typeof(VanillaTransforms)).Length;
         public static Dictionary<string, Dictionary<Type, int>> modTypesInitialized = new Dictionary<string, Dictionary<Type, int>>();
 
         //public static Dictionary<string, byte> modTransformTypesOffset = new Dictionary<string, byte>();
@@ -66,7 +66,7 @@ namespace CaModLoaderAPI
                 {
                     if (ConsoleAdventureMain.world.modTransforms.TryGetValue(transform.Name, out int type))
                     {
-                        modTransformTypes.Add(transform, (byte)type);
+                        modTransformTypes.Add(transform, (byte)(type));
                         AllTransformCount++;
                     }
 

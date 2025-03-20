@@ -27,7 +27,7 @@ namespace ConsoleAdventure.Content.Scripts
         public int maxBreed = 20;
         public HighTemperatureFire(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
         {
-            type = (int)RenderFieldType.highTemperatureFire;
+            type = (int)VanillaTransforms.highTemperatureFire;
             SetMaxLife(-1);
 
             AddTypeToMap<HighTemperatureFire>(type);

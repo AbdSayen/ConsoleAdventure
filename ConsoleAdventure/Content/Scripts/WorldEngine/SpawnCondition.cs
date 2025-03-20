@@ -10,7 +10,7 @@ namespace ConsoleAdventure.WorldEngine
 {
     public struct SpawnCondition
     {
-        private short mobType = (short)RenderFieldType.entity;
+        private short mobType = (short)VanillaTransforms.entity;
         private double probability = 0;
         public Range wRange = new(0, 0);
         public List<short> biomes = new();

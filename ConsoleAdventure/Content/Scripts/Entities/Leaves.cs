@@ -26,7 +26,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         public Leaves(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
         {
-            type = (int)RenderFieldType.leaves;
+            type = (int)VanillaTransforms.leaves;
             SetMaxLife(-1);
 
             AddTypeToMap<Leaves>(type);

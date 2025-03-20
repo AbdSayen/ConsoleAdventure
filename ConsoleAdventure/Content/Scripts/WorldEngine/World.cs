@@ -70,14 +70,14 @@ namespace ConsoleAdventure.WorldEngine
 
         public int spawnW = 1;
 
-        public World(string name, int seed)
+        public World(string name, int seed, bool isInitedContent = true)
         {
             this.name = name;
             this.seed = seed;
 
             ConsoleAdventure.rand = new Random();
 
-            generator = new Generator(this, size);
+            generator = new Generator(this, size, isInitedContent);
             renderer = new Renderer();
             new Cursor();
 
@@ -88,13 +88,13 @@ namespace ConsoleAdventure.WorldEngine
             playersDat = new Dictionary<string, byte[]>();
         }
 
-        public async Task Initialize(bool isfullGenerate = true)
+        public async Task Initialize(bool isFullGenerate = true)
         {
             if (!isInitialized)
             {
                 ConsoleAdventure.menu.State = MenuState.worldLoadingProgress;
                 ConsoleAdventure.menu.worldErrorList = null;
-                await Task.Run(() => generator.Generate(seed, isfullGenerate));
+                await Task.Run(() => generator.Generate(seed, isFullGenerate));
                 //ConsoleAdventure.menu.State = MenuState.worldMenu;
                 CaModLoader.WorldPostGenerateMods(this);
                 LoadInMultiplayer();

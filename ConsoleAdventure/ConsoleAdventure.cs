@@ -8,6 +8,7 @@ using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -64,7 +65,6 @@ namespace ConsoleAdventure
 
         internal static bool isExit;
 
-        public static int curDeep = 1;
         public static int StartDeep = 1;
 
         public static Tags tags = new();
@@ -74,6 +74,8 @@ namespace ConsoleAdventure
         public static Texture2D pixel;
 
         public static bool GodMode { get; internal set; }
+
+        public static bool ShowTypes { get; internal set; }
 
         public static bool BlockHotKey { get; set; } = false;
 
@@ -166,12 +168,12 @@ namespace ConsoleAdventure
             } 
         }*/
 
-        public static async Task CreateWorld(string name, int seed, bool isfullGenerate = true, bool inMultiplayer = false)
+        public static async Task CreateWorld(string name, int seed, bool isFullGenerate = true, bool inMultiplayer = false)
         {
             world = new World(name, seed);
             world.inMultiplayer = inMultiplayer;
 
-            await world.Initialize(isfullGenerate);
+            await world.Initialize(isFullGenerate);
             display = new Display(world);
         }
 
@@ -206,7 +208,7 @@ namespace ConsoleAdventure
             SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
             Command.InitCommands();
 
-            world = new World("empty", 0);
+            world = new World("empty", 0, false);
             Main.InitTransformsTypes(Main.vanillaTypesInitialized);
             WorldIO.InitContent();
 
@@ -270,6 +272,7 @@ namespace ConsoleAdventure
 
         protected override void Update(GameTime gameTime)
         {
+            //FontEditor.ModifyChars(Content);
             WindowActive = IsActive;
 
             prekstate = kstate;
@@ -364,7 +367,8 @@ namespace ConsoleAdventure
                 _spriteBatch.Begin();
 
                 _spriteBatch.DrawString(font, display.DisplayInfo(), new Vector2(10, 10), Color.Gray);
-                _spriteBatch.DrawString(font, display.TransformTooltip(), new Vector2(197, 10), Color.Gray);
+
+                DrawTooltip(_spriteBatch); 
 
                 if (CaModLoader.PreDrawWorldMods(_spriteBatch, gameTime, world))
                     display.DrawWorld();
@@ -417,6 +421,64 @@ namespace ConsoleAdventure
 
             frameCounter++;
             base.Draw(gameTime);
+        }
+
+        public static void SetFont(SpriteFont newFont)
+        {
+            font = newFont;
+        }
+
+        string oldTooltip = "";
+        FormatString formatTooltip;
+
+        private void DrawTooltip(SpriteBatch spriteBatch)
+        {
+            string baseTooltip = display.TransformTooltip();
+
+            if (baseTooltip != oldTooltip) {
+                formatTooltip = new FormatString(baseTooltip, new Vector2(197, 10), Color.Gray);      
+                oldTooltip = baseTooltip;
+            } 
+            
+            formatTooltip.Draw(spriteBatch);
+        }
+
+        private static void SaveFontTexture(string path)
+        {
+            Texture2D originalTexture = Font.Texture;
+
+            if (originalTexture.Format != SurfaceFormat.Color)
+            {
+                // Создаем RenderTarget2D для преобразования формата
+                RenderTarget2D renderTarget = new RenderTarget2D(_graphics.GraphicsDevice, originalTexture.Width, originalTexture.Height, false, SurfaceFormat.Color, DepthFormat.None);
+
+
+                _graphics.GraphicsDevice.SetRenderTarget(renderTarget);
+                _graphics.GraphicsDevice.Clear(Color.Transparent);
+
+                using (SpriteBatch spriteBatch = new SpriteBatch(_graphics.GraphicsDevice))
+                {
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(originalTexture, Vector2.Zero, Color.White);
+                    spriteBatch.End();
+                }
+
+                _graphics.GraphicsDevice.SetRenderTarget(null);
+
+                using (FileStream stream = new FileStream(path, FileMode.Create))
+                {
+                    renderTarget.SaveAsPng(stream, renderTarget.Width, renderTarget.Height);
+                }
+
+                renderTarget.Dispose();
+            }
+            else
+            {
+                using (FileStream stream = new FileStream(path, FileMode.Create))
+                {
+                    originalTexture.SaveAsPng(stream, originalTexture.Width, originalTexture.Height);
+                }
+            }
         }
     }
 }

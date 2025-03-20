@@ -37,5 +37,11 @@ namespace ConsoleAdventure.WorldEngine
         {
             return new Color(10, 0, 10);
         }
+
+        public virtual string ModifyToolTip()
+        {
+            string degree = degreeDestruction > 0 ? $" ({100 - degreeDestruction} / 100)" : "";
+            return Localization.GetTranslation("Transforms", "Unloaded") + degree;
+        }
     }
 }

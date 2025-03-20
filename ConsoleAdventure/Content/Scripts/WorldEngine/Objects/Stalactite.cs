@@ -91,7 +91,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.stalactite;
+            type = (int)VanillaTransforms.stalactite;
             isObstacle = false;
             hardness = 4f;
 

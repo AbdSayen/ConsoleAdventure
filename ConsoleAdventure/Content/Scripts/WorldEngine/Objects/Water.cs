@@ -11,7 +11,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.water;
+            type = (int)VanillaTransforms.water;
             //isObstacle = true;
             hardness = -1;
 

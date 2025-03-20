@@ -14,7 +14,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.FloorLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.woodFloor;
+            type = (int)VanillaTransforms.woodFloor;
             isObstacle = false;
             burnType = 0;
 

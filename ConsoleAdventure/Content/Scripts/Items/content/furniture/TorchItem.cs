@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Torch");
             description = GetDescription();
-            placeType = (int)RenderFieldType.torch;
+            placeType = (int)VanillaTransforms.torch;
             AddTypeToMap<TorchItem>();
         }
 

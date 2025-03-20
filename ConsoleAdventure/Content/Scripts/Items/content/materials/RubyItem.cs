@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Ruby");
             description = GetDescription();
-            placeType = (int)RenderFieldType.ruby;
+            placeType = (int)VanillaTransforms.ruby;
             AddTypeToMap<RubyItem>();
         }
 

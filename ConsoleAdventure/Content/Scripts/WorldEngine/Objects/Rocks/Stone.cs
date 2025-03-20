@@ -12,7 +12,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.stone;
+            type = (int)VanillaTransforms.stone;
             isObstacle = true;
             burnType = 1;
 

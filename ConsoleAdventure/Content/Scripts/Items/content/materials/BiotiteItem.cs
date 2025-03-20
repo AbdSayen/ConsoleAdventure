@@ -7,19 +7,19 @@ using System.Collections.Generic;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public class ZoisiteItem : PlaceableItem
+    public class BiotiteItem : PlaceableItem
     {
-        public ZoisiteItem()
+        public BiotiteItem()
         {
-            name = Localization.GetTranslation("Transforms", "Zoisite");
+            name = Localization.GetTranslation("Transforms", "Biotite");
             description = GetDescription();
-            placeType = (int)VanillaTransforms.zoisite;
-            AddTypeToMap<ZoisiteItem>();
+            placeType = (int)VanillaTransforms.biotite;
+            AddTypeToMap<BiotiteItem>();
         }
 
         public override CharTexture GetTexture()
         {
-            return new CharTexture().AddLayer("η", new Color(6, 61, 31));
+            return new CharTexture().AddLayer("≡", new Color(45, 45, 45));
         }
     }
 }

@@ -28,7 +28,7 @@ namespace ConsoleAdventure
         {
             Recipe recipe = new Recipe(new Stack(this, 1));
             recipe.AddIngredient(new IronBar(), 6);
-            recipe.AddStation((int)RenderFieldType.anvil);
+            recipe.AddStation((int)VanillaTransforms.anvil);
 
             return recipe;
         }

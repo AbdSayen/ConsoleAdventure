@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Web");
             description = GetDescription();
-            placeType = (int)RenderFieldType.web;
+            placeType = (int)VanillaTransforms.web;
             AddTypeToMap<WebItem>();
         }
 

@@ -15,6 +15,10 @@
     "Log": "Can be placed"
   },
 
+  "TooltipAdds": {
+    "BrownIronOre": "iron ore"
+  },
+
   "Buffs": {
     "Buff": "Buff",
     "InTheFlames": "In flames!"
@@ -67,7 +71,8 @@
     "Charcoal": "charcoal",
     "CharcoalFloor": "charcoal floor",
     "HighTemperatureFire": "high temperature fire",
-    "Unloaded": "unloaded transform"
+    "Unloaded": "unloaded transform",
+    "Biotite": "biotite"
   },
 
   "Events": {
@@ -151,6 +156,7 @@
     "Buff-genitive": "Buff",
 
     "New": "new",
+    "NewShe": "new",
     "News": "new",
 
     "CanBePlaced": "Can Be Placed",

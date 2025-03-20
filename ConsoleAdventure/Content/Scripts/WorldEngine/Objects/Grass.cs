@@ -52,7 +52,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.grass;
+            type = (int)VanillaTransforms.grass;
             isObstacle = false;
             hardness = 0.1f;
             burnType = 0;

@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Chest");
             description = GetDescription();
-            placeType = (int)RenderFieldType.chest;
+            placeType = (int)VanillaTransforms.chest;
             AddTypeToMap<ChestItem>();
         }
 
@@ -30,7 +30,7 @@ namespace ConsoleAdventure
         {
             Recipe recipe = new Recipe(new Stack(this, 1));
             recipe.AddIngredient(new Log(), 5);
-            recipe.AddStation((int)RenderFieldType.workbench);
+            recipe.AddStation((int)VanillaTransforms.workbench);
 
             return recipe;
         }

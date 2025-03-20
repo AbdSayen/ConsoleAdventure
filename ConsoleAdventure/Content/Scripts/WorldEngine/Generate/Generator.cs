@@ -1,4 +1,6 @@
-﻿using ConsoleAdventure.Content.Scripts;
+﻿using CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +22,16 @@ namespace ConsoleAdventure.WorldEngine.Generate
         public static Random GenRand { get; private set; }
         private static readonly object locker = new object();
 
-        public Generator(World world, int size)
+        public Generator(World world, int size, bool isInitedContent = true)
         {
             this.size = size;
             this.world = world;
+
+            if (isInitedContent)
+            {
+                Main.InitTransformsTypes(Main.vanillaTypesInitialized);
+                WorldIO.InitContent();
+            }
 
             if (CaModLoader.WorldGeneratorPreBuildPipelineMods(this))
             {

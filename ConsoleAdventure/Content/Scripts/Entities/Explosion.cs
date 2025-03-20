@@ -26,7 +26,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         public Explosion(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
         {
-            type = (int)RenderFieldType.explosion;
+            type = (int)VanillaTransforms.explosion;
             SetMaxLife(-1);
 
             AddTypeToMap<Explosion>(type);

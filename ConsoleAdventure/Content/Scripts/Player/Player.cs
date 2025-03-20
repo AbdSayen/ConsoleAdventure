@@ -75,7 +75,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             info.Id = id;
             info.pcId = pcid;
-            type = (int)RenderFieldType.player;
+            type = (int)VanillaTransforms.player;
             SetMaxLife(20);
 
             AddTypeToMap<Player>(type);

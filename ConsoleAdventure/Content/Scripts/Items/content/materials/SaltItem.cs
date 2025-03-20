@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Salt");
             description = GetDescription();
-            placeType = (int)RenderFieldType.salt;
+            placeType = (int)VanillaTransforms.salt;
             AddTypeToMap<SaltItem>();
         }
 

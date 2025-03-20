@@ -13,7 +13,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.quartz;
+            type = (int)VanillaTransforms.quartz;
             isObstacle = true;
             hardness = 2;
             burnType = 1;

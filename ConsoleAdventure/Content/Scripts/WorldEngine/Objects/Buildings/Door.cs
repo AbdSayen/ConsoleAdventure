@@ -13,7 +13,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.door;
+            type = (int)VanillaTransforms.door;
             isObstacle = false;
             burnType = 0;
 

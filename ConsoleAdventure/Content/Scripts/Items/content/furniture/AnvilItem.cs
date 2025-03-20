@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Transforms", "Anvil");
             description = GetDescription();
-            placeType = (int)RenderFieldType.anvil;
+            placeType = (int)VanillaTransforms.anvil;
             AddTypeToMap<AnvilItem>();
         }
 
@@ -26,7 +26,7 @@ namespace ConsoleAdventure
         {
             Recipe recipe = new Recipe(new Stack(this, 1));
             recipe.AddIngredient(new IronBar(), 8);
-            recipe.AddStation((int)RenderFieldType.workbench);
+            recipe.AddStation((int)VanillaTransforms.workbench);
             return recipe;
         }
     }

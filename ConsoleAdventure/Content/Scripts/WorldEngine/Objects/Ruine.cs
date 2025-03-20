@@ -13,7 +13,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.ruine;
+            type = (int)VanillaTransforms.ruine;
             this.isObstacle = false;
 
             AddTypeToMap<Ruine>(type);

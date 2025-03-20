@@ -7,6 +7,8 @@ using System;
 using System.Linq;
 using ConsoleAdventure.Content.Scripts.Player;
 using ConsoleAdventure.Settings;
+using SharpDX.Direct2D1;
+using System.Text;
 
 namespace ConsoleAdventure.Content.Scripts
 {
@@ -31,7 +33,7 @@ namespace ConsoleAdventure.Content.Scripts
         public Entity(Position position, int w, List<object> parameters = null) : base(position, (byte)w)
         {
             worldLayer = World.MobsLayerId;
-            type = (int)RenderFieldType.entity;
+            type = (int)VanillaTransforms.entity;
             isObstacle = false;
 
             if (parameters != null)
@@ -223,6 +225,11 @@ namespace ConsoleAdventure.Content.Scripts
             {
                 ai[i] = BitConverter.ToInt32(data, 25 + i * 4);
             }
+        }
+
+        public override string ModifyTooltip()
+        {
+            return Localization.GetTranslation("Transforms", GetType().Name) + $" ({life} / {maxLife})";
         }
     }
 }

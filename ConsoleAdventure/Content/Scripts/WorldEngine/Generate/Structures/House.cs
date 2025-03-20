@@ -58,12 +58,12 @@ namespace ConsoleAdventure.Generate.Structures
                     Transform transform = world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep).content;
                     if (transform != null && random.Next(0, 8) == 0)
                     {
-                        if(transform.type == (int)RenderFieldType.wall)
+                        if(transform.type == (int)VanillaTransforms.wall)
                         {
                             new Ruine(new Position(x, y), ConsoleAdventure.StartDeep);
                         }
 
-                        else if (transform.type == (int)RenderFieldType.log || transform.type == (int)RenderFieldType.door)
+                        else if (transform.type == (int)VanillaTransforms.log || transform.type == (int)VanillaTransforms.door)
                         {
                             new BrokenLog(new Position(x, y), ConsoleAdventure.StartDeep);
                         }

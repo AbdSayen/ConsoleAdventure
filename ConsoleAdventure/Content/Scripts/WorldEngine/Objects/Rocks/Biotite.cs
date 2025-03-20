@@ -9,30 +9,30 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    public class GraniteWall : Transform
+    public class Biotite : Transform
     {
-        public GraniteWall(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Biotite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)VanillaTransforms.graniteWall;
+            type = (int)VanillaTransforms.biotite;
             isObstacle = true;
-            hardness = 2;
+            hardness = 0.5f;
 
-            AddTypeToMap<GraniteWall>(type);
+            AddTypeToMap<Biotite>(type);
 
             Initialize();
         }
 
         public override void Collapse()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new GraniteWallItem(), 1) });
+            new Loot(position, w, new List<Stack>() { new Stack(new BiotiteItem(), 1) });
         }
         
         public override string GetSymbol()
         {
-            return "∫∫";
+            return "≡≡";
         }
 
         public override Color GetColor()
@@ -42,7 +42,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override Color? GetBGColor()
         {
-            return base.GetBGColor();
+            return new Color(15, 15, 15);
         }
     }
 }

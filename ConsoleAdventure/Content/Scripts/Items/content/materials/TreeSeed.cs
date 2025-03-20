@@ -13,7 +13,7 @@ namespace ConsoleAdventure
         {
             name = Localization.GetTranslation("Items", GetType().Name);
             description = GetDescription();
-            placeType = (int)RenderFieldType.seedling;
+            placeType = (int)VanillaTransforms.seedling;
             AddTypeToMap<TreeSeed>();
         }
 

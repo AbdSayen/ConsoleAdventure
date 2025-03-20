@@ -57,11 +57,12 @@ namespace ConsoleAdventure
         public string TransformTooltip()
         {
             Position pos = ConsoleAdventure.MouseWorld;
+            int w = world.GetLocalPlayer().w;
             return
-                $"│ {TextAssets.FloorTooltip + Transform.GetName(pos, 0, ConsoleAdventure.curDeep, true)}\n" +
-                $"│ {TextAssets.BlockTooltip + Transform.GetName(pos, 1, ConsoleAdventure.curDeep, true)}\n" +
-                $"│ {TextAssets.LootTooltip + Transform.GetName(pos, 2, ConsoleAdventure.curDeep, true)}\n" +
-                $"│ {TextAssets.EntityTooltip + Transform.GetName(pos, 3, ConsoleAdventure.curDeep, true)}\n\n"
+                $"│ {TextAssets.FloorTooltip + Transform.GetTooltip(pos, 0, w)}\n" +
+                $"│ {TextAssets.BlockTooltip + Transform.GetTooltip(pos, 1, w)}\n" +
+                $"│ {TextAssets.LootTooltip + Transform.GetTooltip(pos, 2, w)}\n" +
+                $"│ {TextAssets.EntityTooltip + Transform.GetTooltip(pos, 3, w)}\n\n"
                 ;
         }
 

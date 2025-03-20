@@ -39,7 +39,7 @@ namespace ConsoleAdventure.WorldEngine
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)RenderFieldType.tree;
+            type = (int)VanillaTransforms.tree;
             isObstacle = true;
             burnType = 0;
 
@@ -90,7 +90,7 @@ namespace ConsoleAdventure.WorldEngine
         {
             Position pos = position + new Position(-3, -3);
             StringBuilder crown = new();
-            int id = (int)RenderFieldType.tree;
+            int id = (int)VanillaTransforms.tree;
             int width = Сrown.GetLength(0);
             int height = Сrown.GetLength(1);
             Color color = new Color(13, 152, 20) * 0.5f;
