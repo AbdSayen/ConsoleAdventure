@@ -176,7 +176,7 @@ namespace ConsoleAdventure.WorldEngine
         {
             if (!ConsoleAdventure.isPause)
             {
-                CaModLoader.PreUpdateWorld(this);
+                CaModLoader.PreWorldUpdateMods(this);
 
                 if (_isFirstFrame)
                 {
@@ -212,7 +212,7 @@ namespace ConsoleAdventure.WorldEngine
 
                 Spawner.Update();
 
-                CaModLoader.PostUpdateWorld(this);
+                CaModLoader.PostWorldUpdateMods(this);
             }
 
             if (timer > (10 * 60 * 60) && NetworkManager.Id <= 0)

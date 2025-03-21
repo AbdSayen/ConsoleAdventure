@@ -498,7 +498,7 @@ namespace ConsoleAdventure
             spriteBatch.End();
         }
 
-        public static void PostUpdateWorld(World world)
+        public static void PostWorldUpdateMods(World world)
         {
             for (int i = 0; i < mods.Count; i++)
             {
@@ -506,7 +506,7 @@ namespace ConsoleAdventure
             }
         }
 
-        public static void PreUpdateWorld(World world)
+        public static void PreWorldUpdateMods(World world)
         {
             for (int i = 0; i < mods.Count; i++)
             {
