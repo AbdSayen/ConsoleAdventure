@@ -200,6 +200,8 @@ namespace ConsoleAdventure
             pixel = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             pixel.SetData(new Color[] { Color.Black });
 
+            CaModLoader.UpdateModSourcesDLL();
+
             CaModLoader.InitializeMods();
 
             MusicEngine.Setup();

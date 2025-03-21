@@ -12,18 +12,13 @@ using System.Text.Json;
 using ConsoleAdventure.Content.Scripts;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 using System.Net.Http;
 using System.IO.Compression;
-using System.Diagnostics;
-using System.Globalization;
-using System.Reflection.Metadata;
-using System.Security.Policy;
 using System.Text;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.WorldEngine.Generate;
 using ConsoleAdventure.Content.Scripts.WorldEngine;
-using ConsoleAdventure.Networks;
+using System.Security.Cryptography;
 
 namespace ConsoleAdventure
 {
@@ -46,6 +41,50 @@ namespace ConsoleAdventure
         public static List<Buff> modBuffs = new List<Buff>();
 
         //public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();  // [0] - items, [1] - blocks
+
+        public static void UpdateModSourcesDLL()
+        {
+            ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Check if ModSources Folder exists");
+
+            if (Directory.Exists(ModCreator.path))
+            {
+                ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] ModSources Folder exists");
+                string originalDLL = "ConsoleAdventure.dll";
+
+                ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Check If consoleAdventure.dll in ModSources exists");
+                if (!File.Exists(ModCreator.path + originalDLL))
+                {
+                    ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] consoleAdventure.dll in ModSources not exists copy originial dll");
+                    File.Copy(originalDLL, ModCreator.path + originalDLL);
+                }
+                else
+                {
+                    ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] consoleAdventure.dll in ModSources exists");
+                    ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Compare checksums");
+                    if (!GetChecksum(originalDLL).SequenceEqual(GetChecksum(ModCreator.path + originalDLL)))
+                    {
+                        ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Checksums not equal, replacing");
+                    }
+                }
+            }
+            ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Completed!");
+        }
+
+        static byte[] GetChecksum(string filePath)
+
+        {
+
+            using (BufferedStream stream = new BufferedStream(File.OpenRead(filePath), 1200000))
+            {
+                SHA256Managed sha = new SHA256Managed();
+
+                byte[] checksum = sha.ComputeHash(stream);
+
+                return checksum;
+
+            }
+
+        }
 
         public static async Task DownloadMod(string modName)
         {
