@@ -64,6 +64,9 @@ namespace ConsoleAdventure
                     if (!GetChecksum(originalDLL).SequenceEqual(GetChecksum(ModCreator.path + originalDLL)))
                     {
                         ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Checksums not equal, replacing");
+                        if (!File.Exists(originalDLL + "2"))
+                            File.Copy(originalDLL, originalDLL+"2");
+                        File.Replace(originalDLL+"2", ModCreator.path + originalDLL, originalDLL + ".backup");
                     }
                 }
             }
