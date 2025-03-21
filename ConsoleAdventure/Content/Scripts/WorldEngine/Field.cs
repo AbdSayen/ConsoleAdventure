@@ -27,7 +27,8 @@ namespace ConsoleAdventure.WorldEngine
 
         public void Destroy()
         {
-            content.OnDestroy();
+            if (content != null)
+                content.OnDestroy();
             content = null;
         }
 
