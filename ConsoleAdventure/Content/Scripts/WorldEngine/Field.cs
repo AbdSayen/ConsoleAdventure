@@ -25,6 +25,12 @@ namespace ConsoleAdventure.WorldEngine
             }
         }
 
+        public void Destroy()
+        {
+            content.OnDestroy();
+            content = null;
+        }
+
         public string GetSymbol()
         {
             if (content == null) return "  ";

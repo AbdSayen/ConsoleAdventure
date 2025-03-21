@@ -291,9 +291,9 @@ namespace ConsoleAdventure.WorldEngine
             Field field = subject != null ? GetField(subject.position.x, subject.position.y, worldLayer, subject.w) : null;
 
             if (isDroped && field != null && field.content != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
-                field.content.Collapse();       
-            if(field != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
-                field.content = null;  
+                field.content.Collapse();
+            if (field != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
+                field.Destroy();
         }
 
         public void MoveSubject(Transform subject, int worldLayer, int stepSize, Rotation rotation)

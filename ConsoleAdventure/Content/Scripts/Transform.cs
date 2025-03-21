@@ -103,6 +103,8 @@ namespace ConsoleAdventure
 
         public virtual void Collapse() { }
 
+        public virtual void OnDestroy() { }
+
         public virtual void Interaction() { }
 
         public virtual string GetSymbol()
