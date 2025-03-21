@@ -115,6 +115,16 @@ namespace CaModLoaderAPI
 
         }
 
+        public virtual void PostWorldUpdate(World world)
+        {
+
+        }
+
+        public virtual void PreWorldUpdate(World world)
+        {
+
+        }
+
         /// <summary>
         /// Хук пост загрузки мира. Можно выполнить манипуляции над миром или какие-то изменения игрового процесса. В случае создании каких либо объектов они перекроются загруженным сохранением. Так что объекты появятся только при генерации нового мира
         /// </summary>
