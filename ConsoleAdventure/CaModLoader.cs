@@ -316,8 +316,7 @@ namespace ConsoleAdventure
                                 if (fileName == modName) { allMods.Add(modData); goto SkipLoop; }
 
                             // Загрузка сборки DLL
-                            byte[] assemblyBytes = File.ReadAllBytes(file);
-                            Assembly assembly = Assembly.Load(assemblyBytes);
+                            Assembly assembly = Assembly.LoadFrom(file);
 
                             Type type = assembly.GetType(fileName + "." + fileName); // Получение типа класса из загруженной сборки
                             Mod mod = (Mod)Activator.CreateInstance(type);
