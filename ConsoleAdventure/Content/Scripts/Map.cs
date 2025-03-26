@@ -46,7 +46,7 @@ namespace ConsoleAdventure.Content.Scripts
 
                             MapField? mapField = data[(Point)curChunk].fields[x % Chunk.Size, y % Chunk.Size, observer.w];
 
-                            Transform t = world.GetField(x, y, World.BlocksLayerId, observer.w).content;
+                            Transform t = world.GetField(x, y, World.BlocksLayerId, observer.w)?.content;
 
                             if (t != null && (!mapField.HasValue || (mapField.HasValue && (Light.colors[X, Y].R > mapField.Value.color.A))))
                                 data[(Point)curChunk].fields[x % Chunk.Size, y % Chunk.Size, observer.w] = new(t.GetColor(), (byte)(Light.colors[X, Y].R));

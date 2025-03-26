@@ -15,6 +15,7 @@ using ConsoleAdventure.Content.Scripts.WorldEngine.Events;
 using System.Threading.Tasks;
 using ConsoleAdventure.Networks;
 using ConsoleAdventure.Content.Scripts.WorldEngine;
+using SharpDX.Direct2D1;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -69,6 +70,8 @@ namespace ConsoleAdventure.WorldEngine
         public int observerW = 0;
 
         public int spawnW = 1;
+
+        public Position? lastLoadedChunk = null;
 
         public World(string name, int seed, bool isInitedContent = true)
         {
@@ -195,11 +198,11 @@ namespace ConsoleAdventure.WorldEngine
 
                 for (int i = 0; i < 20; i++)
                 {
-                    Field field = GetField(ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, CountOfLayers), ConsoleAdventure.rand.Next(0, Chunk.maxDeep));
-                    if (field?.content != null)
-                    {
-                        field.content.RandomUpdate();
-                    }
+                    //Field field = GetField(ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, CountOfLayers), ConsoleAdventure.rand.Next(0, Chunk.maxDeep));
+                    //if (field?.content != null)
+                    //{
+                    //    field.content.RandomUpdate();
+                    //}
                 }
 
                 for (int i = 0; i < GameEvent.Events.Count; i++)
@@ -367,9 +370,9 @@ namespace ConsoleAdventure.WorldEngine
             {
                 return newX >= 0 && newX < size &&
                        newY >= 0 && newY < size &&
-                       (GetField(newX, newY, worldLayer, w).content == null &&
-                       (GetField(newX, newY, BlocksLayerId, w).content == null ||
-                       !GetField(newX, newY, BlocksLayerId, w).content.isObstacle));
+                       (GetField(newX, newY, worldLayer, w)?.content == null &&
+                       (GetField(newX, newY, BlocksLayerId, w)?.content == null ||
+                       !GetField(newX, newY, BlocksLayerId, w)?.content?.isObstacle == true));
             }
 
             return false;
@@ -385,11 +388,71 @@ namespace ConsoleAdventure.WorldEngine
             if (ConsoleAdventure.world?.chunks == null) return new();
             if (chunkX >= 0 && chunkX < ConsoleAdventure.world.chunks.GetLength(0) && chunkY >= 0 && chunkY < ConsoleAdventure.world.chunks.GetLength(1))
             {
+                Chunk chunk = chunks[chunkX, chunkY];
+
+                if (chunk is UnloadedChunk)
+                {
+                    LoadChunk(chunkX, chunkY, false);
+
+                    if (lastLoadedChunk.HasValue && lastLoadedChunk.Value != new Position(chunkX, chunkY))
+                    {
+                        UnloadChunk(lastLoadedChunk.Value.x, lastLoadedChunk.Value.y);
+                    }
+
+                    if (chunks[chunkX, chunkY] is LoadedChunk)
+                        lastLoadedChunk = new(chunkX, chunkY);
+                }
+
                 Field field = chunks[chunkX, chunkY].GetField(localX, localY, layer, w);
                 return field;
             }
 
             return new();
+        }
+
+        public short GetFieldInUnloadChunk(int x, int y, int layer, int w)
+        {
+            UnloadedChunk uchunk = GetUnloadedChunk(x, y, out int localX, out int localY);
+            if (uchunk != null)
+                return uchunk.fields[localX, localY, layer, w];
+            return 0;
+        }
+
+        public UnloadedChunk GetUnloadedChunk(int x, int y, out int localX, out int localY)
+        {
+            int chunkX = x / Chunk.Size;
+            int chunkY = y / Chunk.Size;
+            localX = x % Chunk.Size;
+            localY = y % Chunk.Size;
+
+            if (ConsoleAdventure.world?.chunks == null) return null;
+            if (chunkX >= 0 && chunkX < ConsoleAdventure.world.chunks.GetLength(0) && chunkY >= 0 && chunkY < ConsoleAdventure.world.chunks.GetLength(1))
+            {
+                Chunk chunk = chunks[chunkX, chunkY];
+
+                if (chunk is UnloadedChunk)
+                {
+                    UnloadedChunk uchunk = (UnloadedChunk)chunk;
+
+                    return uchunk;
+                }
+            }
+
+            return null;
+        }
+
+        public void SetFieldInUnloadChunk(int x, int y, int layer, int w, short type)
+        {
+            UnloadedChunk uchunk = GetUnloadedChunk(x, y, out int localX, out int localY);
+            if (uchunk != null)
+                uchunk.fields[localX, localY, layer, w] = type;
+        }
+
+        public void SetFieldDataInUnloadChunk(TransformDataInChunk data)
+        {
+            UnloadedChunk uchunk = GetUnloadedChunk(data.position.x, data.position.y, out int X, out int Y);
+            if (uchunk != null)
+                uchunk.data.Add(data);
         }
 
         public Field GetField(Position position, int layer, int w)
@@ -407,71 +470,7 @@ namespace ConsoleAdventure.WorldEngine
             return GetField(position.x, position.y, layer, w)?.content;
         }
 
-        /*public List<List<Field>> GetFields(int y, int layer, int w)
-        {
-            int chunkY = y / Chunk.Size;
-            int localY = y % Chunk.Size;
-
-            if (chunkY >= 0 && chunkY < chunks.Count)
-            {
-                var result = new List<List<Field>>();
-                foreach (var chunkRow in chunks)
-                {
-                    foreach (var chunk in chunkRow)
-                    {
-                        result.Add(chunk.GetFields(layer, w)[localY]);
-                    }
-                }
-                return result;
-            }
-
-            return null;
-        }*/
-
-        /*public List<List<Field>> GetFields(int layer, int w)
-        {
-            var result = new List<List<Field>>();
-            foreach (var chunkRow in chunks)
-            {
-                foreach (var chunk in chunkRow)
-                {
-                    var fields = chunk.GetFields(layer, w);
-                    foreach (var row in fields)
-                    {
-                        result.Add(row);
-                    }
-                }
-            }
-            return result;
-        }*/
-
-        /*public List<List<List<Field>>> GetFields(int w)
-        {
-            var result = new List<List<List<Field>>>();
-            foreach (var chunkRow in chunks)
-            {
-                foreach (var chunk in chunkRow)
-                {
-                    result.AddRange(chunk.GetFields(w));
-                }
-            }
-            return result;
-        }*/
-
-        /*public List<List<List<List<Field>>>> GetFields()
-        {
-            var result = new List<List<List<List<Field>>>>();
-            foreach (var chunkRow in chunks)
-            {
-                foreach (var chunk in chunkRow)
-                {
-                    result.AddRange(chunk.GetFields());
-                }
-            }
-            return result;
-        }*/
-
-        public void SetField(int x, int y, int layer, int w, Field field)
+        /*public void SetField(int x, int y, int layer, int w, Field field)
         {
             int chunkX = x / Chunk.Size;
             int chunkY = y / Chunk.Size;
@@ -482,7 +481,7 @@ namespace ConsoleAdventure.WorldEngine
             {
                 chunks[chunkX, chunkY].SetField(localX, localY, layer, w, field);
             }
-        }
+        }*/
 
         public Chunk[,] GetChunks()
         {
@@ -499,7 +498,7 @@ namespace ConsoleAdventure.WorldEngine
             {
                 for (int y = 0; y < chunkCount; y++)
                 {
-                    chunks[x, y] = new Chunk();
+                    chunks[x, y] = new UnloadedChunk();
                 }
             }
         }
@@ -528,6 +527,116 @@ namespace ConsoleAdventure.WorldEngine
             }
 
             return result.ToString();
+        }
+
+        public void LoadChunk(int xChunk, int yChunk, bool playerArea)
+        {
+            int chunkStartX = xChunk * Chunk.Size;
+            int chunkStartY = yChunk * Chunk.Size;
+
+            Chunk chunk = chunks[xChunk, yChunk];
+
+            if (chunk != null)
+            {
+                if (chunk is UnloadedChunk)
+                {
+                    UnloadedChunk uchunk = (UnloadedChunk)chunk;
+                    short[,,,] types = uchunk.fields;
+                    List<TransformDataInChunk> data = uchunk.data;
+
+                    chunks[xChunk, yChunk] = new LoadedChunk();
+
+                    for (int w = 0; w < Chunk.maxDeep; w++)
+                    {
+                        for (int x = 0; x < Chunk.Size; x++)
+                        {
+                            for (int y = 0; y < Chunk.Size; y++)
+                            {
+                                for (int z = 0; z < 3; z++)
+                                {
+                                    int X = x + chunkStartX;
+                                    int Y = y + chunkStartY;
+
+                                    Transform.SetObject(types[x, y, z, w], new(X, Y), w, z);
+                                }
+                            }
+                        }
+                    }
+
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        var currentData = data[i];
+
+                        Transform transform = GetField(currentData.position.x, currentData.position.y, currentData.z, currentData.w)?.content;
+
+                        if (transform != null)
+                        {
+                            transform.LoadData(currentData.data);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void UnloadChunk(int xChunk, int yChunk)
+        {
+            Chunk chunk = chunks[xChunk, yChunk];
+
+            if (chunk != null)
+            {
+                if (chunk is LoadedChunk)
+                {
+                    LoadedChunk lchunk = (LoadedChunk)chunk;
+                    Field[,,,] fields = lchunk.GetFields();
+
+                    chunks[xChunk, yChunk] = new UnloadedChunk();
+
+                    for (int w = 0; w < Chunk.maxDeep; w++)
+                    {
+                        for (int x = 0; x < Chunk.Size; x++)
+                        {
+                            for (int y = 0; y < Chunk.Size; y++)
+                            {
+                                for (int z = 0; z < 3; z++)
+                                {
+                                    short? type = (short?)fields[x, y, z, w]?.content?.type;
+
+                                    if (!type.HasValue)
+                                        type = 0;
+
+                                    ((UnloadedChunk)chunks[xChunk, yChunk]).fields[x, y, z, w] = type.Value;
+
+                                    object data = fields[x, y, z, w]?.content?.SaveData();
+
+                                    short X = (short)(x + xChunk * Chunk.Size);
+                                    short Y = (short)(y + yChunk * Chunk.Size);
+
+                                    if (data != null)
+                                        ((UnloadedChunk)chunks[xChunk, yChunk]).data.Add(new(X, Y, (byte)z, (byte)w, data));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        internal void UnloadAllChunks()
+        {
+            if (chunks == null) return;
+
+            for (int i = 0; i < chunks.GetLength(0); i++)
+            {
+                for (int j = 0; j < chunks.GetLength(1); j++)
+                {
+                    Chunk chunk = chunks[i, j];
+
+                    if(chunk is LoadedChunk)
+                    {
+                        UnloadChunk(i, j);
+                    }
+                }
+            }
         }
     }
 }

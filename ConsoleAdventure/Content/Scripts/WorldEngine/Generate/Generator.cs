@@ -31,6 +31,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
             {
                 Main.InitTransformsTypes(Main.vanillaTypesInitialized);
                 WorldIO.InitContent();
+
+                world.UnloadAllChunks();
             }
 
             if (CaModLoader.WorldGeneratorPreBuildPipelineMods(this))
@@ -122,6 +124,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     }
                 }
             }
+
+            world.UnloadAllChunks();
         }
     }
 }

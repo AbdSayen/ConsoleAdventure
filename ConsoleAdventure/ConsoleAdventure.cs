@@ -87,6 +87,8 @@ namespace ConsoleAdventure
 
         public static int FPS => frameRate;
 
+        public static byte ChunkLoadRadius { get; set; } = 8;
+
         public static MenuState MenuState => menu.State;
 
         public static Position MouseWorld

@@ -131,6 +131,13 @@ namespace ConsoleAdventure.WorldEngine
                                 spriteBatch.DrawString(font, destroys[destroyIndex], drawPos, Color.Black);
                             }
                         }
+
+                        if (field == null)
+                        {
+                            Vector2 drawPos = new Vector2((X * cellSize.X) + worldPos.X, (Y * cellSize.Y) + worldPos.Y);
+                            spriteBatch.DrawString(font, " ?", drawPos, new(50, 50, 50));
+
+                        }
                     }
                     X++;
                 }

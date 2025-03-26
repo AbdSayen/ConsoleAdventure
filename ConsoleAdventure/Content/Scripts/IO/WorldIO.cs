@@ -199,6 +199,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             CaModLoader.PreSaveWorldMods();
 
+            world.UnloadAllChunks();
+
             tags["Seed"] = world.seed;
 
             tags["Size"] = size;
@@ -226,12 +228,6 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["PlayersData"] = playersData;
 
             byte[,,,] fields = new byte[deep, size, size, 4]; //w, x, y, z
-             
-            List<object> transformsData = new();
-            List<int> transformsDataX = new(); 
-            List<int> transformsDataY = new();
-            List<byte> transformsDataZ = new();
-            List<byte> transformsDataW = new();
 
             for (int w = 0; w < deep; w++)
             {
@@ -241,26 +237,31 @@ namespace ConsoleAdventure.Content.Scripts.IO
                     {
                         for (int z = 0; z < 3; z++)
                         {
-                            byte type = 0;
-                            if (world.GetField(x, y, z, w)?.content != null) //Поиск ячеяк мира
-                            {
-                                Transform transform = world.GetField(x, y, z, w).content;
-                                type = (byte)transform.type;
-
-                                object data = transform.SaveData();
-
-                                if(data != null)
-                                {
-                                    transformsData.Add(data);
-                                    transformsDataX.Add(x);
-                                    transformsDataY.Add(y);
-                                    transformsDataZ.Add((byte)z);
-                                    transformsDataW.Add((byte)w);
-                                }
-                            }
-
-                            fields[w, x, y, z] = type;
+                            fields[w, x, y, z] = (byte)world.GetFieldInUnloadChunk(x, y, z, w);
                         }
+                    }
+                }
+            }
+
+            List<object> transformsData = new();
+            List<int> transformsDataX = new();
+            List<int> transformsDataY = new();
+            List<byte> transformsDataZ = new();
+            List<byte> transformsDataW = new();
+
+            for (int i = 0; i < world.chunks.GetLength(0); i++)
+            {
+                for (int j = 0; j < world.chunks.GetLength(1); j++)
+                {
+                    List<TransformDataInChunk> data = ((UnloadedChunk)world.chunks[i, j]).data;
+
+                    for (int k = 0; k < data.Count; k++)
+                    {
+                        transformsDataX.Add(data[k].position.x);
+                        transformsDataY.Add(data[k].position.y);
+                        transformsDataZ.Add(data[k].z);
+                        transformsDataW.Add(data[k].w);
+                        transformsData.Add(data[k].data);
                     }
                 }
             }
@@ -411,10 +412,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                                 if (type > lastVanillaTransformCount - 1)
                                     type += (byte)newVanillaTransformsCount;
 
-                                if (!Transform.SetObject(type, new(x, y), w, z)) //загружаем ячейки из тега
-                                {
-                                    new UnloadedTransform(new(x, y), w, z, type); //создаём незагруженный трансформ 
-                                }
+                                world.SetFieldInUnloadChunk(x, y, z, w, type);
                             }
                         }
                     }
@@ -430,12 +428,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 {
                     for (int i = 0; i < transformsData.Length; i++)
                     {
-                        Transform transform = world.GetField(transformsDataX[i], transformsDataY[i], transformsDataZ[i], transformsDataW[i])?.content;
-
-                        if (transform != null)
-                        {
-                            transform.LoadData(transformsData[i]);
-                        }
+                        world.SetFieldDataInUnloadChunk(new((short)transformsDataX[i], 
+                                                            (short)transformsDataY[i], 
+                                                            transformsDataZ[i], 
+                                                            transformsDataW[i], 
+                                                            transformsData[i]));
                     }
                 }
 

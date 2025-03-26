@@ -75,14 +75,17 @@ namespace ConsoleAdventure.Content.Scripts
         /// </summary>
         public virtual void InteractWithWorld()
         {
-            UpdateBuffs();
-            StateMachine?.InteractWithWorld();
-            AI();
+            if (world.GetUnloadedChunk(position.x, position.y, out int v1, out int v2) == null) 
+            {
+                UpdateBuffs();
+                StateMachine?.InteractWithWorld();
+                AI();
 
-            if (life <= 0 && maxLife > 0)   
-                Kill();
+                if (life <= 0 && maxLife > 0)
+                    Kill();
 
-            invulnerabilityTime--;
+                invulnerabilityTime--; 
+            }
         }
 
         /// <summary>

@@ -16,10 +16,7 @@ namespace ConsoleAdventure
     [Serializable]
     public abstract class Transform
     {
-        private static Dictionary<int, Type> typeMapping = new Dictionary<int, Type>() 
-        {
-            { 0, typeof(Transform) },
-        };
+        private static Dictionary<int, Type> typeMapping = new Dictionary<int, Type>(); 
 
         public static Dictionary<int, Type> TypeMapping { get { return typeMapping; } }
 
@@ -173,7 +170,7 @@ namespace ConsoleAdventure
             {
                 if (objectType == typeof(Transform) || type == 0)
                 {
-                    Transform content = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, w).content;
+                    Transform content = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, w)?.content;
                     ConsoleAdventure.world.RemoveSubject(content, layer, false);
                     return true;
                 }
@@ -181,6 +178,11 @@ namespace ConsoleAdventure
                 //ConstructorInfo constructor = GetConstructor(objectType, items != null, parameters != null);
                 Init(objectType, position, w, items, parameters);
                 return true;
+            }
+
+            else
+            {
+                new UnloadedTransform(position, w, layer, type);
             }
 
             return false;
