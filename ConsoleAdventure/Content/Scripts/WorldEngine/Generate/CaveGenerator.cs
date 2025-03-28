@@ -5,6 +5,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,17 +31,14 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         void GenStone(int w)
         {
-            for(int i = 1; i < world.size - 1; i++)
+            processHint = "Digging Caves... [Filling stones]";
+            iterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
             {
-                for (int j = 1; j < world.size - 1; j++)
-                {
-                    new Floor(new(i, j), w);
-                    new Stone(new(i, j), w);
+                new Floor(new(i, j), w);
+                new Stone(new(i, j), w);
+            });
 
-                    processProgress = (int)((float)(i * world.size + j) / (world.size * world.size) * 100);
-                }
-            }
-
+            processHint = "Digging Caves... [Walk trough stone]";
             for (int i = 0; i < walkerCount; i++)
             {
                 Vector2 diraction = new(((float)Generator.GenRand.Next(0, 100)) / 10f, ((float)Generator.GenRand.Next(0, 100)) / 10f);
@@ -53,53 +51,46 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
             bool[,] cells = WorldGenUtils.CellularAutomaton(WorldGenUtils.GetFieldCells(new(), new(ConsoleAdventure.world.size, ConsoleAdventure.world.size), 0, World.BlocksLayerId), steps, B, S);
 
-            for (int i = 1; i < cells.GetLength(0) - 1; i++)
+            processHint = "Digging Caves... [Randomizing]";
+            iterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
             {
-                for (int j = 1; j < cells.GetLength(1) - 1; j++)
+                if (cells[i, j])
                 {
-                    if (cells[i, j]) 
-                    {
-                        new Stone(new(i, j), w); 
-                    }
-
-                    else
-                    {
-                        world.GetField(i, j, 1, w).content = null;
-                    }
-
-                    processProgress = (int)((float)(i * cells.GetLength(0) + j) / (cells.GetLength(0) * cells.GetLength(1)) * 100);
+                    new Stone(new(i, j), w);
                 }
-            }
 
-            for (int i = 1; i < world.size - 1; i++)
+                else
+                {
+                    world.GetField(i, j, 1, w).content = null;
+                }
+            });
+
+            processHint = "Digging Caves... [Adding some materials]";
+            iterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
             {
-                for (int j = 1; j < world.size - 1; j++)
+                float noiceValue1 = OpenSimplex.noise2(ConsoleAdventure.world.seed, i * 0.05, j * 0.05);
+                float noiceValue2 = OpenSimplex.noise2(ConsoleAdventure.world.seed / 2, i * 0.05, j * 0.05);
+
+                bool hesField = ConsoleAdventure.world.GetField(i, j, World.BlocksLayerId, w)?.content != null;
+
+                if (noiceValue1 > 0.1f)
                 {
-                    float noiceValue1 = OpenSimplex.noise2(ConsoleAdventure.world.seed, i * 0.05, j * 0.05);
-                    float noiceValue2 = OpenSimplex.noise2(ConsoleAdventure.world.seed / 2, i * 0.05, j * 0.05);
-
-                    bool hesField = ConsoleAdventure.world.GetField(i, j, World.BlocksLayerId, w)?.content != null;
-
-                    if (noiceValue1 > 0.1f)
+                    if (!(noiceValue2 > 0.3f))
                     {
-                        if (!(noiceValue2 > 0.3f))
-                        {
-                            if(hesField)
-                                new Granite(new(i, j), w);
+                        if (hesField)
+                            new Granite(new(i, j), w);
 
-                            new GraniteFloor(new(i, j), w);
-                        }
+                        new GraniteFloor(new(i, j), w);
                     }
-
-                    if(hesField && OpenSimplex.noise2(ConsoleAdventure.world.seed * 2, i * 0.05, j * 0.05) > 0.6)
-                    {
-                        new Quartz(new(i, j), w);
-                    }
-
-                    processProgress = (int)((float)(i * world.size + j) / (world.size * world.size) * 100);
                 }
-            }
 
+                if (hesField && OpenSimplex.noise2(ConsoleAdventure.world.seed * 2, i * 0.05, j * 0.05) > 0.6)
+                {
+                    new Quartz(new(i, j), w);
+                }
+            });
+
+            processHint = "Digging Caves... [Adding holes]";
             for (int i = 0; i < descentCount; i++)
             {
                 Position descentPos = new();
@@ -122,6 +113,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 processProgress = (int)((float)i / descentCount * 100);
             }
 
+            processHint = "Digging Caves... [Adding Brown Iron]";
             for (int i = 0; i < 70; i++)
             {
                 Position position = new(Generator.GenRand.Next(1, world.size - 1), Generator.GenRand.Next(1, world.size - 1));
@@ -158,20 +150,17 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 processProgress = (int)((float)i / 70 * 100);
             }
 
-            for (int i = 1; i < world.size - 1; i++)
+            processHint = "Digging Caves... [Adding Water]";
+            iterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
             {
-                for (int j = 1; j < world.size - 1; j++)
+                float noiceValue1 = OpenSimplex.noise2(ConsoleAdventure.world.seed * w * 4, i * 0.05, j * 0.05);
+                if (noiceValue1 < -0.6f && ConsoleAdventure.world.GetField(i, j, World.BlocksLayerId, w)?.content == null)
                 {
-                    float noiceValue1 = OpenSimplex.noise2(ConsoleAdventure.world.seed * w * 4, i * 0.05, j * 0.05);
-                    if (noiceValue1 < -0.6f && ConsoleAdventure.world.GetField(i, j, World.BlocksLayerId, w)?.content == null)
-                    {
-                        new Water(new(i, j), w);
-                    }
-
-                    processProgress = (int)((float)(i * world.size + j) / (world.size * world.size) * 100);
+                    new Water(new(i, j), w);
                 }
-            }
+            });
 
+            processHint = "Digging Caves... [Adding Stalactites and Treasures]";
             for (int i = 0; i < 21; i++)
             {
                 Position stalactitePos = new(Generator.GenRand.Next(1, world.size - 1), Generator.GenRand.Next(1, world.size - 1));
@@ -184,10 +173,10 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 processProgress = (int)((float)i / 21 * 100);
             }
 
-            for (int i = 0; i < 8; i++)
-            {
-                new Treasury(new Position(Generator.GenRand.Next(0, world.size), Generator.GenRand.Next(0, world.size)), w, Generator.GenRand, new Point(Generator.GenRand.Next(10, 15), Generator.GenRand.Next(10, 15)), 4);
-            }
+            //for (int i = 0; i < 8; i++)
+            //{
+            //    new Treasury(new Position(Generator.GenRand.Next(0, world.size), Generator.GenRand.Next(0, world.size)), w, Generator.GenRand, new Point(Generator.GenRand.Next(10, 15), Generator.GenRand.Next(10, 15)), 4);
+            //}
 
             //string cave = "";
             //cave = world.LevelToString(w);         

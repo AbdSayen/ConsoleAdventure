@@ -394,7 +394,7 @@ namespace ConsoleAdventure.WorldEngine
                 {
                     LoadChunk(chunkX, chunkY, false);
 
-                    if (lastLoadedChunk.HasValue && lastLoadedChunk.Value != new Position(chunkX, chunkY))
+                    if (lastLoadedChunk.HasValue && (lastLoadedChunk.Value != new Position(chunkX, chunkY)))
                     {
                         UnloadChunk(lastLoadedChunk.Value.x, lastLoadedChunk.Value.y);
                     }

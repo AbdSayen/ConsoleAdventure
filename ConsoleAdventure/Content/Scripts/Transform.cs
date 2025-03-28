@@ -14,7 +14,9 @@ using SharpDX.Direct2D1;
 namespace ConsoleAdventure
 {
     [Serializable]
-    public abstract class Transform
+    public abstract class 
+        
+        Transform
     {
         private static Dictionary<int, Type> typeMapping = new Dictionary<int, Type>(); 
 

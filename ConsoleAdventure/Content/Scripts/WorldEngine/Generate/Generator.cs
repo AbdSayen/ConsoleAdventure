@@ -40,7 +40,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 
                 AddGeneratorToPipeline(new LandspaceGenerator(), 100);
                 AddGeneratorToPipeline(new StructureGenerator(), 200);
-                AddGeneratorToPipeline(new CaveGenerator(), 300);
+                AddGeneratorToPipeline(new CaveGenerator(), 256);
             }
 
             CaModLoader.WorldGeneratorBuildPipelineMods(this);
