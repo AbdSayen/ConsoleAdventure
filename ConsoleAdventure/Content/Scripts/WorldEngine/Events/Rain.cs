@@ -24,9 +24,13 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.Events
             {
                 int lifeTime = 30;
                 Position position = new Position(ConsoleAdventure.rand.Next(player.position.x - 30, player.position.x + 30), ConsoleAdventure.rand.Next(player.position.y - 15, player.position.y + 15));
-                Field tryField = ConsoleAdventure.world.GetField(position.x, position.y, World.FloorLayerId, player.w);
-                if (tryField != null && tryField?.content == null && position.x >= 0 && position.x < ConsoleAdventure.world.size && position.y >= 0 && position.y < ConsoleAdventure.world.size)
-                    rainDrops.Add(new RainDrop(position, "·", lifeTime));
+
+                if (ConsoleAdventure.world.GetChunk(position.x, position.y, out int v1, out int v2) is LoadedChunk)
+                {
+                    Field tryField = ConsoleAdventure.world.GetField(position.x, position.y, World.FloorLayerId, player.w);
+                    if (tryField != null && tryField?.content == null && position.x >= 0 && position.x < ConsoleAdventure.world.size && position.y >= 0 && position.y < ConsoleAdventure.world.size)
+                        rainDrops.Add(new RainDrop(position, "·", lifeTime));
+                }
             }
 
             for (int i = 0; i < rainDrops.Count; i++)
@@ -65,7 +69,7 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.Events
         {
             Player.Player player = ConsoleAdventure.world.GetLocalPlayer();
 
-            if (player.w == ConsoleAdventure.StartDeep)
+            if (player.w == ConsoleAdventure.world.Surface)
             {
                 for (int i = 0; i < rainDrops.Count; i++)
                 {

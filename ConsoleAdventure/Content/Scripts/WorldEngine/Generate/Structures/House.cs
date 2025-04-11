@@ -33,8 +33,8 @@ namespace ConsoleAdventure.Generate.Structures
             {
                 for (int x = startPosition.x; x < startPosition.x + sizeX; x++)
                 {
-                    new WoodFloor(new Position(x, y), ConsoleAdventure.StartDeep);
-                    world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep).isStructure = true;
+                    new WoodFloor(new Position(x, y), ConsoleAdventure.world.Surface);
+                    world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.world.Surface).isStructure = true;
 
                     bool isHorizontalWall = (y == startPosition.y || y == startPosition.y + sizeY - 1);
                     bool isVerticalWall = (x == startPosition.x || x == startPosition.x + sizeX - 1);
@@ -42,35 +42,35 @@ namespace ConsoleAdventure.Generate.Structures
 
                     if (isWall)
                     {
-                        new Wall(new Position(x, y), ConsoleAdventure.StartDeep);
+                        new Wall(new Position(x, y), ConsoleAdventure.world.Surface);
                         if (isHorizontalWall && x == (startPosition.x + sizeX / 2) && sizeX > 3)
                         {
-                            new Door(new Position(x, y), ConsoleAdventure.StartDeep);
-                            new Door(new Position(x + 1, y), ConsoleAdventure.StartDeep);
+                            new Door(new Position(x, y), ConsoleAdventure.world.Surface);
+                            new Door(new Position(x + 1, y), ConsoleAdventure.world.Surface);
                         }
                         else if (isVerticalWall && y == (startPosition.y + sizeY / 2) && sizeY > 3)
                         {
-                            new Door(new Position(x, y), ConsoleAdventure.StartDeep);
-                            new Door(new Position(x, y + 1), ConsoleAdventure.StartDeep);
+                            new Door(new Position(x, y), ConsoleAdventure.world.Surface);
+                            new Door(new Position(x, y + 1), ConsoleAdventure.world.Surface);
                         }
                     }
 
-                    Transform transform = world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep).content;
+                    Transform transform = world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.world.Surface).content;
                     if (transform != null && random.Next(0, 8) == 0)
                     {
                         if(transform.type == (int)VanillaTransforms.wall)
                         {
-                            new Ruine(new Position(x, y), ConsoleAdventure.StartDeep);
+                            new Ruine(new Position(x, y), ConsoleAdventure.world.Surface);
                         }
 
                         else if (transform.type == (int)VanillaTransforms.log || transform.type == (int)VanillaTransforms.door)
                         {
-                            new BrokenLog(new Position(x, y), ConsoleAdventure.StartDeep);
+                            new BrokenLog(new Position(x, y), ConsoleAdventure.world.Surface);
                         }
                     }
                     else if (random.Next(0, 320) == 0)
                     {
-                        Spawner.Spawn(new Cat(new Position(x, y), ConsoleAdventure.StartDeep));
+                        Spawner.Spawn(new Cat(new Position(x, y), ConsoleAdventure.world.Surface));
                     }
                 }
             }
@@ -118,11 +118,11 @@ namespace ConsoleAdventure.Generate.Structures
                     {
                         for (int y = startPosition.y; y < endPosition.y; y++)
                         {
-                            new Plank(new Position(sliceX, y), ConsoleAdventure.StartDeep);
+                            new Plank(new Position(sliceX, y), ConsoleAdventure.world.Surface);
                         }
 
                         int doorY = startPosition.y + (endPosition.y - startPosition.y) / 2;
-                        new Door(new Position(sliceX, doorY), ConsoleAdventure.StartDeep);
+                        new Door(new Position(sliceX, doorY), ConsoleAdventure.world.Surface);
 
                         sliceCreated = true;
 
@@ -173,11 +173,11 @@ namespace ConsoleAdventure.Generate.Structures
                     {
                         for (int x = startPosition.x; x < endPosition.x; x++)
                         {
-                            new Plank(new Position(x, sliceY), ConsoleAdventure.StartDeep);
+                            new Plank(new Position(x, sliceY), ConsoleAdventure.world.Surface);
                         }
 
                         int doorX = startPosition.x + (endPosition.x - startPosition.x) / 2;
-                        new Door(new Position(doorX, sliceY), ConsoleAdventure.StartDeep);
+                        new Door(new Position(doorX, sliceY), ConsoleAdventure.world.Surface);
 
                         sliceCreated = true;
 

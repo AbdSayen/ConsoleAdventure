@@ -77,28 +77,35 @@ public static class Spawner
 
         if (curIndex > -1)
         {
-            if (Transform.TypeMapping.TryGetValue(candidates[curIndex].MobType, out Type type))
+            int id = candidates[curIndex].MobType;
+
+            if (id >= 0 && id < Transform.TypeMapping.Length)
             {
-                Position playerPos = player.position;
-                Position position = new();
-                bool positionFoundFlag = false;
+                Type type = Transform.TypeMapping[id];
 
-                for (int i = 0; i < 30; i++)
+                if (type != null)
                 {
-                    position = new(ConsoleAdventure.rand.Next(playerPos.x - maxX, playerPos.x + maxX), ConsoleAdventure.rand.Next(playerPos.y - maxY, playerPos.y + maxY));
-                    Field f1 = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, player.w);
-                    Field f2 = ConsoleAdventure.world.GetField(position.x, position.y, World.MobsLayerId, player.w);
+                    Position playerPos = player.position;
+                    Position position = new();
+                    bool positionFoundFlag = false;
 
-                    if ((position.x < playerPos.x - minX || position.x > playerPos.x + minX) && (position.y < playerPos.y - minY || position.y > playerPos.y + minY) && f1 != null && f2 != null && f1.content?.isObstacle == false && f2.content == null)
+                    for (int i = 0; i < 30; i++)
                     {
-                        positionFoundFlag = true;
-                        break;
+                        position = new(ConsoleAdventure.rand.Next(playerPos.x - maxX, playerPos.x + maxX), ConsoleAdventure.rand.Next(playerPos.y - maxY, playerPos.y + maxY));
+                        Field f1 = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, player.w);
+                        Field f2 = ConsoleAdventure.world.GetField(position.x, position.y, World.MobsLayerId, player.w);
+
+                        if ((position.x < playerPos.x - minX || position.x > playerPos.x + minX) && (position.y < playerPos.y - minY || position.y > playerPos.y + minY) && f1 != null && f2 != null && f1.content?.isObstacle == false && f2.content == null)
+                        {
+                            positionFoundFlag = true;
+                            break;
+                        }
                     }
+
+                    if (!positionFoundFlag) return;
+
+                    Spawn((Entity)Activator.CreateInstance(type, new object[3] { position, player.w, null }));
                 }
-
-                if (!positionFoundFlag) return;
-
-                Spawn((Entity)Activator.CreateInstance(type, new object[3] { position, player.w, null}));
             }
         }
     }

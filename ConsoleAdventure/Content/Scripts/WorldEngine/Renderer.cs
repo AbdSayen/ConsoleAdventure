@@ -6,6 +6,8 @@ using System.Threading;
 using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Content.Scripts.IO;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
+using ConsoleAdventure.Content.Scripts.WorldEngine;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -37,6 +39,8 @@ namespace ConsoleAdventure.WorldEngine
         {
             world = ConsoleAdventure.world;
 
+            LoadViewChunks(observer);
+
             ConsoleAdventure.startDisplay = observer - new Position(30, 15);
             ConsoleAdventure.endDisplay = observer + new Position(30, 15);
 
@@ -57,23 +61,26 @@ namespace ConsoleAdventure.WorldEngine
                         int x = i + ConsoleAdventure.startDisplay.x;
                         int y = j + ConsoleAdventure.startDisplay.y;
 
-                        Transform t1 = ConsoleAdventure.world.GetField(x, y, World.BlocksLayerId, observerW)?.content;
-                        Transform t2 = ConsoleAdventure.world.GetField(x, y, World.MobsLayerId, observerW)?.content;
-                        Transform t3 = ConsoleAdventure.world.GetField(x, y, World.ItemsLayerId, observerW)?.content;
-
-                        if (t1 != null)
+                        if (ConsoleAdventure.world.GetChunk(x, y, out int v1, out int v2) is LoadedChunk)
                         {
-                            t1.OnTheScreen();
-                        }
+                            Transform t1 = ConsoleAdventure.world.GetField(x, y, World.BlocksLayerId, observerW)?.content;
+                            Transform t2 = ConsoleAdventure.world.GetField(x, y, World.MobsLayerId, observerW)?.content;
+                            Transform t3 = ConsoleAdventure.world.GetField(x, y, World.ItemsLayerId, observerW)?.content;
 
-                        if (t2 != null)
-                        {
-                            t2.OnTheScreen();
-                        }
+                            if (t1 != null)
+                            {
+                                t1.OnTheScreen();
+                            }
 
-                        if (t3 != null)
-                        {
-                            t3.OnTheScreen();
+                            if (t2 != null)
+                            {
+                                t2.OnTheScreen();
+                            }
+
+                            if (t3 != null)
+                            {
+                                t3.OnTheScreen();
+                            }
                         }
                     }
                 }
@@ -174,6 +181,71 @@ namespace ConsoleAdventure.WorldEngine
                 return world.chunks[chunkX, chunkY];
             }
             return null;
+        }
+
+
+        List<Position> loadedChunks = new();
+        Position oldChunkPos = new(-1600, -1600);
+
+        public void LoadViewChunks(Position observer)
+        {
+            Position chunkPos = observer / Chunk.Size;
+
+            if (chunkPos != oldChunkPos)
+            {
+                int radius = (ConsoleAdventure.ChunkLoadRadius / 2);
+                List<Position> curLoadedChunks = loadedChunks.ToArray().ToList();
+                loadedChunks.Clear();
+
+                for (int i = -radius; i <= radius; i++)
+                {
+                    for (int j = -radius; j <= radius; j++)
+                    {
+                        int x = i + chunkPos.x;
+                        int y = j + chunkPos.y;
+
+                        if (x >= 0 && y >= 0 && x < world.GetChunkCounts().X && y < world.GetChunkCounts().Y)
+                        {
+                            Chunk chunk = world.chunks[x, y];
+
+                            if (chunk is UnloadedChunk)
+                            {
+                                world.LoadChunk(x, y, true);
+                            }
+
+                            loadedChunks.Add(new(x, y));
+                        }
+                    }
+                }
+
+                for (int i = 0; i < curLoadedChunks.Count; i++)
+                {
+                    Position position = curLoadedChunks[i];
+
+                    bool isFound = false;
+
+                    for (int j = 0; j < loadedChunks.Count; j++)
+                    {
+                        if (position == loadedChunks[j])
+                        {
+                            isFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!isFound)
+                    {
+                        Chunk chunk = world.chunks[position.x, position.y];
+
+                        if (chunk is LoadedChunk)
+                        {
+                            world.UnloadChunk(position.x, position.y);
+                        }
+                    }
+                }
+
+                oldChunkPos = chunkPos;
+            }
         }
     }
 }

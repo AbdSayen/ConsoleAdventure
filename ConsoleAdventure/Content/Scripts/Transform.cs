@@ -10,6 +10,7 @@ using System.DirectoryServices;
 using ConsoleAdventure.Settings;
 using System.CodeDom;
 using SharpDX.Direct2D1;
+using System.Linq;
 
 namespace ConsoleAdventure
 {
@@ -18,9 +19,9 @@ namespace ConsoleAdventure
         
         Transform
     {
-        private static Dictionary<int, Type> typeMapping = new Dictionary<int, Type>(); 
+        private static Type[] typeMapping = new Type[256]; 
 
-        public static Dictionary<int, Type> TypeMapping { get { return typeMapping; } }
+        public static Type[] TypeMapping { get { return typeMapping; } }
 
         public static World world { get; protected set; }
         public byte worldLayer { get; protected set; }
@@ -32,6 +33,8 @@ namespace ConsoleAdventure
         public float hardness = 1;
 
         public int netID = -1;
+
+        internal static bool IsGlobalInit = false;
 
         /// <summary>
         /// хранит тип горения трансформ:<br/>  
@@ -54,10 +57,13 @@ namespace ConsoleAdventure
 
         public void Initialize()
         {
-            if (world.GetField(position.x, position.y, worldLayer, w) != null)
+            if (!IsGlobalInit)
             {
-                world.GetField(position.x, position.y, worldLayer, w).content = this;
-                //world.GetField(position.x, position.y, worldLayer, w).color = GetColor();
+                if (world.GetField(position.x, position.y, worldLayer, w) != null)
+                {
+                    world.GetField(position.x, position.y, worldLayer, w).content = this;
+                    //world.GetField(position.x, position.y, worldLayer, w).color = GetColor();
+                }
             }
         }
 
@@ -68,16 +74,30 @@ namespace ConsoleAdventure
         
         public static void AddTypeToMap<T>(int type)
         {
-            if (!typeMapping.ContainsKey(type))
+            if (type >= TypeMapping.Length)
             {
-                typeMapping.Add(type, typeof(T));
-                ConsoleAdventure.logger.AddMessage($"{typeof(T).Namespace}.{typeof(T).Name} inited with id {type}");
+                List<Type> types = TypeMapping.ToList();
+                types.Add(typeof(T));
+
+                typeMapping = types.ToArray();
+
+                ConsoleAdventure.logger.AddMessage($"{typeof(T).Namespace}.{typeof(T).Name} inited with id {type} and resize array");
+                return;
+            }
+
+            else if (type >= 0)
+            {
+                if (TypeMapping[type] == null)
+                {
+                    typeMapping[type] = typeof(T);
+                    ConsoleAdventure.logger.AddMessage($"{typeof(T).Namespace}.{typeof(T).Name} inited with id {type}");
+                }
             }
         }
 
         public static void ClearTypeMap()
         {
-            TypeMapping.Clear();
+            typeMapping = new Type[256];
         }
 
         public virtual void Move(int stepSize, Rotation rotation)
@@ -168,23 +188,29 @@ namespace ConsoleAdventure
             if (position.x > ConsoleAdventure.world.size) { position.x = (short)ConsoleAdventure.world.size; }
             if (position.y > ConsoleAdventure.world.size) { position.y = (short)ConsoleAdventure.world.size; }
 
-            if (typeMapping.TryGetValue(type, out Type objectType) || type == 0)
+
+            if (type >= 0 && type < TypeMapping.Length) 
             {
-                if (objectType == typeof(Transform) || type == 0)
+                Type objectType = TypeMapping[type];
+
+                if (objectType != null || type == 0)
                 {
-                    Transform content = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, w)?.content;
-                    ConsoleAdventure.world.RemoveSubject(content, layer, false);
+                    if (objectType == typeof(Transform) || type == 0)
+                    {
+                        Transform content = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, w)?.content;
+                        ConsoleAdventure.world.RemoveSubject(content, layer, false);
+                        return true;
+                    }
+
+                    //ConstructorInfo constructor = GetConstructor(objectType, items != null, parameters != null);
+                    Init(objectType, position, w, items, parameters);
                     return true;
                 }
 
-                //ConstructorInfo constructor = GetConstructor(objectType, items != null, parameters != null);
-                Init(objectType, position, w, items, parameters);
-                return true;
-            }
-
-            else
-            {
-                new UnloadedTransform(position, w, layer, type);
+                else
+                {
+                    new UnloadedTransform(position, w, layer, type);
+                } 
             }
 
             return false;

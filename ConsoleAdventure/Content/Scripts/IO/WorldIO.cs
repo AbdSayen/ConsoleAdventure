@@ -5,6 +5,7 @@ using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.WorldEngine.Levels;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
 using System;
@@ -199,7 +200,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             CaModLoader.PreSaveWorldMods();
 
-            world.UnloadAllChunks();
+            //world.UnloadAllChunks();
 
             tags["Seed"] = world.seed;
 
@@ -212,6 +213,19 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             tags["ModTransforms"] = world.modTransforms;
             tags["VanillaTransforms"] = Main.vanillaTypesInitialized;
+
+            List<WorldLevel> rawLevels = world.levels.Levels;
+            List<string> levels = new();
+
+            for (int i = 0; i < rawLevels.Count; i++)
+            {
+                if (rawLevels[i] is UnloadWorldLevel)
+                    levels.Add(((UnloadWorldLevel)rawLevels[i]).Name);
+
+                else levels.Add(rawLevels[i].GetType().FullName);
+            }
+
+            tags["WorldLevels"] = levels.ToArray();
 
             Dictionary<string, byte[]> playersData = new Dictionary<string, byte[]>();
 
@@ -237,7 +251,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                     {
                         for (int z = 0; z < 3; z++)
                         {
-                            fields[w, x, y, z] = (byte)world.GetFieldInUnloadChunk(x, y, z, w);
+                            fields[w, x, y, z] = (byte)world.GetFieldTypeAnyway(x, y, z, w);
                         }
                     }
                 }
@@ -253,15 +267,46 @@ namespace ConsoleAdventure.Content.Scripts.IO
             {
                 for (int j = 0; j < world.chunks.GetLength(1); j++)
                 {
-                    List<TransformDataInChunk> data = ((UnloadedChunk)world.chunks[i, j]).data;
-
-                    for (int k = 0; k < data.Count; k++)
+                    Chunk chunk = world.chunks[i, j];
+                    if (chunk is UnloadedChunk)
                     {
-                        transformsDataX.Add(data[k].position.x);
-                        transformsDataY.Add(data[k].position.y);
-                        transformsDataZ.Add(data[k].z);
-                        transformsDataW.Add(data[k].w);
-                        transformsData.Add(data[k].data);
+                        List<TransformDataInChunk> data = ((UnloadedChunk)world.chunks[i, j]).data;
+
+                        for (int k = 0; k < data.Count; k++)
+                        {
+                            transformsDataX.Add(data[k].position.x);
+                            transformsDataY.Add(data[k].position.y);
+                            transformsDataZ.Add(data[k].z);
+                            transformsDataW.Add(data[k].w);
+                            transformsData.Add(data[k].data);
+                        }
+                    }
+
+                    else if (chunk is LoadedChunk)
+                    { 
+                        for (int k = 0; k < Chunk.maxDeep; k++)
+                        {
+                            for (int l = 0; l < Chunk.Size; l++)
+                            {
+                                for (int m = 0; m < Chunk.Size; m++)
+                                {
+                                    for (int n = 0; n < 3; n++)
+                                    {
+                                        Field field = chunk.GetField(l, m, n, k);
+
+                                        if (field?.content != null)
+                                        {
+
+                                            transformsDataX.Add(field.content.position.x);
+                                            transformsDataY.Add(field.content.position.y);
+                                            transformsDataZ.Add(field.content.worldLayer);
+                                            transformsDataW.Add(field.content.w);
+                                            transformsData.Add(field.content.SaveData());
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -310,6 +355,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             Light.Clear();
 
+            Transform.IsGlobalInit = true;
+
             Type baseType = typeof(Transform);
             IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType)).ToList().Concat(CaModLoader.modTransforms);
             foreach (Type type in list)
@@ -319,6 +366,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 Transform.Init(type, Position.Zero(), 0, null, null);
             }
+
+            Transform.IsGlobalInit = false;
 
             ConsoleAdventure.recipes.Clear();
 
@@ -389,6 +438,47 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 Main.InitTransformsTypes(0);
                 InitContent();
 
+                string[] levels = tags.SafelyGet<string[]>("WorldLevels", null);
+                List<WorldLevel> worldLevels = new();
+
+                if (levels != null)
+                {
+                    foreach (var level in levels)
+                    {
+                        Type type = Type.GetType(level);
+
+                        if (type == null)
+                        {
+                            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                            {
+                                type = asm.GetType(level);
+                                if (type != null) break;
+                            }
+                        }
+
+                        if (type == null)
+                        {
+                            UnloadWorldLevel unloadWorldLevel = new UnloadWorldLevel();
+                            unloadWorldLevel.Name = level;
+
+                            worldLevels.Add(unloadWorldLevel);
+                            continue;
+                        }
+
+                        object createdLevel = Activator.CreateInstance(type);
+
+                        if (createdLevel.GetType().IsSubclassOf(typeof(WorldLevel)))
+                        {
+                            worldLevels.Add((WorldLevel)createdLevel);
+                        }
+                    }
+                }
+
+                world.levels = new WorldLevelsSystem(worldLevels);
+                world.SetDeeps();
+
+                world.InitializeChunks();
+
                 ConsoleAdventure.world.playersDat = tags.SafelyGet<Dictionary<string, byte[]>>("PlayersData");
 
                 byte[,,,] fields = tags.SafelyGet<byte[,,,]>("Fields");
@@ -412,7 +502,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                                 if (type > lastVanillaTransformCount - 1)
                                     type += (byte)newVanillaTransformsCount;
 
-                                world.SetFieldInUnloadChunk(x, y, z, w, type);
+                                world.SetFieldTypeAnyway(x, y, z, w, type);
                             }
                         }
                     }
@@ -428,11 +518,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 {
                     for (int i = 0; i < transformsData.Length; i++)
                     {
-                        world.SetFieldDataInUnloadChunk(new((short)transformsDataX[i], 
-                                                            (short)transformsDataY[i], 
-                                                            transformsDataZ[i], 
-                                                            transformsDataW[i], 
-                                                            transformsData[i]));
+                        world.SetFieldDataAnyway(new((short)transformsDataX[i], 
+                                                     (short)transformsDataY[i], 
+                                                     transformsDataZ[i], 
+                                                     transformsDataW[i], 
+                                                     transformsData[i]));
                     }
                 }
 

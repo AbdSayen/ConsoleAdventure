@@ -65,7 +65,7 @@ namespace ConsoleAdventure
 
         internal static bool isExit;
 
-        public static int StartDeep = 1;
+        //public static int StartDeep = 1;
 
         public static Tags tags = new();
 
@@ -119,19 +119,6 @@ namespace ConsoleAdventure
 
             if (File.Exists(Program.savePath + "settings.json")) // Если файл существует
                 SettingsSystem.LoadSettings(); // Загружаем сохраненные настройки
-
-            // Инициализируем тут все настройки
-            // (Не нужно бояться что это перезапишет сохраненные данные,
-            // инициализация только создаст значения которые не определены,
-            // это может случится в следующих случаях: Первый запуск приложения или
-            // Вышло обновление приложения где добавлена новая настройка)
-            SettingsSystem.InitSetting("Options", "Language");
-            //                          ^^^^         ^^^^
-            //                     Тип настроек     Ключ настройки
-
-            //  Тут такая же система как в локализации.
-
-            SettingsSystem.InitSetting("Options", "MusicVolume", 100);
 
             InputConfig.Init();
             InputConfig.Load();

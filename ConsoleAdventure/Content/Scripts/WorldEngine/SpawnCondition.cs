@@ -29,12 +29,17 @@ namespace ConsoleAdventure.WorldEngine
             get { return mobType; }
             set
             {
-                if (Transform.TypeMapping.TryGetValue(value, out Type type))
+                if (value >= 0 && value < Transform.TypeMapping.Length)
                 {
-                    if (type.IsSubclassOf(typeof(Entity)))
+                    Type type = Transform.TypeMapping[value];
+
+                    if (type != null)
                     {
-                        mobType = value;
-                        return;
+                        if (type.IsSubclassOf(typeof(Entity)))
+                        {
+                            mobType = value;
+                            return;
+                        }
                     }
                 }
             }

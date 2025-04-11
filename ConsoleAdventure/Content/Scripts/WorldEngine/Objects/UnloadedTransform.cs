@@ -1,12 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ConsoleAdventure.WorldEngine
 {
     [Serializable]
     public class UnloadedTransform : Transform
     {
+        public object data = null;
+
         public UnloadedTransform(Position position, int w, int worldLayer, int modType) : base(position, (byte)w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
@@ -38,10 +41,23 @@ namespace ConsoleAdventure.WorldEngine
             return new Color(10, 0, 10);
         }
 
-        public virtual string ModifyToolTip()
+        public override string ModifyTooltip()
         {
+            string name = Localization.GetTranslation("Transforms", "Unloaded") + ":" + 
+                          world.modTransforms.FirstOrDefault(x => x.Value == type).Key;
+
             string degree = degreeDestruction > 0 ? $" ({100 - degreeDestruction} / 100)" : "";
-            return Localization.GetTranslation("Transforms", "Unloaded") + degree;
+            return name + degree;
+        }
+
+        public override object SaveData()
+        {
+            return data;
+        }
+
+        public override void LoadData(object data)
+        {
+            this.data = data;
         }
     }
 }

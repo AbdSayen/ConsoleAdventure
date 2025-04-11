@@ -49,8 +49,17 @@ namespace ConsoleAdventure
         {
             string fileName = Program.savePath + "settings.json"; // Путь к файлу настроек
             string json = File.ReadAllText(fileName); // Читаем жисон
-            var settingsLoaded = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, int>>>(json); // Делаем из жисона наш словарь
-            settings = settingsLoaded; // И востанавливаем настройки
+
+            try 
+            { 
+                var settingsLoaded = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, int>>>(json); // Делаем из жисона наш словарь
+                settings = settingsLoaded; // И востанавливаем настройки
+            }
+
+            catch 
+            {
+                ConsoleAdventure.logger.AddMessage("Silently caught error: There was a problem loading the settings. The settings were overwritten to \"default settings\"");
+            }
         }
     }
 }

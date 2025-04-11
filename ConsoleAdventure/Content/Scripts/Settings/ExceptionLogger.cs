@@ -8,10 +8,11 @@ namespace ConsoleAdventure.Content.Scripts.Settings
         private readonly string logsPath;
         private readonly string logFilePath;
         private string oldText = "";
-        
+
         public ExceptionLogger(string logFileName)
         {
             logFilePath = Program.savePath + "Logs\\";
+
             logsPath = logFilePath;
 
             if (!Directory.Exists(logFilePath))

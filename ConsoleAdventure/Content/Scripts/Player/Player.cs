@@ -171,9 +171,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 return; 
             }
 
-            LoadViewChunks();
-
-            map.Update();
+            //map.Update();
 
             UpdateBuffs();
 
@@ -500,7 +498,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             void Place(PlaceableItem item)
             {
-                SetObject(item.placeType, targetPosition, w, items: new());
+                SetObject(item.placeType, targetPosition, w);
                 inventory.RemoveAt(holdItemIndex, 1);
             }
         }
@@ -572,70 +570,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
             }
 
             return false;
-        }
-
-        List<Position> loadedChunks = new();
-        Position oldChunkPos = new(-16, -16);
-
-        public void LoadViewChunks()
-        {
-            Position chunkPos = position / Chunk.Size;
-
-            if (chunkPos != oldChunkPos)
-            {
-                int radius = (ConsoleAdventure.ChunkLoadRadius / 2);
-                List<Position> curLoadedChunks = loadedChunks.ToArray().ToList();
-                loadedChunks.Clear();
-
-                for (int i = -radius; i <= radius; i++)
-                {
-                    for (int j = -radius; j <= radius; j++)
-                    {
-                        int x = i + chunkPos.x;
-                        int y = j + chunkPos.y;
-
-                        if (x >= 0 && y >= 0 && x < world.GetChunkCounts().X && y < world.GetChunkCounts().Y)
-                        {
-                            Chunk chunk = world.chunks[x, y];
-
-                            if (chunk is UnloadedChunk)
-                            {
-                                world.LoadChunk(x, y, true);
-                            }
-
-                            loadedChunks.Add(new(x, y));
-                        }
-                    }
-                }
-
-                for (int i = 0; i < curLoadedChunks.Count; i++)
-                {
-                    Position position = curLoadedChunks[i];
-
-                    bool isFound = false;
-
-                    for (int j = 0; j < loadedChunks.Count; j++)
-                    {
-                        if(position == loadedChunks[j])
-                        {
-                            isFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!isFound)
-                    {
-                        Chunk chunk = world.chunks[position.x, position.y];
-
-                        if (chunk is LoadedChunk)
-                        {
-                            world.UnloadChunk(position.x, position.y);
-                        }
-                    }
-                }
-
-                oldChunkPos = chunkPos;
-            }
         }
     }
 }

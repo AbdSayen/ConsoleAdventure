@@ -83,7 +83,7 @@ namespace ConsoleAdventure.Content.Scripts
 
             Color color = Color.Black;
 
-            if (w == ConsoleAdventure.StartDeep)
+            if (w == ConsoleAdventure.world.Surface)
             {
                 color = GetSunLightColor();
             }
@@ -119,46 +119,48 @@ namespace ConsoleAdventure.Content.Scripts
             {
                 for (int j = 0; j < height; j++)
                 {
-                    Field field = ConsoleAdventure.world.GetField(i + x, j + y, World.BlocksLayerId, w);
-
-                    Color accumulatedLight = color;
-
-                    if (field != null)
+                    if (ConsoleAdventure.world.GetChunk(i + x, j + y, out int v1, out int v2) is LoadedChunk)
                     {
-                        for (int k = 0; k < lightSources.Count; k++)
+                        Field field = ConsoleAdventure.world.GetField(i + x, j + y, World.BlocksLayerId, w);
+
+                        Color accumulatedLight = color;
+
+                        if (field != null)
                         {
-                            LightSource source = lightSources[k];
-
-                            if (source.w != w)
-                                continue;
-
-                            float distance = Vector2.DistanceSquared(new Vector2(i + x, j + y), new Vector2(source.x, source.y));
-                            if (distance < source.radius)
+                            for (int k = 0; k < lightSources.Count; k++)
                             {
-                                float intensity = MathHelper.Clamp(1f - (distance / source.radius), 0, 1);
+                                LightSource source = lightSources[k];
 
-                                Color lightColor = source.color * intensity;
+                                if (source.w != w)
+                                    continue;
 
-                                if (!accumulatedLight.Equals(lightColor))
+                                float distance = Vector2.DistanceSquared(new Vector2(i + x, j + y), new Vector2(source.x, source.y));
+                                if (distance < source.radius)
                                 {
-                                    if (LightBlock(i + x, j + y, w, source, out int count))
-                                    {
-                                        lightColor *= 1f / (1f + (float)count);
+                                    float intensity = MathHelper.Clamp(1f - (distance / source.radius), 0, 1);
 
-                                        accumulatedLight = Utils.AddColors(accumulatedLight, lightColor);
+                                    Color lightColor = source.color * intensity;
+
+                                    if (!accumulatedLight.Equals(lightColor))
+                                    {
+                                        if (LightBlock(i + x, j + y, w, source, out int count))
+                                        {
+                                            lightColor *= 1f / (1f + (float)count);
+
+                                            accumulatedLight = Utils.AddColors(accumulatedLight, lightColor);
+                                        }
                                     }
                                 }
+
+                                accumulatedLight.A = 255;
                             }
-
-                            accumulatedLight.A = 255;
                         }
-                    }
 
-                    colors[i, j] = accumulatedLight;
+                        colors[i, j] = accumulatedLight;
+                    }
                 }
             }
         }
-        
 
         private static bool LightBlock(int x, int y, int w, LightSource lightSource, out int wallsCount)
         {
@@ -179,10 +181,13 @@ namespace ConsoleAdventure.Content.Scripts
             {
                 if (xA == x && yA == y) break;
 
-                Transform transform = ConsoleAdventure.world.GetField(xA, yA, World.BlocksLayerId, w)?.content;
-                if (transform?.isObstacle == true)
+                if (ConsoleAdventure.world.GetChunk(xA, yA, out int v1, out int v2) is LoadedChunk)
                 {
-                    wallCount++;
+                    Transform transform = ConsoleAdventure.world.GetField(xA, yA, World.BlocksLayerId, w)?.content;
+                    if (transform?.isObstacle == true)
+                    {
+                        wallCount++;
+                    }
                 }
 
                 if (wallCount > maxWallCount)

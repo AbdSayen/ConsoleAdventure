@@ -9,6 +9,7 @@ using System;
 using System.Runtime.CompilerServices;
 using ConsoleAdventure.Content.Scripts.WorldEngine;
 using ConsoleAdventure.Content.Scripts.IO;
+using System.Collections.Generic;
 
 namespace CaModLoaderAPI
 {
@@ -180,6 +181,16 @@ namespace CaModLoaderAPI
         }
 
         public virtual void PostInitContent()
+        {
+
+        }
+
+        public virtual List<WorldLevel> ModifyWorldLevels(List<WorldLevel> worldLevels)
+        {
+            return null;
+        }
+
+        public virtual void SetModDeeps()
         {
 
         }

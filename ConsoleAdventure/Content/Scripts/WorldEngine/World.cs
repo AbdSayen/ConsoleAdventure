@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using ConsoleAdventure.Networks;
 using ConsoleAdventure.Content.Scripts.WorldEngine;
 using SharpDX.Direct2D1;
+using ConsoleAdventure.WorldEngine.Levels;
+using CaModLoaderAPI;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -73,12 +75,21 @@ namespace ConsoleAdventure.WorldEngine
 
         public Position? lastLoadedChunk = null;
 
+        public WorldLevelsSystem levels;
+
+        public int Surface { get; private set; }
+        public int Cavern { get; private set; }
+
         public World(string name, int seed, bool isInitedContent = true)
         {
             this.name = name;
             this.seed = seed;
 
             ConsoleAdventure.rand = new Random();
+
+            levels = new WorldLevelsSystem(null);
+
+            SetDeeps();
 
             generator = new Generator(this, size, isInitedContent);
             renderer = new Renderer();
@@ -89,6 +100,17 @@ namespace ConsoleAdventure.WorldEngine
             inputField.isHover = true;
 
             playersDat = new Dictionary<string, byte[]>();
+        }
+
+        public void SetDeeps()
+        {
+            Surface = levels.GetLevel(new Surface());
+            Cavern = levels.GetLevel(new Cavern());
+
+            foreach (Mod mod in CaModLoader.GetActiveMods())
+            {
+                mod.SetModDeeps();
+            }
         }
 
         public async Task Initialize(bool isFullGenerate = true)
@@ -158,7 +180,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public void ConnectPlayer(short id, string pcId = "")
         {
-            players.Add(id, new Player(id, pcId, new Position(5 + id, 5 + id), ConsoleAdventure.StartDeep));
+            players.Add(id, new Player(id, pcId, new Position(5 + id, 5 + id), ConsoleAdventure.world.Surface));
         }
 
         public void DisconnectPlayer(short id)
@@ -179,6 +201,7 @@ namespace ConsoleAdventure.WorldEngine
         {
             if (!ConsoleAdventure.isPause)
             {
+                //GetLocalPlayer().w = 3;
                 CaModLoader.PreWorldUpdateMods(this);
 
                 if (_isFirstFrame)
@@ -410,15 +433,38 @@ namespace ConsoleAdventure.WorldEngine
             return new();
         }
 
-        public short GetFieldInUnloadChunk(int x, int y, int layer, int w)
+        public short GetFieldTypeAnyway(int x, int y, int layer, int w)
         {
-            UnloadedChunk uchunk = GetUnloadedChunk(x, y, out int localX, out int localY);
-            if (uchunk != null)
-                return uchunk.fields[localX, localY, layer, w];
+            Chunk chunk = GetChunk(x, y, out int localX, out int localY);
+            if (chunk != null)
+            {
+                if (chunk is UnloadedChunk)
+                    return ((UnloadedChunk)chunk).fields[localX, localY, layer, w];
+
+                else if (chunk is LoadedChunk)
+                {
+                    short? type = chunk.GetField(localX, localY, layer, w)?.content?.type;
+
+                    if (!type.HasValue) type = 0;
+
+                    return type.Value;
+                }
+            }
+
             return 0;
         }
 
         public UnloadedChunk GetUnloadedChunk(int x, int y, out int localX, out int localY)
+        {
+            Chunk chunk = GetChunk(x, y, out localX, out localY);
+
+            if (chunk != null && chunk is UnloadedChunk)
+                return (UnloadedChunk)chunk;
+
+            return null;
+        }
+
+        public Chunk GetChunk(int x, int y, out int localX, out int localY)
         {
             int chunkX = x / Chunk.Size;
             int chunkY = y / Chunk.Size;
@@ -428,31 +474,46 @@ namespace ConsoleAdventure.WorldEngine
             if (ConsoleAdventure.world?.chunks == null) return null;
             if (chunkX >= 0 && chunkX < ConsoleAdventure.world.chunks.GetLength(0) && chunkY >= 0 && chunkY < ConsoleAdventure.world.chunks.GetLength(1))
             {
-                Chunk chunk = chunks[chunkX, chunkY];
-
-                if (chunk is UnloadedChunk)
-                {
-                    UnloadedChunk uchunk = (UnloadedChunk)chunk;
-
-                    return uchunk;
-                }
+                return chunks[chunkX, chunkY];
             }
 
             return null;
         }
 
-        public void SetFieldInUnloadChunk(int x, int y, int layer, int w, short type)
+        public void SetFieldTypeAnyway(int x, int y, int layer, int w, short type)
         {
-            UnloadedChunk uchunk = GetUnloadedChunk(x, y, out int localX, out int localY);
-            if (uchunk != null)
-                uchunk.fields[localX, localY, layer, w] = type;
+            Chunk chunk = GetChunk(x, y, out int localX, out int localY);
+            if (chunk != null)
+            {
+                if (chunk is UnloadedChunk)
+                    ((UnloadedChunk)chunk).fields[localX, localY, layer, w] = type;
+
+                else if (chunk is LoadedChunk)
+                    Transform.SetObject(type, new Position(x, y), w, layer);
+            }
         }
 
-        public void SetFieldDataInUnloadChunk(TransformDataInChunk data)
+        public void SetFieldDataAnyway(TransformDataInChunk data)
         {
-            UnloadedChunk uchunk = GetUnloadedChunk(data.position.x, data.position.y, out int X, out int Y);
-            if (uchunk != null)
-                uchunk.data.Add(data);
+            int x = data.position.x;
+            int y = data.position.x;
+
+            Chunk chunk = GetChunk(x, y, out int localX, out int localY);
+            if (chunk != null)
+            {
+                if (chunk is UnloadedChunk)
+                    ((UnloadedChunk)chunk).data.Add(data);
+
+                else if (chunk is LoadedChunk)
+                {
+                    Transform transform = GetField(x, y, data.z, data.w)?.content;
+
+                    if (transform != null)
+                    {
+                        transform.LoadData(data.data);
+                    }
+                }
+            }
         }
 
         public Field GetField(Position position, int layer, int w)

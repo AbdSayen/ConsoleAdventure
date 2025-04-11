@@ -140,11 +140,18 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     int stationWidth = 0;
                     for (int i = 0; i < recipe.CraftStations.Count; i++)
                     {
-                        if (Transform.TypeMapping.TryGetValue(recipe.CraftStations[i], out Type value))
+                        int type = recipe.CraftStations[i];
+
+                        if (type >= 0 && type < Transform.TypeMapping.Length)
                         {
-                            string transformName = Localization.GetTranslation("Transforms", value.Name) + (i < recipe.CraftStations.Count - 1 ? "," : "");
-                            spriteBatch.DrawString(ConsoleAdventure.Font, transformName, Position + new Vector2(9 + ((i + 1) * 18) + stationWidth - 9, (size.Y + 2) * 19), color);
-                            stationWidth = (int)ConsoleAdventure.Font.MeasureString(transformName).X;
+                            Type value = Transform.TypeMapping[type];
+
+                            if (value != null)
+                            {
+                                string transformName = Localization.GetTranslation("Transforms", value.Name) + (i < recipe.CraftStations.Count - 1 ? "," : "");
+                                spriteBatch.DrawString(ConsoleAdventure.Font, transformName, Position + new Vector2(9 + ((i + 1) * 18) + stationWidth - 9, (size.Y + 2) * 19), color);
+                                stationWidth = (int)ConsoleAdventure.Font.MeasureString(transformName).X;
+                            }
                         }
                     }
                 }
