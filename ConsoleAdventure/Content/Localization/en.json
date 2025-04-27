@@ -72,7 +72,11 @@
     "CharcoalFloor": "charcoal floor",
     "HighTemperatureFire": "high temperature fire",
     "Unloaded": "unloaded transform",
-    "Biotite": "biotite"
+    "Biotite": "biotite",
+    "BlackSoil": "black soil",
+    "BlackSoilFloor": "black soil floor",
+    "Alfisol": "alfisol",
+    "AlfisolFloor": "alfisol floor"
   },
 
   "Events": {
@@ -231,7 +235,8 @@
     "Misc.WorldExit": "Exit from world",
     "Misc.MapOpen": "Open/Close a map",
     "Misc.MapZoom": "Map scale",
-    "Misc.MapW": "Change map level"
+    "Misc.MapWUp": "Increase map level",
+    "Misc.MapWDown": "Decrease map level"
   },
 
   "Keys": {

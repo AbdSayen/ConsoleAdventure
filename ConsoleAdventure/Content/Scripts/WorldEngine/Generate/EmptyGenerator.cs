@@ -36,7 +36,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
         // cx, cy = Левый верхний угол чанка
         // setBlock = метод для установки блока или чего либо еще
-        internal void chunkGeneration(int cx, int cy, Action<int, int> setBlock)
+        internal void ChunkGeneration(int cx, int cy, Action<int, int> setBlock)
         {
             for (int i = 0; i < Chunk.Size; i++)
             {
@@ -47,7 +47,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             }
         }
 
-        internal void iterateWorldChunkByChunk(Action<int, int> setBlock)
+        internal void IterateWorldChunkByChunk(Action<int, int> setBlock)
         {
             int chunksInWorld = (world.size / Chunk.Size);
 
@@ -55,7 +55,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             {
                 for (int cj = 0; cj < world.size / Chunk.Size; cj++)
                 {
-                    chunkGeneration(ci, cj, setBlock);
+                    ChunkGeneration(ci, cj, setBlock);
                     processProgress = (int)((float)(ci * chunksInWorld + cj) / (chunksInWorld * chunksInWorld) * 100);
                 }
             }

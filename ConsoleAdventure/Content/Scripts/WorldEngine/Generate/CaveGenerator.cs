@@ -26,13 +26,14 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
             processHint = "Digging Caves...";
 
-            GenStone(0);
+            GenStone(world.Cavern);
+            GenStone(world.LavaCavern);
         }
 
         void GenStone(int w)
         {
             processHint = "Digging Caves... [Filling stones]";
-            iterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
+            IterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
             {
                 new Floor(new(i, j), w);
                 new Stone(new(i, j), w);
@@ -52,8 +53,8 @@ namespace ConsoleAdventure.WorldEngine.Generate
             bool[,] cells = WorldGenUtils.CellularAutomaton(WorldGenUtils.GetFieldCells(new(), new(ConsoleAdventure.world.size, ConsoleAdventure.world.size), 0, World.BlocksLayerId), steps, B, S);
 
             processHint = "Digging Caves... [Randomizing]";
-            iterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
-            {
+            IterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
+            { 
                 if (cells[i, j])
                 {
                     new Stone(new(i, j), w);
@@ -66,7 +67,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             });
 
             processHint = "Digging Caves... [Adding some materials]";
-            iterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
+            IterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
             {
                 float noiceValue1 = OpenSimplex.noise2(ConsoleAdventure.world.seed, i * 0.05, j * 0.05);
                 float noiceValue2 = OpenSimplex.noise2(ConsoleAdventure.world.seed / 2, i * 0.05, j * 0.05);
@@ -91,26 +92,29 @@ namespace ConsoleAdventure.WorldEngine.Generate
             });
 
             processHint = "Digging Caves... [Adding holes]";
-            for (int i = 0; i < descentCount; i++)
+            if (w == world.LavaCavern)
             {
-                Position descentPos = new();
-                while (true)
+                for (int i = 0; i < descentCount; i++)
                 {
-                    descentPos = new(Generator.GenRand.Next(1, world.size - 1), Generator.GenRand.Next(1, world.size - 1));
-
-                    if (world.GetField(descentPos.x, descentPos.y, World.BlocksLayerId, w)?.content == null) 
+                    Position descentPos = new();
+                    for (int j = 0; j < 1001; j++)
                     {
-                        if (world.GetField(descentPos.x, descentPos.y, World.BlocksLayerId, w + 1)?.content == null)
+                        descentPos = new(Generator.GenRand.Next(1, world.size - 1), Generator.GenRand.Next(1, world.size - 1));
+
+                        if (world.GetField(descentPos.x, descentPos.y, World.BlocksLayerId, w)?.content == null)
                         {
-                            break;
+                            if (world.GetField(descentPos.x, descentPos.y, World.BlocksLayerId, w + 1)?.content == null)
+                            {
+                                break;
+                            }
                         }
                     }
+
+                    new Climb(descentPos, w);
+                    new Descent(descentPos, w + 1);
+
+                    processProgress = (int)((float)i / descentCount * 100);
                 }
-
-                new Climb(descentPos, w);
-                new Descent(descentPos, w + 1);
-
-                processProgress = (int)((float)i / descentCount * 100);
             }
 
             processHint = "Digging Caves... [Adding Brown Iron]";
@@ -151,7 +155,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             }
 
             processHint = "Digging Caves... [Adding Water]";
-            iterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
+            IterateWorldChunkByChunk((int i, int j) => //    <- Вот пример чанковой генерации через весь мир
             {
                 float noiceValue1 = OpenSimplex.noise2(ConsoleAdventure.world.seed * w * 4, i * 0.05, j * 0.05);
                 if (noiceValue1 < -0.6f && ConsoleAdventure.world.GetField(i, j, World.BlocksLayerId, w)?.content == null)

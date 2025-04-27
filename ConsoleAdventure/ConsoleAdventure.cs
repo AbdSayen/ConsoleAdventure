@@ -313,27 +313,6 @@ namespace ConsoleAdventure
                 }
 
                 MusicEngine.ChangeSong("ConsoleAdventure.StrangeWorld", -10);
-
-
-                int l = -1;
-                if (Input.PostClick(Keys.F11)) l = 0;
-                if (Input.PostClick(Keys.F12)) l = 1;
-
-                if (l > -1)
-                {
-                    try
-                    {
-                        System.Drawing.Bitmap bitmap = display.MapScreen(l);
-                        if (!Directory.Exists("Screens")) Directory.CreateDirectory("Screens");
-                        int count = Directory.GetFiles("Screens", "*.png").Length;
-
-                        bitmap.Save($"Screens/map{count}.png");
-                    }
-
-                    catch
-                    {
-                    }
-                }
             }
 
             else

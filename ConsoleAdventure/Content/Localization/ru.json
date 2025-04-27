@@ -72,7 +72,11 @@
     "CharcoalFloor": "угольный пол",
     "HighTemperatureFire": "высокотемпературный огонь",
     "Unloaded": "незагруженный трансформ",
-    "Biotite": "биотит"
+    "Biotite": "биотит",
+    "BlackSoil": "чернозем",
+    "BlackSoilFloor": "черноземный пол",
+    "Alfisol": "серая лесная почва",
+    "AlfisolFloor": "серый лесной пол"
   },
 
   "Events": {
@@ -231,7 +235,8 @@
     "Misc.WorldExit": "Выйти из мира",
     "Misc.MapOpen": "Открыть/закрыть карту",
     "Misc.MapZoom": "Масштабировать карту",
-    "Misc.MapW": "Изменить уровень карты"
+    "Misc.MapWUp": "Увеличить уровень карты",
+    "Misc.MapWDown": "Уменьшить уровень карты"
   },
 
   "Keys": {

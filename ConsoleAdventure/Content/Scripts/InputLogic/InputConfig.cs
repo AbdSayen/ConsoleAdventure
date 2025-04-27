@@ -86,7 +86,8 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
         public static Key WorldExit = new(Keys.Escape, "Misc.WorldExit");
         public static Key MapOpen = new (Keys.M, "Misc.MapOpen");
         public static Key MapZoom = new(Keys.N, "Misc.MapZoom");
-        public static Key MapW = new(Keys.V, "Misc.MapW");
+        public static Key MapWUp = new(Keys.OemCloseBrackets, "Misc.MapWUp");
+        public static Key MapWDown = new(Keys.OemOpenBrackets, "Misc.MapWDown");
 
         #endregion
 

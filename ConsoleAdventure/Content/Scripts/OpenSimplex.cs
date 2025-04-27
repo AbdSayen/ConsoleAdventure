@@ -8,6 +8,7 @@ namespace ConsoleAdventure.Content.Scripts
 {
     /// <summary>
     /// Порт открытого симплексного шума на C#, без четвёртого измерения (ну не совсем).
+    /// С добавлением фрактального шума.
     /// источник: https://gist.github.com/KdotJPG/b1270127455a94ac5d19
     /// </summary>
     public class OpenSimplex

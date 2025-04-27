@@ -25,7 +25,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
         {
             Random random = Generator.GenRand;
 
-            iterateWorldChunkByChunk((int x, int y) => //    <- Вот пример чанковой генерации через весь мир
+            IterateWorldChunkByChunk((int x, int y) => //    <- Вот пример чанковой генерации через весь мир
             {
                 Field field = world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.world.Surface);
                 Position position = new Position(x, y);

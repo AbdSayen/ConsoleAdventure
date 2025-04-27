@@ -9,8 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using System.Xml;
 
 namespace ConsoleAdventure
@@ -84,14 +84,16 @@ namespace ConsoleAdventure
         }
 
         int timer;
+
         public void DrawMap()
         {
+            //mapFlag = false;
             Player player = world.GetLocalPlayer();
 
             if (Input.PostClick(InputConfig.MapOpen) && !ConsoleAdventure.BlockHotKey)
             {
                 if (mapFlag) mapFlag = false;
-                else if (!mapFlag) mapFlag = true;
+                else if (!mapFlag) { mapFlag = true; mapW = world.GetLocalPlayer().w; }
             }
 
             if (mapFlag)
@@ -109,11 +111,8 @@ namespace ConsoleAdventure
                     else if (!zoom) zoom = true;
                 }
 
-                if (Input.PostClick(InputConfig.MapW) && !ConsoleAdventure.BlockHotKey)
-                {
-                    if (mapW == 1) mapW = 0;
-                    else if (mapW == 0) mapW = 1;
-                }
+                if (Input.PostClick(InputConfig.MapWUp) && !ConsoleAdventure.BlockHotKey && mapW < Chunk.maxDeep -1) mapW++;
+                else if (Input.PostClick(InputConfig.MapWDown) && !ConsoleAdventure.BlockHotKey && mapW > 0) mapW--;
 
                 if (zoom)
                 {
@@ -191,6 +190,22 @@ namespace ConsoleAdventure
                 ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, text, new(ConsoleAdventure.Width - ConsoleAdventure.Font.MeasureString(text).X, 0), Color.White);
                 string text1 = (zoom ? "1x1 " : "1x16 ");
                 ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, text1, new(ConsoleAdventure.Width - ConsoleAdventure.Font.MeasureString(text1).X, 19), Color.White);
+
+                if (Input.PostClick(Keys.F12))
+                {
+                    try
+                    {
+                        System.Drawing.Bitmap bitmap = MapScreen(mapW);
+                        if (!Directory.Exists("Screens")) Directory.CreateDirectory("Screens");
+                        int count = Directory.GetFiles("Screens", "*.png").Length;
+
+                        bitmap.Save($"Screens/map{count}.png");
+                    }
+
+                    catch
+                    {
+                    }
+                }
             }
 
             else

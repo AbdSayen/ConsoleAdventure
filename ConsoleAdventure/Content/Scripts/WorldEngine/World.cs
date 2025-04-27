@@ -26,7 +26,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Action Start;
         
-        public int size { get; internal set; } = 256 * 1;
+        public int size { get; internal set; } = 256 * 10;
 
         public Chunk[,] chunks;
         public Dictionary<short, Player> players = new();
@@ -78,7 +78,12 @@ namespace ConsoleAdventure.WorldEngine
         public WorldLevelsSystem levels;
 
         public int Surface { get; private set; }
+
+        public int Sedimentary { get; private set; }
+
         public int Cavern { get; private set; }
+
+        public int LavaCavern { get; private set; }
 
         public World(string name, int seed, bool isInitedContent = true)
         {
@@ -105,7 +110,9 @@ namespace ConsoleAdventure.WorldEngine
         public void SetDeeps()
         {
             Surface = levels.GetLevel(new Surface());
+            Sedimentary = levels.GetLevel(new Sedimentary());
             Cavern = levels.GetLevel(new Cavern());
+            LavaCavern = levels.GetLevel(new LavaCavern());
 
             foreach (Mod mod in CaModLoader.GetActiveMods())
             {

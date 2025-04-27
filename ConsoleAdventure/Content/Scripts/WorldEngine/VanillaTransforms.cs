@@ -29,8 +29,8 @@ namespace ConsoleAdventure.WorldEngine
         redQuartzite,
         yellowQuartzite,
         quartziteFloor,
-        dirt,
-        dirtFloor,
+        blackSoil,
+        blackSoilFloor,
         sand,
         sandFloor,
         sandstone,
@@ -79,5 +79,12 @@ namespace ConsoleAdventure.WorldEngine
         charcoalFloor,
         highTemperatureFire,
         biotite,
+
+        limestone,
+        limestoneFloor,
+        brownEarth,
+        brownEarthFloor,
+        alfisol,
+        alfisolFloor,
     }
 }

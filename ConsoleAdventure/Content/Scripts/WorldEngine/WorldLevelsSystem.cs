@@ -19,9 +19,9 @@ namespace ConsoleAdventure.WorldEngine
             {
                 Levels = new List<WorldLevel>
                 {
-                    //new LavaCavern(),
+                    new LavaCavern(),
                     new Cavern(),
-                    //new Sedimentary(),
+                    new Sedimentary(),
                     new Surface()
                 };
 

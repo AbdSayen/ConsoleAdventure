@@ -171,7 +171,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 return; 
             }
 
-            //map.Update();
+            map.Update();
 
             UpdateBuffs();
 
