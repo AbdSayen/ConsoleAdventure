@@ -208,7 +208,7 @@ namespace ConsoleAdventure.WorldEngine
                         {
                             Chunk chunk = world.chunks[x, y];
 
-                            if (chunk is UnloadedChunk)
+                            if (chunk == null || chunk is UnloadedChunk)
                             {
                                 world.LoadChunk(x, y, true);
                             }

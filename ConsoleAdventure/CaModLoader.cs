@@ -500,6 +500,27 @@ namespace ConsoleAdventure
             return generate;
         }
 
+        public static void WorldPropertiesBuildPipelineMods(Generator generator)
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].WorldPropertiesBuildPipeline(generator);
+            }
+        }
+
+        public static bool WorldPropertiesPreBuildPipelineMods(Generator generator)
+        {
+            bool generate = true;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                bool d = mods[i].WorldPropertiesPreBuildPipeline(generator);
+                if (generate)
+                    generate = d;
+            }
+
+            return generate;
+        }
+
         public static void WorldPostGenerateMods(World world)
         {
             for (int i = 0; i < mods.Count; i++)

@@ -10,8 +10,9 @@ namespace ConsoleAdventure.WorldEngine
     public class Chunk
     {
         protected short biome;
-        public static int Size = 16;
-        public static int maxDeep = 2;
+        public bool IsUpdated { get; internal set; } = false;
+        public static int Size { get; internal set; } = 16;
+        public static int maxDeep { get; internal set; } = 2;
 
         public virtual Field GetField(int x, int y, int z, int w)
         {

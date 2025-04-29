@@ -18,6 +18,7 @@ using ConsoleAdventure.Content.Scripts.WorldEngine;
 using SharpDX.Direct2D1;
 using ConsoleAdventure.WorldEngine.Levels;
 using CaModLoaderAPI;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -35,20 +36,17 @@ namespace ConsoleAdventure.WorldEngine
         public Time time = new Time();
         public int timeSpeed = 1;
 
-        [NonSerialized]
         public Generator generator;
-
-        [NonSerialized]
         private Renderer renderer;
         
         public string name;
-        public int seed = 1234;
+        public int seed;
 
-        public readonly static byte CountOfLayers = 4;
-        public readonly static byte FloorLayerId = 0;
-        public readonly static byte BlocksLayerId = 1;
-        public readonly static byte ItemsLayerId = 2;
-        public readonly static byte MobsLayerId = 3;
+        public static byte CountOfLayers { get; private set; } = 4;
+        public static byte FloorLayerId { get; private set; } = 0;
+        public static byte BlocksLayerId { get; private set; } = 1;
+        public static byte ItemsLayerId { get; private set; } = 2;
+        public static byte MobsLayerId { get; private set; } = 3;
 
         internal bool isInitialized = false;
 
@@ -77,6 +75,8 @@ namespace ConsoleAdventure.WorldEngine
 
         public WorldLevelsSystem levels;
 
+        public Tags generationProperties = new Tags();
+
         public int Surface { get; private set; }
 
         public int Sedimentary { get; private set; }
@@ -85,26 +85,24 @@ namespace ConsoleAdventure.WorldEngine
 
         public int LavaCavern { get; private set; }
 
-        public World(string name, int seed, bool isInitedContent = true)
+        public World(string name, int seed, int size, bool isInitedContent = true, bool isGenerate = true)
         {
             this.name = name;
             this.seed = seed;
-
-            ConsoleAdventure.rand = new Random();
+            this.size = (size / Chunk.Size) * Chunk.Size;
 
             levels = new WorldLevelsSystem(null);
-
             SetDeeps();
 
-            generator = new Generator(this, size, isInitedContent);
+            generator = new Generator(this, size, isInitedContent, isGenerate);
             renderer = new Renderer();
             new Cursor();
+
+            playersDat = new Dictionary<string, byte[]>();
 
             inputField = new TextInputField(new Point(0, 0), Color.White, 173, 0, "Введите текст...", 0, new char[1] { '\r' });
             inputField.Position = new Vector2(18, ConsoleAdventure.Height - (19 * 2) - 19);
             inputField.isHover = true;
-
-            playersDat = new Dictionary<string, byte[]>();
         }
 
         public void SetDeeps()
@@ -126,7 +124,7 @@ namespace ConsoleAdventure.WorldEngine
             {
                 ConsoleAdventure.menu.State = MenuState.worldLoadingProgress;
                 ConsoleAdventure.menu.worldErrorList = null;
-                await Task.Run(() => generator.Generate(seed, isFullGenerate));
+                await Task.Run(() => generator.CreateWorld(seed, isFullGenerate));
                 //ConsoleAdventure.menu.State = MenuState.worldMenu;
                 CaModLoader.WorldPostGenerateMods(this);
                 LoadInMultiplayer();
@@ -420,21 +418,25 @@ namespace ConsoleAdventure.WorldEngine
             {
                 Chunk chunk = chunks[chunkX, chunkY];
 
-                if (chunk is UnloadedChunk)
+                if (chunk != null) 
                 {
-                    LoadChunk(chunkX, chunkY, false);
-
-                    if (lastLoadedChunk.HasValue && (lastLoadedChunk.Value != new Position(chunkX, chunkY)))
+                    if (chunk is UnloadedChunk)
                     {
-                        UnloadChunk(lastLoadedChunk.Value.x, lastLoadedChunk.Value.y);
+
+                        LoadChunk(chunkX, chunkY, false);
+
+                        if (lastLoadedChunk.HasValue && (lastLoadedChunk.Value != new Position(chunkX, chunkY)))
+                        {
+                            UnloadChunk(lastLoadedChunk.Value.x, lastLoadedChunk.Value.y);
+                        }
+
+                        if (chunks[chunkX, chunkY] is LoadedChunk)
+                            lastLoadedChunk = new(chunkX, chunkY);
                     }
 
-                    if (chunks[chunkX, chunkY] is LoadedChunk)
-                        lastLoadedChunk = new(chunkX, chunkY);
+                    Field field = chunks[chunkX, chunkY].GetField(localX, localY, layer, w);
+                    return field;
                 }
-
-                Field field = chunks[chunkX, chunkY].GetField(localX, localY, layer, w);
-                return field;
             }
 
             return new();
@@ -562,6 +564,7 @@ namespace ConsoleAdventure.WorldEngine
 
             chunks = new Chunk[chunkCount, chunkCount];
 
+            /*
             for (int x = 0; x < chunkCount; x++)
             {
                 for (int y = 0; y < chunkCount; y++)
@@ -569,6 +572,7 @@ namespace ConsoleAdventure.WorldEngine
                     chunks[x, y] = new UnloadedChunk();
                 }
             }
+            */
         }
 
         public string LevelToString(int w)
@@ -612,7 +616,7 @@ namespace ConsoleAdventure.WorldEngine
                     short[,,,] types = uchunk.fields;
                     List<TransformDataInChunk> data = uchunk.data;
 
-                    chunks[xChunk, yChunk] = new LoadedChunk();
+                    chunks[xChunk, yChunk] = new LoadedChunk() { IsUpdated = true };
 
                     for (int w = 0; w < Chunk.maxDeep; w++)
                     {
@@ -644,6 +648,11 @@ namespace ConsoleAdventure.WorldEngine
                     }
                 }
             }
+
+            else
+            {
+                GenerateChunk(xChunk, yChunk);
+            }
         }
 
         public void UnloadChunk(int xChunk, int yChunk)
@@ -654,36 +663,44 @@ namespace ConsoleAdventure.WorldEngine
             {
                 if (chunk is LoadedChunk)
                 {
-                    LoadedChunk lchunk = (LoadedChunk)chunk;
-                    Field[,,,] fields = lchunk.GetFields();
-
-                    chunks[xChunk, yChunk] = new UnloadedChunk();
-
-                    for (int w = 0; w < Chunk.maxDeep; w++)
+                    if (chunk.IsUpdated)
                     {
-                        for (int x = 0; x < Chunk.Size; x++)
+                        LoadedChunk lchunk = (LoadedChunk)chunk;
+                        Field[,,,] fields = lchunk.GetFields();
+
+                        chunks[xChunk, yChunk] = new UnloadedChunk() { IsUpdated = true };
+
+                        for (int w = 0; w < Chunk.maxDeep; w++)
                         {
-                            for (int y = 0; y < Chunk.Size; y++)
+                            for (int x = 0; x < Chunk.Size; x++)
                             {
-                                for (int z = 0; z < 3; z++)
+                                for (int y = 0; y < Chunk.Size; y++)
                                 {
-                                    short? type = (short?)fields[x, y, z, w]?.content?.type;
+                                    for (int z = 0; z < 3; z++)
+                                    {
+                                        short? type = (short?)fields[x, y, z, w]?.content?.type;
 
-                                    if (!type.HasValue)
-                                        type = 0;
+                                        if (!type.HasValue)
+                                            type = 0;
 
-                                    ((UnloadedChunk)chunks[xChunk, yChunk]).fields[x, y, z, w] = type.Value;
+                                        ((UnloadedChunk)chunks[xChunk, yChunk]).fields[x, y, z, w] = type.Value;
 
-                                    object data = fields[x, y, z, w]?.content?.SaveData();
+                                        object data = fields[x, y, z, w]?.content?.SaveData();
 
-                                    short X = (short)(x + xChunk * Chunk.Size);
-                                    short Y = (short)(y + yChunk * Chunk.Size);
+                                        short X = (short)(x + xChunk * Chunk.Size);
+                                        short Y = (short)(y + yChunk * Chunk.Size);
 
-                                    if (data != null)
-                                        ((UnloadedChunk)chunks[xChunk, yChunk]).data.Add(new(X, Y, (byte)z, (byte)w, data));
+                                        if (data != null)
+                                            ((UnloadedChunk)chunks[xChunk, yChunk]).data.Add(new(X, Y, (byte)z, (byte)w, data));
+                                    }
                                 }
                             }
                         }
+                    }
+
+                    else
+                    {
+                        chunks[xChunk, yChunk] = null;
                     }
                 }
             }
@@ -705,6 +722,16 @@ namespace ConsoleAdventure.WorldEngine
                     }
                 }
             }
+        }
+
+        public void GenerateChunk(int x, int y)
+        {
+            chunks[x, y] = new LoadedChunk();
+
+            generator.Generate(this, new Position(x, y));
+
+            if (chunks[x, y] != null) 
+                chunks[x, y].IsUpdated = false;
         }
     }
 }

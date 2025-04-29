@@ -358,7 +358,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                         if (ConsoleAdventure.kstate.IsKeyDown(Keys.M)) inm = true;
                                         if (ConsoleAdventure.kstate.IsKeyDown(Keys.H)) { ish = true; inm = true; }
                                         NetworkManager.isHost = ish;
-                                        await ConsoleAdventure.CreateWorld(name, 1234, false, inm);
+                                        await ConsoleAdventure.CreateWorld(name, 0, 16, false, inm);
+
                                         if (ConsoleAdventure.world != null)
                                         {
                                             if (NetworkManager.isHost || !inm)
@@ -1037,7 +1038,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             name += countIdenticalWorldName;
                         }
 
-                        await ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text));
+                        await ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text), 2560);
                         WorldIO.Save(ConsoleAdventure.world.name);
 
                         int index = -1;

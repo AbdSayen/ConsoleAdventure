@@ -28,6 +28,8 @@
   <ItemGroup>
     <Folder Include="Content\AudioFiles\Music\" />
     <Folder Include="Content\Effects\" />
+    <Folder Include="Content\Scripts\WorldEngine\Objects\Rocks\Minerals\" />
+    <Folder Include="Content\Scripts\WorldEngine\Objects\Rocks\Gems\" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
   	<PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />

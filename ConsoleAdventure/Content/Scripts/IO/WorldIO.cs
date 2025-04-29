@@ -8,6 +8,7 @@ using ConsoleAdventure.WorldEngine;
 using ConsoleAdventure.WorldEngine.Levels;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -241,17 +242,41 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             tags["PlayersData"] = playersData;
 
-            byte[,,,] fields = new byte[deep, size, size, 4]; //w, x, y, z
+            List<Position> chunksPositions = new List<Position>();
 
-            for (int w = 0; w < deep; w++)
+            for (int x = 0; x < world.GetChunkCounts().X; x++)
             {
-                for (int x = 0; x < size; x++)
+                for (int y = 0; y < world.GetChunkCounts().Y; y++)
                 {
-                    for (int y = 0; y < size; y++)
+                    Chunk chunk = world.chunks[x, y];
+
+                    if (chunk != null)
                     {
-                        for (int z = 0; z < 3; z++)
+                        if (chunk.IsUpdated)
                         {
-                            fields[w, x, y, z] = (byte)world.GetFieldTypeAnyway(x, y, z, w);
+                            chunksPositions.Add(new Position(x, y));
+                        }
+                    }
+                }
+            }
+
+            byte[,,,,] fields = new byte[chunksPositions.Count ,deep, Chunk.Size, Chunk.Size, 3]; //c, w, x, y, z
+
+            for (int c = 0; c < chunksPositions.Count; c++)
+            {
+                for (int w = 0; w < deep; w++)
+                {
+                    for (int x = 0; x < Chunk.Size; x++)
+                    {
+                        for (int y = 0; y < Chunk.Size; y++)
+                        {
+                            for (int z = 0; z < 3; z++)
+                            {
+                                int X = (chunksPositions[c].x * Chunk.Size) + x;
+                                int Y = (chunksPositions[c].y * Chunk.Size) + y;
+
+                                fields[c, w, x, y, z] = (byte)world.GetFieldTypeAnyway(X, Y, z, w);
+                            }
                         }
                     }
                 }
@@ -312,6 +337,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
 
             tags["Fields"] = fields;
+            tags["ChunksPositions"] = chunksPositions.ToArray();
 
             tags["TransformsData"] = transformsData.ToArray();
             tags["TransformsDataX"] = transformsDataX.ToArray();
@@ -481,7 +507,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                 ConsoleAdventure.world.playersDat = tags.SafelyGet<Dictionary<string, byte[]>>("PlayersData");
 
-                byte[,,,] fields = tags.SafelyGet<byte[,,,]>("Fields");
+                byte[,,,,] fields = tags.SafelyGet<byte[,,,,]>("Fields");
+                Position[] chunks = tags.SafelyGet<Position[]>("ChunksPositions");
 
                 ConsoleAdventure.progressBar.Progress += 10;
                 ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("Progress", "LoadObjectData");
@@ -489,20 +516,30 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 int size = world.size;
                 int deep = Chunk.maxDeep;
 
-                for (int w = 0; w < deep; w++)
+                for (int c = 0; c < chunks.Length; c++)
                 {
-                    for (int x = 0; x < size; x++)
+                    Position chunkPos = chunks[c];
+
+                    world.chunks[chunkPos.x, chunkPos.y] = new UnloadedChunk() { IsUpdated = true };
+
+                    for (int w = 0; w < deep; w++)
                     {
-                        for (int y = 0; y < size; y++)
+                        for (int x = 0; x < Chunk.Size; x++)
                         {
-                            for (int z = 0; z < 3; z++)
+                            for (int y = 0; y < Chunk.Size; y++)
                             {
-                                byte type = fields[w, x, y, z];
+                                for (int z = 0; z < 3; z++)
+                                {
+                                    int X = (chunkPos.x * Chunk.Size) + x;
+                                    int Y = (chunkPos.y * Chunk.Size) + y;
 
-                                if (type > lastVanillaTransformCount - 1)
-                                    type += (byte)newVanillaTransformsCount;
+                                    byte type = fields[c, w, x, y, z];
 
-                                world.SetFieldTypeAnyway(x, y, z, w, type);
+                                    if (type > lastVanillaTransformCount - 1)
+                                        type += (byte)newVanillaTransformsCount;
+
+                                    world.SetFieldTypeAnyway(X, Y, z, w, type);
+                                }
                             }
                         }
                     }

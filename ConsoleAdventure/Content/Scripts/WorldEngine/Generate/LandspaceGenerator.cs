@@ -1,62 +1,51 @@
-﻿using ConsoleAdventure.Content.Scripts;
-using ConsoleAdventure.Generate.Structures;
-using ConsoleAdventure.Settings;
-using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.Content.Scripts.WorldEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using ConsoleAdventure.Content.Scripts;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {
     public class LandspaceGenerator : EmptyGenerator
     {
-        public override async Task Generate(World world)
+        public override async Task Generate(World world, Position startPosition, Position chunkPosition, Tags GenProperties)
         {
-            await base.Generate(world);
+            int seed = world.seed;
 
-            processHint = "Generating trees...";
 
-            //new Chest(new(1, 1), ConsoleAdventure.StartDeep, new List<Stack>() { new Stack(new Apple(), 50) });
+            short X = startPosition.x;
+            short Y = startPosition.y;
 
-            GenerateTrees();
-        }
+            NoiseBuffer trees = new NoiseBuffer(seed, 4, 0.5, 2);
 
-        private void GenerateTrees()
-        {
-            Random random = Generator.GenRand;
-
-            IterateWorldChunkByChunk((int x, int y) => //    <- Вот пример чанковой генерации через весь мир
+            for (int i = 0; i < Chunk.Size; i++)
             {
-                Field field = world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.world.Surface);
-                Position position = new Position(x, y);
-
-                if (random.Next(0, 150) == 0 && field.content == null && field.isStructure == false)
+                for (int j = 0; j < Chunk.Size; j++)
                 {
-                    new Tree(position, ConsoleAdventure.world.Surface);
-                }
+                    float treesValue = trees.FractalSimplex2((X + i) * 0.01, (Y + j) * 0.01);
 
-                if (random.Next(0, 1500) == 0 && field.content == null && field.isStructure == false)
-                {
-                    for (int i = 0; i < random.Next(1, 3); i++)
+                    bool treeFlag = false;
+
+                    if (treesValue > 0 && (((float)Utils.HashNoise(X + i, Y + j, 45)) / 10) < treesValue)
                     {
-                        for (int j = 0; j < random.Next(1, 3); j++)
-                        {
-                            new Water(position + new Position(i, j), ConsoleAdventure.world.Surface);
-                        }
+                        new Tree(new(X + i, Y + j), world.Surface);
+                        treeFlag = true;
+                    }
+
+                    float noise2 = OpenSimplex.noise2(seed * 5, (X + i) * 0.6, (Y + j) * 0.6);
+                    noise2 += OpenSimplex.noise2(seed - 5 * 3, (X + i) * 0.8, (Y + j) * 0.8);
+                    noise2 -= treesValue;
+
+                    if (noise2 > 0.7 && !treeFlag)
+                    {
+                        new Grass(new(X + i, Y + j), world.Surface);
                     }
                 }
-
-                if (random.Next(0, 500) == 0 && field.content == null && field.isStructure == false)
-                {
-                    for (int i = 0; i < random.Next(1, 4); i++)
-                    {
-                        for (int j = 0; j < random.Next(1, 4); j++)
-                        {
-                            new Grass(position + new Position(i, j), ConsoleAdventure.world.Surface);
-                        }
-                    }
-                }
-            });
+            }
         }
     }
 }

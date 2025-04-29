@@ -1,6 +1,7 @@
 ﻿using CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Content.Scripts.WorldEngine.Generate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +17,16 @@ namespace ConsoleAdventure.WorldEngine.Generate
         private readonly int size;
         private readonly World world;
 
+        private Dictionary<int, List<WorldPropertiesGenerator>> propertiesPriorityMatrix = new Dictionary<int, List<WorldPropertiesGenerator>>();
+        private List<WorldPropertiesGenerator> propertiesPipeline = new List<WorldPropertiesGenerator>();
+
         private Dictionary<int, List<EmptyGenerator>> generatorsPriorityMatrix = new Dictionary<int, List<EmptyGenerator>>();
-        private List<EmptyGenerator> pipeline = new List<EmptyGenerator>();
+        private List<EmptyGenerator> generationsPipeline = new List<EmptyGenerator>();
 
         public static Random GenRand { get; private set; }
         private static readonly object locker = new object();
 
-        public Generator(World world, int size, bool isInitedContent = true)
+        public Generator(World world, int size, bool isInitedContent = true, bool isGenerate = true)
         {
             this.size = size;
             this.world = world;
@@ -37,14 +41,22 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
             if (CaModLoader.WorldGeneratorPreBuildPipelineMods(this))
             {
-                
                 AddGeneratorToPipeline(new LandspaceGenerator(), 100);
-                AddGeneratorToPipeline(new StructureGenerator(), 200);
-                AddGeneratorToPipeline(new CaveGenerator(), 256);
-                AddGeneratorToPipeline(new SedimentaryGenerator(), 356);
             }
 
+            ConvertPrioritiesToGenPipeline();
+
             CaModLoader.WorldGeneratorBuildPipelineMods(this);
+
+            if (isGenerate)
+            {
+                if (CaModLoader.WorldPropertiesPreBuildPipelineMods(this))
+                {
+                    //...
+                }
+
+                CaModLoader.WorldPropertiesBuildPipelineMods(this);
+            }
         }
 
         public void AddGeneratorToPipeline(EmptyGenerator generator, int order = -1)
@@ -55,7 +67,16 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 generatorsPriorityMatrix[order].Add(generator);
         }
 
-        private void ConvertPrioritiesToPipeline()
+        public void AddPropertiesToPipeline(WorldPropertiesGenerator generator, int order = -1)
+        {
+            if (!propertiesPriorityMatrix.ContainsKey(order))
+                propertiesPriorityMatrix.Add(order, new List<WorldPropertiesGenerator> { generator });
+            else
+                propertiesPriorityMatrix[order].Add(generator);
+        }
+
+
+        private void ConvertPrioritiesToGenPipeline()
         {
             SortedDictionary<int, List<EmptyGenerator>> srtd = new SortedDictionary<int, List<EmptyGenerator>>(generatorsPriorityMatrix);
             List<int> keys = srtd.Keys.ToList();
@@ -64,21 +85,35 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 List<EmptyGenerator> v = srtd[keys[i]];
                 for (int j = 0; j < v.Count; j++)
                 {
-                    pipeline.Add(v[j]);
+                    generationsPipeline.Add(v[j]);
                 }
             }
         }
 
-        public async Task Generate(int seed, bool isfullGenerate = true)
+        private void ConvertPrioritiesToPropPipeline()
+        {
+            SortedDictionary<int, List<WorldPropertiesGenerator>> srtd = new SortedDictionary<int, List<WorldPropertiesGenerator>>(propertiesPriorityMatrix);
+            List<int> keys = srtd.Keys.ToList();
+            for (int i = 0; i < keys.Count; i++)
+            {
+                List<WorldPropertiesGenerator> v = srtd[keys[i]];
+                for (int j = 0; j < v.Count; j++)
+                {
+                    propertiesPipeline.Add(v[j]);
+                }
+            }
+        }
+
+        public async Task CreateWorld(int seed, bool isfullGenerate = true)
         {
             try
             {
-                ConvertPrioritiesToPipeline();
+                ConvertPrioritiesToPropPipeline();
 
                 GenRand = new Random(seed);
                 ConsoleAdventure.world.seed = seed;
 
-                await Generate(isfullGenerate);
+                await CreateProperties(isfullGenerate);
             }
 
             catch (Exception ex)
@@ -89,44 +124,25 @@ namespace ConsoleAdventure.WorldEngine.Generate
             }
         }
 
-        public async Task Generate(bool isfullGenerate = true)
+        private async Task CreateProperties(bool isFullGenerate = true)
         {
-            //lock (locker)
-            //{
-            //}
-
             world.InitializeChunks();
 
-            // Generators
-            GenerateBarriers();
-
-            if (isfullGenerate)
+            if (isFullGenerate)
             {
-                for (int i = 0; i < pipeline.Count; i++)
+                for (int i = 0; i < propertiesPipeline.Count; i++)
                 {
-                    await pipeline[i].Generate(world);
+                    await propertiesPipeline[i].UpdateWorldProperties(world.generationProperties, world);
                 }
             }
         }
 
-        private void GenerateBarriers()
+        public async Task Generate(World world, Position chunkPos)
         {
-            for (int w = 0; w < Chunk.maxDeep; w++)
+            for (int i = 0; i < generationsPipeline.Count; i++)
             {
-                for (int y = 0; y < size; y++)
-                {
-                    for (int x = 0; x < size; x++)
-                    {
-                        if (y == size - 1 || y == 0 || x == size - 1 || x == 0)
-                        {
-                            //Field field = world.GetField(x, y, World.BlocksLayerId, ConsoleAdventure.StartDeep);
-                            new Stone(new Position(x, y), w);
-                        }
-                    }
-                }
+                await generationsPipeline[i].Generate(world, chunkPos * Chunk.Size, chunkPos, world.generationProperties);
             }
-
-            world.UnloadAllChunks();
         }
     }
 }

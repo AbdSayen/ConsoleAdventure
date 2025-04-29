@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,31 +10,6 @@ namespace ConsoleAdventure.WorldEngine.Generate
 {
     public class EmptyGenerator
     {
-        public World world;
-
-        public string processHint
-        {
-            get
-            {
-                return processHint;
-            }
-            set
-            {
-                ConsoleAdventure.progressBar.stepText = value;
-            }
-        }
-        public int processProgress
-        {
-            get
-            {
-                return processProgress;
-            }
-            set
-            {
-                ConsoleAdventure.progressBar.Progress = (uint)value;
-            }
-        }
-
         // cx, cy = Левый верхний угол чанка
         // setBlock = метод для установки блока или чего либо еще
         internal void ChunkGeneration(int cx, int cy, Action<int, int> setBlock)
@@ -47,7 +23,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             }
         }
 
-        internal void IterateWorldChunkByChunk(Action<int, int> setBlock)
+        internal void IterateWorldChunkByChunk(World world, Action<int, int> setBlock)
         {
             int chunksInWorld = (world.size / Chunk.Size);
 
@@ -56,17 +32,14 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 for (int cj = 0; cj < world.size / Chunk.Size; cj++)
                 {
                     ChunkGeneration(ci, cj, setBlock);
-                    processProgress = (int)((float)(ci * chunksInWorld + cj) / (chunksInWorld * chunksInWorld) * 100);
+                    //processProgress = (int)((float)(ci * chunksInWorld + cj) / (chunksInWorld * chunksInWorld) * 100);
                 }
             }
         }
 
-        public virtual async Task Generate(World world)
+        public virtual async Task Generate(World world, Position startPosition, Position chunkPosition, Tags GenProperties)
         {
-            this.world = world;
 
-            processHint = "Generate something?..";
-            processProgress = 0;
         }
     }
 }

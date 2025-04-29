@@ -150,6 +150,16 @@ namespace CaModLoaderAPI
 
         }
 
+        public virtual bool WorldPropertiesPreBuildPipeline(Generator generator)
+        {
+            return true;
+        }
+
+        public virtual void WorldPropertiesBuildPipeline(Generator generator)
+        {
+
+        }
+
         public virtual void Unload()
         {
 

@@ -157,9 +157,9 @@ namespace ConsoleAdventure
             } 
         }*/
 
-        public static async Task CreateWorld(string name, int seed, bool isFullGenerate = true, bool inMultiplayer = false)
+        public static async Task CreateWorld(string name, int seed, int size, bool isFullGenerate = true, bool inMultiplayer = false)
         {
-            world = new World(name, seed);
+            world = new World(name, seed, size, true, isFullGenerate);
             world.inMultiplayer = inMultiplayer;
 
             await world.Initialize(isFullGenerate);
@@ -199,7 +199,7 @@ namespace ConsoleAdventure
             SoundEngine.Init(44100, 44100, Microsoft.Xna.Framework.Audio.AudioChannels.Stereo);
             Command.InitCommands();
 
-            world = new World("empty", 0, false);
+            world = new World("empty", 0, 16, false, false);
             Main.InitTransformsTypes(Main.vanillaTypesInitialized);
             WorldIO.InitContent();
 
@@ -304,7 +304,7 @@ namespace ConsoleAdventure
                     InWorld = false;
                     menu.CloseAllPages();
                     Loger.ClearLogs();
-                    world = new("empty", 0);
+                    world = new World("empty", 0, 16, false, false);
                 }
 
                 if (!kstate.IsKeyDown(InputConfig.Pause.key) && prekstate.IsKeyDown(InputConfig.Pause.key) && !ConsoleAdventure.BlockHotKey)

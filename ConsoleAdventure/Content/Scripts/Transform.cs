@@ -63,6 +63,14 @@ namespace ConsoleAdventure
                 {
                     world.GetField(position.x, position.y, worldLayer, w).content = this;
                     //world.GetField(position.x, position.y, worldLayer, w).color = GetColor();
+
+                    if (worldLayer != World.MobsLayerId)
+                    {
+                        Chunk chunk = world.GetChunk(position.x, position.y, out int v1, out int v2);
+
+                        if (chunk != null)
+                            chunk.IsUpdated = true;
+                    }
                 }
             }
         }
