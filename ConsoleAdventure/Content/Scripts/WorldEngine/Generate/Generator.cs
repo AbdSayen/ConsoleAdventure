@@ -52,7 +52,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             {
                 if (CaModLoader.WorldPropertiesPreBuildPipelineMods(this))
                 {
-                    //...
+                    AddPropertiesToPipeline(new NoisesProperties(), 100);
                 }
 
                 CaModLoader.WorldPropertiesBuildPipelineMods(this);

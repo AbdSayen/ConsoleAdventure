@@ -174,7 +174,12 @@
     "LoadGenericData": "Загрузка общих данных...",
     "LoadObjectData": "Загрузка объектов...",
     "LoadEntityData": "Загрузка сущностей...",
-    "LoadMods": "Загружаем моды..."
+    "LoadMods": "Загружаем моды...",
+    "CreateNoises": "Создаём шумы...",
+    "DeterminationHeights": "Определение высот...",
+    "ClimateSettings": "Настройка климата...",
+    "CreatingBiomes": "Создание биомов..."
+
   },
 
   "MProgress": {

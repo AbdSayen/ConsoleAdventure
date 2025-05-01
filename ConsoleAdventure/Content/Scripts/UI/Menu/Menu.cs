@@ -1038,7 +1038,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                             name += countIdenticalWorldName;
                         }
 
-                        await ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text), 2560);
+                        await ConsoleAdventure.CreateWorld(name, int.Parse(worldGenTextFields[1].text), 25600);
                         WorldIO.Save(ConsoleAdventure.world.name);
 
                         int index = -1;

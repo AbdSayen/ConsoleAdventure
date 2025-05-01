@@ -42,11 +42,13 @@ namespace ConsoleAdventure
                 if (field.content is Loot)
                 {
                     stacks = ((Loot)field.content).items;
+                    UpdatedChunk(new Position(x, y), World.BlocksLayerId);
                 }
 
                 if (field.content is Chest)
                 {
                     ((Chest)field.content).AddRange(items);
+                    UpdatedChunk(new Position(x, y), World.BlocksLayerId);
                     return null;
                 }
             }

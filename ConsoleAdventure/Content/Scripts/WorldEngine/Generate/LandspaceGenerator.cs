@@ -12,10 +12,13 @@ namespace ConsoleAdventure.WorldEngine.Generate
 {
     public class LandspaceGenerator : EmptyGenerator
     {
-        public override async Task Generate(World world, Position startPosition, Position chunkPosition, Tags GenProperties)
+        public override async Task Generate(World world, Position startPosition, Position chunkPosition, Tags genProperties)
         {
             int seed = world.seed;
 
+            NoiseBuffer landspaceNoise = genProperties.SafelyGet<NoiseBuffer>("LandspaceNoise", new NoiseBuffer());
+            double landspaceScale = genProperties.SafelyGet<float>("LandspaceScale", 1);
+            float seaLevel = genProperties.SafelyGet<float>("SeaLevel", 0);
 
             short X = startPosition.x;
             short Y = startPosition.y;
@@ -26,23 +29,32 @@ namespace ConsoleAdventure.WorldEngine.Generate
             {
                 for (int j = 0; j < Chunk.Size; j++)
                 {
-                    float treesValue = trees.FractalSimplex2((X + i) * 0.01, (Y + j) * 0.01);
+                    float landspaceValue = landspaceNoise.FractalSimplex2((X + i) * landspaceScale, (Y + j) * landspaceScale);
 
-                    bool treeFlag = false;
-
-                    if (treesValue > 0 && (((float)Utils.HashNoise(X + i, Y + j, 45)) / 10) < treesValue)
+                    if (landspaceValue >= seaLevel) 
                     {
-                        new Tree(new(X + i, Y + j), world.Surface);
-                        treeFlag = true;
+                        float treesValue = trees.FractalSimplex2((X + i) * 0.01, (Y + j) * 0.01);
+
+                        bool treeFlag = false;
+
+                        if (treesValue > 0 && (((float)Utils.HashNoise(X + i, Y + j, 45)) / 10) < treesValue)
+                        {
+                            new Tree(new(X + i, Y + j), world.Surface);
+                            treeFlag = true;
+                        }
+
+                        float noise2 = OpenSimplex.noise2(seed * 5, (X + i) * 0.6, (Y + j) * 0.6);
+                        noise2 += OpenSimplex.noise2(seed - 5 * 3, (X + i) * 0.8, (Y + j) * 0.8);
+                        noise2 -= treesValue;
+
+                        if (noise2 > 0.7 && !treeFlag)
+                        {
+                            new Grass(new(X + i, Y + j), world.Surface);
+                        }
                     }
-
-                    float noise2 = OpenSimplex.noise2(seed * 5, (X + i) * 0.6, (Y + j) * 0.6);
-                    noise2 += OpenSimplex.noise2(seed - 5 * 3, (X + i) * 0.8, (Y + j) * 0.8);
-                    noise2 -= treesValue;
-
-                    if (noise2 > 0.7 && !treeFlag)
+                    else
                     {
-                        new Grass(new(X + i, Y + j), world.Surface);
+                        new Water(new(X + i, Y + j), world.Surface);
                     }
                 }
             }

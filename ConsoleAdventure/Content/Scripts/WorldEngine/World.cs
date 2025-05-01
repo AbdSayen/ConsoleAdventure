@@ -384,8 +384,9 @@ namespace ConsoleAdventure.WorldEngine
 
             Field field0 = GetField(subject.position.x, subject.position.y, worldLayer, subject.w);
             Field field1 = GetField(newX, newY, worldLayer, deep);
+            Chunk chunk = GetChunk(newX, newY, out int v1, out int v2);
 
-            if (IsValidMove(worldLayer, newX, newY, deep) && field0 != null && field1 != null)
+            if (IsValidMove(worldLayer, newX, newY, deep) && ((field0 != null && field1 != null) || chunk == null || chunk is UnloadedChunk))
             {
                 field0.content = null;
                 subject.position.SetPosition(newX, newY);
@@ -505,7 +506,7 @@ namespace ConsoleAdventure.WorldEngine
         public void SetFieldDataAnyway(TransformDataInChunk data)
         {
             int x = data.position.x;
-            int y = data.position.x;
+            int y = data.position.y;
 
             Chunk chunk = GetChunk(x, y, out int localX, out int localY);
             if (chunk != null)

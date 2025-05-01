@@ -37,7 +37,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             }
         }
 
-        public virtual async Task Generate(World world, Position startPosition, Position chunkPosition, Tags GenProperties)
+        public virtual async Task Generate(World world, Position startPosition, Position chunkPosition, Tags genProperties)
         {
 
         }

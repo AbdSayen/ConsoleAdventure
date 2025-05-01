@@ -33,7 +33,7 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.Generate
             }
         }
 
-        public async Task UpdateWorldProperties(Tags tags, World world)
+        public virtual async Task UpdateWorldProperties(Tags tags, World world)
         {
             processHint = "Generate something?..";
             processProgress = 0;

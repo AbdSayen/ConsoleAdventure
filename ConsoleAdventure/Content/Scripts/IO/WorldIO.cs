@@ -228,6 +228,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             tags["WorldLevels"] = levels.ToArray();
 
+            tags["GenSettings"] = world.generationProperties.Data;
+
             Dictionary<string, byte[]> playersData = new Dictionary<string, byte[]>();
 
             short[] players = new short[ConsoleAdventure.world.players.Count];
@@ -321,12 +323,16 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
                                         if (field?.content != null)
                                         {
+                                            object data = field.content.SaveData();
 
-                                            transformsDataX.Add(field.content.position.x);
-                                            transformsDataY.Add(field.content.position.y);
-                                            transformsDataZ.Add(field.content.worldLayer);
-                                            transformsDataW.Add(field.content.w);
-                                            transformsData.Add(field.content.SaveData());
+                                            if (data != null)
+                                            {
+                                                transformsDataX.Add(field.content.position.x);
+                                                transformsDataY.Add(field.content.position.y);
+                                                transformsDataZ.Add(field.content.worldLayer);
+                                                transformsDataW.Add(field.content.w);
+                                                transformsData.Add(data);
+                                            }
                                         }
                                     }
                                 }
@@ -504,6 +510,10 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 world.SetDeeps();
 
                 world.InitializeChunks();
+
+                if (world.generationProperties == null) { world.generationProperties = new(); }
+                
+                world.generationProperties.Data = tags.SafelyGet<Dictionary<string, object>>("GenSettings", new Dictionary<string, object>());
 
                 ConsoleAdventure.world.playersDat = tags.SafelyGet<Dictionary<string, byte[]>>("PlayersData");
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure.Content.Scripts.WorldEngine
 {
+    [Serializable]
     public struct NoiseBuffer
     {
         public long seed;

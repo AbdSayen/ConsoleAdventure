@@ -1,5 +1,6 @@
 ﻿using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.WorldEngine.Generate;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -22,32 +23,76 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
 
         public override void Logic(string[] args, short id = -2)
         {
+            ExploreAllWorld();
+        }
+
+        private void ExploreAllWorld()
+        {
             World world = ConsoleAdventure.world;
             Player.Player player = world.GetLocalPlayer();
-            Point? curChunk = null;
 
-            for (int y = 0; y < world.size; y++)
+            player.map.data.Clear();
+
+            for (int x = 0; x < world.GetChunkCounts().X; x++)
             {
-                for (int x = 0; x < world.size; x++)
+                for (int y = 0; y < world.GetChunkCounts().Y; y++)
                 {
-                    for (int w = 0; w < Chunk.maxDeep; w++)
-                    {
-                        Point? chunk = Map.GetChunkPos(x, y);
-                        if (curChunk != chunk && chunk != null)
-                        {
-                            curChunk = chunk;
+                    Point chunk = new Point(x, y);
+                    player.map.data.Add(chunk, new MapChunk());
+                    world.GenerateChunk(x, y);
 
-                            if (!player.map.data.ContainsKey((Point)curChunk))
+                    for (int x1 = 0; x1 < Chunk.Size; x1++)
+                    {
+                        for (int y1 = 0; y1 < Chunk.Size; y1++)
+                        {
+                            for (int w = 0; w < Chunk.maxDeep; w++)
                             {
-                                player.map.data.Add((Point)curChunk, new MapChunk());
+                                Position position = new Position(x1 + (x * Chunk.Size), y1 + (y * Chunk.Size));
+
+                                Transform t = world.GetField(position.x, position.y, World.BlocksLayerId, w).content;
+
+                                if (t != null)
+                                    player.map.data[chunk].fields[x1, y1, w] = new(t.GetColor(), 255);
                             }
                         }
+                    }
 
-                        Transform t = world.GetField(x, y, World.BlocksLayerId, w).content;
+                    world.chunks[x, y] = null;
+                }
+            }
+        }
+        private void ExploreWorldForChunk()
+        {
+            World world = ConsoleAdventure.world;
+            Player.Player player = world.GetLocalPlayer();
+            Point curChunk = new();
+
+            player.map.data.Clear();
+
+            for (int x = 0; x < world.GetChunkCounts().X; x++)
+            {
+                for (int y = 0; y < world.GetChunkCounts().Y; y++)
+                {
+                    Point chunk = new Point(x, y);
+                    world.GenerateChunk(x, y);
+
+                    if (x % Chunk.Size == 0 && y % Chunk.Size == 0)
+                    {
+                        player.map.data.Add(chunk, new MapChunk());
+                        curChunk = chunk;
+                    }
+
+                    for (int w = 0; w < Chunk.maxDeep; w++)
+                    {
+                        Position position = new Position((x * Chunk.Size), (y * Chunk.Size));
+
+                        Transform t = world.GetField(position.x, position.y, World.BlocksLayerId, w).content;
 
                         if (t != null)
-                            player.map.data[(Point)curChunk].fields[x % Chunk.Size, y % Chunk.Size, w] = new(t.GetColor(), 255);
+                            player.map.data[curChunk].fields[chunk.X % Chunk.Size, chunk.Y % Chunk.Size, w] = new(t.GetColor(), 255);
                     }
+
+                    world.chunks[x, y] = null;
                 }
             }
         }

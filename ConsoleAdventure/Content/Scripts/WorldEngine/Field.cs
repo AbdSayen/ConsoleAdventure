@@ -21,7 +21,10 @@ namespace ConsoleAdventure.WorldEngine
             }
             set
             {
-                content_ = value;
+                if (content_ != null)
+                    Transform.UpdatedChunk(content_.position, content_.worldLayer);
+
+                content_ = value; 
             }
         }
 

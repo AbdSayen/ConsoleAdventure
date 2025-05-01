@@ -17,7 +17,9 @@ namespace ConsoleAdventure
 
         public Storage(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, (byte)w)
         {
-            this.items = items;
+            if (items != null)
+                this.items = items;
+
             isObstacle = false;
         }
 

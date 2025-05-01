@@ -111,7 +111,7 @@ namespace ConsoleAdventure
                     else if (!zoom) zoom = true;
                 }
 
-                if (Input.PostClick(InputConfig.MapWUp) && !ConsoleAdventure.BlockHotKey && mapW < Chunk.maxDeep -1) mapW++;
+                if (Input.PostClick(InputConfig.MapWUp) && !ConsoleAdventure.BlockHotKey && mapW < Chunk.maxDeep - 1) mapW++;
                 else if (Input.PostClick(InputConfig.MapWDown) && !ConsoleAdventure.BlockHotKey && mapW > 0) mapW--;
 
                 if (zoom)
@@ -120,7 +120,7 @@ namespace ConsoleAdventure
                     if (timer % 10 == 0)
                     {
                         mapBuffer.Clear();
-                        for (int i = 0; i < player.map.data.Count; i++)
+                        /*for (int i = 0; i < player.map.data.Count; i++)
                         {
                             var chunk = player.map.data.ElementAt(i);
                             Point pos = chunk.Key;
@@ -129,7 +129,7 @@ namespace ConsoleAdventure
                             {
                                 mapBuffer.Add(pos, chunk.Value);
                             }
-                        }
+                        }*/
                     }
 
                     for (int g = 0; g < mapBuffer.Count; g++)
@@ -150,7 +150,7 @@ namespace ConsoleAdventure
                         }
                     }
 
-                    if(player.w == mapW)
+                    if (player.w == mapW)
                         ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "☻", new((player.position.x - (mapPos.X * 16)) * 18, (player.position.y - (mapPos.Y * 16)) * 19), Color.Yellow);
                 }
 
@@ -202,7 +202,23 @@ namespace ConsoleAdventure
                         bitmap.Save($"Screens/map{count}.png");
                     }
 
-                    catch
+                    catch (Exception ex)
+                    {
+                    }
+                }
+
+                else if (Input.PostClick(Keys.F11))
+                {
+                    try
+                    {
+                        System.Drawing.Bitmap bitmap = MapScreen2(mapW);
+                        if (!Directory.Exists("Screens")) Directory.CreateDirectory("Screens");
+                        int count = Directory.GetFiles("Screens", "*.png").Length;
+
+                        bitmap.Save($"Screens/map{count}.png");
+                    }
+
+                    catch (Exception ex)
                     {
                     }
                 }
@@ -218,7 +234,9 @@ namespace ConsoleAdventure
 
         public System.Drawing.Bitmap MapScreen(int w)
         {
-            System.Drawing.Bitmap screen = new System.Drawing.Bitmap(world.size, world.size);
+            int size = world.size;
+
+            System.Drawing.Bitmap screen = new System.Drawing.Bitmap(size, size);
 
             Player player = ConsoleAdventure.world.GetLocalPlayer();
 
@@ -230,19 +248,54 @@ namespace ConsoleAdventure
                 {
                     for (int j = 0; j < 16; j++)
                     {
+                        int x = ((chunk.Key.X * 16) + i);
+                        int y = ((chunk.Key.Y * 16) + j);
+
                         MapField? mapField = chunk.Value.fields[i, j, w];
+
                         if (mapField != null)
                         {
                             byte l = mapField.Value.color.A;
                             Color color = (Color)(mapField.Value.color.ToVector3() * (new Color(l, l, l)).ToVector3()).ToColor();
-                            screen.SetPixel(((chunk.Key.X * 16) + i), ((chunk.Key.Y * 16) + j), System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B));
+                            screen.SetPixel(x, y, System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B));
                         }
 
                         else
                         {
-                            screen.SetPixel(((chunk.Key.X * 16) + i), ((chunk.Key.Y * 16) + j), System.Drawing.Color.FromArgb(255, 0, 0, 0));
+                            screen.SetPixel(x, y, System.Drawing.Color.FromArgb(255, 0, 0, 0));
                         }
                     }
+                }
+            }
+
+            return screen;
+        }
+
+        public System.Drawing.Bitmap MapScreen2(int w)
+        {
+            int size = world.size / Chunk.Size;
+            System.Drawing.Bitmap screen = new System.Drawing.Bitmap(size, size);
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    world.GenerateChunk(i, j);
+
+                    Field f = world.chunks[i, j].GetField(0, 0, World.BlocksLayerId, w);
+
+                    if(f?.content != null)
+                    {
+                        Color color = f.content.GetColor();
+                        screen.SetPixel(i, j, System.Drawing.Color.FromArgb(255, color.R, color.G, color.B));
+                    }
+
+                    else
+                    {
+                        screen.SetPixel(i, j, System.Drawing.Color.FromArgb(255, 0, 0, 0));
+                    }
+
+                    world.chunks[i, j] = null;
                 }
             }
 

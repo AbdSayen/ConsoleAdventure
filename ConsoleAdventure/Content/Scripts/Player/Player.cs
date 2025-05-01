@@ -151,6 +151,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public override void InteractWithWorld()
         {
+            _movement.speed = 100;
             if (!isActive) 
             {
                 if (postKillTimer > 0)
@@ -258,6 +259,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 {
                     chest.slots.RemoveAt(holdChestItemIndex);
                 }
+
+                UpdatedChunk(new Position((int)chestPosition.X, (int)chestPosition.Y), World.BlocksLayerId);
             }
 
             if (Input.PostClick(InputConfig.TakeInChestStack) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0) //&& chest.slots.Count < chest.maxCount)
@@ -267,6 +270,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 {
                     inventory.slots.RemoveAt(holdItemIndex);
                 }
+
+                UpdatedChunk(new Position((int)chestPosition.X, (int)chestPosition.Y), World.BlocksLayerId);
             }
 
             if (Input.PostClick(InputConfig.TakeInInventory) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdChestItemIndex > -1 && chest.slots.Count > 0) //&& inventory.slots.Count < inventory.maxCount)
@@ -276,6 +281,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 {
                     chest.slots.RemoveAt(holdChestItemIndex);
                 }
+
+                UpdatedChunk(new Position((int)chestPosition.X, (int)chestPosition.Y), World.BlocksLayerId);
             }
 
             if (Input.PostClick(InputConfig.TakeInChest) && isChestOpen && !ConsoleAdventure.BlockHotKey && holdItemIndex > -1 && inventory.slots.Count > 0) //&& chest.slots.Count < chest.maxCount)
@@ -285,6 +292,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 {
                     inventory.slots.RemoveAt(holdItemIndex);
                 }
+
+                UpdatedChunk(new Position((int)chestPosition.X, (int)chestPosition.Y), World.BlocksLayerId);
             }
 
             if (chestPosition != new Vector3(position.x, position.y, w))

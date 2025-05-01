@@ -23,7 +23,10 @@ namespace ConsoleAdventure.Content.Scripts.IO
             }
             set
             {
-                Data.Add(key, value);
+                if (!Data.ContainsKey(key))
+                    Data.Add(key, value);
+
+                else Data[key] = value;
             }
         }
 

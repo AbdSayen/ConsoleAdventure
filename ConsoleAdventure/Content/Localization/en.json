@@ -174,7 +174,11 @@
     "LoadGenericData": "Load generic data...",
     "LoadObjectData": "Loading objects...",
     "LoadEntityData": "Loading entities...",
-    "LoadMods": "Загружаем моды..."
+    "LoadMods": "Loading mods...",
+    "CreateNoises": "Creating noises...",
+    "DeterminationHeights": "Defining of heights...",
+    "ClimateSettings": "Climate settings...",
+    "CreatingBiomes": "Creating biomes..."
   },
 
   "MProgress": {
