@@ -151,7 +151,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public override void InteractWithWorld()
         {
-            _movement.speed = 100;
             if (!isActive) 
             {
                 if (postKillTimer > 0)
