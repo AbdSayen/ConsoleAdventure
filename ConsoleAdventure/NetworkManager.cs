@@ -45,8 +45,6 @@ namespace ConsoleAdventure
             sendWorldData,
 
             chatMessage,
-
-
         }
 
         public static int SetNetID(Entity entity)
@@ -172,6 +170,11 @@ namespace ConsoleAdventure
             await stream.FlushAsync();
         }
 
+        public static async Task SendMessage(ActionID act, NetPacket data, short id = -2, bool reverseOwner = false)
+        {
+            await SendMessage(act, new byte[0], data.GetBytes(), id, reverseOwner);
+        }
+
         public static async void SendChatMessage(String txt, bool isMessage = true, short senderId = -2)
         {
             await SendMessage(ActionID.chatMessage, BitConverter.GetBytes(isMessage), Encoding.UTF8.GetBytes(txt), senderId);
@@ -197,6 +200,14 @@ namespace ConsoleAdventure
             ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("MProgress", "RequestingServerWorld");
             ConsoleAdventure.progressBar.Progress = 25 + (uint)ConsoleAdventure.rand.Next(0, 50);
             await SendMessage(ActionID.requestWorldData, new byte[0], new byte[0]);
+        }
+
+        public static async Task SendSystemMessage(string txt)
+        {
+            NetPacket netPacket = new NetPacket();
+            netPacket.WriteString(txt);
+            netPacket.WriteInt(4444);
+            await SendMessage(ActionID.systemMessage, netPacket);
         }
 
         public static async Task ReceiveMainDataAsync()
