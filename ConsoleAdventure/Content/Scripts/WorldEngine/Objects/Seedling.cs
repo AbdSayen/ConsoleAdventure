@@ -50,7 +50,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void RandomUpdate()
         {
-            new Tree(position, w);
+            //new Tree(position, w);
         }
 
         public override void AfterBurning()

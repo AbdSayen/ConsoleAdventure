@@ -120,7 +120,7 @@ namespace ConsoleAdventure
                     if (timer % 10 == 0)
                     {
                         mapBuffer.Clear();
-                        /*for (int i = 0; i < player.map.data.Count; i++)
+                        for (int i = 0; i < player.map.data.Count; i++)
                         {
                             var chunk = player.map.data.ElementAt(i);
                             Point pos = chunk.Key;
@@ -129,7 +129,7 @@ namespace ConsoleAdventure
                             {
                                 mapBuffer.Add(pos, chunk.Value);
                             }
-                        }*/
+                        }
                     }
 
                     for (int g = 0; g < mapBuffer.Count; g++)

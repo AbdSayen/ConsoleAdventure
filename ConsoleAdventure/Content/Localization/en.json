@@ -76,7 +76,15 @@
     "BlackSoil": "black soil",
     "BlackSoilFloor": "black soil floor",
     "Alfisol": "alfisol",
-    "AlfisolFloor": "alfisol floor"
+    "AlfisolFloor": "alfisol floor",
+
+    "SpruceTree": "spruce tree",
+    "PineTree": "pine tree",
+    "CedarTree": "cedar tree",
+    "FirTree": "fir tree",
+    "LarchTree": "laarch tree",
+
+    "AppleTree": "apple tree"
   },
 
   "Events": {

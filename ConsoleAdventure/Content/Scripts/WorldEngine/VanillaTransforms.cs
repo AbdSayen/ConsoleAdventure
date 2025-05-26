@@ -86,5 +86,12 @@ namespace ConsoleAdventure.WorldEngine
         brownEarthFloor,
         alfisol,
         alfisolFloor,
+        textMark,
+
+        spruceTree,
+        pineTree,
+        cedarTree,
+        firTree,
+        larchTree
     }
 }

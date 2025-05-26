@@ -11,17 +11,18 @@ using ConsoleAdventure.Settings;
 using System.CodeDom;
 using SharpDX.Direct2D1;
 using System.Linq;
+using ConsoleAdventure.Content.Scripts.IO;
 
 namespace ConsoleAdventure
 {
     [Serializable]
-    public abstract class 
-        
-        Transform
+    public abstract class Transform
     {
-        private static Type[] typeMapping = new Type[256]; 
-
         public static Type[] TypeMapping { get { return typeMapping; } }
+        private static Type[] typeMapping = new Type[256];
+
+        public static object[] StaticsData { get { return staticsData; } }
+        private static object[] staticsData = new object[256];
 
         public static World world { get; protected set; }
         public byte worldLayer { get; protected set; }
@@ -100,6 +101,16 @@ namespace ConsoleAdventure
             typeMapping = new Type[256];
         }
 
+        public static void ClearStaticsData()
+        {
+            staticsData = new object[256];
+        }
+
+        public virtual object SetStaticData()
+        {
+            return null;
+        }
+                
         public virtual void Move(int stepSize, Rotation rotation)
         {
             world.MoveSubject(this, worldLayer, stepSize, rotation);
@@ -237,10 +248,12 @@ namespace ConsoleAdventure
 
             object[] args = BuildConstructorArgs(type, position, w, items, parameters);
 
+            Transform transform = (Transform)Activator.CreateInstance(type, args);
+
             if (type.IsSubclassOf(typeof(Entity)) || type == typeof(Entity))
-                Spawner.Spawn((Entity)Activator.CreateInstance(type, args));
-            else
-                Activator.CreateInstance(type, args);
+                Spawner.Spawn((Entity)transform);
+
+            if (IsGlobalInit) StaticsData[transform.type] = transform.SetStaticData();
         }
 
         public virtual void LoadData(object data)

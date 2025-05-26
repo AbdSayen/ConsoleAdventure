@@ -17,8 +17,17 @@ namespace ConsoleAdventure.WorldEngine.Generate
             int seed = world.seed;
 
             NoiseBuffer landspaceNoise = genProperties.SafelyGet<NoiseBuffer>("LandspaceNoise", new NoiseBuffer());
-            double landspaceScale = genProperties.SafelyGet<float>("LandspaceScale", 1);
+            double landspaceScale = genProperties.SafelyGet<float>("LandspaceScale", 1);     
+            SineNoise climaticNoise = genProperties.SafelyGet<SineNoise>("ClimaticNoise", new SineNoise());
+            NoiseBuffer forestNoise = genProperties.SafelyGet<NoiseBuffer>("ForestNoise", new NoiseBuffer());
+            double forestScale = genProperties.SafelyGet<float>("ForestScale", 1);
+
             float seaLevel = genProperties.SafelyGet<float>("SeaLevel", 0);
+            float beachLevel = genProperties.SafelyGet<float>("BeachLevel", 0.1f);
+
+
+
+            float rawClimatic = climaticNoise.GetValue(chunkPosition.x, chunkPosition.y);
 
             short X = startPosition.x;
             short Y = startPosition.y;
@@ -30,16 +39,22 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 for (int j = 0; j < Chunk.Size; j++)
                 {
                     float landspaceValue = landspaceNoise.FractalSimplex2((X + i) * landspaceScale, (Y + j) * landspaceScale);
+                    float climaticValue = (rawClimatic + (landspaceValue / 4));
 
-                    if (landspaceValue >= seaLevel) 
+                    if (landspaceValue >= seaLevel && (landspaceValue < beachLevel || climaticValue > 0.9f))
                     {
-                        float treesValue = trees.FractalSimplex2((X + i) * 0.01, (Y + j) * 0.01);
+                        new SandFloor(new(X + i, Y + j), world.Surface);
+                    }
+
+                    else if (landspaceValue >= beachLevel)
+                    {
+                        float treesValue = forestNoise.FractalSimplex2((X + i) * forestScale, (Y + j) * forestScale);
 
                         bool treeFlag = false;
 
                         if (treesValue > 0 && (((float)Utils.HashNoise(X + i, Y + j, 45)) / 10) < treesValue)
                         {
-                            new Tree(new(X + i, Y + j), world.Surface);
+                            new PineTree(new(X + i, Y + j), world.Surface);
                             treeFlag = true;
                         }
 
@@ -52,6 +67,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                             new Grass(new(X + i, Y + j), world.Surface);
                         }
                     }
+
                     else
                     {
                         new Water(new(X + i, Y + j), world.Surface);

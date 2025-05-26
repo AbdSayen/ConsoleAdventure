@@ -10,8 +10,6 @@ namespace ConsoleAdventure.WorldEngine.Generate
 {
     public class EmptyGenerator
     {
-        
-
         // cx, cy = Левый верхний угол чанка
         // setBlock = метод для установки блока или чего либо еще
         internal void ChunkGeneration(int cx, int cy, Action<int, int> setBlock)

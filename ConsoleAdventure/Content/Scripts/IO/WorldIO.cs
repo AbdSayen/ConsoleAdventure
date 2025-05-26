@@ -384,6 +384,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
         public static void InitContent()
         {
             Transform.ClearTypeMap();
+            Transform.ClearStaticsData();
 
             Light.Clear();
 
@@ -397,6 +398,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                     continue;
 
                 Transform.Init(type, Position.Zero(), 0, null, null);
+                
             }
 
             Transform.IsGlobalInit = false;

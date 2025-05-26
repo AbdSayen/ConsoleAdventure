@@ -76,7 +76,19 @@
     "BlackSoil": "чернозем",
     "BlackSoilFloor": "черноземный пол",
     "Alfisol": "серая лесная почва",
-    "AlfisolFloor": "серый лесной пол"
+    "AlfisolFloor": "серый лесной пол",
+
+    "SpruceTree": "ель",
+    "PineTree": "сосна",
+    "CedarTree": "кедр",
+    "FirTree": "пихта",
+    "LarchTree": "лиственница",
+
+    "AppleTree": "яблоня",
+    "ElmTree": "вяз",
+    "OakTree": "дуб",
+    "ViburnumTree": "калина"
+    
   },
 
   "Events": {
