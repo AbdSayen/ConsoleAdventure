@@ -24,6 +24,8 @@ namespace ConsoleAdventure.Content.Scripts
         public int defense;
         public int invulnerabilityTime;
 
+        public int netID = -1;
+
         private int[] ai = new int[8];
 
         public List<Buff> buffs = new();
@@ -45,6 +47,7 @@ namespace ConsoleAdventure.Content.Scripts
 
             AddTypeToMap<Entity>(type);
 
+            if (!ConsoleAdventure.InWorld) return;
             ConsoleAdventure.world.Start += PreStart;
         }
 
@@ -190,44 +193,6 @@ namespace ConsoleAdventure.Content.Scripts
 
             buffs.Add(buff);
             return true;
-        }
-
-        public override byte[] GetDataBytes()
-        {
-            List<byte> data = new List<byte>();
-
-            data.AddRange(BitConverter.GetBytes(position.x));             // 2b                   = 0
-            data.AddRange(BitConverter.GetBytes(position.y));             // 2b            0 + 2  = 2
-            data.Add(w);                                                  // 1b            2 + 2  = 4
-            data.AddRange(BitConverter.GetBytes(life));                   // 4b            4 + 1  = 5
-            data.AddRange(BitConverter.GetBytes(maxLife));                // 4b            5 + 4  = 9
-            data.AddRange(BitConverter.GetBytes(damage));                 // 4b            9 + 4  = 13
-            data.AddRange(BitConverter.GetBytes(defense));                // 4b            13 + 4 = 17
-            data.AddRange(BitConverter.GetBytes(invulnerabilityTime));    // 4b            17 + 4 = 21
-            
-            for (int i = 0; i < ai.Length; i++)  // 8                                      21 + 4 = 25
-            {
-                data.AddRange(BitConverter.GetBytes(ai[i])); // 4b
-            } // 8 * 4 = 32b        
-
-            return data.ToArray();
-        }
-
-        public override void SetDataFromBytes(byte[] data)
-        {
-            position.x = BitConverter.ToInt16(data, 0);
-            position.y = BitConverter.ToInt16(data, 2);
-            w = data[4];
-            life = BitConverter.ToInt32(data, 5);
-            maxLife = BitConverter.ToInt32(data, 9);
-            damage = BitConverter.ToInt32(data, 13);
-            defense = BitConverter.ToInt32(data, 17);
-            invulnerabilityTime = BitConverter.ToInt32(data, 21);
-
-            for (int i = 0; i < ai.Length; i++)
-            {
-                ai[i] = BitConverter.ToInt32(data, 25 + i * 4);
-            }
         }
 
         public override string ModifyTooltip()

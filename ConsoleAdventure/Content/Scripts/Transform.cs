@@ -33,8 +33,6 @@ namespace ConsoleAdventure
         public byte degreeDestruction = 0;
         public float hardness = 1;
 
-        public int netID = -1;
-
         internal static bool IsGlobalInit = false;
 
         /// <summary>

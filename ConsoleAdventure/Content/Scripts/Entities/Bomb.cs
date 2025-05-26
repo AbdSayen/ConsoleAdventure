@@ -20,7 +20,7 @@ namespace ConsoleAdventure.Content.Scripts
             AddTypeToMap<Bomb>(type);
             //Spawner.AddSpawnCondition(new SpawnCondition(type, new Range(0, 1), null, 1));
 
-            Initialize();         
+            Initialize();   
         }
 
         public override string GetSymbol()
@@ -61,7 +61,7 @@ namespace ConsoleAdventure.Content.Scripts
                         {
                             for (int l = 0; l < 3; l++)
                             {
-                                if (NetworkManager.Id <= 0) Explosion(positions, powers, k, j, l);
+                                if (NetworkManager.isHost) Explosion(positions, powers, k, j, l);
 
                                 /*if(transform == null)
                                 {

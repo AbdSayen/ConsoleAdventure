@@ -24,6 +24,10 @@ public static class Spawner
     {
         ConsoleAdventure.world.entities.Add(entity);
         entity.PreStart();
+        if (NetworkManager.isHost && ConsoleAdventure.InWorld)
+        {
+            NetworkManager.EntitySpawned(entity);
+        }
     }
 
     public static Entity SpawnClone(Entity entity)

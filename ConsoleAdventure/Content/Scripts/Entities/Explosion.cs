@@ -48,19 +48,20 @@ namespace ConsoleAdventure.Content.Scripts
         int delay = 5;
         public override void AI()
         {
+            if (!NetworkManager.isHost) delay = 1;
             if (CanHitToPlayer(out short id) && world.players[id].invulnerabilityTime < 0)
             {
                 world.players[id].Hit(10);
             }
 
-            if (timer % delay == 0 && frame < Symbols.Length)
+            if (timer % delay == 0 && frame < Symbols.Length-1)
                 frame++;
 
-            if (timer >= (Symbols.Length - 1) * 5)
+            if (timer >= (Symbols.Length - 1) * delay)
             {
                 Kill();
                 
-                if(ConsoleAdventure.rand.Next(0, 21) == 20)
+                if(ConsoleAdventure.rand.Next(0, 21) == 20 && NetworkManager.isHost)
                 {
                     Spawner.Spawn(new Fire(position, w));
                 }

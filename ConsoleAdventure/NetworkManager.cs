@@ -2,14 +2,14 @@
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Networks;
 using ConsoleAdventure.Settings;
-using Microsoft.Xna.Framework;
+using ConsoleAdventure.WorldEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ConsoleAdventure
 {
@@ -45,13 +45,16 @@ namespace ConsoleAdventure
             sendWorldData,
 
             chatMessage,
+
+            entitySpawned
         }
 
         public static int SetNetID(Entity entity)
         {
-            if (!ConsoleAdventure.InWorld) return -1;
+            if (!ConsoleAdventure.world.isLoaded) return -1;
             ConsoleAdventure.logger.AddMessage(entity.GetType().Name + " added net id -> " + nextNetID.ToString());
-            netIDMap.Add(nextNetID, entity);
+            if (!netIDMap.ContainsKey(nextNetID))
+                netIDMap.Add(nextNetID, entity);
             return nextNetID++;
         }
 
@@ -202,12 +205,14 @@ namespace ConsoleAdventure
             await SendMessage(ActionID.requestWorldData, new byte[0], new byte[0]);
         }
 
-        public static async Task SendSystemMessage(string txt)
+        public static async Task EntitySpawned(Entity entity)
         {
-            NetPacket netPacket = new NetPacket();
-            netPacket.WriteString(txt);
-            netPacket.WriteInt(4444);
-            await SendMessage(ActionID.systemMessage, netPacket);
+            NetPacket packet = new NetPacket();
+            packet.WriteByte(entity.type);
+            packet.WritePosition(entity.position);
+            packet.WriteByte(entity.w);
+            packet.WriteInt(entity.netID);
+            await SendMessage(ActionID.entitySpawned, packet);
         }
 
         public static async Task ReceiveMainDataAsync()
@@ -289,6 +294,17 @@ namespace ConsoleAdventure
                             break;
                         case ActionID.sendWorldData:
                             WorldIO.LoadWorldFromPackedBytes(buffer);
+                            break;
+                        case ActionID.entitySpawned:
+                            NetPacket packet = new NetPacket(buffer);
+                            int entityNetID = packet.ReadInt();
+                            byte entityW = packet.ReadByte();
+                            Position entityPosition = packet.ReadPosition();
+                            byte entityType = packet.ReadByte();
+
+                            nextNetID = entityNetID;
+                            Entity entity = (Entity)Activator.CreateInstance(Entity.TypeMapping[entityType], new object[] { entityPosition, entityW, null });
+                            Spawner.Spawn(entity);
                             break;
                     }
                 }
