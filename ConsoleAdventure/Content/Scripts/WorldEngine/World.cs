@@ -224,14 +224,14 @@ namespace ConsoleAdventure.WorldEngine
                     entities[i].InteractWithWorld();
                 }
 
-                for (int i = 0; i < 20; i++)
-                {
-                    //Field field = GetField(ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, CountOfLayers), ConsoleAdventure.rand.Next(0, Chunk.maxDeep));
-                    //if (field?.content != null)
-                    //{
-                    //    field.content.RandomUpdate();
-                    //}
-                }
+                //for (int i = 0; i < 20; i++)
+                //{
+                //    Field field = GetField(ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, size), ConsoleAdventure.rand.Next(0, CountOfLayers), ConsoleAdventure.rand.Next(0, Chunk.maxDeep));
+                //    if (field?.content != null)
+                //    {
+                //        field.content.RandomUpdate();
+                //    }
+                //}
 
                 for (int i = 0; i < GameEvent.Events.Count; i++)
                 {

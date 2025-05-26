@@ -8,7 +8,6 @@ using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
-using Microsoft.VisualBasic.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
