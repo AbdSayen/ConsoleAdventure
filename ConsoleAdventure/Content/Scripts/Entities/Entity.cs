@@ -107,6 +107,11 @@ namespace ConsoleAdventure.Content.Scripts
             ConsoleAdventure.world.Start -= Start;
             ConsoleAdventure.world.RemoveSubject(this, worldLayer);
             ConsoleAdventure.world.entities.Remove(this);
+
+            if (NetworkManager.isHost)
+            {
+                NetworkManager.EntityKilled(this);
+            }
         }
         
         public void SetMaxLife(int life)

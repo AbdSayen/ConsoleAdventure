@@ -185,7 +185,8 @@ namespace ConsoleAdventure.WorldEngine
 
         public void ConnectPlayer(short id, string pcId = "")
         {
-            players.Add(id, new Player(id, pcId, new Position(5 + id, 5 + id), ConsoleAdventure.world.Surface));
+            Player player = new Player(id, pcId, new Position(5 + id, 5 + id), ConsoleAdventure.world.Surface);
+            players.Add(id, player);
         }
 
         public void DisconnectPlayer(short id)

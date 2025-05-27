@@ -46,7 +46,8 @@ namespace ConsoleAdventure
 
             chatMessage,
 
-            entitySpawned
+            entitySpawned,
+            entityKilled,
         }
 
         public static int SetNetID(Entity entity)
@@ -215,6 +216,13 @@ namespace ConsoleAdventure
             await SendMessage(ActionID.entitySpawned, packet);
         }
 
+        public static async Task EntityKilled(Entity entity)
+        {
+            NetPacket packet = new NetPacket();
+            packet.WriteInt(entity.netID);
+            await SendMessage(ActionID.entityKilled, packet);
+        }
+
         public static async Task ReceiveMainDataAsync()
         {
             ConsoleAdventure.logger.AddMessage("Started client listener cycle!");
@@ -244,6 +252,8 @@ namespace ConsoleAdventure
                         bytes = await stream.ReadAsync(buffer, 0, nextDatSize);
                     }
 
+                    NetPacket packet = new NetPacket(buffer);
+
                     switch ((ActionID)act)
                     {
                         case ActionID.chatMessage:
@@ -259,7 +269,7 @@ namespace ConsoleAdventure
                             Dictionary<string, string> connectedPlayerData = SerializeData.Deserialize<Dictionary<string, string>>(buffer);
                             
                             SendChatMessage(connectedID.ToString() + " has been connected", false, 255);
-                            ConsoleAdventure.world.ConnectPlayer(connectedID, "");
+                            ConsoleAdventure.world.ConnectPlayer(connectedID);
                             ConsoleAdventure.world.players[connectedID].LoadPlayerInfo(connectedPlayerData);
                             break;
                         case ActionID.onPlayerDisconnected:
@@ -283,7 +293,7 @@ namespace ConsoleAdventure
                                 short curId = Int16.Parse(receivedPlayersDatas[i]["id"]);
                                 if (curId == Id) continue;
                                 Loger.AddLog("Creating Player -> " + curId.ToString());
-                                ConsoleAdventure.world.ConnectPlayer(curId, "");
+                                ConsoleAdventure.world.ConnectPlayer(curId);
                                 ConsoleAdventure.world.players[curId].LoadPlayerInfo(receivedPlayersDatas[i]);
                             }
                             break;
@@ -296,7 +306,6 @@ namespace ConsoleAdventure
                             WorldIO.LoadWorldFromPackedBytes(buffer);
                             break;
                         case ActionID.entitySpawned:
-                            NetPacket packet = new NetPacket(buffer);
                             int entityNetID = packet.ReadInt();
                             byte entityW = packet.ReadByte();
                             Position entityPosition = packet.ReadPosition();
@@ -305,6 +314,10 @@ namespace ConsoleAdventure
                             nextNetID = entityNetID;
                             Entity entity = (Entity)Activator.CreateInstance(Entity.TypeMapping[entityType], new object[] { entityPosition, entityW, null });
                             Spawner.Spawn(entity);
+                            break;
+                        case ActionID.entityKilled:
+                            int entitykNetID = packet.ReadInt();
+                            netIDMap[entitykNetID].Kill();
                             break;
                     }
                 }
