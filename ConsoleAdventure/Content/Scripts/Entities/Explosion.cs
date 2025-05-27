@@ -48,7 +48,6 @@ namespace ConsoleAdventure.Content.Scripts
         int delay = 5;
         public override void AI()
         {
-            if (!NetworkManager.isHost) delay = 1;
             if (CanHitToPlayer(out short id) && world.players[id].invulnerabilityTime < 0)
             {
                 world.players[id].Hit(10);
