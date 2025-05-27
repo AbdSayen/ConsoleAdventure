@@ -269,7 +269,7 @@ namespace ConsoleAdventure
                             Dictionary<string, string> connectedPlayerData = SerializeData.Deserialize<Dictionary<string, string>>(buffer);
                             
                             SendChatMessage(connectedID.ToString() + " has been connected", false, 255);
-                            ConsoleAdventure.world.ConnectPlayer(connectedID);
+                            ConsoleAdventure.world.ConnectPlayer(connectedID, "");
                             ConsoleAdventure.world.players[connectedID].LoadPlayerInfo(connectedPlayerData);
                             break;
                         case ActionID.onPlayerDisconnected:
@@ -293,7 +293,7 @@ namespace ConsoleAdventure
                                 short curId = Int16.Parse(receivedPlayersDatas[i]["id"]);
                                 if (curId == Id) continue;
                                 Loger.AddLog("Creating Player -> " + curId.ToString());
-                                ConsoleAdventure.world.ConnectPlayer(curId);
+                                ConsoleAdventure.world.ConnectPlayer(curId, "");
                                 ConsoleAdventure.world.players[curId].LoadPlayerInfo(receivedPlayersDatas[i]);
                             }
                             break;
