@@ -48,6 +48,8 @@ namespace ConsoleAdventure
 
             entitySpawned,
             entityKilled,
+            entityMoved,
+
         }
 
         public static int SetNetID(Entity entity)
@@ -222,6 +224,23 @@ namespace ConsoleAdventure
             packet.WriteInt(entity.netID);
             await SendMessage(ActionID.entityKilled, packet);
         }
+        
+        public static async Task EntityMoved(Entity entity, int playerID = -1)
+        {
+            NetPacket packet = new NetPacket();
+            bool isPlayer = playerID >= 0;
+            if (isPlayer)
+            {
+                packet.WriteInt(playerID);
+            }
+            else
+            {
+                packet.WriteInt(entity.netID);
+            }
+            packet.WritePosition(entity.position);
+            packet.WriteBool(isPlayer);
+            await SendMessage(ActionID.entityMoved, packet);
+        }
 
         public static async Task ReceiveMainDataAsync()
         {
@@ -317,7 +336,20 @@ namespace ConsoleAdventure
                             break;
                         case ActionID.entityKilled:
                             int entitykNetID = packet.ReadInt();
-                            netIDMap[entitykNetID].Kill();
+                            GetEntityFromNetID(entitykNetID).Kill();
+                            break;
+                        case ActionID.entityMoved:
+                            bool entitymPlayer = packet.ReadBool();
+                            Position entitymPosition = packet.ReadPosition();
+                            int entitymNetID = packet.ReadInt();
+                            if (!entitymPlayer)
+                            {
+                                GetEntityFromNetID(entitymNetID).SetPosition(entitymPosition);
+                            }
+                            else
+                            {
+                                ConsoleAdventure.world.players[(short)entitymNetID].SetPosition(entitymPosition);
+                            }
                             break;
                     }
                 }

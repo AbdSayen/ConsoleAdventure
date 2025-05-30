@@ -72,6 +72,23 @@ namespace ConsoleAdventure.Content.Scripts
             return Color.Yellow;
         }
 
+        public void UpdateEntityInWorld()
+        {
+            if (this is Player.Player || NetworkManager.isHost)
+                InteractWithWorld();
+            if (oldPos != position)
+            {
+                if (this is Player.Player)
+                {
+                    Player.Player pl = (Player.Player)this;
+                    NetworkManager.EntityMoved(this, pl.info.Id);
+                }
+                else if (NetworkManager.isHost)
+                {
+                    NetworkManager.EntityMoved(this);
+                }
+            }
+        }
 
         /// <summary>
         /// Обновление сущности в мире

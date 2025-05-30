@@ -114,5 +114,15 @@ namespace ConsoleAdventure.Networks
             x = ReadInt();
             return new Position(x, y);
         }
+
+        public void WriteBool(bool n)
+        {
+            data.AddRange(BitConverter.GetBytes(n));
+        }
+
+        public bool ReadBool()
+        {
+            return BitConverter.ToBoolean(PickLastBytes(1), 0);
+        }
     }
 }

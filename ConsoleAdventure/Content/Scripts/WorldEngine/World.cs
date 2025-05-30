@@ -186,7 +186,7 @@ namespace ConsoleAdventure.WorldEngine
         public void ConnectPlayer(short id, string pcId = "")
         {
             Player player = new Player(id, pcId, new Position(5 + id, 5 + id), ConsoleAdventure.world.Surface);
-            players.Add(id, player);
+            players.Add(player.info.Id, player);
         }
 
         public void DisconnectPlayer(short id)
@@ -218,11 +218,11 @@ namespace ConsoleAdventure.WorldEngine
                 
                 time.PassTime(timeSpeed);
 
-                GetLocalPlayer().InteractWithWorld();
+                GetLocalPlayer().UpdateEntityInWorld();
 
                 for (int i = 0; i < entities.Count; i++)
                 {
-                    entities[i].InteractWithWorld();
+                    entities[i].UpdateEntityInWorld();
                 }
 
                 //for (int i = 0; i < 20; i++)
@@ -654,6 +654,15 @@ namespace ConsoleAdventure.WorldEngine
             else
             {
                 GenerateChunk(xChunk, yChunk);
+            }
+
+            for (short i = 0; i < players.Count; i++)
+            {
+                if (i == NetworkManager.Id) continue;
+                if (players[i].position.x > chunkStartX && players[i].position.x < (chunkStartX + Chunk.Size) && players[i].position.y > chunkStartY && players[i].position.y < (chunkStartY + Chunk.Size))
+                {
+                    players[i].SetPosition(players[i].position);
+                }
             }
         }
 
