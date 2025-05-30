@@ -22,7 +22,17 @@ namespace ConsoleAdventure.Content.Scripts
             new Color(240, 210, 80),
         };
 
-        int index = -1;
+        int index
+        {
+            get
+            {
+                return ai[0];
+            }
+            set
+            {
+                ai[0] = value;
+            }
+        }
 
         public Cat(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
         {

@@ -26,7 +26,8 @@ namespace ConsoleAdventure.Content.Scripts
 
         public int netID = -1;
 
-        private int[] ai = new int[8];
+        internal int[] ai = new int[8];
+        private int[] oldAi = new int[8];
 
         public List<Buff> buffs = new();
 
@@ -74,8 +75,20 @@ namespace ConsoleAdventure.Content.Scripts
 
         public void UpdateEntityInWorld()
         {
+            if (oldAi != ai)
+            {
+                if (NetworkManager.isHost)
+                {
+                    NetworkManager.EntityAIvalChanged(this);
+                }
+            }
             if (this is Player.Player || NetworkManager.isHost)
+            {
+                oldAi = ai;
+                oldPos = position;
                 InteractWithWorld();
+            }
+                
             if (oldPos != position)
             {
                 if (this is Player.Player)

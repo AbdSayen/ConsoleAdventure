@@ -49,7 +49,7 @@ namespace ConsoleAdventure
             entitySpawned,
             entityKilled,
             entityMoved,
-
+            entityAIvalChanged,
         }
 
         public static int SetNetID(Entity entity)
@@ -242,6 +242,17 @@ namespace ConsoleAdventure
             await SendMessage(ActionID.entityMoved, packet);
         }
 
+        public static async Task EntityAIvalChanged(Entity entity)
+        {
+            NetPacket packet = new NetPacket();
+            for (int i = 0; i < 8; i++)
+            {
+                packet.WriteInt(entity.ai[i]);
+            }
+            packet.WriteInt(entity.netID);
+            await SendMessage(ActionID.entityAIvalChanged, packet);
+        }
+
         public static async Task ReceiveMainDataAsync()
         {
             ConsoleAdventure.logger.AddMessage("Started client listener cycle!");
@@ -349,6 +360,14 @@ namespace ConsoleAdventure
                             else
                             {
                                 ConsoleAdventure.world.players[(short)entitymNetID].SetPosition(entitymPosition);
+                            }
+                            break;
+                        case ActionID.entityAIvalChanged:
+                            int entityaNetID = packet.ReadInt();
+                            Entity entitya = GetEntityFromNetID(entityaNetID);
+                            for (int i = 7; i >= 0; i--)
+                            {
+                                entitya.ai[i] = packet.ReadInt();
                             }
                             break;
                     }

@@ -535,7 +535,6 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         private void Walk()
         {
-            oldPos = position;
             _movement.Move(this);
         }
 
