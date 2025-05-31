@@ -11,5 +11,6 @@ namespace ConsoleAdventure
     {
         public static readonly Color woodenColor = new Color(94, 61, 38);
         public static readonly Color graniteColor = new Color(45, 45, 45);
+        public static readonly Color theLionColor = new Color(140, 102, 81);
     }
 }

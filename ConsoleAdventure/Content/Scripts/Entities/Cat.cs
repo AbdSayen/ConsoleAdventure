@@ -9,7 +9,7 @@ namespace ConsoleAdventure.Content.Scripts
     [Serializable]
     public class Cat : Entity
     {
-        public static Color[] Colors = new Color[9]
+        public static Color[] Colors = new Color[10]
         {
             new Color(50, 50, 50),
             new Color(131, 105, 44),
@@ -20,6 +20,7 @@ namespace ConsoleAdventure.Content.Scripts
             new Color(196, 207, 211),
             new Color(250, 194, 45),
             new Color(240, 210, 80),
+            ColorAssets.theLionColor
         };
 
         int index
@@ -44,7 +45,14 @@ namespace ConsoleAdventure.Content.Scripts
             Initialize();
 
             if (parameters == null)
-                index = ConsoleAdventure.rand.Next(0, Colors.Length);
+            {
+                index = ConsoleAdventure.rand.Next(0, Colors.Length - 1);
+
+                if(ConsoleAdventure.rand.Next(0, 101) < 2)
+                {
+                    index = 9;
+                }
+            }
             else
                 index = (int)parameters[0];
         }
