@@ -358,6 +358,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                                         if (ConsoleAdventure.kstate.IsKeyDown(Keys.M)) inm = true;
                                         if (ConsoleAdventure.kstate.IsKeyDown(Keys.H)) { ish = true; inm = true; }
                                         NetworkManager.isHost = ish;
+                                        if (!inm) NetworkManager.isHost = true;
                                         await ConsoleAdventure.CreateWorld(name, 0, 16, false, inm);
 
                                         if (ConsoleAdventure.world != null)

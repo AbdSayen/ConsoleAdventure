@@ -298,7 +298,7 @@ namespace ConsoleAdventure
 
                 if (kstate.IsKeyDown(InputConfig.WorldExit.key) && !world.isCmdOpen)
                 {
-                    NetworkManager.DisconectClient();
+                    if (world.inMultiplayer) NetworkManager.DisconectClient();
                     if (NetworkManager.Id == 0 || NetworkManager.Id == -1) WorldIO.Save(world.name);
                     InWorld = false;
                     menu.CloseAllPages();
