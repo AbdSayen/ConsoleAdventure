@@ -7,10 +7,12 @@ using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.Direct2D1;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace ConsoleAdventure
@@ -30,6 +32,8 @@ namespace ConsoleAdventure
         public bool zoom = true;
         private Dictionary<Point, MapChunk> mapBuffer = new();
         public int mapW = 1;
+
+        private float worldScreenProgress;
 
         public Display(World world)
         {
@@ -71,6 +75,7 @@ namespace ConsoleAdventure
             world.Render();
 
             DrawBars();
+            DrawWorldScreenProgress();
         }
 
         public void DrawBars()
@@ -81,11 +86,23 @@ namespace ConsoleAdventure
             ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, "♥", barsPos, Color.Red);
             ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, $"[{player.life}/{player.maxLife}]", barsPos + new Vector2(18, -19), new Color(80, 80, 80));
             hpBar.Draw(ConsoleAdventure._spriteBatch);
+
+
+        }
+
+        public void DrawWorldScreenProgress()
+        {
+            if (worldScreenProgress > 0)
+            {
+                string wsptxt = "Map screenshot saved: " + worldScreenProgress.ToString("0.00") + "%";
+                Vector2 sz = ConsoleAdventure.Font.MeasureString(wsptxt);
+                ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, wsptxt, new Vector2((ConsoleAdventure.Width - sz.X) - 10, ConsoleAdventure.Height - sz.Y - 10), Color.Yellow);
+            }
         }
 
         int timer;
 
-        public void DrawMap()
+        public async Task DrawMap()
         {
             //mapFlag = false;
             Player player = world.GetLocalPlayer();
@@ -195,7 +212,7 @@ namespace ConsoleAdventure
                 {
                     try
                     {
-                        System.Drawing.Bitmap bitmap = MapScreen(mapW);
+                        System.Drawing.Bitmap bitmap = await Task.Run(() => MapScreen(mapW));
                         if (!Directory.Exists("Screens")) Directory.CreateDirectory("Screens");
                         int count = Directory.GetFiles("Screens", "*.png").Length;
 
@@ -211,7 +228,7 @@ namespace ConsoleAdventure
                 {
                     try
                     {
-                        System.Drawing.Bitmap bitmap = MapScreen2(mapW);
+                        System.Drawing.Bitmap bitmap = await Task.Run(() => MapScreen2(mapW));
                         if (!Directory.Exists("Screens")) Directory.CreateDirectory("Screens");
                         int count = Directory.GetFiles("Screens", "*.png").Length;
 
@@ -266,8 +283,10 @@ namespace ConsoleAdventure
                         }
                     }
                 }
-            }
 
+                worldScreenProgress = g / (float)player.map.data.Count * 100;
+            }
+            worldScreenProgress = 0;
             return screen;
         }
 
@@ -296,9 +315,11 @@ namespace ConsoleAdventure
                     }
 
                     world.chunks[i, j] = null;
+
+                    worldScreenProgress = (i * size + j) / (float)(size * size) * 100;
                 }
             }
-
+            worldScreenProgress = 0;
             return screen;
         }
 
