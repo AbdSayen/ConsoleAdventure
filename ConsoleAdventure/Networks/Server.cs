@@ -62,7 +62,7 @@ namespace ConsoleAdventure.Networks
             string s_ = "[ ";
             for (int i = 0; i < dat.Length; i++)
                 s_ += dat[i].ToString() + ", ";
-            s_ += "]    '" + Encoding.UTF8.GetString(dat) + "'";
+            s_ += "]    '" + Encoding.UTF8.GetString(dat).Replace("\a", "alert") + "'";
             ConsoleAdventure.logger.AddMessage($"SERVER: Command: ({dat.Length})\n    " + s_); // {BitConverter.ToInt16(dat, 0)}, {BitConverter.ToInt32(dat, 2)}, {BitConverter.ToInt16(dat, 6)}\n    
             for (int i = 0; i < clients.Count; i++)
             {

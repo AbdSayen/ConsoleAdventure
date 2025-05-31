@@ -6,6 +6,8 @@
   	<RollForward>Major</RollForward>
   	<PublishReadyToRun>false</PublishReadyToRun>
   	<TieredCompilation>false</TieredCompilation>
+  	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+  	<DocumentationFile>bin\Debug\net6.0-windows\ConsoleAdventure.xml</DocumentationFile>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">

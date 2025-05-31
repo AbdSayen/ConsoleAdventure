@@ -44,33 +44,56 @@ namespace ConsoleAdventure
 
         public static void UpdateModSourcesDLL()
         {
-            ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Check if ModSources Folder exists");
+            string massageType = "[UpdateGameAPIForMods] ";
+
+            ConsoleAdventure.logger.AddMessage(massageType + "Check if ModSources Folder exists");
 
             if (Directory.Exists(ModCreator.path))
             {
-                ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] ModSources Folder exists");
+                ConsoleAdventure.logger.AddMessage(massageType + "ModSources Folder exists");
                 string originalDLL = "ConsoleAdventure.dll";
 
-                ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Check If consoleAdventure.dll in ModSources exists");
+                ConsoleAdventure.logger.AddMessage(massageType + "Check If consoleAdventure.dll in ModSources exists");
                 if (!File.Exists(ModCreator.path + originalDLL))
                 {
-                    ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] consoleAdventure.dll in ModSources not exists copy originial dll");
+                    ConsoleAdventure.logger.AddMessage(massageType + "consoleAdventure.dll in ModSources not exists copy original dll");
                     File.Copy(originalDLL, ModCreator.path + originalDLL);
                 }
                 else
                 {
-                    ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] consoleAdventure.dll in ModSources exists");
-                    ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Compare checksums");
+                    ConsoleAdventure.logger.AddMessage(massageType + "consoleAdventure.dll in ModSources exists");
+                    ConsoleAdventure.logger.AddMessage(massageType + "Compare checksums");
                     if (!GetChecksum(originalDLL).SequenceEqual(GetChecksum(ModCreator.path + originalDLL)))
                     {
-                        ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Checksums not equal, replacing");
+                        ConsoleAdventure.logger.AddMessage(massageType + "Checksums not equal, replacing");
                         if (!File.Exists(originalDLL + "2"))
                             File.Copy(originalDLL, originalDLL+"2");
                         File.Replace(originalDLL+"2", ModCreator.path + originalDLL, originalDLL + ".backup");
                     }
                 }
+
+                string originalXML = "ConsoleAdventure.xml";
+
+                ConsoleAdventure.logger.AddMessage(massageType + "Check If consoleAdventure.xml in ModSources exists");
+                if (!File.Exists(ModCreator.path + originalXML))
+                {
+                    ConsoleAdventure.logger.AddMessage(massageType + "consoleAdventure.xml in ModSources not exists copy original xml documentation");
+                    File.Copy(originalXML, ModCreator.path + originalXML);
+                }
+                else
+                {
+                    ConsoleAdventure.logger.AddMessage(massageType + "consoleAdventure.xml in ModSources exists");
+                    ConsoleAdventure.logger.AddMessage(massageType + "Compare checksums");
+                    if (!GetChecksum(originalXML).SequenceEqual(GetChecksum(ModCreator.path + originalXML)))
+                    {
+                        ConsoleAdventure.logger.AddMessage(massageType + "Checksums not equal, replacing");
+                        if (!File.Exists(originalXML + "2"))
+                            File.Copy(originalXML, originalXML + "2");
+                        File.Replace(originalXML + "2", ModCreator.path + originalXML, originalXML + ".backup");
+                    }
+                }
             }
-            ConsoleAdventure.logger.AddMessage("[UpdateModSourcesDLL] Completed!");
+            ConsoleAdventure.logger.AddMessage(massageType + "Completed!");
         }
 
         static byte[] GetChecksum(string filePath)
