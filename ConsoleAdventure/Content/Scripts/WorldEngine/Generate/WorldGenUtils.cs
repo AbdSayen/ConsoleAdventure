@@ -1,8 +1,8 @@
-﻿using ConsoleAdventure.WorldEngine.Generate;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine.Generate;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,11 +13,23 @@ namespace ConsoleAdventure.WorldEngine.Generate
     {
         private static object[] Resizes = new object[] { -1, 0, 0, 1 };
 
-        public static void RandomWalker(int x, int y, int w, int steps, Vector2 diraction, float offset, int size, int type, int layer = -1)
+        /// <summary>
+        /// Шагатель по миру --устаревший метод, не рекомендуемый--.
+        /// </summary>
+        /// <param name="x">Координата по X</param>
+        /// <param name="y">Координата по Y</param>
+        /// <param name="w">Глубина</param>
+        /// <param name="steps">Количество шагов</param>
+        /// <param name="direction">Начальное направление валкера</param>
+        /// <param name="offset">Максимальный угол сдвига направления</param>
+        /// <param name="size">Стартовый размер валкера</param>
+        /// <param name="type">Тип трансформа</param>
+        /// <param name="layer">Слой трансформа</param>
+        public static void LegacyWalker(int x, int y, int w, int steps, Vector2 direction, float offset, int size, int type, int layer = -1)
         {
             int curSize = size;
             Position position = new Position(x, y);
-            Vector2 curDir = diraction;
+            Vector2 curDir = direction;
 
             for(int i = 0; i < steps; i++)
             {
@@ -43,6 +55,73 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Шагатель по карте прегенерации
+        /// </summary>
+        /// <param name="map">Карта прегенерации</param>
+        /// <param name="mapPosition">Позиция карты</param>
+        /// <param name="seed">Сид для рандома</param>
+        /// <param name="steps">Количество шагов</param>
+        /// <param name="angleOffset">Максимальный угол сдвига направления</param>
+        /// <param name="direction">Начальное направление валкера</param>
+        /// <param name="position">Начальная позиция</param>
+        /// <param name="size">Начальная позиция</param>
+        /// <param name="minSize">Минимальный размер валкера</param>
+        /// <param name="maxSize">Максимальный размер валкера</param>
+        /// <param name="chanceResize">Вероятнось попытки изменить размер</param>
+        /// <returns></returns>
+        public static bool[,] Walker(bool[,] map, Position mapPosition, int seed, int steps, float angleOffset, Vector2 direction, Position position, int size, int minSize, int maxSize, int chanceResize = 100)
+        {
+            int width = map.GetLength(0);
+            int height = map.GetLength(1);
+
+            Vector2 envoyPosition = position.ToVector2();
+            Vector2 envoyDirection = direction;
+            envoyDirection.Normalize();
+
+            int envoySize = Math.Abs(size);
+
+            for (int i = 0; i < steps; i++)
+            {
+                float x = envoyPosition.X;
+                float y = envoyPosition.Y;
+
+                for (int j = (int)x - envoySize; j <= (int)x + envoySize; j++)
+                {
+                    for (int k = (int)y - envoySize; k <= (int)y + envoySize; k++)
+                    {
+                        float SquareX = MathF.Pow(Math.Abs(j - x), 2);
+                        float SquareY = MathF.Pow(Math.Abs(k - y), 2);
+
+                        if (MathF.Sqrt(SquareX + SquareY) < (float)envoySize / 2.0f && j >= 0 && j < width && k >= 0 && k < height)
+                        {
+                            map[j, k] = true;
+                        }
+                    }
+                }
+
+                float value = OpenSimplex.noise2(seed, x + mapPosition.x, y + mapPosition.y);
+
+                envoyPosition += envoyDirection;
+                envoyDirection = Utils.Rotated(envoyDirection, value * angleOffset);
+                envoyDirection.Normalize();
+
+                int radius = (int)((float)envoySize / 2.0f);
+
+                int randSize = radius + (int)value;
+
+                if (randSize >= minSize && randSize < maxSize && (value + 1) * 50 < chanceResize)
+                    envoySize = randSize;
+
+                if (envoyPosition.X < radius || envoyPosition.X > width - radius || envoyPosition.Y < radius || envoyPosition.Y > height - radius)
+                {
+                    break;
+                }
+            }
+
+            return map;
         }
 
         private static Position[] directions = new Position[]

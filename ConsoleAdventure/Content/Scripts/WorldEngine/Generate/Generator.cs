@@ -42,6 +42,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
             if (CaModLoader.WorldGeneratorPreBuildPipelineMods(this))
             {
                 AddGeneratorToPipeline(new LandspaceGenerator(), 100);
+                AddGeneratorToPipeline(new CavernGenerator(), 200);
             }
 
             ConvertPrioritiesToGenPipeline();
@@ -142,6 +143,14 @@ namespace ConsoleAdventure.WorldEngine.Generate
             for (int i = 0; i < generationsPipeline.Count; i++)
             {
                 await generationsPipeline[i].Generate(world, chunkPos * Chunk.Size, chunkPos, world.generationProperties);
+            }
+        }
+
+        public void LoadProperties(World world)
+        {
+            for (int i = 0; i < generationsPipeline.Count; i++)
+            {
+                generationsPipeline[i].LoadProperties(world, world.generationProperties);
             }
         }
     }

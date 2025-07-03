@@ -38,12 +38,14 @@ namespace ConsoleAdventure.WorldEngine
 
         public override Color GetColor()
         {
-            return new Color(45, 45, 45);
+            return new Color(10, 10, 10);
         }
 
         public override Color? GetBGColor()
         {
-            return Color.Gray;
+            return new Color(45, 45, 45);
         }
+
+        
     }
 }

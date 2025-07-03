@@ -41,5 +41,10 @@ namespace ConsoleAdventure.WorldEngine.Generate
         {
 
         }
+
+        public virtual void LoadProperties(World world, Tags genProperties)
+        {
+
+        }
     }
 }

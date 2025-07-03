@@ -124,7 +124,8 @@ namespace ConsoleAdventure
 
         /// <summary>
         /// Рисует рамку из символов
-        /// </summary>
+        /// </summary> 
+        /// <param name="spriteBatch">Бэтч для отрисовки</param>
         /// <param name="font">Шрифт рамки</param>
         /// <param name="panel">Строки рамки</param>
         /// <param name="position">Позиция рамки</param>

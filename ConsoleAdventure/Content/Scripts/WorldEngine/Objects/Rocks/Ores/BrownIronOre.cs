@@ -43,7 +43,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override Color? GetBGColor()
         {
-            return Color.Gray;
+            return new Color(206, 83, 33) * 0.3f;
         }
 
         public override string ModifyTooltip()

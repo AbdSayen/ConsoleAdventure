@@ -76,6 +76,8 @@ namespace ConsoleAdventure
 
         public static bool ShowTypes { get; internal set; }
 
+        public static bool NoCollision { get; internal set; }
+
         public static bool BlockHotKey { get; set; } = false;
 
         public static SpriteFont Font => font;

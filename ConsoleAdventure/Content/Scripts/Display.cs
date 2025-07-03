@@ -4,6 +4,7 @@ using ConsoleAdventure.Content.Scripts.Player;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
+using ConsoleAdventure.WorldEngine.Generate;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -294,16 +295,21 @@ namespace ConsoleAdventure
         {
             int size = world.size / Chunk.Size;
             System.Drawing.Bitmap screen = new System.Drawing.Bitmap(size, size);
+            
+            LandspaceGenerator landspace = new LandspaceGenerator();
+            landspace.LoadProperties(world, world.generationProperties);
 
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    world.GenerateChunk(i, j);
+                    world.chunks[i, j] = new LoadedChunk();
 
-                    Field f = world.chunks[i, j].GetField(0, 0, World.BlocksLayerId, w);
+                    landspace.Place(world, i * Chunk.Size, j * Chunk.Size, new Position(i, j));
 
-                    if(f?.content != null)
+                    Field f = world.chunks[i, j]?.GetField(0, 0, World.BlocksLayerId, w);
+
+                    if (f?.content != null)
                     {
                         Color color = f.content.GetColor();
                         screen.SetPixel(i, j, System.Drawing.Color.FromArgb(255, color.R, color.G, color.B));
@@ -311,7 +317,18 @@ namespace ConsoleAdventure
 
                     else
                     {
-                        screen.SetPixel(i, j, System.Drawing.Color.FromArgb(255, 0, 0, 0));
+                        Field f1 = world.chunks[i, j]?.GetField(0, 0, World.FloorLayerId, w);
+
+                        if (f1?.content != null)
+                        {
+                            Color color = f1.content.GetColor();
+                            screen.SetPixel(i, j, System.Drawing.Color.FromArgb(255, color.R, color.G, color.B));
+                        }
+
+                        else
+                        {
+                            screen.SetPixel(i, j, System.Drawing.Color.FromArgb(255, 0, 0, 0));
+                        }
                     }
 
                     world.chunks[i, j] = null;

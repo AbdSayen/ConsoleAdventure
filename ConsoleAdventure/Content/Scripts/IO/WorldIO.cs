@@ -517,6 +517,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 
                 world.generationProperties.Data = tags.SafelyGet<Dictionary<string, object>>("GenSettings", new Dictionary<string, object>());
 
+                world.generator.LoadProperties(world);
+
                 ConsoleAdventure.world.playersDat = tags.SafelyGet<Dictionary<string, byte[]>>("PlayersData");
 
                 byte[,,,,] fields = tags.SafelyGet<byte[,,,,]>("Fields");

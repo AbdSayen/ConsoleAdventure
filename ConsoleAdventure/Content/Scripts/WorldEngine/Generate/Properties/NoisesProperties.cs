@@ -28,19 +28,26 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
             tags["ClimaticNoise"] = new SineNoise(world.size / Chunk.Size, landspaceScale, 0.3f, 2f, 1f, 1f, landspaceNoise);
 
-            tags["ForestNoise"] = new NoiseBuffer(world.seed, 6, 0.5, 3.8);
+            tags["ForestNoise"] = new NoiseBuffer(world.seed, 4, 0.5, 3.8);
             tags["ForestScale"] = 0.0005f;
 
+            tags["EdgeNoise"] = new NoiseBuffer(world.seed + 1, 4, 0.5, 3.8);
+            tags["EdgeScale"] = 0.0005f;
+
+            tags["BrownIronOreNoise"] = new NoiseBuffer(world.seed, 4, 0.5, 2.7); ;
+            tags["BrownIronOreScale"] = 0.005f;
 
             processProgress = 0;
             processHint = Localization.GetTranslation("Progress", "DeterminationHeights");
             processProgress = 100;
 
-            tags["PlateBoundary"] = Generator.GenRand.NextFloat(-0.2f, -0.4f);
+            tags["PlateBoundary"] = Generator.GenRand.NextFloat(-0.3f, -0.4f);
 
-            float seaLevel = Generator.GenRand.NextFloat(-0.05f, 0.15f);
+            float seaLevel = Generator.GenRand.NextFloat(-0.25f, -0.18f);
             tags["SeaLevel"] = seaLevel;
             tags["BeachLevel"] = Generator.GenRand.NextFloat(seaLevel + 0.005f, seaLevel + 0.05f);
+            tags["EdgeLevel"] = Generator.GenRand.NextFloat(0.1f, 0.3f);
+            tags["BrownIronOreLevel"] = Generator.GenRand.NextFloat(0.45f, 0.55f);
         }
     }
 }

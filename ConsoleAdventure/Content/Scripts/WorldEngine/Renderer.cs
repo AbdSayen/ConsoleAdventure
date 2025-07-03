@@ -67,20 +67,9 @@ namespace ConsoleAdventure.WorldEngine
                             Transform t2 = ConsoleAdventure.world.GetField(x, y, World.MobsLayerId, observerW)?.content;
                             Transform t3 = ConsoleAdventure.world.GetField(x, y, World.ItemsLayerId, observerW)?.content;
 
-                            if (t1 != null)
-                            {
-                                t1.OnTheScreen();
-                            }
-
-                            if (t2 != null)
-                            {
-                                t2.OnTheScreen();
-                            }
-
-                            if (t3 != null)
-                            {
-                                t3.OnTheScreen();
-                            }
+                            if (t1 != null) t1.OnTheScreen();
+                            if (t2 != null) t2.OnTheScreen();
+                            if (t3 != null) t3.OnTheScreen();
                         }
                     }
                 }

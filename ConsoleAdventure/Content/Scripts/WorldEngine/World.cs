@@ -402,7 +402,7 @@ namespace ConsoleAdventure.WorldEngine
                        newY >= 0 && newY < size &&
                        (GetField(newX, newY, worldLayer, w)?.content == null &&
                        (GetField(newX, newY, BlocksLayerId, w)?.content == null ||
-                       !GetField(newX, newY, BlocksLayerId, w)?.content?.isObstacle == true));
+                       (!GetField(newX, newY, BlocksLayerId, w)?.content?.isObstacle == true || ConsoleAdventure.NoCollision)));
             }
 
             return false;
@@ -603,7 +603,7 @@ namespace ConsoleAdventure.WorldEngine
             return result.ToString();
         }
 
-        public void LoadChunk(int xChunk, int yChunk, bool playerArea)
+        public async void LoadChunk(int xChunk, int yChunk, bool playerArea)
         {
             int chunkStartX = xChunk * Chunk.Size;
             int chunkStartY = yChunk * Chunk.Size;
@@ -653,7 +653,7 @@ namespace ConsoleAdventure.WorldEngine
 
             else
             {
-                GenerateChunk(xChunk, yChunk);
+                await GenerateChunk(xChunk, yChunk);
             }
 
             for (short i = 0; i < players.Count; i++)
@@ -735,7 +735,7 @@ namespace ConsoleAdventure.WorldEngine
             }
         }
 
-        public void GenerateChunk(int x, int y)
+        public async Task GenerateChunk(int x, int y)
         {
             chunks[x, y] = new LoadedChunk();
 
