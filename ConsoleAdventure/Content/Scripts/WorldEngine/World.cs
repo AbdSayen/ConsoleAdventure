@@ -739,7 +739,7 @@ namespace ConsoleAdventure.WorldEngine
         {
             chunks[x, y] = new LoadedChunk();
 
-            generator.Generate(this, new Position(x, y));
+            await generator.Generate(this, new Position(x, y));
 
             if (chunks[x, y] != null) 
                 chunks[x, y].IsUpdated = false;

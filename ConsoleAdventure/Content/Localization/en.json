@@ -78,6 +78,12 @@
     "BlackSoilFloor": "black soil floor",
     "Alfisol": "alfisol",
     "AlfisolFloor": "alfisol floor",
+    "Basalt": "basalt",
+    "BasaltFloor": "basalt floor",
+    "Obsidian": "obsidian",
+    "ObsidianFloor": "obsidian floor",
+    "Granulite": "granulite",
+    "GranuliteFloor": "granulite floor",
 
     "SpruceTree": "spruce tree",
     "PineTree": "pine tree",

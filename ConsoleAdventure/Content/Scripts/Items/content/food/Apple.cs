@@ -11,7 +11,7 @@ namespace ConsoleAdventure
         public Apple()
         {
             satiety = 1;
-            name = Localization.GetTranslation("Items", GetType().Name);
+            name = Localization.GetTranslation(Localization.Chapters.Items, GetType().Name);
             description = GetDescription();
             canUse = true;
             consume = true;

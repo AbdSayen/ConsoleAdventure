@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ConsoleAdventure.Content.Scripts;
 using System.Windows.Forms.VisualStyles;
 using Microsoft.Xna.Framework;
+using ConsoleAdventure.Content.Scripts.WorldEngine.Generate;
 
 namespace ConsoleAdventure.WorldEngine.Generate
 {
@@ -22,11 +23,21 @@ namespace ConsoleAdventure.WorldEngine.Generate
         NoiseBuffer brownIronOreNoise;
         double brownIronOreScale;
 
+        NoiseBuffer cavernNoise;
+        double cavernScale;
+
+        NoiseBuffer lavaCavernNoise;
+        double lavaCavernScale;
+
         float seaLevel;
         float beachLevel;
+        float plateBoundaryLevel;
         float brownIronOreLevel;
 
-        bool[,] map = new bool[Chunk.Size * 3, Chunk.Size * 3];
+        float cavernLevel;
+        float lavaCavernLevel;
+
+        WalkerBuffer cavernTunnels;
 
         public override void LoadProperties(World world, Tags genProperties)
         {
@@ -34,13 +45,23 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
             landspaceNoise = genProperties.SafelyGet<NoiseBuffer>("LandspaceNoise", new NoiseBuffer());
             landspaceScale = genProperties.SafelyGet<float>("LandspaceScale", 1);
-
             seaLevel = genProperties.SafelyGet<float>("SeaLevel", 0);
             beachLevel = genProperties.SafelyGet<float>("BeachLevel", 0.1f);
+            plateBoundaryLevel = genProperties.SafelyGet<float>("PlateBoundary", -0.2f); 
 
             brownIronOreNoise = genProperties.SafelyGet<NoiseBuffer>("BrownIronOreNoise", new NoiseBuffer());
             brownIronOreScale = genProperties.SafelyGet<float>("BrownIronOreScale", 1f);
             brownIronOreLevel = genProperties.SafelyGet<float>("BrownIronOreLevel", 0f);
+
+            cavernNoise = genProperties.SafelyGet<NoiseBuffer>("CavernNoise", new NoiseBuffer());
+            cavernScale = genProperties.SafelyGet<float>("CavernScale", 1f);
+            cavernLevel = genProperties.SafelyGet<float>("CavernLevel", 0f);
+
+            lavaCavernNoise = genProperties.SafelyGet<NoiseBuffer>("LavaCavernNoise", new NoiseBuffer());
+            lavaCavernScale = genProperties.SafelyGet<float>("LavaCavernScale", 1f);
+            lavaCavernLevel = genProperties.SafelyGet<float>("LavaCavernLevel", 0f);
+
+            cavernTunnels = genProperties.SafelyGet<WalkerBuffer>("CavernTunnels", new WalkerBuffer());
         }
 
         public override async Task Generate(World world, Position startPosition, Position chunkPosition, Tags genProperties)
@@ -48,58 +69,12 @@ namespace ConsoleAdventure.WorldEngine.Generate
             short X = startPosition.x;
             short Y = startPosition.y;
 
-            //bool[,] map = new bool[Chunk.Size * 3, Chunk.Size * 3];
-
-            //for (int i = 0; i < map.GetLength(0); i++)
-            //{
-            //    for (int j = 0; j < map.GetLength(1); j++)
-            //    {
-            //        map[i, j] = false;
-            //    }
-            //}
-
-            /*int minWalkers = 1;
-            int maxWalkers = 10;
-
-            int minSteps = 15;
-            int maxSteps = 46;
-
-            int minAngle = 20;
-            int maxAngle = 45;
-
-            int minSize = 2;
-            int maxSize = 4;
-
-            int minResizedSize = 2;
-            int maxResizedSize = 15;
-
-            int resizeChance = 100;
-            */
             Position mapPos = chunkPosition / 3;
-            /*
-            int _x = (1 + mapPos.x) * (16 * 3);
-            int _y = (1 + mapPos.y) * (16 * 3);
+            int mapSize = Chunk.Size * 3;
 
-            for (int i = 0; i < Adjust(OpenSimplex.noise2(seed, _x, _y), minWalkers, maxWalkers - 1); i++)
-            {
-                float value = OpenSimplex.noise2(seed + i, _x, _y);
-                float value1 = OpenSimplex.noise2(seed + i + 1, _x, _y);
-                float value2 = OpenSimplex.noise2(seed + i + 2, _x, _y);
-                float value3 = OpenSimplex.noise2(seed + i + 3, _x, _y);
+            bool[,] cavernMap = cavernTunnels.GenerateMap(mapSize, mapSize, seed, mapPos);
+            bool[,] lavaCavernMap = cavernTunnels.GenerateMap(mapSize, mapSize, seed + 1, mapPos);
 
-                int steps = Adjust(value, minSteps, maxSteps);
-                float angle = MathHelper.ToRadians(Adjust(value, minAngle, maxAngle));
-
-                int size = Adjust(value, minSize, maxSize - 1);
-
-                Vector2 direction = new Vector2(Adjust(value, 0, 2) == 0 ? -1 : 1,
-                                                Adjust(value1, 0, 2) == 0 ? -1 : 1);
-
-                Position position = new Position(Adjust(value2, size, map.GetLength(0) - size),
-                                           Adjust(value3, size, map.GetLength(1) - size));
-
-                map = WorldGenUtils.Walker(map, mapPos, seed, steps, angle, direction, position, size, minResizedSize, maxResizedSize, resizeChance);
-            }*/
 
             for (int i = 0; i < Chunk.Size; i++)
             {
@@ -111,6 +86,9 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     Position position = new Position(x, y);
 
                     float brownIronOreValue = brownIronOreNoise.FractalSimplex2(x * brownIronOreScale, y * brownIronOreScale);
+                    float landSpaceValue = landspaceNoise.FractalSimplex2(x * landspaceScale, y * landspaceScale);
+                    float cavernValue = cavernNoise.FractalSimplex2(x * cavernScale, y * cavernScale);
+                    float lavaCavernValue = lavaCavernNoise.FractalSimplex2(x * lavaCavernScale, y * lavaCavernScale);
 
                     new Alfisol(position, world.Sedimentary);
                     new AlfisolFloor(position, world.Sedimentary);
@@ -120,39 +98,31 @@ namespace ConsoleAdventure.WorldEngine.Generate
                         new BrownIronOre(position, world.Sedimentary);
                     }
 
-                    Position pos = (mapPos - chunkPosition);
-                    if (brownIronOreValue < 0.1)
+                    Position pos = ((chunkPosition - (mapPos * 3)) * Chunk.Size) + new Position(i, j);
+
+                    if (cavernValue > cavernLevel && !cavernMap[pos.x, pos.y])
                     {
                         new Granite(position, world.Cavern);
-                        new Granite(position, world.LavaCavern);
+                    }   
+
+                    if (lavaCavernValue > lavaCavernLevel && !lavaCavernMap[pos.x, pos.y])
+                    {
+                        new Granulite(position, world.LavaCavern);
                     }
-                    
+
                     new GraniteFloor(position, world.Cavern);
-                    new GraniteFloor(position, world.LavaCavern);
+                    new GranuliteFloor(position, world.LavaCavern);
+
+                    if (landSpaceValue < plateBoundaryLevel)
+                    {
+                        new Basalt(position, world.Cavern);
+                        new Basalt(position, world.LavaCavern);
+
+                        new BasaltFloor(position, world.Cavern);
+                        new BasaltFloor(position, world.LavaCavern);
+                    }
                 }
             }
-        }
-
-        public int Adjust(float value, int min, int max)
-        {
-            if (value < -1) value = -1;
-            if (value > 1) value = 1;
-
-            float num = (value + 1f) / 2f;
-            int difference = max - min;
-            num = num * difference;
-            return ((int)num) + min;
-        }
-
-        public float Adjust(float value, float min, float max)
-        {
-            if (value < -1) value = -1;
-            if (value > 1) value = 1;
-
-            float num = (value + 1f) / 2f;
-            float difference = max - min;
-            num = num * difference;
-            return num + min;
         }
     }
 }

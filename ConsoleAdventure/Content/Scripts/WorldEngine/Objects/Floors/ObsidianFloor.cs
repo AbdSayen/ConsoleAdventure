@@ -6,32 +6,32 @@ using System.Collections.Generic;
 namespace ConsoleAdventure.WorldEngine
 {
     [Serializable]
-    public class GraniteFloor : Transform
+    public class ObsidianFloor : Transform
     {
         static string[] symbolsMap = new string[]
         {
-            " .",
-            " ~",
-            " ,",
+            " /",
+            " ¬",
+            " Ϟ",
         };
 
-        public GraniteFloor(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public ObsidianFloor(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.FloorLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)VanillaTransforms.graniteFloor;
+            type = (int)VanillaTransforms.obsidianFloor;
             isObstacle = false;
 
-            AddTypeToMap<GraniteFloor>(type);
+            AddTypeToMap<ObsidianFloor>(type);
 
             Initialize();
         }
 
         public override void Collapse()
         {
-            new Loot(position, w, new List<Stack> { new Stack(new GraniteFloorItem(), 1) });
+            new Loot(position, w, new List<Stack> { new Stack(new ObsidianFloorItem(), 1) });
         }
 
         public override string GetSymbol()
@@ -41,7 +41,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override Color GetColor()
         {
-            return new Color(35, 35, 35);
+            return new Color(25, 0, 84);
         }
     }
 }

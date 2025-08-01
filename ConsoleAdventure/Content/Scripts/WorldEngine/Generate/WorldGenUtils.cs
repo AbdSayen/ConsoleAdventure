@@ -70,7 +70,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
         /// <param name="size">Начальная позиция</param>
         /// <param name="minSize">Минимальный размер валкера</param>
         /// <param name="maxSize">Максимальный размер валкера</param>
-        /// <param name="chanceResize">Вероятнось попытки изменить размер</param>
+        /// <param name="chanceResize">Вероятность попытки изменить размер</param>
         /// <returns></returns>
         public static bool[,] Walker(bool[,] map, Position mapPosition, int seed, int steps, float angleOffset, Vector2 direction, Position position, int size, int minSize, int maxSize, int chanceResize = 100)
         {
@@ -216,6 +216,42 @@ namespace ConsoleAdventure.WorldEngine.Generate
             }
 
             return fieldCells;
+        }
+
+        /// <summary>
+        /// Подгоняет значение из диапазона [-1, 1] до [<paramref name="min"/> , <paramref name="max"/>]. 
+        /// Нужен для использования шума в качестве детерминированного рандома.
+        /// </summary>
+        /// <param name="value">Значения шума</param>
+        /// <param name="min">минимальное значенения выхода</param>
+        /// <param name="max">максимальное значенения выхода</param>
+        public static float Adjust(float value, float min, float max)
+        {
+            if (value < -1) value = -1;
+            if (value > 1) value = 1;
+
+            float num = (value + 1f) / 2f;
+            float difference = max - min;
+            num = num * difference;
+            return num + min;
+        }
+
+        /// <summary>
+        /// Подгоняет значение из диапазона [-1, 1] до [<paramref name="min"/> , <paramref name="max"/>]. 
+        /// Нужен для использования шума в качестве детерминированного рандома.
+        /// </summary>
+        /// <param name="value">Значения шума</param>
+        /// <param name="min">минимальное значенения выхода</param>
+        /// <param name="max">максимальное значенения выхода</param>
+        public static int Adjust(float value, int min, int max)
+        {
+            if (value < -1) value = -1;
+            if (value > 1) value = 1;
+
+            float num = (value + 1f) / 2f;
+            int difference = max - min;
+            num = num * difference;
+            return ((int)num) + min;
         }
     }
 }

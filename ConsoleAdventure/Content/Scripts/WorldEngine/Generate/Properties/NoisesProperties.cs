@@ -34,8 +34,14 @@ namespace ConsoleAdventure.WorldEngine.Generate
             tags["EdgeNoise"] = new NoiseBuffer(world.seed + 1, 4, 0.5, 3.8);
             tags["EdgeScale"] = 0.0005f;
 
-            tags["BrownIronOreNoise"] = new NoiseBuffer(world.seed, 4, 0.5, 2.7); ;
+            tags["BrownIronOreNoise"] = new NoiseBuffer(world.seed, 4, 0.5, 2.7);
             tags["BrownIronOreScale"] = 0.005f;
+
+            tags["CavernNoise"] = new NoiseBuffer(world.seed, 3, 0.45, 1.8);
+            tags["CavernScale"] = 0.05f;
+
+            tags["LavaCavernNoise"] = new NoiseBuffer(world.seed + 1, 3, 0.45, 1.8);
+            tags["LavaCavernScale"] = 0.05f;
 
             processProgress = 0;
             processHint = Localization.GetTranslation("Progress", "DeterminationHeights");
@@ -48,6 +54,16 @@ namespace ConsoleAdventure.WorldEngine.Generate
             tags["BeachLevel"] = Generator.GenRand.NextFloat(seaLevel + 0.005f, seaLevel + 0.05f);
             tags["EdgeLevel"] = Generator.GenRand.NextFloat(0.1f, 0.3f);
             tags["BrownIronOreLevel"] = Generator.GenRand.NextFloat(0.45f, 0.55f);
+
+            tags["CavernLevel"] = -0.1f;
+            tags["LavaCavernLevel"] = -0.1f;
+
+            tags["CavernTunnels"] = new WalkerBuffer(new Range(1, 10),  //walkers
+                                                     new Range(15, 46), //steps
+                                                     new Range(20, 45), //angles
+                                                     new Range(2, 4),   //sizes
+                                                     new Range(2, 15),  //size limits
+                                                     100);              //resize chance
         }
     }
 }

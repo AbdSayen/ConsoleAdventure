@@ -73,14 +73,19 @@ namespace ConsoleAdventure
         
         public static void AddTypeToMap<T>(int type)
         {
+            AddTypeToMap(typeof(T), type);
+        }
+
+        public static void AddTypeToMap(Type T, int type)
+        {
             if (type >= TypeMapping.Length)
             {
                 List<Type> types = TypeMapping.ToList();
-                types.Add(typeof(T));
+                types.Add(T);
 
                 typeMapping = types.ToArray();
 
-                ConsoleAdventure.logger.AddMessage($"{typeof(T).Namespace}.{typeof(T).Name} inited with id {type} and resize array");
+                ConsoleAdventure.logger.AddMessage($"{T.Namespace}.{T.Name} inited with id {type} and resize array");
                 return;
             }
 
@@ -88,8 +93,8 @@ namespace ConsoleAdventure
             {
                 if (TypeMapping[type] == null)
                 {
-                    typeMapping[type] = typeof(T);
-                    ConsoleAdventure.logger.AddMessage($"{typeof(T).Namespace}.{typeof(T).Name} inited with id {type}");
+                    typeMapping[type] = T;
+                    ConsoleAdventure.logger.AddMessage($"{T.Namespace}.{T.Name} inited with id {type}");
                 }
             }
         }

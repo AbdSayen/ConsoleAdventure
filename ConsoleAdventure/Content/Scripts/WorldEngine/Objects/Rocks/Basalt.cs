@@ -9,31 +9,29 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    public class Granite : Transform
+    public class Basalt : Transform
     {
-        public Granite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Basalt(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
-            type = (int)VanillaTransforms.granite;
+            this.worldLayer = World.BlocksLayerId;
+            type = (int)VanillaTransforms.basalt;
             isObstacle = true;
-            hardness = 2;
+            hardness = 1.8f;
             burnType = 1;
 
-            AddTypeToMap<Granite>(type);
+            AddTypeToMap(GetType(), type);
 
             Initialize();
         }
 
         public override void Collapse()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new GraniteItem(), 1) });
+            new Loot(position, w, new List<Stack>() { new Stack(new BasaltItem(), 1) });
         }
         
         public override string GetSymbol()
         {
-            return "##";
+            return "‡‡";
         }
 
         public override Color GetColor()
@@ -43,7 +41,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override Color? GetBGColor()
         {
-            return new Color(75, 75, 75);
+            return new Color(45, 45, 45);
         }
     }
 }

@@ -12,35 +12,35 @@ namespace ConsoleAdventure
 {
     public static class Localization
     {
-        #region Chapters
+        public static class Chapters
+        {
+            public static string Items { get; } = "Items";
 
-        public static readonly string ItemsChapter = "Items";
+            public static string ItemDescription { get; } = "ItemDescription";
 
-        public static readonly string ItemDescriptionChapter = "ItemDescription";
+            public static string Buffs { get; } = "Buffs";
 
-        public static readonly string BuffsChapter = "Buffs";
+            public static string BuffDescription { get; } = "BuffDescription";
 
-        public static readonly string BuffDescriptionChapter = "BuffDescription";
+            public static string Transforms { get; } = "Transforms";
 
-        public static readonly string TransformsChapter = "Transforms";
+            public static string Events { get; } = "Events";
 
-        public static readonly string EventsChapter = "Events";
+            public static string UI { get; } = "UI";
 
-        public static readonly string UIChapter = "UI";
+            public static string About { get; } = "About";
 
-        public static readonly string AboutChapter = "About";
+            public static string Generic { get; } = "Generic";
 
-        public static readonly string GenericChapter = "Generic";
+            public static string Progress { get; } = "Progress";
 
-        public static readonly string ProgressChapter = "Progress";
+            public static string MProgress { get; } = "MProgress";
 
-        public static readonly string MProgressChapter = "MProgress";
+            public static string KeysConfig { get; } = "KeysConfig";
 
-        public static readonly string KeysConfigChapter = "KeysConfig";
-        
-        public static readonly string KeysChapter = "Keys";
+            public static string Keys { get; } = "Keys";
 
-        #endregion
+        }
 
         private static string[] localizeFiles = new string[2];
 

@@ -78,6 +78,12 @@
     "BlackSoilFloor": "черноземный пол",
     "Alfisol": "серая лесная почва",
     "AlfisolFloor": "серый лесной пол",
+    "Basalt": "базальт",
+    "BasaltFloor": "базальтовый пол",
+    "Obsidian": "обсидиан",
+    "ObsidianFloor": "обсидиановый пол",
+    "Granulite": "гранулит",
+    "GranuliteFloor": "гранулитовый пол",
 
     "SpruceTree": "ель",
     "PineTree": "сосна",
@@ -89,7 +95,7 @@
     "ElmTree": "вяз",
     "OakTree": "дуб",
     "ViburnumTree": "калина"
-    
+
   },
 
   "Events": {

@@ -92,7 +92,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 {
                     if ((((float)Utils.HashNoise(x, y, 100)) / 10) < treesValue)
                     {
-                        new PineTree(position, world.Surface);
+                        new AppleTree(position, world.Surface);
                         treeFlag = true;
                     }
                 }

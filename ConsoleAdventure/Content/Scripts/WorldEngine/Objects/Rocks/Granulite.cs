@@ -9,41 +9,41 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    public class Granite : Transform
+    public class Granulite : Transform
     {
-        public Granite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Granulite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)VanillaTransforms.granite;
+            type = (int)VanillaTransforms.granulite;
             isObstacle = true;
             hardness = 2;
             burnType = 1;
 
-            AddTypeToMap<Granite>(type);
+            AddTypeToMap<Granulite>(type);
 
             Initialize();
         }
 
         public override void Collapse()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new GraniteItem(), 1) });
+            new Loot(position, w, new List<Stack>() { new Stack(new GranuliteItem(), 1) });
         }
         
         public override string GetSymbol()
         {
-            return "##";
+            return "≤≤";
         }
 
         public override Color GetColor()
         {
-            return new Color(10, 10, 10);
+            return new Color(64, 19, 19);
         }
 
         public override Color? GetBGColor()
         {
-            return new Color(75, 75, 75);
+            return new Color(100, 100, 73);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace ConsoleAdventure.WorldEngine
         cat,
         chest,
         grass,
-        
+        //////////
         stone,                  //+
         granite,                //+
         quartz,                 //+
@@ -37,27 +37,27 @@ namespace ConsoleAdventure.WorldEngine
         clay,
         clayFloor,
         brownIronOre,           //+
-        basalt,
-        basaltFloor,
-        obsidian,
-        obsidianFloor,
+        basalt,                 //+
+        basaltFloor,            //+
+        obsidian,               //+
+        obsidianFloor,          //+
         slate,
         onyx,
         amethyst,
-        fossil,
+        granulite,              //+
+        granuliteFloor,         //+
+        redMossFloor,
         marble,
         marbleFloor,
         chalk,
         chalkFloor,
         moss,
         mossFloor,
-        redMoss,
-        redMossFloor,
         fungus,
         fungusFloor,
         descent,                //+
         climb,                  //+
-
+        //////////
         workbench,
         furnace,
         anvil,
@@ -79,7 +79,7 @@ namespace ConsoleAdventure.WorldEngine
         charcoalFloor,
         highTemperatureFire,
         biotite,
-
+        //////////
         limestone,
         limestoneFloor,
         brownEarth,
@@ -87,7 +87,7 @@ namespace ConsoleAdventure.WorldEngine
         alfisol,
         alfisolFloor,
         textMark,
-
+        //////////
         spruceTree,
         pineTree,
         cedarTree,

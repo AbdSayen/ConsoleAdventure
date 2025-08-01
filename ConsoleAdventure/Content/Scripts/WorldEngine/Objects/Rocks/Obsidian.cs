@@ -9,41 +9,51 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    public class Granite : Transform
+    public class Obsidian : Transform
     {
-        public Granite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        static string[] symbolsMap = new string[]
+        {
+            "/ ",
+            " /",
+            "\\ ",
+            " \\",
+            "Ϟ ",
+            " Ϟ",
+        };
+
+        public Obsidian(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
 
-            type = (int)VanillaTransforms.granite;
+            type = (int)VanillaTransforms.obsidian;
             isObstacle = true;
-            hardness = 2;
+            hardness = 1.5f;
             burnType = 1;
 
-            AddTypeToMap<Granite>(type);
+            AddTypeToMap<Obsidian>(type);
 
             Initialize();
         }
 
         public override void Collapse()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new GraniteItem(), 1) });
+            new Loot(position, w, new List<Stack>() { new Stack(new ObsidianItem(), 1) });
         }
         
         public override string GetSymbol()
         {
-            return "##";
+            return symbolsMap[Utils.HashNoise(position.x, position.y, 6)];
         }
 
         public override Color GetColor()
         {
-            return new Color(10, 10, 10);
+            return new Color(0, 0, 0);
         }
 
         public override Color? GetBGColor()
         {
-            return new Color(75, 75, 75);
+            return new Color(25, 0, 84);
         }
     }
 }
