@@ -6,6 +6,7 @@ using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
+using ConsoleAdventure.Content.Scripts.UI.System;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
@@ -137,6 +138,11 @@ namespace ConsoleAdventure
             _graphics = new GraphicsDeviceManager(this);
 
             Localization.Load();
+
+            UISystem.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, 2));
+            UISystem.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, 6));
+            UISystem.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, -29));
+            UISystem.UpdateDrawOrder();
         }
 
         /*int LogIterationCount;
@@ -318,7 +324,7 @@ namespace ConsoleAdventure
 
             else
             {
-                menu.MenuUpdate();
+                //menu.MenuUpdate();
                 if (isExit)
                 {
                     Exit();
@@ -383,7 +389,7 @@ namespace ConsoleAdventure
 
                 else
                 {
-                    menu.Draw(_spriteBatch);
+                    //menu.Draw(_spriteBatch);
                     frame = 0;
                 }
             }
