@@ -21,9 +21,6 @@ namespace ConsoleAdventure
         public static Type[] TypeMapping { get { return typeMapping; } }
         private static Type[] typeMapping = new Type[256];
 
-        public static object[] StaticsData { get { return staticsData; } }
-        private static object[] staticsData = new object[256];
-
         public static World world { get; protected set; }
         public byte worldLayer { get; protected set; }
 
@@ -104,14 +101,30 @@ namespace ConsoleAdventure
             typeMapping = new Type[256];
         }
 
-        public static void ClearStaticsData()
+        /// <summary>
+        /// Инициализирует все <see cref="StaticData{T}"/> для <see cref="Transform"/>.
+        /// Базовая реализация инициализирует базовые <see cref="StaticData{T}"/> (). <br/><br/>
+        /// Желательно при перезаписи метода писать <c>base.InitAllStaticData();</c> в начале метода,
+        /// для большей надёжности<br/><br/>
+        /// Пример override-а:
+        /// <code> 
+        /// public static StaticData&lt;bool&gt; Flags { get; private set; } 
+        /// 
+        /// public override void InitStaticData()
+        /// {
+        ///     base.InitStaticData();
+        ///     Flags = new StaticData&lt;bool&gt;(false);
+        /// }
+        /// </code>
+        /// </summary>
+        public virtual void InitStaticData()
         {
-            staticsData = new object[256];
+
         }
 
-        public virtual object SetStaticData()
+        public virtual void SetStaticData()
         {
-            return null;
+
         }
                 
         public virtual void Move(int stepSize, Rotation rotation)
@@ -256,7 +269,7 @@ namespace ConsoleAdventure
             if (type.IsSubclassOf(typeof(Entity)) || type == typeof(Entity))
                 Spawner.Spawn((Entity)transform);
 
-            if (IsGlobalInit) StaticsData[transform.type] = transform.SetStaticData();
+            if (IsGlobalInit) transform.SetStaticData();
         }
 
         public virtual void LoadData(object data)

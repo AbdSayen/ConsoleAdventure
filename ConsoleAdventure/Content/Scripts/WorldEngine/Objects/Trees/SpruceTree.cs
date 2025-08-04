@@ -23,11 +23,9 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
-        public override object SetStaticData()
+        public override void SetStaticData()
         {
-            Tags tags = new Tags();
-
-            tags["Crown"] = new string[,]
+            Crowns[type] = new string[,]
             {
                 //{ "  ", " ¾", "¾ ", "  ", "  ", "  ", "  " },
                 { "  ", "  ", "¾¾", "¾ ", " ¾", "  ", "  " },
@@ -40,12 +38,10 @@ namespace ConsoleAdventure.WorldEngine
                 //{ "  ", "  ", "¾¾", "  ", "  ", " ¾", "  " },
             };
 
-            tags["CrownColor"] = new Color(17, 54, 27);
+            CrownColors[type] = new Color(17, 54, 27);
 
-            tags["LogType"] = typeof(Log);
-            tags["FruitType"] = typeof(Apple);
-
-            return tags;
+            LogTypes[type] = typeof(Log);
+            FruitTypes[type] = typeof(Apple);
         }
 
         public override string GetSymbol()

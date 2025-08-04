@@ -10,6 +10,14 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public abstract class Tree : Transform
     {
+        public static StaticData<string[,]> Crowns { get; set; }
+
+        public static StaticData<Color> CrownColors { get; set; }
+
+        public static StaticData<Type> LogTypes { get; set; }
+
+        public static StaticData<Type> FruitTypes { get; set; }
+
         public Tree(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
@@ -20,14 +28,28 @@ namespace ConsoleAdventure.WorldEngine
             burnType = 0;
         }
 
+        public override void InitStaticData()
+        {
+            base.InitStaticData();
+            Crowns = new StaticData<string[,]>(new string[0, 0]);
+            CrownColors = new StaticData<Color>(Color.White);
+            LogTypes = new StaticData<Type>(null);
+            FruitTypes = new StaticData<Type>(null);
+        }
+
         public override void Collapse()
         {
-            Tags tags = (Tags)StaticsData[type];
-            string[,] crown = tags.SafelyGet("Crown", new string[,] { });
+            string[,] crown = Crowns[type];
             int xOffset = (crown.GetLength(0) - 1) / 2;
             int yOffset = (crown.GetLength(1) - 1) / 2;
 
-            new Loot(position, w, new List<Stack> { new Stack(new Log(), 3) });
+            Type log = LogTypes[type];
+
+            if (log != null)
+            {
+                Item item = (Item)Activator.CreateInstance(log);
+                new Loot(position, w, new List<Stack> { new Stack(item, 3) });
+            }
 
             int count = ConsoleAdventure.rand.Next(2, 15);
             for (int i = 0; i < count; i++)
@@ -44,25 +66,32 @@ namespace ConsoleAdventure.WorldEngine
 
                 int lootType = ConsoleAdventure.rand.Next(0, 3);
 
-                if (lootType == 1)
-                    new Loot(pos, w, new List<Stack> { new Stack(new Apple(), 1) });
+                Type fruit = FruitTypes[type];
 
-                if (lootType == 2)
-                    new Loot(pos, w, new List<Stack> { new Stack(new Log(), 1) });
+                if (lootType == 1 && fruit != null)
+                {
+                    Item item = (Item)Activator.CreateInstance(fruit);
+                    new Loot(pos, w, new List<Stack> { new Stack(item, 1) });
+                }
+
+                if (lootType == 2 && log != null)
+                {
+                    Item item = (Item)Activator.CreateInstance(log);
+                    new Loot(pos, w, new List<Stack> { new Stack(item, 1) });
+                }
             }
         }
 
         public override void OnTheScreen()
         {
             StringBuilder crown = new();
-            Tags tags = (Tags)StaticsData[type];
-            string[,] Crown = tags.SafelyGet("Crown", new string[,] { });
+            string[,] Crown = Crowns[type];
             int width = Crown.GetLength(0);
             int height = Crown.GetLength(1);
             int xOffset = width / 2;
             int yOffset = height / 2;
             Position pos = position + new Position(-xOffset, -yOffset);
-            Color color = tags.SafelyGet("CrownColor", new Color(255, 255, 255));
+            Color color = CrownColors[type];
 
             for (int i = 0; i < width; i++)
             {
@@ -100,8 +129,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void WhenBurning()
         {
-            Tags tags = (Tags)StaticsData[type];
-            string[,] crown = tags.SafelyGet("Crown", new string[,] { });
+            string[,] crown = Crowns[type];
             int xOffset = (crown.GetLength(0) - 1) / 2;
             int yOffset = (crown.GetLength(1) - 1) / 2;
 

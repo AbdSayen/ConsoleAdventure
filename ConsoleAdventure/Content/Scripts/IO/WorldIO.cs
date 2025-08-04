@@ -384,7 +384,6 @@ namespace ConsoleAdventure.Content.Scripts.IO
         public static void InitContent()
         {
             Transform.ClearTypeMap();
-            Transform.ClearStaticsData();
 
             Light.Clear();
 
@@ -392,13 +391,24 @@ namespace ConsoleAdventure.Content.Scripts.IO
 
             Type baseType = typeof(Transform);
             IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType)).ToList().Concat(CaModLoader.modTransforms);
+
+            //Фу, мерзость, которая может и аукнутся (из-за абстракности базового Transform)
+            foreach (Type type in list)
+            {
+                if (type.IsAbstract || type == typeof(UnloadedTransform) || type == typeof(Player.Player))
+                    continue;
+
+                object[] args = Transform.BuildConstructorArgs(type, new(), 0, null, null);
+                Transform transform = (Transform)Activator.CreateInstance(type, args);
+                transform.InitStaticData();
+            }
+
             foreach (Type type in list)
             {
                 if (type.IsAbstract)
                     continue;
 
-                Transform.Init(type, Position.Zero(), 0, null, null);
-                
+                Transform.Init(type, Position.Zero(), 0, null, null); 
             }
 
             Transform.IsGlobalInit = false;
