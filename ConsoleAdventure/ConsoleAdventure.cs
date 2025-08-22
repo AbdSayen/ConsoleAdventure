@@ -139,10 +139,10 @@ namespace ConsoleAdventure
 
             Localization.Load();
 
-            UISystem.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, 2));
-            UISystem.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, 6));
-            UISystem.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, -29));
-            UISystem.UpdateDrawOrder();
+            UIGroup.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, 2));
+            UIGroup.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, 6));
+            UIGroup.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, -29));
+            UIGroup.UpdateDrawOrder();
         }
 
         /*int LogIterationCount;
