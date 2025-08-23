@@ -7,6 +7,7 @@ using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Content.Scripts.UI.System;
+using ConsoleAdventure.Content.Scripts.UI.System.Containers;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
@@ -107,6 +108,8 @@ namespace ConsoleAdventure
 
         public static bool WindowActive { get; private set; }
 
+        public UIGroup mainUIgroup;
+
         public ConsoleAdventure()
         {
             logger = new ExceptionLogger("gameLog.txt");
@@ -138,11 +141,6 @@ namespace ConsoleAdventure
             _graphics = new GraphicsDeviceManager(this);
 
             Localization.Load();
-
-            UIGroup.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, 2));
-            UIGroup.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, 6));
-            UIGroup.AddChild(new UIElement(new(40, 40), new(10, 10), Anchor.Center, -29));
-            UIGroup.UpdateDrawOrder();
         }
 
         /*int LogIterationCount;
@@ -213,6 +211,7 @@ namespace ConsoleAdventure
             CaModLoader.RunMods();
         }
 
+        UIGroup subgroup;
         protected override void LoadContent()
         {
             logger.AddMessage("Content loading...");
@@ -261,6 +260,21 @@ namespace ConsoleAdventure
             {
                 return c1.R == c2.R && c1.G == c2.G && c1.B == c2.B;
             }
+
+            mainUIgroup = new UIGroup(new(0, 0));
+            mainUIgroup.AddChild(new UIText(TextAssets.logo, Color.White, new Point(1920 / 2, 19), anchor: Anchor.Top));
+            mainUIgroup.AddChild(new UIText(new FormatString(" [color:999999=\"T\"][color:dddddd=\"h\"][color:999999=\"e\"] [color:999999=\"Co\"][color:dddddd=\"nso\"][color:999999=\"le\"] [color:999999=\"Ad\"][color:dddddd=\"ventu\"][color:999999=\"re\"] [item:ConsoleAdventure.IronPick] "), Color.White, new Point(0, 0), anchor: Anchor.TopLeft));
+            VListContainer container = new VListContainer(new(1920 / 2, 300), 10, new(500, 100), new(), Anchor.Top);
+            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Play"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Settings"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Mods"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+            mainUIgroup.AddChild(container);
         }
 
         protected override void UnloadContent()
@@ -325,6 +339,7 @@ namespace ConsoleAdventure
             else
             {
                 //menu.MenuUpdate();
+                mainUIgroup.Update();
                 if (isExit)
                 {
                     Exit();
@@ -389,6 +404,14 @@ namespace ConsoleAdventure
 
                 else
                 {
+                    if (Input.IsKeyDown(Keys.Z) && subgroup.IsVisible())
+                    {
+                        subgroup.Hide();
+                    }
+
+                    _spriteBatch.Begin();
+                    mainUIgroup.Draw(_spriteBatch, Vector2.Zero);
+                    _spriteBatch.End();
                     //menu.Draw(_spriteBatch);
                     frame = 0;
                 }

@@ -41,9 +41,49 @@ namespace ConsoleAdventure.Content.Scripts
             }
         }
 
+        public FormatString(string Text)
+        {
+            BaseString = Text;
+            String = Text;
+            Position = new();
+            Color = Color.White;
+
+            Type baseInterface = typeof(IFormatMode);
+            IEnumerable<Type> list = Assembly.GetAssembly(baseInterface).GetTypes().Where(type => baseInterface.IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+            foreach (Type type in list)
+            {
+                IFormatMode mode = (IFormatMode)Activator.CreateInstance(type);
+
+                mode.DefineAll(this);
+            }
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(ConsoleAdventure.Font, String, Position, Color);
+
+            for (int i = 0; i < FormatModes.Count; i++)
+            {
+                FormatModes[i].Draw(spriteBatch, this);
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        {
+            Position = position;
+            spriteBatch.DrawString(ConsoleAdventure.Font, String, position, Color);
+
+            for (int i = 0; i < FormatModes.Count; i++)
+            {
+                FormatModes[i].Draw(spriteBatch, this);
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color)
+        {
+            Position = position;
+            Color = color;
+            spriteBatch.DrawString(ConsoleAdventure.Font, String, position, color);
 
             for (int i = 0; i < FormatModes.Count; i++)
             {

@@ -50,7 +50,7 @@ namespace ConsoleAdventure
                             name.Append(symbol);
                         }
 
-                        WorldIO.Save(name.ToString());
+                        //WorldIO.Save(name.ToString());
                     }
                 }
 

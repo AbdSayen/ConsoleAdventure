@@ -24,16 +24,20 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
     public class UIElement
     {
-        private Point screenPosition;
-        private Point size;
-        private Point margin;
-        private Anchor anchor;
+        internal Point screenPosition;
+        internal Point size;
+        internal Point margin;
+        internal Anchor anchor;
 
-        private int zOrder;
+        internal int zOrder;
 
-        private bool isVisible = true;
+        internal bool isVisible = true;
 
-        public UIElement(Point screenPosition, Point size, Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0)
+        internal UIElement parent;
+
+        internal bool hovered;
+
+        public UIElement(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0)
         {
             this.screenPosition = screenPosition;
             this.size = size;
@@ -42,44 +46,50 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             this.zOrder = zOrder;
         }
 
-        public Point CalculateDrawPosition()
+        public UIElement GetParent()
         {
-            Point pos = screenPosition;
-            Point marginedSize = size + margin * new Point(2);
+            return parent;
+        }
+
+        public Vector2 CalculateDrawPosition()
+        {
+            Vector2 uv = screenPosition.ToVector2() / new Vector2(1920, 1080);
+            Vector2 pos = uv * new Vector2(ConsoleAdventure.Width, ConsoleAdventure.Height);
+            Vector2 marginedSize = size.ToVector2() + margin.ToVector2() * new Vector2(2);
             switch(anchor) {
                 case Anchor.Left:
-                    pos -= new Point(0, marginedSize.Y / 2);
+                    pos -= new Vector2(0, marginedSize.Y / 2f);
                     break;
                 case Anchor.Right:
-                    pos -= new Point(marginedSize.X, marginedSize.Y / 2);
+                    pos -= new Vector2(marginedSize.X, marginedSize.Y / 2f);
                     break;
                 case Anchor.Top:
-                    pos -= new Point(marginedSize.X / 2, 0);
+                    pos -= new Vector2(marginedSize.X / 2f, 0);
                     break;
                 case Anchor.Bottom:
-                    pos -= new Point(marginedSize.X / 2, marginedSize.Y);
+                    pos -= new Vector2(marginedSize.X / 2f, marginedSize.Y);
                     break;
                 case Anchor.TopLeft:
                     break;
                 case Anchor.TopRight:
-                    pos -= new Point(marginedSize.X, 0);
+                    pos -= new Vector2(marginedSize.X, 0);
                     break;
                 case Anchor.BottomLeft:
-                    pos -= new Point(0, marginedSize.Y);
+                    pos -= new Vector2(0, marginedSize.Y);
                     break;
                 case Anchor.BottomRight:
-                    pos -= new Point(marginedSize.X, marginedSize.Y);
+                    pos -= new Vector2(marginedSize.X, marginedSize.Y);
                     break;
                 case Anchor.Center:
-                    pos -= new Point(marginedSize.X / 2, marginedSize.Y / 2);
+                    pos -= new Vector2(marginedSize.X / 2f, marginedSize.Y / 2f);
                     break;
             }
 
-            Point uv = pos / new Point(1920, 1080);
-            return uv * new Point(ConsoleAdventure.screenWidth, ConsoleAdventure.screenHeight);
+            return pos;
         }
 
         public bool IsVisible() { return isVisible; }
+        public bool IsHovered() { return hovered; }
 
         public void Hide()
         {
@@ -141,9 +151,14 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             return false;
         }
 
+        public virtual bool IsFocusable()
+        {
+            return false;
+        }
+
         public virtual void OnFocus()
         {
-
+            
         }
 
         public virtual void OnDefocus()
@@ -156,7 +171,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, Point drawPosition)
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
 
         }
