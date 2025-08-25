@@ -55,8 +55,14 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
         {
             Vector2 uv = screenPosition.ToVector2() / new Vector2(1920, 1080);
             Vector2 pos = uv * new Vector2(ConsoleAdventure.Width, ConsoleAdventure.Height);
+            return ApplyAnchor(pos);
+        }
+
+        public Vector2 ApplyAnchor(Vector2 pos)
+        {
             Vector2 marginedSize = size.ToVector2() + margin.ToVector2() * new Vector2(2);
-            switch(anchor) {
+            switch (anchor)
+            {
                 case Anchor.Left:
                     pos -= new Vector2(0, marginedSize.Y / 2f);
                     break;

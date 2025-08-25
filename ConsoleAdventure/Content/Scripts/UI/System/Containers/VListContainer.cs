@@ -13,13 +13,13 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
     {
         private List<UIElement> elements = new List<UIElement>();
         private List<UIElement> focusableElements = new List<UIElement>();
-        private int spacing;
 
         private int currentlySelected;
 
-        public VListContainer(Point screenPosition, int spacing, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
+        private bool isFocused;
+
+        public VListContainer(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
         {
-            this.spacing = spacing;
         }
 
         public void AddElement(UIElement element)
@@ -27,14 +27,6 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
             element.parent = this;
             elements.Add(element);
             focusableElements = elements.FindAll(e => e.IsFocusable() && e.IsVisible());
-
-            List<UIElement> spaceCounting = elements.FindAll(e => e.IsVisible());
-            int sizeComputing = spacing * spaceCounting.Count;
-            for (int i = 0; i < spaceCounting.Count; i++)
-            {
-                sizeComputing += spaceCounting[i].size.X;
-            }
-            size.X = sizeComputing;
         }
 
         public void RemoveElement(UIElement element)
@@ -42,14 +34,25 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
             element.parent = null;
             elements.Remove(element);
             focusableElements = elements.FindAll(e => e.IsFocusable() && e.IsVisible());
+        }
 
-            List<UIElement> spaceCounting = elements.FindAll(e => e.IsVisible());
-            int sizeComputing = spacing * spaceCounting.Count;
-            //for (int i = 0; i < spaceCounting.Count; i++)
-            //{
-            //    sizeComputing += spaceCounting[i].size.X;
-            //}
-            size.X = sizeComputing;
+        public override bool IsFocusable()
+        {
+            return true;
+        }
+
+        public override void OnFocus()
+        {
+            isFocused = true;
+            if (focusableElements.Count > 0)
+                focusableElements[currentlySelected].OnFocus();
+        }
+
+        public override void OnDefocus()
+        {
+            isFocused = false;
+            if (focusableElements.Count > 0)
+                focusableElements[currentlySelected].OnDefocus();
         }
 
         public override void Update()
@@ -62,6 +65,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
                 }
             }
 
+            if (!isFocused) return;
             if (!Input.IsKeyDown(InputConfig.NavigationRight) && Input.IsOldKeyDown(InputConfig.NavigationRight))
             {
                 if (focusableElements.Count > 0)
@@ -69,8 +73,6 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
                     focusableElements[currentlySelected].OnDefocus();
                     if (currentlySelected++ >= focusableElements.Count - 1)
                         currentlySelected = 0;
-                    //if (currentlySelected-- < 0)
-                    //    currentlySelected = focusableElements.Count - 1;
                     focusableElements[currentlySelected].OnFocus();
                 }
             }
@@ -93,11 +95,12 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
             int offset = 0;
             for (int i = 0; i < elementsForRender.Count; i++)
             {
-                elementsForRender[i].size.Y = size.Y;
-                elementsForRender[i].screenPosition = new();
-                //elementsForRender[i].screenPosition.X += offset;
-                elementsForRender[i].Draw(spriteBatch, elementsForRender[i].CalculateDrawPosition() + CalculateDrawPosition());
-                offset += spacing;
+                if (elementsForRender.Count <= 1) offset += size.X / 2;
+                //elementsForRender[i].size.Y = size.Y;
+                elementsForRender[i].screenPosition = drawPosition.ToPoint();
+                elementsForRender[i].screenPosition.X += offset;
+                elementsForRender[i].Draw(spriteBatch, elementsForRender[i].ApplyAnchor(elementsForRender[i].screenPosition.ToVector2()));
+                if (elementsForRender.Count > 1) offset += size.X / (elementsForRender.Count - 1);
             }
             spriteBatch.DrawFrame(ConsoleAdventure.Font, Utils.GetPanel(new(size.X/9, size.Y/19)), drawPosition, Color.Red);
         }

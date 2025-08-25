@@ -264,17 +264,28 @@ namespace ConsoleAdventure
             mainUIgroup = new UIGroup(new(0, 0));
             mainUIgroup.AddChild(new UIText(TextAssets.logo, Color.White, new Point(1920 / 2, 19), anchor: Anchor.Top));
             mainUIgroup.AddChild(new UIText(new FormatString(" [color:999999=\"T\"][color:dddddd=\"h\"][color:999999=\"e\"] [color:999999=\"Co\"][color:dddddd=\"nso\"][color:999999=\"le\"] [color:999999=\"Ad\"][color:dddddd=\"ventu\"][color:999999=\"re\"] [item:ConsoleAdventure.IronPick] "), Color.White, new Point(0, 0), anchor: Anchor.TopLeft));
-            VListContainer container = new VListContainer(new(1920 / 2, 300), 10, new(500, 100), new(), Anchor.Top);
+
+            VListContainer container = new VListContainer(new(1920 / 2, 300), new(500, 20), new(), Anchor.Top);
             container.AddElement(new UIButton(Localization.GetTranslation("UI", "Play"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
             container.AddElement(new UIButton(Localization.GetTranslation("UI", "Settings"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
             container.AddElement(new UIButton(Localization.GetTranslation("UI", "Mods"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
             container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-            mainUIgroup.AddChild(container);
+
+            VListContainer container3 = new VListContainer(new(1920 / 2, 300), new(100, 20), new(), Anchor.Top);
+            container3.AddElement(new UIText("Mods button:", Color.White, Point.Zero, anchor: Anchor.Top));
+            container3.AddElement(new UIButton(Localization.GetTranslation("UI", "Mods"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
+
+            HListContainer container2 = new HListContainer(new(1920 / 2, 300), new(20, 200), new(), Anchor.TopLeft);
+            container2.AddElement(new UIText("TEST TEST TSET TTT", Color.White, Point.Zero, anchor: Anchor.Top));
+            container2.AddElement(container);
+            container2.AddElement(new UIText("TEST TEST TSET TTT", Color.White, Point.Zero, anchor: Anchor.Top));
+            container2.AddElement(new UIText("TEST TEST TSET TTT", Color.White, Point.Zero, anchor: Anchor.Top));
+            container2.AddElement(container3);
+            container2.AddElement(new UIText("TEST TEST TSET TTT", Color.White, Point.Zero, anchor: Anchor.Top));
+
+            container2.OnFocus();
+
+            mainUIgroup.AddChild(container2);
         }
 
         protected override void UnloadContent()
