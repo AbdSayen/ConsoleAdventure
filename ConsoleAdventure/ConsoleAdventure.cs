@@ -91,7 +91,7 @@ namespace ConsoleAdventure
         public static byte ChunkLoadRadius { get; set; } = 8;
 
         public static MenuState MenuState => menu.State;
-
+        
         public static Position MouseWorld
         {
             get
@@ -105,6 +105,8 @@ namespace ConsoleAdventure
         private bool _isFirstUpdate = true;
 
         public static bool WindowActive { get; private set; }
+
+        public static int Timer { get; private set; }
 
         public ConsoleAdventure()
         {
@@ -194,6 +196,7 @@ namespace ConsoleAdventure
 
             CaModLoader.InitializeMods();
 
+            CustomColorLoader.Init();
             MusicEngine.Setup();
             menu = new Menu();
 
@@ -324,8 +327,12 @@ namespace ConsoleAdventure
                     Exit();
                 }
             }
+
+            Timer++;
+
             base.Update(gameTime);
         }
+
         int animTimer;
         int frame;
         protected override void Draw(GameTime gameTime)
@@ -407,11 +414,11 @@ namespace ConsoleAdventure
             string baseTooltip = display.TransformTooltip();
 
             if (baseTooltip != oldTooltip) {
-                formatTooltip = new FormatString(baseTooltip, new Vector2(197, 10), Color.Gray);      
+                formatTooltip = new FormatString(baseTooltip, Color.Gray);      
                 oldTooltip = baseTooltip;
             } 
             
-            formatTooltip.Draw(spriteBatch);
+            formatTooltip.Draw(spriteBatch, new Vector2(197, 10));
         }
 
         private static void SaveFontTexture(string path)

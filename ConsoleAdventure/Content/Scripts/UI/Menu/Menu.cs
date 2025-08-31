@@ -131,7 +131,30 @@ namespace ConsoleAdventure.Content.Scripts.UI
         #region MainScreen
         //FormatString fs = new("Форматированый текст [color:ff0000=\"Вау\"][color:00ff00=\"!\"]\nКрута! [color:0000ff=\"Вау!!\"] [color:23d8d1=\"∑\"] [item:ConsoleAdventure.Apple][item:ConsoleAdventure.TorchItem][item:ConsoleAdventure.IronPick][item:ConsoleAdventure.RubyItem][item:ConsoleAdventure.FurnaceItem]", new(), Color.White);
 
-        FormatString fs = new(" [color:999999=\"T\"][color:dddddd=\"h\"][color:999999=\"e\"] [color:999999=\"Co\"][color:dddddd=\"nso\"][color:999999=\"le\"] [color:999999=\"Ad\"][color:dddddd=\"ventu\"][color:999999=\"re\"] [item:ConsoleAdventure.IronPick] ", new(), Color.White);
+        //FormatString fs = new(" [color:9=\"T\"][color:d=\"h\"][color:9=\"e\"] [color:9=\"Co\"][color:d=\"nso\"][color:9=\"le\"] [color:9=\"Ad\"][color:d=\"ventu\"][color:9=\"re\"] [item:ConsoleAdventure.IronPick] ", new(), Color.White);
+
+        FormatString fs = new("[color:aaddff=\"{color:aaddff=\"\"}\"]\n" +
+                              "[color:adf=\"{color:adf=\"\"}\"]\n" +
+                              "[color:aa=\"{color:aa=\"\"}\"]\n" +
+                              "[color:6=\"{color:6=\"\"}\"]\n" +
+                              "[color:g~125;=\"{color:g~125;=\"\"}\"]\n" +
+                              "[color:g~0.2;=\"{color:g~0.2;=\"\"}\"]\n" +
+                              "[color:rgb~122;254;10;=\"{color:rgb~122;254;10;=\"\"}\"]\n" +
+                              "[color:rgb~0.5;1.0;0.5;=\"{color:rgb~0.5;1.0;0.5;=\"\"}\"]\n" +
+                              "[color:hsv~280;43;59;=\"{color:hsv~280;43;59;=\"\"}\"]\n" +
+                              "[color:hsv~0.5;0.7;0.3;=\"{color:hsv~0.5;0.7;0.3;=\"\"}\"]\n" +
+                              "[color:std~Red=\"{color:std~Red=\"\"}\"]\n" +
+                              "[color:std~Crimson=\"{color:std~Crimson=\"\"}\"]\n" +
+                              "[color:std~Indigo=\"{color:std~Indigo=\"\"}\"]\n" +
+                              "[color:std~GreenYellow=\"{color:std~GreenYellow=\"\"}\"]\n" +
+                              "[color:std~MonoGameOrange=\"{color:std~MonoGameOrange=\"\"}\"]\n" +
+                              "[color:ca~Wood=\"{color:ca~Wood=\"\"}\"]\n" +
+                              "[color:ca~TheLion=\"{color:ca~TheLion=\"\"}\"]\n" +
+                              "[color:ca~Rainbow=\"{color:ca~Rainbow=\"\"}\"]\n" +
+                              "[color:ca~BlackWhite=\"{color:ca~BlackWhite=\"\"}\"]\n" +
+                              "[item:ConsoleAdventure.IronPick][item:ConsoleAdventure.IronHammer][item:ConsoleAdventure.IronSword]\n" +
+                              "[chartex:add'o'#ff9900:0.0x0.0*0;add'` \\с\\e\\s\\bs'#00ff00:0.0x0.0*0;]\n", Color.White);
+
         private void MainScreenInit()
         {
             byte[] menuButtonTypes = new byte[4] { 0, 1, 3, 2 };
@@ -258,7 +281,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
             {
                 menuButtons[i].Draw(spriteBatch);
             }
-            fs.Draw(spriteBatch);
+            fs.Draw(spriteBatch, new Vector2());
             //ModPanel modPanel = new ModPanel(new(), "Mod", "Void Defi", "0.01");
             //modPanel.Draw(spriteBatch);
         }
