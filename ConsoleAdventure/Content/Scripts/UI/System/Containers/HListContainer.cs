@@ -9,31 +9,10 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
 {
-    public class HListContainer : UIElement
+    public class HListContainer : UIContainer
     {
-        private List<UIElement> elements = new List<UIElement>();
-        private List<UIElement> focusableElements = new List<UIElement>();
-
-        private int currentlySelected;
-
-        private bool isFocused;
-
         public HListContainer(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
         {
-        }
-
-        public void AddElement(UIElement element)
-        {
-            element.parent = this;
-            elements.Add(element);
-            focusableElements = elements.FindAll(e => e.IsFocusable() && e.IsVisible());
-        }
-
-        public void RemoveElement(UIElement element)
-        {
-            element.parent = null;
-            elements.Remove(element);
-            focusableElements = elements.FindAll(e => e.IsFocusable() && e.IsVisible());
         }
 
         public override bool IsFocusable()
@@ -44,7 +23,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
         public override void OnFocus()
         {
             isFocused = true;
-            if (focusableElements.Count > 0 )
+            if (focusableElements.Count > 0)
                 focusableElements[currentlySelected].OnFocus();
         }
 
@@ -57,13 +36,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
 
         public override void Update()
         {
-            for (int i = 0; i < elements.Count; i++)
-            {
-                if (elements[i].IsVisible())
-                {
-                    elements[i].Update();
-                }
-            }
+            base.Update();
 
             if (!isFocused) return;
             if (!Input.IsKeyDown(InputConfig.NavigationDown) && Input.IsOldKeyDown(InputConfig.NavigationDown))
@@ -91,7 +64,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
-            List<UIElement> elementsForRender = elements.FindAll((UIElement el) => { return el.IsVisible(); });
+            List<UIElement> elementsForRender = elements.ToList().FindAll((UIElement el) => { return el.IsVisible(); });
             int offset = 0;
             for (int i = 0; i < elementsForRender.Count; i++)
             {
@@ -102,7 +75,6 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
                 elementsForRender[i].Draw(spriteBatch, elementsForRender[i].ApplyAnchor(elementsForRender[i].screenPosition.ToVector2()));
                 if (elementsForRender.Count > 1) offset += size.Y / (elementsForRender.Count - 1);
             }
-            spriteBatch.DrawFrame(ConsoleAdventure.Font, Utils.GetPanel(new(size.X / 9, size.Y / 19)), drawPosition, Color.Red);
         }
     }
 }

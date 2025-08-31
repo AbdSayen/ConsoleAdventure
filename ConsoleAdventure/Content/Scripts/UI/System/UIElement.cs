@@ -24,6 +24,8 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
     public class UIElement
     {
+        public string name;
+
         internal Point screenPosition;
         internal Point size;
         internal Point margin;
@@ -37,13 +39,14 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         internal bool hovered;
 
-        public UIElement(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0)
+        public UIElement(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0, string name = null)
         {
             this.screenPosition = screenPosition;
             this.size = size;
             this.margin = margin;
             this.anchor = anchor;
             this.zOrder = zOrder;
+            this.name = name;
         }
 
         public UIElement GetParent()
@@ -132,16 +135,6 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             return zOrder;
         }
 
-        public virtual void OnSomeKeyDown()
-        {
-
-        }
-
-        public virtual void OnSomeKeyUp()
-        {
-
-        }
-
         public virtual void OnConfirmKeyDown()
         {
 
@@ -150,11 +143,6 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
         public virtual void OnConfirmKeyUp()
         {
 
-        }
-
-        public virtual bool OnClick()
-        {
-            return false;
         }
 
         public virtual bool IsFocusable()

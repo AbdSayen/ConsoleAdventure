@@ -1,50 +1,47 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.Content.Scripts.UI.System.Containers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace ConsoleAdventure.Content.Scripts.UI.System
 {
-    public class UIGroup : UIElement
+    public class UIGroup : UIContainer
     {
         private List<UIElement> childs = new List<UIElement>();
-        private List<UIElement> orderedChilds;
         public UIGroup(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
         {
         }
 
-        public void AddChild(UIElement child)
+        public override UIElement AddElement(UIElement child)
         {
             child.parent = this;
             childs.Add(child);
-            orderedChilds = childs.OrderBy(c => c.GetZOrder()).ToList();
+            elements = new ObservableCollection<UIElement>(childs.OrderBy(c => c.GetZOrder()).ToList());
+            return child;
         }
 
-        public void RemoveChild(UIElement child)
+        public override UIElement RemoveElement(UIElement child)
         {
             child.parent = null;
             childs.Remove(child);
-            orderedChilds = childs.OrderBy(c => c.GetZOrder()).ToList();
+            elements = new ObservableCollection<UIElement>(childs.OrderBy(c => c.GetZOrder()).ToList());
+            return child;
         }
 
         public override void Update()
         {
-            for (int i = 0; i < orderedChilds.Count; i++)
-            {
-                if (orderedChilds[i].IsVisible())
-                {
-                    orderedChilds[i].Update();
-                }
-            }
+            base.Update();
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
-            for (int i = 0; i < orderedChilds.Count; i++)
+            for (int i = 0; i < elements.Count; i++)
             {
-                if (orderedChilds[i].IsVisible())
+                if (elements[i].IsVisible())
                 {
-                    orderedChilds[i].Draw(spriteBatch, orderedChilds[i].CalculateDrawPosition() + CalculateDrawPosition());
+                    elements[i].Draw(spriteBatch, elements[i].CalculateDrawPosition() + CalculateDrawPosition());
                 }
             }
         }

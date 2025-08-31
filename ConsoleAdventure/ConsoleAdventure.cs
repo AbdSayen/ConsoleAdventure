@@ -8,6 +8,7 @@ using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
 using ConsoleAdventure.Content.Scripts.UI.System;
 using ConsoleAdventure.Content.Scripts.UI.System.Containers;
+using ConsoleAdventure.Content.Scripts.UI.System.Menus;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
@@ -17,6 +18,7 @@ using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -162,6 +164,36 @@ namespace ConsoleAdventure
             } 
         }*/
 
+        public static string[] GetRandomPrettyItem()
+        {
+            // Получаем текущую сборку
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+
+            // Получаем все типы в этой сборке
+            // Можно также указать другую сборку, например, Assembly.Load("MyAssembly")
+            Type[] allTypes = currentAssembly.GetTypes();
+
+            // Фильтруем типы, чтобы найти наследников
+            List<Type> allItems = new List<Type>();
+            foreach (Type type in allTypes)
+            {
+                if (type.IsSubclassOf(typeof(Item)))
+                {
+                    allItems.Add(type);
+                }
+            }
+            Type randomItemType = null;
+            Item randomItemInstance = null;
+            while (randomItemInstance?.GetTexture().strings.Count < 2 || randomItemInstance == null || randomItemType == null)
+            {
+                randomItemType = allItems[new Random().Next(allItems.Count)];
+                if (!randomItemType.IsAbstract)
+                    randomItemInstance = (Item)Activator.CreateInstance(randomItemType);
+            }
+
+            return new string[] { randomItemType?.FullName, randomItemInstance?.name };
+        }
+
         public static async Task CreateWorld(string name, int seed, int size, bool isFullGenerate = true, bool inMultiplayer = false)
         {
             world = new World(name, seed, size, true, isFullGenerate);
@@ -262,30 +294,7 @@ namespace ConsoleAdventure
             }
 
             mainUIgroup = new UIGroup(new(0, 0));
-            mainUIgroup.AddChild(new UIText(TextAssets.logo, Color.White, new Point(1920 / 2, 19), anchor: Anchor.Top));
-            mainUIgroup.AddChild(new UIText(new FormatString(" [color:999999=\"T\"][color:dddddd=\"h\"][color:999999=\"e\"] [color:999999=\"Co\"][color:dddddd=\"nso\"][color:999999=\"le\"] [color:999999=\"Ad\"][color:dddddd=\"ventu\"][color:999999=\"re\"] [item:ConsoleAdventure.IronPick] "), Color.White, new Point(0, 0), anchor: Anchor.TopLeft));
-
-            VListContainer container = new VListContainer(new(1920 / 2, 300), new(500, 20), new(), Anchor.Top);
-            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Play"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Settings"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Mods"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-            container.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-
-            VListContainer container3 = new VListContainer(new(1920 / 2, 300), new(100, 20), new(), Anchor.Top);
-            container3.AddElement(new UIText("Mods button:", Color.White, Point.Zero, anchor: Anchor.Top));
-            container3.AddElement(new UIButton(Localization.GetTranslation("UI", "Mods"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top));
-
-            HListContainer container2 = new HListContainer(new(1920 / 2, 300), new(20, 200), new(), Anchor.TopLeft);
-            container2.AddElement(new UIText("TEST TEST TSET TTT", Color.White, Point.Zero, anchor: Anchor.Top));
-            container2.AddElement(container);
-            container2.AddElement(new UIText("TEST TEST TSET TTT", Color.White, Point.Zero, anchor: Anchor.Top));
-            container2.AddElement(new UIText("TEST TEST TSET TTT", Color.White, Point.Zero, anchor: Anchor.Top));
-            container2.AddElement(container3);
-            container2.AddElement(new UIText("TEST TEST TSET TTT", Color.White, Point.Zero, anchor: Anchor.Top));
-
-            container2.OnFocus();
-
-            mainUIgroup.AddChild(container2);
+            mainUIgroup.AddElement(new MainMenu());
         }
 
         protected override void UnloadContent()

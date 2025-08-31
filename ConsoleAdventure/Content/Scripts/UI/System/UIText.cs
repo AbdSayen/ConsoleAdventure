@@ -21,7 +21,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             }
         }
         private Color color;
-        public UIText(string text, Color color, Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
+        public UIText(string text, Color color, Point screenPosition, string name = null, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder, name: name)
         {
             this.text = new FormatString(text);
             this.color = color;
