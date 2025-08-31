@@ -1,6 +1,7 @@
 ﻿using ConsoleAdventure.Content.Scripts.InputLogic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,13 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
 {
     public class VListContainer : UIContainer
     {
-        public VListContainer(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
+        private int limit = Int32.MaxValue;
+        private bool offsetMode = false;
+
+        public VListContainer(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0, bool offsetMode = false, int limit = Int32.MaxValue) : base(screenPosition, size, margin, anchor, zOrder)
         {
+            this.offsetMode = offsetMode;
+            this.limit = limit;
         }
 
         public override bool IsFocusable()
@@ -66,14 +72,20 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
         {
             List<UIElement> elementsForRender = elements.ToList().FindAll((UIElement el) => { return el.IsVisible(); });
             int offset = 0;
-            for (int i = 0; i < elementsForRender.Count; i++)
+            for (int n = 0; n < elementsForRender.Count; n++)
             {
-                if (elementsForRender.Count <= 1) offset += size.X / 2;
-                //elementsForRender[i].size.Y = size.Y;
+                int i = currentlySelected + n - (limit - 1);
+                if (currentlySelected < limit)
+                    i = n;
+                if (i > elementsForRender.Count - 1) break;
+                if (elementsForRender.Count <= 1 && !offsetMode) offset += size.X / 2;
                 elementsForRender[i].screenPosition = drawPosition.ToPoint();
                 elementsForRender[i].screenPosition.X += offset;
                 elementsForRender[i].Draw(spriteBatch, elementsForRender[i].ApplyAnchor(elementsForRender[i].screenPosition.ToVector2()));
-                if (elementsForRender.Count > 1) offset += size.X / (elementsForRender.Count - 1);
+                if (!offsetMode)
+                    offset += size.X / (elementsForRender.Count - 1);
+                else
+                    offset += size.X + elementsForRender[i].size.X;
             }
         }
     }

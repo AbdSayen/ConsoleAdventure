@@ -18,6 +18,8 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
 
         internal bool isFocused;
 
+        public Action<UIContainer> onBackButtonPressed = new Action<UIContainer>((UIContainer e) => {});
+
         public UIContainer(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
         {
             elements.CollectionChanged += UpdateFocusableElements;
@@ -61,6 +63,11 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
             if (!Input.IsKeyDown(InputConfig.NavigationSelect) && Input.IsOldKeyDown(InputConfig.NavigationSelect))
             {
                 focusableElements[currentlySelected].OnConfirmKeyUp();
+            }
+
+            if (Input.OnClick(InputConfig.NavigationBeck))
+            {
+                onBackButtonPressed.Invoke(this);
             }
         }
     }

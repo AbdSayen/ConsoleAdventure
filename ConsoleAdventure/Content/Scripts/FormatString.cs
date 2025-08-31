@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -23,17 +24,8 @@ namespace ConsoleAdventure.Content.Scripts
 
         public SmartColor Color { get; set; } = new SmartColor(255);
 
-        public FormatString(string text) : this(text, new SmartColor(Microsoft.Xna.Framework.Color.White))
-        {
 
-        }
-
-        public FormatString(string text, Color color) : this(text, new SmartColor(color))
-        {
-
-        }
-
-        public FormatString(string text, SmartColor? color)
+        public void SetText(string text, SmartColor? color)
         {
             FormatModes = new List<IFormatMode>();
 
@@ -122,7 +114,7 @@ namespace ConsoleAdventure.Content.Scripts
 
                     if (template.isTextModifier)
                     {
-                        if (equalsIndex + 1 >= end && String[equalsIndex + 1] != '"' && 
+                        if (equalsIndex + 1 >= end && String[equalsIndex + 1] != '"' &&
                            (String[end - 1] != '"' && equalsIndex + 1 == end - 1))
                             break;
 
@@ -144,12 +136,27 @@ namespace ConsoleAdventure.Content.Scripts
 
                         for (int j = i + 1; j < formats.Count; j++)
                         {
-                            formats[j] = new(formats[j].Start.Value - result, 
+                            formats[j] = new(formats[j].Start.Value - result,
                                              formats[j].End.Value - result);
                         }
                     }
                 }
             }
+        }
+
+        public FormatString(string text) : this(text, new SmartColor(Microsoft.Xna.Framework.Color.White))
+        {
+
+        }
+
+        public FormatString(string text, Color color) : this(text, new SmartColor(color))
+        {
+
+        }
+
+        public FormatString(string text, SmartColor? color)
+        {
+            SetText(text, color);
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
