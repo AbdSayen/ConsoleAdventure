@@ -9,236 +9,192 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ConsoleAdventure.Content.Scripts
 {
     public class FormatString
     {
-        public string BaseString { get; set; } = "";
+        public string BaseString { get; private set; } = "";
 
         public string String { get; set; } = "";
 
         public List<IFormatMode> FormatModes { get; set; } = new List<IFormatMode>();
 
-        public Vector2 Position { get; set; } = new();
+        public SmartColor Color { get; set; } = new SmartColor(255);
 
-        public Color Color { get; set; } = new Color(255, 255, 255);
-
-        public FormatString(string Text, Vector2 position, Color color)
+        public FormatString(string text) : this(text, new SmartColor(Microsoft.Xna.Framework.Color.White))
         {
-            BaseString = Text;
-            String = Text;
-            Position = position;
-            Color = color;
 
-            Type baseInterface = typeof(IFormatMode);
-            IEnumerable<Type> list = Assembly.GetAssembly(baseInterface).GetTypes().Where(type => baseInterface.IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
-            foreach (Type type in list)
-            {
-                IFormatMode mode = (IFormatMode)Activator.CreateInstance(type);
-
-                mode.DefineAll(this);
-            }
         }
 
-        public FormatString(string Text)
+        public FormatString(string text, Color color) : this(text, new SmartColor(color))
         {
-            BaseString = Text;
-            String = Text;
-            Position = new();
-            Color = Color.White;
 
-            Type baseInterface = typeof(IFormatMode);
-            IEnumerable<Type> list = Assembly.GetAssembly(baseInterface).GetTypes().Where(type => baseInterface.IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
-            foreach (Type type in list)
-            {
-                IFormatMode mode = (IFormatMode)Activator.CreateInstance(type);
-
-                mode.DefineAll(this);
-            }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public FormatString(string text, SmartColor? color)
         {
-            spriteBatch.DrawString(ConsoleAdventure.Font, String, Position, Color);
+            FormatModes = new List<IFormatMode>();
 
-            for (int i = 0; i < FormatModes.Count; i++)
+            BaseString = text;
+            String = text;
+            Color = color.HasValue ? color.Value : new SmartColor(255);
+
+            Type baseInterface = typeof(IFormatMode);
+            IEnumerable<Type> mods = Assembly.GetAssembly(baseInterface).GetTypes().Where(type => baseInterface.IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+
+
+            List<Range> formats = new List<Range>();
+
+            for (int i = 0; i < BaseString.Length; i++)
             {
-                FormatModes[i].Draw(spriteBatch, this);
+                if (BaseString[i] == '[')
+                {
+                    for (int j = i; j < BaseString.Length; j++)
+                    {
+                        if (BaseString[j] == ']')
+                        {
+                            formats.Add(new Range(i, j));
+                            break;
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < formats.Count; i++)
+            {
+                Range range = formats[i];
+
+                foreach (Type type in mods)
+                {
+                    IFormatMode mode = (IFormatMode)Activator.CreateInstance(type);
+                    FormatTemplate template = mode.Template;
+
+                    int start = range.Start.Value + 1;
+                    int end = range.End.Value - 1;
+
+                    int endNameIndex = String.IndexOfInRange(":", Math.Min(start, String.Length), Math.Min(end, String.Length));
+                    if (endNameIndex == -1) break;
+
+                    int nameIndex = String.IndexOfInRange(template.name, Math.Min(start, String.Length), Math.Min(endNameIndex, String.Length));
+                    if (nameIndex == -1) continue;
+
+                    int equalsIndex = -1;
+
+                    List<string> arguments = new List<string>();
+                    StringBuilder currentArgument = new StringBuilder();
+
+                    for (int j = endNameIndex + 1; j <= end + 1; j++)
+                    {
+                        char symbol = String[j];
+
+                        if (symbol == ',' || symbol == '=' || symbol == ']')
+                        {
+                            if (currentArgument.Length == 0)
+                                break;
+
+                            arguments.Add(currentArgument.ToString());
+                            currentArgument.Clear();
+
+                            if (symbol == '=' || symbol == ']')
+                            {
+                                equalsIndex = j;
+                                break;
+                            }
+                        }
+
+                        else
+                        {
+                            currentArgument.Append(symbol);
+                        }
+                    }
+
+                    if (arguments.Count != template.argumentsCount)
+                        continue;
+
+                    if ((template.isTextModifier && equalsIndex < 0) &&
+                        (!template.isTextModifier && equalsIndex >= 0))
+                    {
+                        continue;
+                    }
+
+                    StringBuilder modifyText = new();
+
+                    if (template.isTextModifier)
+                    {
+                        if (equalsIndex + 1 >= end && String[equalsIndex + 1] != '"' && 
+                           (String[end - 1] != '"' && equalsIndex + 1 == end - 1))
+                            break;
+
+                        for (int j = equalsIndex + 2; j < end; j++)
+                        {
+                            modifyText.Append(String[j]);
+                        }
+
+                        if (modifyText.Length == 0)
+                            break;
+                    }
+
+                    mode.Range = range;
+                    int result = mode.Define(this, arguments, modifyText.ToString());
+
+                    if (result >= 0)
+                    {
+                        FormatModes.Add(mode);
+
+                        for (int j = i + 1; j < formats.Count; j++)
+                        {
+                            formats[j] = new(formats[j].Start.Value - result, 
+                                             formats[j].End.Value - result);
+                        }
+                    }
+                }
             }
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            Position = position;
-            spriteBatch.DrawString(ConsoleAdventure.Font, String, position, Color);
+            spriteBatch.DrawString(ConsoleAdventure.Font, String, position, Color.Color);
 
             for (int i = 0; i < FormatModes.Count; i++)
             {
-                FormatModes[i].Draw(spriteBatch, this);
+                FormatModes[i].Draw(spriteBatch, position, this);
             }
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color)
         {
-            Position = position;
-            Color = color;
             spriteBatch.DrawString(ConsoleAdventure.Font, String, position, color);
 
             for (int i = 0; i < FormatModes.Count; i++)
             {
-                FormatModes[i].Draw(spriteBatch, this);
+                FormatModes[i].Draw(spriteBatch, position, this);
             }
         }
-    }
 
-    public interface IFormatMode
-    {
-        public int StartIndex { get; set; }
-
-        public int EndIndex { get; set; }
-
-        public virtual void DefineAll(FormatString text) { }
-
-        //public virtual void СhangeString(FormatString text) { }
-
-        public virtual void Draw(SpriteBatch spriteBatch, FormatString text) { }
-    }
-
-    public class ColorText : IFormatMode
-    {
-        public int StartIndex { get; set; }
-
-        public int EndIndex { get; set; }
-
-        public Color Color { get; set; }
-
-        public string Text { get; set; }
-
-        public int Length { get; set; }
-
-        public void DefineAll(FormatString text) //[color:******="text"]
+        public int CutFill(Range range, string fill)
         {
-            Match match = Regex.Match(text.String, @"\[color:([a-fA-F0-9]{6})=""(.*?)""\]");
+            int start = range.Start.Value;
+            int end = range.End.Value;
 
-            while (match.Success)
+            StringBuilder sb = new StringBuilder(String);
+            int lengthToReplace = Math.Min(end - start + 1, sb.Length);
+            sb.Remove(Math.Min(start, sb.Length), lengthToReplace);
+
+
+            StringBuilder filler = new StringBuilder(fill);
+            for (int i = 0; i < filler.Length; i++)
             {
-                string hexColor = match.Groups[1].Value; //Цвет (хекс)
-                Color color = Utils.HexToColor(hexColor);
-                string coloredText = match.Groups[2].Value; //Цветной текст
-
-                int start = match.Groups[2].Index - 15;
-                int end = match.Groups[2].Index + match.Groups[2].Length + 1;
-
-                StringBuilder sb = new StringBuilder();
-
-                for (int i = 0; i < text.String.Length; i++)
+                if (filler[i] != '\n')
                 {
-                    if (i >= start)
-                    {
-                        sb.Append(coloredText);
-                        break;
-                    }
-
-                    if (text.String[i] != '\n')
-                        sb.Append(" ");
-                    else
-                        sb.Append("\n");
+                    filler[i] = ' ';
                 }
-
-                ColorText colorText = new ColorText()
-                {
-                    Color = color,
-                    Text = sb.ToString(),
-                    StartIndex = start,
-                    EndIndex = end,
-                    Length = coloredText.Length
-                };
-
-                text.FormatModes.Add(colorText);
-                colorText.СhangeString(text);
-
-                match = Regex.Match(text.String, @"\[color:([a-fA-F0-9]{6})=""(.*?)""\]"); //Ищем следующий фрагмент
             }
-        }
 
-        public void СhangeString(FormatString text) 
-        {
-            StringBuilder sb = new StringBuilder(text.String);
-            int lengthToReplace = Math.Min(EndIndex - StartIndex + 1, sb.Length);
-            sb.Remove(Math.Min(StartIndex, sb.Length), lengthToReplace);
-            sb.Insert(Math.Min(StartIndex, sb.Length), new string(' ', Length));
-            text.String = sb.ToString();
-        }
+            sb.Insert(Math.Min(start, sb.Length), filler);
+            String = sb.ToString();
 
-        public void Draw(SpriteBatch spriteBatch, FormatString text)
-        {
-            spriteBatch.DrawString(ConsoleAdventure.Font, Text, text.Position, Color);
-        }
-    }
-
-    public class ItemIcon : IFormatMode
-    {
-        public int StartIndex { get; set; }
-
-        public int EndIndex { get; set; }
-
-        public Item Item { get; set; }
-
-        public Vector2 Offset { get; set; }
-
-        public void DefineAll(FormatString text) //[item:itemName]
-        {
-            Match match = Regex.Match(text.String, @"\[item:(.*?)\]");
-
-            while (match.Success)
-            {
-                string itemName = match.Groups[1].Value;
-
-                int start = match.Groups[1].Index - 6;
-                int end = match.Groups[1].Index + match.Groups[1].Length;
-
-                Vector2 offset = new();
-                for (int i = 0; i < text.String.Length; i++)
-                {
-                    if (i >= start) { break; }
-                    if (text.String[i] == '\n') { offset.X = 0; offset.Y += 19;}
-                    else if (text.String[i] != '\r') offset.X += 9;
-                }    
-
-                Item item = null;
-                try { item = (Item)Activator.CreateInstance(Type.GetType(itemName)); }
-                catch { }
-
-                ItemIcon itemIcon = new ItemIcon()
-                {
-                    StartIndex = start,
-                    EndIndex = end,
-                    Item = item,
-                    Offset = offset
-                };
-
-                text.FormatModes.Add(itemIcon);
-                itemIcon.СhangeString(text);
-
-                match = Regex.Match(text.String, @"\[item:(.*?)\]"); //Ищем следующий фрагмент
-            }
-        }
-
-        public void СhangeString(FormatString text)
-        {
-            StringBuilder sb = new StringBuilder(text.String);
-            int lengthToReplace = Math.Min(EndIndex - StartIndex + 1, sb.Length);
-            sb.Remove(Math.Min(StartIndex, sb.Length), lengthToReplace);
-            sb.Insert(Math.Min(StartIndex, sb.Length), new string(' ', 1));
-            text.String = sb.ToString();
-        }
-
-        public void Draw(SpriteBatch spriteBatch, FormatString text)
-        {
-            if (Item == null) return;
-
-            Item.Draw(spriteBatch, text.Position + Offset - new Vector2(0, 0));
+            return lengthToReplace - fill.Length;
         }
     }
 }

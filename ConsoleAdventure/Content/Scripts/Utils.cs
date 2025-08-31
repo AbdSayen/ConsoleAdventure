@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -289,11 +288,23 @@ namespace ConsoleAdventure
         public static Color HexToColor(string hex)
         {
             if (string.IsNullOrEmpty(hex)) throw new ArgumentNullException(nameof(hex));
-            if (hex.Length != 6) throw new Exception($"{hex} Hex length must be 6 characters");
+            if (hex.Length != 6 && hex.Length != 3) throw new Exception($"{hex} Hex length must be 6 or 3 characters");
 
             Color color = Color.White;
             string[] hexs = new string[3];
             char[] chars = hex.ToCharArray();
+
+            if (hex.Length == 3)
+            {
+                StringBuilder fullHex = new StringBuilder();
+
+                for (int i = 0; i < 6; i++)
+                {
+                    fullHex.Append(hex[i / 2]);
+                }
+                
+                chars = fullHex.ToString().ToCharArray();
+            }
 
             for (int i = 0; i < hexs.Length; i++)
             {
@@ -302,13 +313,58 @@ namespace ConsoleAdventure
 
             try
             {
-                color.R = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-                color.G = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-                color.B = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+                color.R = byte.Parse(hexs[0], System.Globalization.NumberStyles.HexNumber);
+                color.G = byte.Parse(hexs[1], System.Globalization.NumberStyles.HexNumber);
+                color.B = byte.Parse(hexs[2], System.Globalization.NumberStyles.HexNumber);
             }
             catch { }
-
             return color;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hue"></param>
+        /// <param name="saturation"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Color HSVToRGB(float hue, float saturation, float value)
+        {
+            hue = hue % 360;
+            if (hue < 0) hue += 360;
+
+            float c = value * saturation;
+            float x = c * (1 - Math.Abs((hue / 60f) % 2 - 1));
+            float m = value - c;
+
+            float r1, g1, b1;
+
+            if (hue < 60) (r1, g1, b1) = (c, x, 0);
+            else if (hue < 120) (r1, g1, b1) = (x, c, 0);
+            else if (hue < 180) (r1, g1, b1) = (0, c, x);
+            else if (hue < 240) (r1, g1, b1) = (0, x, c);
+            else if (hue < 300) (r1, g1, b1) = (x, 0, c);
+            else (r1, g1, b1) = (c, 0, x);
+
+            byte r = (byte)Math.Round((r1 + m) * 255);
+            byte g = (byte)Math.Round((g1 + m) * 255);
+            byte b = (byte)Math.Round((b1 + m) * 255);
+
+            return new Color(r, g, b);
+        }
+
+        public static int IndexOfInRange(this string str, string value, int start, int end)
+        {
+            if (end <= start) return -1;
+            int count = end - start;
+            return str.IndexOf(value, start, count);
+        }
+
+        public static Color TimeGradient(List<Color> colors, float speed = 1f)
+        {
+            float amount = ConsoleAdventure.Timer % 60 / 60f * speed;
+            int indexColor = ConsoleAdventure.Timer / 60 % colors.Count;
+            return Color.Lerp(colors[indexColor], colors[(indexColor + 1) % colors.Count], amount);
         }
     }
 }
