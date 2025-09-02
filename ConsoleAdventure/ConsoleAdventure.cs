@@ -62,7 +62,7 @@ namespace ConsoleAdventure
 
         public static Random rand = new Random();
 
-        public static ProgressBar progressBar;
+        public static UIProgressBar progressBar;
 
         public static Menu menu;
 
@@ -112,7 +112,7 @@ namespace ConsoleAdventure
 
         public static int Timer { get; private set; }
 
-        public UIGroup mainUIgroup;
+        public static UIGroup mainUIgroup;
 
         public ConsoleAdventure()
         {

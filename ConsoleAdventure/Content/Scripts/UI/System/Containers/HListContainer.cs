@@ -14,7 +14,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
         private int limit = Int32.MaxValue;
         private bool offsetMode = false;
 
-        public HListContainer(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0, bool offsetMode = false, int limit = Int32.MaxValue) : base(screenPosition, size, margin, anchor, zOrder)
+        public HListContainer(Point screenPosition, Point size = new(), Anchor anchor = Anchor.Center, int zOrder = 0, bool offsetMode = false, int limit = Int32.MaxValue) : base(screenPosition, size, anchor, zOrder)
         {
             this.offsetMode = offsetMode;
             this.limit = limit;
@@ -44,7 +44,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
             base.Update();
 
             if (!isFocused) return;
-            if (!Input.IsKeyDown(InputConfig.NavigationDown) && Input.IsOldKeyDown(InputConfig.NavigationDown))
+            if (Input.PostClick(InputConfig.NavigationDown))
             {
                 if (focusableElements.Count > 0)
                 {
@@ -55,7 +55,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
                 }
             }
 
-            if (!Input.IsKeyDown(InputConfig.NavigationUp) && Input.IsOldKeyDown(InputConfig.NavigationUp))
+            if (Input.PostClick(InputConfig.NavigationUp))
             {
                 if (focusableElements.Count > 0)
                 {

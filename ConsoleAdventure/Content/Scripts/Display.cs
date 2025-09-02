@@ -252,9 +252,9 @@ namespace ConsoleAdventure
 
         public System.Drawing.Bitmap MapScreen(int w)
         {
-            int size = world.size;
+            int size = world.size / Chunk.Size;
 
-            System.Drawing.Bitmap screen = new System.Drawing.Bitmap(size, size);
+            System.Drawing.Bitmap screen = new(size, size);
 
             Player player = ConsoleAdventure.world.GetLocalPlayer();
 

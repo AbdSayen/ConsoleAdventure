@@ -127,6 +127,8 @@ namespace ConsoleAdventure
             if (isHost)
             {
                 server.Disconnect();
+                isHost = false;
+                server = null;
             }
 
             if (client.Client.Connected)
@@ -138,6 +140,8 @@ namespace ConsoleAdventure
                 client.Close();
                 client = new TcpClient();
             }
+
+            Id = -1;
         }
 
         public static void HostClient()
@@ -204,7 +208,7 @@ namespace ConsoleAdventure
         public static async Task RequestWorldData()
         {
             ConsoleAdventure.progressBar.stepText = Localization.GetTranslation("MProgress", "RequestingServerWorld");
-            ConsoleAdventure.progressBar.Progress = 25 + (uint)ConsoleAdventure.rand.Next(0, 50);
+            ConsoleAdventure.progressBar.Progress = 25 + ConsoleAdventure.rand.Next(0, 50);
             await SendMessage(ActionID.requestWorldData, new byte[0], new byte[0]);
         }
 

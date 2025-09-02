@@ -8,7 +8,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
     {
         private FormatString _text;
 
-        private FormatString text {
+        internal FormatString text {
             get
             {
                 return _text;
@@ -20,14 +20,14 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
                 size = textVec.ToPoint();
             }
         }
-        private Color color;
-        public UIText(string text, Color color, Point screenPosition, string name = null, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder, name: name)
+        internal Color color;
+        public UIText(string text, Color color, Point screenPosition, Point size = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
             this.text = new FormatString(text);
             this.color = color;
         }
 
-        public UIText(FormatString ftext, Color color, Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
+        public UIText(FormatString ftext, Color color, Point screenPosition, Point size = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
             text = ftext;
             this.color = color;
@@ -35,7 +35,6 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
-            //spriteBatch.DrawString(ConsoleAdventure.Font, text, drawPosition, color);
             text.Draw(spriteBatch, drawPosition, color);
         }
     }

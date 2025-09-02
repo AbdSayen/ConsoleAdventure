@@ -861,7 +861,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         private void WorldLoadingProgressInit()
         {
-            ConsoleAdventure.progressBar = new ProgressBar(new Rectangle(new Point((int)ConsoleAdventure.Width / 2, ((int)ConsoleAdventure.Height / 2) - 120), new Point(50 * 9, 19)), Color.LightGreen, 50, ProgressBar.PercentRight);
+            //ConsoleAdventure.progressBar = new ProgressBar(new Rectangle(new Point((int)ConsoleAdventure.Width / 2, ((int)ConsoleAdventure.Height / 2) - 120), new Point(50 * 9, 19)), Color.LightGreen, 50, ProgressBar.PercentRight);
         }
 
         private void WorldLoadingProgressDraw(SpriteBatch spriteBatch)
@@ -876,7 +876,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                     WorldErrorDraw(spriteBatch);
                 }
 
-                ConsoleAdventure.progressBar.Draw(spriteBatch);
+                //ConsoleAdventure.progressBar.Draw(spriteBatch);
             }
 
             ConsoleAdventure.progressBar.color = Color.LightGreen;

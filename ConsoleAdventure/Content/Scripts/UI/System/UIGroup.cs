@@ -10,13 +10,13 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
     public class UIGroup : UIContainer
     {
         private List<UIElement> childs = new List<UIElement>();
-        public UIGroup(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
+        public UIGroup(Point screenPosition, Point size = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
         }
 
         public override UIElement AddElement(UIElement child)
         {
-            child.parent = this;
+            child.SetParent(this);
             childs.Add(child);
             elements = new ObservableCollection<UIElement>(childs.OrderBy(c => c.GetZOrder()).ToList());
             return child;
@@ -24,7 +24,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         public override UIElement RemoveElement(UIElement child)
         {
-            child.parent = null;
+            child.SetParent(null);
             childs.Remove(child);
             elements = new ObservableCollection<UIElement>(childs.OrderBy(c => c.GetZOrder()).ToList());
             return child;

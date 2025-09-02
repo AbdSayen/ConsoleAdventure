@@ -29,7 +29,7 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.Generate
             }
             set
             {
-                ConsoleAdventure.progressBar.Progress = (uint)value;
+                ConsoleAdventure.progressBar.Progress = value;
             }
         }
 

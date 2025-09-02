@@ -20,7 +20,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
 
         public Action<UIContainer> onBackButtonPressed = new Action<UIContainer>((UIContainer e) => {});
 
-        public UIContainer(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder)
+        public UIContainer(Point screenPosition, Point size = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
             elements.CollectionChanged += UpdateFocusableElements;
         }
@@ -32,16 +32,31 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
 
         public virtual UIElement AddElement(UIElement element)
         {
-            element.parent = this;
+            element.SetParent(this);
             elements.Add(element);
             return element;
         }
 
         public virtual UIElement RemoveElement(UIElement element)
         {
-            element.parent = null;
+            element.SetParent(null);
             elements.Remove(element);
             return element;
+        }
+
+        public List<UIElement> GetElementsByName(string name)
+        {
+            return elements.Where((UIElement element) => { return element.GetName() == name; }).ToList();
+        }
+
+        public UIElement GetFirstElementWithName(string name)
+        {
+            return GetElementsByName(name).FirstOrDefault(defaultValue: null);
+        }
+
+        public UIElement GetChild(int num)
+        {
+            return elements[num];
         }
 
         public override void Update()

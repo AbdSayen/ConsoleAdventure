@@ -152,7 +152,7 @@ namespace ConsoleAdventure
                                         lock (sb)
                                         {
                                             //Program.game.Window.Title = String.Format(CultureInfo.CurrentCulture, "Read {0:N0} / {1:N0} chars (or bytes).", sb.Length, responseLength.Value);
-                                            ConsoleAdventure.progressBar.Progress = (uint)(((float)sb.Length / responseLength.Value) * 100f);
+                                            ConsoleAdventure.progressBar.Progress = (int)(((float)sb.Length / responseLength.Value) * 100f);
                                         }
                                     }
                                 }
@@ -344,7 +344,7 @@ namespace ConsoleAdventure
 
                 if (reload)
                 {
-                    ConsoleAdventure.progressBar.Progress = (uint)((float)(i + 1) / modsPath.Length * 100);
+                    ConsoleAdventure.progressBar.Progress = (int)((float)(i + 1) / modsPath.Length * 100);
                 }
 
                 string[] modFiles = Directory.GetFiles(path); // Получаем все файлы из папки модов

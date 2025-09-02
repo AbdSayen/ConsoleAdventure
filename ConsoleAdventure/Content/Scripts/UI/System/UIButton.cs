@@ -35,10 +35,9 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         public Action<UIButton> onClick = new Action<UIButton>((UIButton e) => { });
 
-        public UIButton(string text, Color color, Color selectColor, Point screenPosition, string selectText = "", string name = null, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, margin, anchor, zOrder, name: name)
+        public UIButton(string text, Color color, Color selectColor, Point screenPosition, string selectText = "", Point size = new(), Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
             this.text = text;
-            if (name == null) this.name = text;
             currentText = new(text);
             this.color = color;
             currentColor = color;

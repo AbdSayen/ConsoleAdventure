@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.Content.Scripts.UI.System.Containers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
     public class UIElement
     {
-        public string name;
+        private string name;
 
         internal Point screenPosition;
         internal Point size;
@@ -35,21 +36,36 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         internal bool isVisible = true;
 
-        internal UIElement parent;
+        private UIContainer parent;
 
         internal bool hovered;
 
-        public UIElement(Point screenPosition, Point size = new(), Point margin = new(), Anchor anchor = Anchor.Center, int zOrder = 0, string name = null)
+        public UIElement(Point screenPosition, Point size = new(), Anchor anchor = Anchor.Center, int zOrder = 0, string name = null)
         {
             this.screenPosition = screenPosition;
             this.size = size;
-            this.margin = margin;
             this.anchor = anchor;
             this.zOrder = zOrder;
             this.name = name;
         }
 
-        public UIElement GetParent()
+        public UIElement SetName(string name)
+        {
+            this.name = name;
+            return this;
+        }
+
+        public string GetName()
+        {
+            return name;
+        }
+
+        public void SetParent(UIContainer p)
+        {
+            parent = p;
+        }
+
+        public UIContainer GetParent()
         {
             return parent;
         }
