@@ -59,6 +59,18 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
             return elements[num];
         }
 
+        public List<UIElement> GetChilds()
+        {
+            return elements.ToList();
+        }
+
+        public List<UIElement> ClearChilds()
+        {
+            List<UIElement> list = elements.ToList();
+            elements.Clear();
+            return list;
+        }
+
         public override void Update()
         {
             for (int i = 0; i < elements.Count; i++)
@@ -72,11 +84,13 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
             if (!isFocused) return;
             if (Input.IsKeyDown(InputConfig.NavigationSelect) && !Input.IsOldKeyDown(InputConfig.NavigationSelect))
             {
+                if (currentlySelected > focusableElements.Count-1) return;
                 focusableElements[currentlySelected].OnConfirmKeyDown();
             }
 
             if (!Input.IsKeyDown(InputConfig.NavigationSelect) && Input.IsOldKeyDown(InputConfig.NavigationSelect))
             {
+                if (currentlySelected > focusableElements.Count-1) return;
                 focusableElements[currentlySelected].OnConfirmKeyUp();
             }
 

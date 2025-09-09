@@ -131,13 +131,20 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
                             ConsoleAdventure.progressBar?.Hide();
                         }
                     }
+                    else if (cursorPos == 2)
+                    {
+                        WorldIO.Delete(wname);
+                        GetParent().ClearChilds();
+                        MainMenu menu = (MainMenu)ConsoleAdventure.mainUIgroup.GetChild(0);
+                        menu.UpdateWorldList(GetParent());
+                    }
                 }
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
-            spriteBatch.DrawString(ConsoleAdventure.Font, FrameSystem.GetFrame(new(46, 4), Frame.BaseFrame), drawPosition - new Vector2(4, 0), cursorColor);
+            spriteBatch.DrawString(ConsoleAdventure.Font, FrameSystem.GetFrame(new(46, 4), Frame.RoundedFrame), drawPosition - new Vector2(4, 0), cursorColor);
             spriteBatch.DrawString(ConsoleAdventure.Font, FrameSystem.GetFrame(new(7, 4), Frame.BaseFrame), drawPosition - new Vector2(4, 0), cursorColor);
 
             spriteBatch.DrawString(ConsoleAdventure.Font, " Λ \n╱ ╲", drawPosition + new Vector2(14, 19), Color.White);

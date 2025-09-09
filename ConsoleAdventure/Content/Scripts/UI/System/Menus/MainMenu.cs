@@ -8,6 +8,16 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
     {
         public MenuState State = MenuState.mainScreen;
 
+        public void UpdateWorldList(UIContainer worldPanelsContainer)
+        {
+            var worlds = WorldIO.GetWorlds();
+
+            for (int i = 0; i < worlds.names.Length; i++)
+            {
+                worldPanelsContainer.AddElement(new UIWorldPanel(worlds.names[i], worlds.seeds[i].ToString(), new()));
+            }
+        }
+
         public MainMenu() : base(new(0, 0))
         {
             SetName("MainMenu");
@@ -29,12 +39,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
                 State = MenuState.mainScreen;
             };
 
-            var worlds = WorldIO.GetWorlds();
-
-            for (int i = 0; i < worlds.names.Length; i++)
-            {
-                worldPanelsContainer.AddElement(new UIWorldPanel(worlds.names[i], worlds.seeds[i].ToString(), new()));
-            }
+            UpdateWorldList(worldPanelsContainer);
 
             AddElement(worldPanelsContainer.SetName("WorldPanelsContainer"));
             worldPanelsContainer.Hide();
