@@ -19,7 +19,7 @@ namespace ConsoleAdventure
         { 
             StringBuilder sb = new StringBuilder();
             sb.Append("{\n  \"Settings\": {\n    ");
-            sb.Append($"\"Name\": \"{name}\",\n    \"Version\": \"0.1\",\n    \"Author\": \"{author}\",\n    \"Description\": \"Write a description of the mod\",\n    \"Icon\": \"add'\\n │ │ \\n '#ffffff:4.5x0.0*0;add' ___\\n- М -\\n ‾‾‾'#ffffff:0.5x0.0*0;\"\n");
+            sb.Append($"\"Name\": \"{name}\",\n    \"Version\": \"0.1\",\n    \"Author\": \"{author}\",\n    \"Description\": \"Write a description of the mod\",\n    \"Icon\": \"add'\\n │ │ \\n '#ffffff:0.5x0.0*0;add' ___\\n- М -\\n ‾‾‾'#ffffff:0.5x0.0*0;\"\n");
             sb.Append("  }\n}");
             return sb.ToString();
         }

@@ -24,82 +24,6 @@ namespace ConsoleAdventure
             }
         }
 
-        private static readonly char[] baseFrameChars = new char[6] { '│', '─', '┌', '┐', '└', '┘' };
-
-        /// <summary>
-        /// Создаёт рамку из символов
-        /// </summary>
-        /// <param name="panel">Размер рамки</param>
-        /// <param name="style">Стиль рамки</param>
-        /// <returns>Две строки, которые являются изображением рамки</returns>
-        public static string[] GetPanel(Point panel, byte style = 0)
-        {
-            StringBuilder TB = new StringBuilder(); //Верх и низ
-            StringBuilder LR = new StringBuilder(); //Лево и право
-
-            char[] chars = baseFrameChars;
-
-            for (int i = 0; i < panel.Y; i++)
-            {
-                for (int j = 0; j < panel.X; j++)
-                {
-                    if (i == 0) //Верх
-                    {
-                        if (j == 0)
-                        {
-                            TB.Append(' ');
-                            LR.Append(chars[2]);
-                        }
-                        else if (j == panel.X - 1)
-                        {
-                            TB.Append(chars[3]);
-                            LR.Append(' ');
-                        }
-                        else
-                        {
-                            TB.Append(chars[1]);
-                            LR.Append(' ');
-                        }
-                    }
-                    else if (i == panel.Y - 1) //Низ
-                    {
-                        if (j == 0)
-                        {
-                            TB.Append(' ');
-                            LR.Append(chars[4]);
-                        }
-                        else if (j == panel.X - 1)
-                        {
-                            TB.Append(chars[5]);
-                            LR.Append(' ');
-                        }
-                        else
-                        {
-                            TB.Append(chars[1]);
-                            LR.Append(' ');
-                        }
-                    }
-                    else //Середина
-                    {
-                        if (j == 0 || j == panel.X - 1)
-                        {
-                            TB.Append(' ');
-                            LR.Append(chars[0]);
-                        }
-                        else
-                        {
-                            TB.Append(' ');
-                            LR.Append(' ');
-                        }
-                    }
-                }
-                TB.Append('\n');
-                LR.Append('\n');
-            }
-
-            return new string[2] { TB.ToString(), LR.ToString(), };
-        }
-
         /// <summary>
         /// Открывает проводник по указанному пути
         /// </summary>
@@ -119,20 +43,6 @@ namespace ConsoleAdventure
             cmd.StandardInput.Close();
             cmd.WaitForExit();
             ConsoleAdventure.logger.AddMessage(cmd.StandardOutput.ReadToEnd());
-        }
-
-        /// <summary>
-        /// Рисует рамку из символов
-        /// </summary> 
-        /// <param name="spriteBatch">Бэтч для отрисовки</param>
-        /// <param name="font">Шрифт рамки</param>
-        /// <param name="panel">Строки рамки</param>
-        /// <param name="position">Позиция рамки</param>
-        /// <param name="color">Цвет рамки</param>
-        public static void DrawFrame(this SpriteBatch spriteBatch, SpriteFont font, string[] panel, Vector2 position, Color color)
-        {
-            spriteBatch.DrawString(font, panel[0], position - new Vector2(4, 0), color);
-            spriteBatch.DrawString(font, panel[1], position, color);
         }
 
         /// <summary>

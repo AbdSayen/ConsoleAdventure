@@ -35,8 +35,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
             }
 
 
-            spriteBatch.DrawFrame(font, Utils.GetPanel(new(50, 5), 0), Position, cursorColor);
-            spriteBatch.DrawFrame(font, Utils.GetPanel(new(9, 5), 0), Position, cursorColor);
+            spriteBatch.DrawString(font, FrameSystem.GetFrame(new(50, 5), Frame.BaseFrame), Position - new Vector2(4, 0), cursorColor);
+            spriteBatch.DrawString(font, FrameSystem.GetFrame(new(9, 5), Frame.BaseFrame), Position - new Vector2(4, 0), cursorColor);
             //spriteBatch.DrawString(font, " Λ \n╱ ╲", Position + (new Vector2(14, 19) * 1), Color.White);
 
             if (mod == null) return;

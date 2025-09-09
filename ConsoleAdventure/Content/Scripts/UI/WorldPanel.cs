@@ -40,8 +40,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 cursorColor = Color.White;
             }
 
-            spriteBatch.DrawFrame(font, Utils.GetPanel(new(46, 4), 0), Position, cursorColor);
-            spriteBatch.DrawFrame(font, Utils.GetPanel(new(7, 4), 0), Position, cursorColor);
+            spriteBatch.DrawString(font, FrameSystem.GetFrame(new(46, 4), Frame.BaseFrame), Position - new Vector2(4, 0), cursorColor);
+            spriteBatch.DrawString(font, FrameSystem.GetFrame(new(7, 4), Frame.BaseFrame), Position - new Vector2(4, 0), cursorColor);
             spriteBatch.DrawString(font, " Λ \n╱ ╲", Position + (new Vector2(14, 19) * 1), Color.White);
 
             spriteBatch.DrawString(font, TextAssets.Name + name, Position + (new Vector2(9 * 8, 19 * 1)), Color.White);

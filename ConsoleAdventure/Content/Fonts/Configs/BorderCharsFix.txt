@@ -1,0 +1,31 @@
+﻿[GlyphConfig]
+
+  glyphs:│╎┆┊ ┌└┍┕╒╘╭╰ ├┝╞ ╵╷ //Base left side
+
+  x-offset:4                  //Set x offset cropping
+
+[End]
+
+[GlyphConfig]
+
+  glyphs:┃╏┇┋ ┏┗┎┖ ┣┠┢┡┟┞ ╽╿ ╹╻ //Wide left side
+
+  x-offset:3                    //Set x offset cropping
+
+[End]
+
+[GlyphConfig]
+
+  glyphs:║ ╔╚╓╙ ╠╟  //Double left side
+
+  x-offset:3        //Set x offset cropping
+
+[End]
+
+[GlyphConfig]
+
+  glyphs:╶╺  //Chars for fixing
+
+  x-offset:5 //Set x offset cropping
+
+[End]
