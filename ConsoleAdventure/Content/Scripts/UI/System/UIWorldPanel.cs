@@ -137,8 +137,9 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
-            spriteBatch.DrawFrame(ConsoleAdventure.Font, Utils.GetPanel(new(46, 4), 0), drawPosition, cursorColor);
-            spriteBatch.DrawFrame(ConsoleAdventure.Font, Utils.GetPanel(new(7, 4), 0), drawPosition, cursorColor);
+            spriteBatch.DrawString(ConsoleAdventure.Font, FrameSystem.GetFrame(new(46, 4), Frame.BaseFrame), drawPosition - new Vector2(4, 0), cursorColor);
+            spriteBatch.DrawString(ConsoleAdventure.Font, FrameSystem.GetFrame(new(7, 4), Frame.BaseFrame), drawPosition - new Vector2(4, 0), cursorColor);
+
             spriteBatch.DrawString(ConsoleAdventure.Font, " Λ \n╱ ╲", drawPosition + new Vector2(14, 19), Color.White);
 
             worldName.Draw(spriteBatch, drawPosition + new Vector2(72, 19));
