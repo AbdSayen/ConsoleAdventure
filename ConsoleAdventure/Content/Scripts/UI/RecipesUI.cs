@@ -11,8 +11,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
 {
     internal class RecipesUI : BaseUI
     {
-        string[] border;
-        string[] border2;
+        string border;
+        string border2;
         Texture2D pixel;
         public Point size;
         public int cursorPos = 0;
@@ -20,8 +20,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
         public RecipesUI(Point position, Point size) : base(new Rectangle(position, size * new Point(9, 19)), Color.White)
         {
-            border = Utils.GetPanel(size);
-            border2 = Utils.GetPanel(new(size.X, 3));
+            border = FrameSystem.GetFrame(size, Frame.BaseFrame);
+            border2 = FrameSystem.GetFrame(new(size.X, 3), Frame.BaseFrame);
             pixel = new Texture2D(ConsoleAdventure._graphics.GraphicsDevice, 1, 1);
             pixel.SetData(new Color[] { Color.Black });
             this.size = size;
@@ -81,15 +81,15 @@ namespace ConsoleAdventure.Content.Scripts.UI
         private void DrawRecipes(SpriteBatch spriteBatch, List<Recipe> recipes, Color color_)
         {
             spriteBatch.Draw(pixel, new Rectangle((int)Position.X, (int)Position.Y, size.X * 9, (size.Y + (type == 0 ? 2 : 4)) * 19), Color.White);
-            spriteBatch.DrawFrame(ConsoleAdventure.Font, border, Position + new Vector2(4, 3), color_);
+            spriteBatch.DrawString(ConsoleAdventure.Font, border, Position + new Vector2(4, 3) - new Vector2(4, 0), color_);
 
-            spriteBatch.DrawFrame(ConsoleAdventure.Font, border2, Position + new Vector2(4, 3 + ((size.Y - 1) * 19)), color_);
+            spriteBatch.DrawString(ConsoleAdventure.Font, border2, Position + new Vector2(4, 3 + ((size.Y - 1) * 19)) - new Vector2(4, 0), color_);
 
             string nameUI = Localization.GetTranslation("UI", "RecipeMenu");
 
             if (type == 1)
             {
-                spriteBatch.DrawFrame(ConsoleAdventure.Font, border2, Position + new Vector2(4, 3 + ((size.Y + 1) * 19)), color_);
+                spriteBatch.DrawString(ConsoleAdventure.Font, border2, Position + new Vector2(4, 3 + ((size.Y + 1) * 19)) - new Vector2(4, 0), color_);
                 nameUI = Localization.GetTranslation("UI", "RecipeBook");
             }
 

@@ -75,7 +75,7 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
 
-            spriteBatch.DrawFrame(font, Utils.GetPanel(new(122, 32)), new(worldPos.X - (cellSize.X / 2) + 4, worldPos.Y - cellSize.Y), new Color(50, 50, 50));
+            spriteBatch.DrawString(font, FrameSystem.GetFrame(new(122, 32), Frame.BaseFrame), new Vector2(worldPos.X - (cellSize.X / 2) + 4, worldPos.Y - cellSize.Y) - new Vector2(4, 0), new Color(50, 50, 50));
 
             if (observer != oldPosition || observerW != oldW || timer % 5 == 0)
             {

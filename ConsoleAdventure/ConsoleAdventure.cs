@@ -2,6 +2,7 @@ using CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts;
 using ConsoleAdventure.Content.Scripts.Audio;
 using ConsoleAdventure.Content.Scripts.Debug.Commands;
+using ConsoleAdventure.Content.Scripts.FontEditor;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.Settings;
@@ -16,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleAdventure
@@ -215,6 +217,7 @@ namespace ConsoleAdventure
             logger.AddMessage("Content loading...");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/font");
+            FontEditor.ModifyChars(Content);
 
             string musicDir = "AudioFiles/Music/";
             MusicEngine.AddSong("ConsoleAdventure.StrangeWorld", Content.Load<Song>(musicDir + "StrangeWorld"));
@@ -457,6 +460,6 @@ namespace ConsoleAdventure
                     originalTexture.SaveAsPng(stream, originalTexture.Width, originalTexture.Height);
                 }
             }
-        }
+        }  
     }
 }

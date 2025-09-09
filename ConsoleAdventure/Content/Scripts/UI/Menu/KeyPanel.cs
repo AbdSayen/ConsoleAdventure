@@ -50,8 +50,8 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
             else cursorColor = Color.White;
 
-            spriteBatch.DrawFrame(font, Utils.GetPanel(new(80, 2), 0), Position, cursorColor);
-            spriteBatch.DrawFrame(font, Utils.GetPanel(new(55, 2), 0), Position, cursorColor);
+            spriteBatch.DrawString(font, FrameSystem.GetFrame(new(80, 2), Frame.BaseFrame), Position - new Vector2(4, 0), cursorColor);
+            spriteBatch.DrawString(font, FrameSystem.GetFrame(new(55, 2), Frame.BaseFrame), Position - new Vector2(4, 0), cursorColor);
 
             spriteBatch.DrawString(font, Localization.GetTranslation("KeysConfig", key.name), Position + (new Vector2(9, 8)), Color.White);
 

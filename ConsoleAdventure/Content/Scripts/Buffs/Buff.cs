@@ -36,7 +36,7 @@ namespace ConsoleAdventure.Content.Scripts
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             Color color = Color.White * ((float)(time) / (float)(maxTime));
-            spriteBatch.DrawFrame(ConsoleAdventure.Font, TextAssets.NormalFrame3x2, position, color);
+            spriteBatch.DrawString(ConsoleAdventure.Font, TextAssets.NormalFrame3x2, position - new Vector2(4, 0), color);
 
             GetTexture().Draw(spriteBatch, position + new Vector2(7, 9));
         }

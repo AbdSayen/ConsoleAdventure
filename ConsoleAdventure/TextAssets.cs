@@ -1,4 +1,6 @@
-﻿namespace ConsoleAdventure
+﻿using ConsoleAdventure.Content.Scripts;
+
+namespace ConsoleAdventure
 {
     public class TextAssets
     {
@@ -82,7 +84,7 @@
 
         public static string ItemConsumed = Localization.GetTranslation("Generic", "Consumed");
 
-        public static string[] NormalFrame3x2 = Utils.GetPanel(new(3, 2), 0);
+        public static string NormalFrame3x2 = FrameSystem.GetFrame(new Microsoft.Xna.Framework.Point(3, 2), Frame.BaseFrame);
 
         public static void UpdateLabels()
         {

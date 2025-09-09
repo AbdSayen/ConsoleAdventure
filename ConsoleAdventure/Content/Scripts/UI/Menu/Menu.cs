@@ -153,7 +153,7 @@ namespace ConsoleAdventure.Content.Scripts.UI
                               "[color:ca~Rainbow=\"{color:ca~Rainbow=\"\"}\"]\n" +
                               "[color:ca~BlackWhite=\"{color:ca~BlackWhite=\"\"}\"]\n" +
                               "[item:ConsoleAdventure.IronPick][item:ConsoleAdventure.IronHammer][item:ConsoleAdventure.IronSword]\n" +
-                              "[chartex:add'o'#ff9900:0.0x0.0*0;add'` \\с\\e\\s\\bs'#00ff00:0.0x0.0*0;]\n", Color.White);
+                              "[chartex:add'o'#ff9900:0.0x0.0*0;add'` \\с\\e\\s\\bs'#00ff00:0.0x0.0*0;]\n\n█▓▒░\n█▓▒░\n█▓▒░\n█▓▒░\n\n▐▓▌▌▐", Color.White);
 
         private void MainScreenInit()
         {

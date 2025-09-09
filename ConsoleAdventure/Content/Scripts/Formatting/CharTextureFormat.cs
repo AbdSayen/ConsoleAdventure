@@ -15,7 +15,7 @@ namespace ConsoleAdventure.Content.Scripts.Formatting
     /// 
     /// CHARTEXTURE:
     /// <code>
-    /// · add'o'#ff9900\~0.0x0.0*0;add'`'#00ff00\~0.0x0.0*0;
+    /// · add'o'#ff9900:0.0x0.0*0;add'`'#00ff00:0.0x0.0*0;
     /// 
     /// "\с" = ","
     /// "\e" = "="

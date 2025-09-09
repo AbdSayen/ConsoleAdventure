@@ -1,0 +1,30 @@
+﻿[GlyphConfig]
+
+  //Shades
+
+  glyphs:▓▒░
+
+  //Set source size
+
+  w-size-source:9
+  h-size-source:19
+
+  //Set offset
+
+  y-offset:-3
+
+  y-offset-source:-2
+
+[End]
+
+[GlyphConfig]
+
+  //Shades
+
+  glyphs:▐
+
+  //Set offset
+
+  x-offset:4
+
+[End]
