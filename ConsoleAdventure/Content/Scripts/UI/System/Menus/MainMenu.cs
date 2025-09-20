@@ -21,7 +21,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
 
             if (worlds.names.Length == 0)
             {
-                worldPanelsContainer.AddElement(new UIText("There is no worlds yet :(\nCreate new own world by pressing [color:cfbfff=\"N\"] key\n:)", Color.Gray, new(), align: Align.Center, anchor: Anchor.Top));
+                worldPanelsContainer.AddElement(new UIText("There is no worlds yet :(\nCreate new own world by pressing [color:cfbfff=\"N\"] key", Color.Gray, new(), align: Align.Center, anchor: Anchor.Top));
             }
         }
 
