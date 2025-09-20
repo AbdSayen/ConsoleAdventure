@@ -10,11 +10,18 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
 
         public void UpdateWorldList(UIContainer worldPanelsContainer)
         {
+            worldPanelsContainer.ClearChilds();
+
             var worlds = WorldIO.GetWorlds();
 
             for (int i = 0; i < worlds.names.Length; i++)
             {
                 worldPanelsContainer.AddElement(new UIWorldPanel(worlds.names[i], worlds.seeds[i].ToString(), new()));
+            }
+
+            if (worlds.names.Length == 0)
+            {
+                worldPanelsContainer.AddElement(new UIText("There is no worlds yet :(\nCreate new own world by pressing [color:cfbfff=\"N\"] key\n:)", Color.Gray, new(), align: Align.Center, anchor: Anchor.Top));
             }
         }
 
@@ -47,9 +54,10 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             ((UIButton)mainButtonsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Play"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top))).onClick = (UIButton btn) => {
                 State = MenuState.worldMenu;
                 ConsoleAdventure.display = new Display(ConsoleAdventure.world);
+                mainButtonsContainer.OnDefocus();
+
                 worldPanelsContainer.Show();
                 worldPanelsContainer.OnFocus();
-                mainButtonsContainer.OnDefocus();
             };
             ((UIButton)mainButtonsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Settings"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top))).onClick = (UIButton btn) => {
                 State = MenuState.settings;

@@ -174,7 +174,6 @@ namespace ConsoleAdventure
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
 
             // Получаем все типы в этой сборке
-            // Можно также указать другую сборку, например, Assembly.Load("MyAssembly")
             Type[] allTypes = currentAssembly.GetTypes();
 
             // Фильтруем типы, чтобы найти наследников
