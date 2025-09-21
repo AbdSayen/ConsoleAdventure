@@ -1,0 +1,113 @@
+﻿using ConsoleAdventure.Content.Scripts.InputLogic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleAdventure.Content.Scripts.UI.System
+{
+    public class UITextInputField : UIText
+    {
+        public string sourceText = "";
+
+        public static byte UnderliningCursor => 0;
+        public static byte VerticalStickCursor => 1;
+
+        public string tooltip;
+
+        private int _width;
+        public int Width
+        {
+            get
+            {
+                return _width;
+            }
+            set
+            {
+                _width = value;
+                size.X = value * 9;
+            }
+        }
+        public byte cursor;
+
+        public Point cursorPos;
+
+        public static int cursorTickTime = 30;
+
+        char[] chars;
+        bool listType;
+
+        static string[] cursorChars = new string[2]
+        {
+            "_",
+            "|"
+        };
+
+        public string[] BorderChars = new string[2]
+        {
+            "[",
+            "]"
+        };
+
+        public UITextInputField(Color color, Point screenPosition, int Width, string tooltip = "", byte cursor = 0, char[] chars = null, bool listType = false, Anchor anchor = Anchor.Center, int zOrder = 0) : base("", color, screenPosition, new(), Align.Left, anchor, false, zOrder)
+        {
+            this.Width = Width;
+            this.cursor = cursor;
+            this.chars = chars;
+            this.listType = listType;
+            this.tooltip = tooltip;
+            this.color = color;
+        }
+
+        public override bool IsFocusable()
+        {
+            return true;
+        }
+
+        public override void OnFocus()
+        {
+            hovered = true;
+        }
+
+        public override void OnDefocus()
+        {
+            hovered = false;
+        }
+
+        public override void Update()
+        {
+            string newText = TextInput.GetInputText(sourceText, cursorPos, out cursorPos, chars, listType);
+            if (newText.Length <= sourceText.Length || text.String.Length < Width)
+            {
+                sourceText = newText;
+                text.SetText(sourceText, new SmartColor(color));
+            }
+        }
+
+        int timer;
+        public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
+        {
+            if (sourceText == "" && tooltip != "")
+            {
+                spriteBatch.DrawString(ConsoleAdventure.Font, tooltip, drawPosition, Color.Gray, 0, Vector2.Zero, 1f, 0, 0);
+            }
+
+            //spriteBatch.DrawString(ConsoleAdventure.Font, sourceText, drawPosition + new Vector2(9, -19), new Color(70, 70, 70)); // format tooltip
+            base.Draw(spriteBatch, drawPosition + new Vector2(9, 0));
+
+            if (IsHovered() && timer % cursorTickTime > ((float)cursorTickTime / 2))
+            {
+                spriteBatch.DrawString(ConsoleAdventure.Font, cursorChars[cursor], drawPosition + new Vector2(9, 0) + new Vector2(cursorPos.X * 9, cursorPos.Y * 19), color, 0, Vector2.Zero, 1f, 0, 0);
+            }
+
+            spriteBatch.DrawString(ConsoleAdventure.Font, BorderChars[0], drawPosition, color, 0, Vector2.Zero, 1f, 0, 0);
+            spriteBatch.DrawString(ConsoleAdventure.Font, BorderChars[1], drawPosition + new Vector2((Width + 1) * 9, 0), color, 0, Vector2.Zero, 1f, 0, 0);
+
+
+            timer++;
+        }
+    }
+}

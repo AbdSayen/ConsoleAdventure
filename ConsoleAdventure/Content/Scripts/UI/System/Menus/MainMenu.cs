@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.Content.Scripts.IO;
+﻿using ConsoleAdventure.Content.Scripts.InputLogic;
+using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI.System.Containers;
 using Microsoft.Xna.Framework;
 
@@ -23,6 +24,8 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             {
                 worldPanelsContainer.AddElement(new UIText("There is no worlds yet :(\nCreate new own world by pressing [color:cfbfff=\"N\"] key", Color.Gray, new(), align: Align.Center, anchor: Anchor.Top));
             }
+
+            worldPanelsContainer.AddElement(new UITextInputField(Color.White, new(1920 / 2, 300), 30, "test text", UITextInputField.VerticalStickCursor, chars: new char[] { '\n', '\r' }, listType: TextInput.BlackList, anchor: Anchor.Top));
         }
 
         public MainMenu() : base(new(0, 0))
@@ -37,7 +40,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             AddElement(new UIText(new FormatString($" [color:999999=\"T\"][color:dddddd=\"h\"][color:999999=\"e\"] [color:999999=\"Co\"][color:dddddd=\"nso\"][color:999999=\"le\"] [color:999999=\"Ad\"][color:dddddd=\"ventu\"][color:999999=\"re\"] [item:{randomItem}]"), Color.White, new Point(0, 0), anchor: Anchor.TopLeft));
 
             VListContainer mainButtonsContainer = new VListContainer(new(1920 / 2, 220), new(300, 20), Anchor.Top);
-            HListContainer worldPanelsContainer = new HListContainer(new(1920 / 2, 19 * 4 + 9 * 30), new(0, 9), Anchor.Top, offsetMode: true, limit: 6);
+            WorldPanelsContainer worldPanelsContainer = new WorldPanelsContainer(new(1920 / 2, 19 * 4 + 9 * 30));
             worldPanelsContainer.onBackButtonPressed = (UIContainer c) =>
             {
                 c.Hide();
@@ -68,8 +71,13 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             ((UIButton)mainButtonsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Exit"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top))).onClick = (UIButton btn) => {
                 ConsoleAdventure.isExit = true;
             };
+
             mainButtonsContainer.OnFocus();
             AddElement(mainButtonsContainer.SetName("MainButtonsContainer"));
+
+            //UITextInputField inp = (UITextInputField)AddElement(new UITextInputField(Color.White, new(1920 / 2, 300), 30, "test text", chars: new char[] { '\n', '\r' }, listType: TextInput.BlackList, anchor: Anchor.Top));
+            //inp.OnFocus();
+            //inp.hovered = true;
 
             ConsoleAdventure.progressBar = (UIProgressBar)AddElement(new UIProgressBar(50, new(1920 / 2, 1080/2 - 120), Anchor.Top));
             ConsoleAdventure.progressBar.Hide();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Text;
+using System.Windows.Forms;
 
 namespace ConsoleAdventure.Content.Scripts.UI.System
 {
@@ -13,6 +14,8 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
     public class UIText : UIElement
     {
+        private bool SizeByContent = true;
+
         private FormatString _text;
 
         public FormatString text {
@@ -23,8 +26,11 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             set
             {
                 _text = value;
-                Vector2 textVec = ConsoleAdventure.Font.MeasureString(value.String);
-                size = textVec.ToPoint();
+                if (SizeByContent)
+                {
+                    Vector2 textVec = ConsoleAdventure.Font.MeasureString(value.String);
+                    size = textVec.ToPoint();
+                }
 
                 text_source = value.BaseString.Split("\n");
                 text_source_format = value.String.Split("\n");
@@ -37,18 +43,20 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
         private string[] text_source;
         private string[] text_source_format;
 
-        public UIText(string text, Color color, Point screenPosition, Point size = new(), Align align = Align.Left, Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
+        public UIText(string text, Color color, Point screenPosition, Point size = new(), Align align = Align.Left, Anchor anchor = Anchor.Center, bool sizeByContent = true, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
             this.text = new FormatString(text);
             this.color = color;
             this.align = align;
+            SizeByContent = sizeByContent;
         }
 
-        public UIText(FormatString ftext, Color color, Point screenPosition, Point size = new(), Align align = Align.Left, Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
+        public UIText(FormatString ftext, Color color, Point screenPosition, Point size = new(), Align align = Align.Left, Anchor anchor = Anchor.Center, bool sizeByContent = true, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
             text = ftext;
             this.color = color;
             this.align = align;
+            SizeByContent = sizeByContent;
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)

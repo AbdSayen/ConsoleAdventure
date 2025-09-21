@@ -247,7 +247,6 @@ namespace ConsoleAdventure
             CaModLoader.RunMods();
         }
 
-        UIGroup subgroup;
         protected override void LoadContent()
         {
             logger.AddMessage("Content loading...");
@@ -433,11 +432,6 @@ namespace ConsoleAdventure
 
                 else
                 {
-                    if (Input.IsKeyDown(Keys.Z) && subgroup.IsVisible())
-                    {
-                        subgroup.Hide();
-                    }
-
                     _spriteBatch.Begin();
                     mainUIgroup.Draw(_spriteBatch, Vector2.Zero);
                     _spriteBatch.End();
