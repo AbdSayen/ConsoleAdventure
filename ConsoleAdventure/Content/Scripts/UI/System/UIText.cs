@@ -15,7 +15,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
     {
         private FormatString _text;
 
-        internal FormatString text {
+        public FormatString text {
             get
             {
                 return _text;
@@ -25,11 +25,17 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
                 _text = value;
                 Vector2 textVec = ConsoleAdventure.Font.MeasureString(value.String);
                 size = textVec.ToPoint();
+
+                text_source = value.BaseString.Split("\n");
+                text_source_format = value.String.Split("\n");
             }
         }
-        internal Color color;
+        public Color color;
 
         private Align align = Align.Left;
+
+        private string[] text_source;
+        private string[] text_source_format;
 
         public UIText(string text, Color color, Point screenPosition, Point size = new(), Align align = Align.Left, Anchor anchor = Anchor.Center, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
@@ -54,8 +60,6 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             }
             else
             {
-                string[] text_source = text.BaseString.Split("\n");
-                string[] text_source_format = text.String.Split("\n");
                 for (int i = 0; i < text_source.Length; i++)
                 {
                     Vector2 msr = ConsoleAdventure.Font.MeasureString(text_source_format[i]);
