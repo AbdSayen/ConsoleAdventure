@@ -206,7 +206,7 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
 
         public static void InsertStringToLines(this List<string> lines, Point pos, string text)
         {
-            if(pos.X >= lines[pos.Y].Length - 1)
+            if(pos.X >= lines[pos.Y].Length)
             {
                 lines[pos.Y] += text;
             }
@@ -293,3 +293,4 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
         #endif
     }
 }
+
