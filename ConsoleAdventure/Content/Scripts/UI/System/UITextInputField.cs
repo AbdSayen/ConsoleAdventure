@@ -110,7 +110,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
             if (IsHovered() && timer % cursorTickTime > ((float)cursorTickTime / 2))
             {
-                spriteBatch.DrawString(ConsoleAdventure.Font, cursorChars[cursor], drawPosition + new Vector2(9, 0) + new Vector2(cursorPos.X * 9, cursorPos.Y * 19), color, 0, Vector2.Zero, 1f, 0, 0);
+                spriteBatch.DrawString(ConsoleAdventure.Font, cursorChars[cursor], drawPosition + new Vector2(9, 0) + new Vector2(cursorPos.X * 9, cursorPos.Y * 19) + new Vector2(-(text.BaseString.Length - text.String.Length) * 9, 0), color, 0, Vector2.Zero, 1f, 0, 0);
             }
 
             spriteBatch.DrawString(ConsoleAdventure.Font, BorderChars[0], drawPosition, color, 0, Vector2.Zero, 1f, 0, 0);
