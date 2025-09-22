@@ -136,6 +136,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
                         WorldIO.Delete(wname);
                         MainMenu menu = (MainMenu)ConsoleAdventure.mainUIgroup.GetChild(0);
                         menu.UpdateWorldList(GetParent());
+                        GetParent().currentlySelected = 0;
                     }
                 }
             }

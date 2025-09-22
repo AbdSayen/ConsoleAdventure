@@ -53,7 +53,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
 
             #region world container
             WorldPanelsContainer worldPanelsContainer = new WorldPanelsContainer(new(1920 / 2, 19 * 4 + 9 * 30));
-            worldPanelsContainer.onBackButtonPressed = (UIContainer c) => BackToMainMenu(c);
+            worldPanelsContainer.onBackButtonPressed += (UIContainer c) => BackToMainMenu(c);
 
             UpdateWorldList(worldPanelsContainer);
 
@@ -63,10 +63,8 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
 
             #region world gen
             WorldGenContainer worldGenContainer = new WorldGenContainer();
-            worldGenContainer.onBackButtonPressed = (UIContainer c) =>
+            worldGenContainer.onBackButtonPressed += (UIContainer c) =>
             {
-                foreach (UITextInputField field in worldGenContainer.GetChilds()) field.ClearContent();
-                
                 BackToMainMenu(c);
             };
 

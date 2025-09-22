@@ -49,6 +49,11 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             this.name = name;
         }
 
+        public void Destroy()
+        {
+            GetParent().RemoveElement(this);
+        }
+
         public UIElement SetName(string name)
         {
             this.name = name;
