@@ -11,7 +11,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 {
     public class UITextInputField : UIText
     {
-        public string sourceText = "";
+        public string fieldContent = "";
 
         public static byte UnderliningCursor => 0;
         public static byte VerticalStickCursor => 1;
@@ -60,6 +60,15 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             this.listType = listType;
             this.tooltip = tooltip;
             this.color = color;
+
+            size.Y = 19;
+        }
+
+        public void ClearContent()
+        {
+            fieldContent = "";
+            cursorPos = new Point(0, 0);
+            text.SetText(fieldContent, new SmartColor(color));
         }
 
         public override bool IsFocusable()
@@ -79,20 +88,21 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         public override void Update()
         {
-            string newText = TextInput.GetInputText(sourceText, cursorPos, out cursorPos, chars, listType);
-            if (newText.Length <= sourceText.Length || text.String.Length < Width)
+            if (!IsHovered()) return;
+            string newText = TextInput.GetInputText(fieldContent, cursorPos, out cursorPos, chars, listType);
+            if (newText.Length <= fieldContent.Length || text.String.Length < Width)
             {
-                sourceText = newText;
-                text.SetText(sourceText, new SmartColor(color));
+                fieldContent = newText;
+                text.SetText(fieldContent, new SmartColor(color));
             }
         }
 
         int timer;
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
-            if (sourceText == "" && tooltip != "")
+            if (fieldContent == "" && tooltip != "")
             {
-                spriteBatch.DrawString(ConsoleAdventure.Font, tooltip, drawPosition, Color.Gray, 0, Vector2.Zero, 1f, 0, 0);
+                spriteBatch.DrawString(ConsoleAdventure.Font, tooltip, drawPosition + new Vector2(9, 0), Color.Gray, 0, Vector2.Zero, 1f, 0, 0);
             }
 
             //spriteBatch.DrawString(ConsoleAdventure.Font, sourceText, drawPosition + new Vector2(9, -19), new Color(70, 70, 70)); // format tooltip

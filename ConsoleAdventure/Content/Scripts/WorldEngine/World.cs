@@ -183,9 +183,10 @@ namespace ConsoleAdventure.WorldEngine
             }
         }
 
-        public void ConnectPlayer(short id, string pcId = "")
+        public void ConnectPlayer(short id, string pcId = "", string name = "Unknown")
         {
             Player player = new Player(id, pcId, new Position(5 + id, 5 + id), ConsoleAdventure.world.Surface);
+            player.info.Name = name;
             players.Add(player.info.Id, player);
         }
 

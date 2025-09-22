@@ -17,7 +17,9 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
 
             if (Input.PostClick(InputConfig.WorldGen))
             {
-                GetParent().GetFirstElementWithName("MainButtonsContainer").OnFocus();
+                UIElement worldGenContainer = GetParent().GetFirstElementWithName("WorldGenContainer");
+                worldGenContainer.OnFocus();
+                worldGenContainer.Show();
 
                 Hide();
                 OnDefocus();

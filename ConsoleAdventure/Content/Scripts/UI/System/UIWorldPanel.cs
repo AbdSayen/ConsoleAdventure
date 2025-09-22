@@ -134,7 +134,6 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
                     else if (cursorPos == 2)
                     {
                         WorldIO.Delete(wname);
-                        GetParent().ClearChilds();
                         MainMenu menu = (MainMenu)ConsoleAdventure.mainUIgroup.GetChild(0);
                         menu.UpdateWorldList(GetParent());
                     }
