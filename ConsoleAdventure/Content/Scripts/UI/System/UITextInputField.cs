@@ -18,6 +18,10 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         public string tooltip;
 
+        private bool isAutoSized = false;
+
+        private int targetWidth;
+
         private int _width;
         public int Width
         {
@@ -52,14 +56,18 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             "]"
         };
 
-        public UITextInputField(Color color, Point screenPosition, int Width, string tooltip = "", byte cursor = 0, char[] chars = null, bool listType = false, Anchor anchor = Anchor.Center, int zOrder = 0) : base("", color, screenPosition, new(), Align.Left, anchor, false, zOrder)
+        public UITextInputField(Color color, Point screenPosition, int Width, string tooltip = "", byte cursor = 0, char[] chars = null, bool listType = false, bool isAutoSized = false, Anchor anchor = Anchor.Center, int zOrder = 0) : base("", color, screenPosition, new(), Align.Left, anchor, false, zOrder)
         {
             this.Width = Width;
+            targetWidth = Width;
+
             this.cursor = cursor;
             this.chars = chars;
             this.listType = listType;
             this.tooltip = tooltip;
             this.color = color;
+
+            this.isAutoSized = isAutoSized;
 
             size.Y = 19;
         }
@@ -90,10 +98,18 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
         {
             if (!IsHovered()) return;
             string newText = TextInput.GetInputText(fieldContent, cursorPos, out cursorPos, chars, listType);
-            if (newText.Length <= fieldContent.Length || text.String.Length < Width)
+            if ((newText.Length <= fieldContent.Length || text.String.Length < Width) && !isAutoSized || isAutoSized)
             {
                 fieldContent = newText;
                 text.SetText(fieldContent, new SmartColor(color));
+
+                if (isAutoSized)
+                {
+                    if (text.String.Length > targetWidth)
+                    {
+                        Width = text.String.Length;
+                    }
+                }
             }
         }
 

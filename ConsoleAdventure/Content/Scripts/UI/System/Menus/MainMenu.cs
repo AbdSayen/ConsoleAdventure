@@ -27,7 +27,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
                 worldPanelsContainer.AddElement(new UIText("There is no worlds yet :(\nCreate new own world by pressing [color:cfbfff=\"N\"] key", Color.Gray, new(), align: Align.Center, anchor: Anchor.Top));
             }
 
-            //worldPanelsContainer.AddElement(new UITextInputField(Color.White, new(1920 / 2, 300), 30, "...", UITextInputField.VerticalStickCursor, chars: new char[] { '\n', '\r' }, listType: TextInput.BlackList, anchor: Anchor.Top));
+            worldPanelsContainer.AddElement(new UITextInputField(Color.White, new(1920 / 2, 300), 15, "Test Field, enjoy)", UITextInputField.VerticalStickCursor, chars: new char[] { '\n', '\r' }, listType: TextInput.BlackList, anchor: Anchor.Top, isAutoSized: true));
         }
 
         public void BackToMainMenu(UIContainer currentMenu)
