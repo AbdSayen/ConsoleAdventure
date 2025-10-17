@@ -7,7 +7,7 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Torch : Transform
     {
-        public Torch(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Torch(Position position, int w) : base(position, (byte)w)
         {
             worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.torch;
