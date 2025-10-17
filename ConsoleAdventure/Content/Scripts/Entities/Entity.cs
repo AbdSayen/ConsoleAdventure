@@ -46,7 +46,7 @@ namespace ConsoleAdventure.Content.Scripts
 
             StateMachine = new StateMachine(this);
 
-            AddTypeToMap<Entity>(type);
+            AddTypeToMap();
 
             if (!ConsoleAdventure.InWorld) return;
             ConsoleAdventure.world.Start += PreStart;

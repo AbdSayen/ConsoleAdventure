@@ -30,7 +30,7 @@ namespace ConsoleAdventure.WorldEngine
             isObstacle = true;
             hardness = 0.5f;
 
-            AddTypeToMap<Alfisol>(type);
+            AddTypeToMap();
             Initialize();
         }
 

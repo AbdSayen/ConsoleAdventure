@@ -20,7 +20,7 @@ namespace ConsoleAdventure.WorldEngine
             isObstacle = true;
             hardness = 4f;
 
-            AddTypeToMap<Ruby>(type);
+            AddTypeToMap();
 
             Initialize();
         }

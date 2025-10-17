@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)VanillaTransforms.anvil;
             isObstacle = false;
 
-            AddTypeToMap<Anvil>(type);
+            AddTypeToMap();
 
             Initialize();
         }

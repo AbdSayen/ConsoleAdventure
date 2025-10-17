@@ -18,7 +18,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)VanillaTransforms.furnace;
             isObstacle = false;
 
-            AddTypeToMap<Furnace>(type);
+            AddTypeToMap();
 
             Initialize();
         }

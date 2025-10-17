@@ -15,7 +15,7 @@ namespace ConsoleAdventure.WorldEngine
             //isObstacle = true;
             hardness = -1;
 
-            AddTypeToMap<Water>(type);
+            AddTypeToMap();
 
             Initialize();
         }

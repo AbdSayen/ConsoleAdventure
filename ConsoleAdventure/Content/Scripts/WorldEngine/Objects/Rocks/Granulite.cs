@@ -21,7 +21,7 @@ namespace ConsoleAdventure.WorldEngine
             hardness = 2;
             burnType = 1;
 
-            AddTypeToMap<Granulite>(type);
+            AddTypeToMap();
 
             Initialize();
         }

@@ -12,6 +12,7 @@ using System.CodeDom;
 using SharpDX.Direct2D1;
 using System.Linq;
 using ConsoleAdventure.Content.Scripts.IO;
+using System.ComponentModel;
 
 namespace ConsoleAdventure
 {
@@ -68,10 +69,15 @@ namespace ConsoleAdventure
             return (T)MemberwiseClone();
         }
         
-        public static void AddTypeToMap<T>(int type)
+        public void AddTypeToMap()
+        {
+            AddTypeToMap(GetType(), type);
+        }
+
+        /*public static void AddTypeToMap<T>(int type)
         {
             AddTypeToMap(typeof(T), type);
-        }
+        }*/
 
         public static void AddTypeToMap(Type T, int type)
         {
@@ -104,7 +110,7 @@ namespace ConsoleAdventure
         /// <summary>
         /// Инициализирует все <see cref="StaticData{T}"/> для <see cref="Transform"/>.
         /// Базовая реализация инициализирует базовые <see cref="StaticData{T}"/> (). <br/><br/>
-        /// Желательно при перезаписи метода писать <c>base.InitAllStaticData();</c> в начале метода,
+        /// Желательно при перезаписи метода писать <c>base.InitStaticData();</c> в начале метода,
         /// для большей надёжности<br/><br/>
         /// Пример override-а:
         /// <code> 

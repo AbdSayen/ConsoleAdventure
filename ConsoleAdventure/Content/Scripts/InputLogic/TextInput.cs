@@ -293,4 +293,3 @@ namespace ConsoleAdventure.Content.Scripts.InputLogic
         #endif
     }
 }
-

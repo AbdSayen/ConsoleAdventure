@@ -24,7 +24,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)VanillaTransforms.granuliteFloor;
             isObstacle = false;
 
-            AddTypeToMap<GranuliteFloor>(type);
+            AddTypeToMap();
 
             Initialize();
         }

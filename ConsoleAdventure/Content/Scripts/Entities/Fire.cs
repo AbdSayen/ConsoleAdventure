@@ -29,7 +29,7 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.fire;
             SetMaxLife(-1);
 
-            AddTypeToMap<Fire>(type);
+            AddTypeToMap();
 
             Initialize();
         }

@@ -24,7 +24,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)VanillaTransforms.obsidianFloor;
             isObstacle = false;
 
-            AddTypeToMap<ObsidianFloor>(type);
+            AddTypeToMap();
 
             Initialize();
         }

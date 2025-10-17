@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine
             this.worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.chest;
 
-            AddTypeToMap<Chest>(type);
+            AddTypeToMap();
 
             Initialize();
         }

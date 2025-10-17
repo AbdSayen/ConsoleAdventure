@@ -50,7 +50,7 @@ namespace ConsoleAdventure.Content.Scripts
                     {
                         if (BaseString[j] == ']')
                         {
-                            formats.Add(new Range(i, j));
+                            formats.Add(i..j);
                             break;
                         }
                     }
@@ -118,7 +118,7 @@ namespace ConsoleAdventure.Content.Scripts
                     if (template.isTextModifier)
                     {
                         if (equalsIndex + 1 >= String.Length) break;
-                        
+
                         if (equalsIndex + 1 >= end && String[equalsIndex + 1] != '"' && 
                            (String[end - 1] != '"' && equalsIndex + 1 == end - 1))
                             break;
@@ -185,4 +185,3 @@ namespace ConsoleAdventure.Content.Scripts
         }
     }
 }
-

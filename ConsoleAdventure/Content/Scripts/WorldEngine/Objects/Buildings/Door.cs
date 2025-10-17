@@ -17,7 +17,7 @@ namespace ConsoleAdventure.WorldEngine
             isObstacle = false;
             burnType = 0;
 
-            AddTypeToMap<Door>(type);
+            AddTypeToMap();
 
             Initialize();
         }

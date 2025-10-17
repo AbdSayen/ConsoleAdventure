@@ -20,7 +20,7 @@ namespace ConsoleAdventure.WorldEngine
             isObstacle = true;
             hardness = 2;
 
-            AddTypeToMap<GraniteWall>(type);
+            AddTypeToMap();
 
             Initialize();
         }

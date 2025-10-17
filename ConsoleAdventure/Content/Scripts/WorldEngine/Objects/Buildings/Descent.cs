@@ -18,7 +18,7 @@ namespace ConsoleAdventure.WorldEngine
             isObstacle = false;
             hardness = -1;
 
-            AddTypeToMap<Descent>(type);
+            AddTypeToMap();
 
             Initialize();
         }

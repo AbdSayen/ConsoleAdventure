@@ -19,7 +19,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)VanillaTransforms.seedling;
             burnType = 0;
 
-            AddTypeToMap<Seedling>(type);
+            AddTypeToMap();
 
             Initialize();
         }

@@ -19,7 +19,7 @@ namespace ConsoleAdventure.WorldEngine
         public SpruceTree(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             type = (int)VanillaTransforms.spruceTree;
-            AddTypeToMap<SpruceTree>(type);
+            AddTypeToMap();
             Initialize();
         }
 

@@ -30,7 +30,7 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.highTemperatureFire;
             SetMaxLife(-1);
 
-            AddTypeToMap<HighTemperatureFire>(type);
+            AddTypeToMap();
 
             Initialize();
         }

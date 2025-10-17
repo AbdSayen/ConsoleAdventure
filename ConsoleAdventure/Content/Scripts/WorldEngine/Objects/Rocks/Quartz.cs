@@ -18,7 +18,7 @@ namespace ConsoleAdventure.WorldEngine
             hardness = 2;
             burnType = 1;
 
-            AddTypeToMap<Quartz>(type);
+            AddTypeToMap();
 
             Initialize();
         }

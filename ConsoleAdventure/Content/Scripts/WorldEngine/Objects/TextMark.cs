@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (int)VanillaTransforms.textMark;
 
-            AddTypeToMap<TextMark>(type);
+            AddTypeToMap();
 
             Initialize();
         }

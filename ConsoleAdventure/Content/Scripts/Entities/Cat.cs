@@ -40,7 +40,7 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.cat;
             SetMaxLife(9);
 
-            AddTypeToMap<Cat>(type);
+            AddTypeToMap();
 
             Initialize();
 

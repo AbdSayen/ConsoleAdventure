@@ -29,7 +29,7 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.leaves;
             SetMaxLife(-1);
 
-            AddTypeToMap<Leaves>(type);
+            AddTypeToMap();
 
             delay = ConsoleAdventure.rand.Next(3, 20);
 

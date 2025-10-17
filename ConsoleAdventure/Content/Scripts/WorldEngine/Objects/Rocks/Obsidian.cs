@@ -31,7 +31,7 @@ namespace ConsoleAdventure.WorldEngine
             hardness = 1.5f;
             burnType = 1;
 
-            AddTypeToMap<Obsidian>(type);
+            AddTypeToMap();
 
             Initialize();
         }

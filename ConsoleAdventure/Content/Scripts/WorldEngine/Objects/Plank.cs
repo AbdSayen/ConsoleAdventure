@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine
             burnType = 0;
             hardness = 0.8f;
 
-            AddTypeToMap<Plank>(type);
+            AddTypeToMap();
 
             Initialize();
         }

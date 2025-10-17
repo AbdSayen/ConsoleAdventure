@@ -17,7 +17,7 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.bomb;
             SetMaxLife(-1);
             
-            AddTypeToMap<Bomb>(type);
+            AddTypeToMap();
             //Spawner.AddSpawnCondition(new SpawnCondition(type, new Range(0, 1), null, 1));
 
             Initialize();   

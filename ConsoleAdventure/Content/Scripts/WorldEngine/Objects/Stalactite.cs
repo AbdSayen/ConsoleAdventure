@@ -95,7 +95,7 @@ namespace ConsoleAdventure.WorldEngine
             isObstacle = false;
             hardness = 4f;
 
-            AddTypeToMap<Stalactite>(type);
+            AddTypeToMap();
 
             Initialize();
         }

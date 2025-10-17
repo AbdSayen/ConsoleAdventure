@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)VanillaTransforms.ruine;
             this.isObstacle = false;
 
-            AddTypeToMap<Ruine>(type);
+            AddTypeToMap();
 
             Initialize();
         }

@@ -23,7 +23,7 @@ namespace ConsoleAdventure.WorldEngine
 
             isObstacle = true;
 
-            AddTypeToMap<SandFloor>(type);
+            AddTypeToMap();
             Initialize();
         }
 

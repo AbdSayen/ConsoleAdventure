@@ -29,7 +29,7 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.explosion;
             SetMaxLife(-1);
 
-            AddTypeToMap<Explosion>(type);
+            AddTypeToMap();
 
             Initialize();
         }

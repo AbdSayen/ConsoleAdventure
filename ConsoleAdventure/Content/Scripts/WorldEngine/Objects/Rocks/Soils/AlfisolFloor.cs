@@ -26,7 +26,7 @@ namespace ConsoleAdventure.WorldEngine
 
             isObstacle = true;
 
-            AddTypeToMap<AlfisolFloor>(type);
+            AddTypeToMap();
             Initialize();
         }
 

@@ -18,7 +18,7 @@ namespace ConsoleAdventure.WorldEngine
             isObstacle = false;
             burnType = 0;
 
-            AddTypeToMap<WoodFloor>(type);
+            AddTypeToMap();
 
             Initialize();
         }

@@ -21,7 +21,7 @@ namespace ConsoleAdventure.WorldEngine
             hardness = 0.8f;
             burnType = 1;
 
-            AddTypeToMap<BrownIronOre>(type);
+            AddTypeToMap();
 
             Initialize();
         }

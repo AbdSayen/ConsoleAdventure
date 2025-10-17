@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace ConsoleAdventure.WorldEngine
             hardness = 2;
             burnType = 1;
 
-            AddTypeToMap<Granite>(type);
+            AddTypeToMap();
 
             Initialize();
         }
@@ -30,7 +31,7 @@ namespace ConsoleAdventure.WorldEngine
         {
             new Loot(position, w, new List<Stack>() { new Stack(new GraniteItem(), 1) });
         }
-        
+
         public override string GetSymbol()
         {
             return "##";

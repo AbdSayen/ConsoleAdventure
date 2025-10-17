@@ -57,7 +57,7 @@ namespace ConsoleAdventure.WorldEngine
             hardness = 0.1f;
             burnType = 0;
 
-            AddTypeToMap<Grass>(type);
+            AddTypeToMap();
             Initialize();
         }
 

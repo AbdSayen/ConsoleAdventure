@@ -17,7 +17,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)VanillaTransforms.torch;
             isObstacle = false;
 
-            AddTypeToMap<Torch>(type);
+            AddTypeToMap();
 
             Initialize();
         }

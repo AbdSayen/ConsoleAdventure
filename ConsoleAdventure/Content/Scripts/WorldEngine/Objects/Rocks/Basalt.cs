@@ -19,7 +19,7 @@ namespace ConsoleAdventure.WorldEngine
             hardness = 1.8f;
             burnType = 1;
 
-            AddTypeToMap(GetType(), type);
+            AddTypeToMap();
 
             Initialize();
         }

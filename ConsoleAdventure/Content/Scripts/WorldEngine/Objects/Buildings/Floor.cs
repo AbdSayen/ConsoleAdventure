@@ -17,7 +17,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)VanillaTransforms.floor;
             isObstacle = false;
 
-            AddTypeToMap<Floor>(type);
+            AddTypeToMap();
 
             Initialize();
         }

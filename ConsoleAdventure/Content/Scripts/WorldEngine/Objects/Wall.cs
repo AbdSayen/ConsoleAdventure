@@ -15,7 +15,7 @@ namespace ConsoleAdventure.WorldEngine
             type = (int)VanillaTransforms.wall;
             isObstacle = true;
 
-            AddTypeToMap<Wall>(type);
+            AddTypeToMap();
 
             Initialize();
         }

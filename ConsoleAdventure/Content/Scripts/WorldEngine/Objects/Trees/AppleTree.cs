@@ -19,7 +19,7 @@ namespace ConsoleAdventure.WorldEngine
         public AppleTree(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             type = (int)VanillaTransforms.tree;
-            AddTypeToMap<AppleTree>(type);
+            AddTypeToMap();
             Initialize();
         }
 

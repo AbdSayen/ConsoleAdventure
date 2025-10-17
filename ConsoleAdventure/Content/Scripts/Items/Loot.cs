@@ -18,7 +18,7 @@ namespace ConsoleAdventure
             this.worldLayer = World.ItemsLayerId;
             type = (int)VanillaTransforms.loot;
 
-            AddTypeToMap<Loot>(type);
+            AddTypeToMap();
 
             if (this.items != null)
                 items = new();

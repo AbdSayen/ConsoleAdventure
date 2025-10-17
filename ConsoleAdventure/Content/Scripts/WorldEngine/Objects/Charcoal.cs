@@ -15,7 +15,7 @@ namespace ConsoleAdventure.WorldEngine
             isObstacle = true;
             hardness = 0.6f;
 
-            AddTypeToMap<Charcoal>(type);
+            AddTypeToMap();
 
             Initialize();
         }

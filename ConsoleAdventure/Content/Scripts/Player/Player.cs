@@ -78,7 +78,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             type = (int)VanillaTransforms.player;
             SetMaxLife(20);
 
-            AddTypeToMap<Player>(type);
+            AddTypeToMap();
             Initialize();
         }
 
