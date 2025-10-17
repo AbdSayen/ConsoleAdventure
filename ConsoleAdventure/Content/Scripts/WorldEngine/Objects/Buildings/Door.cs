@@ -14,12 +14,15 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.door;
-            isObstacle = false;
-            burnType = 0;
 
             AddTypeToMap();
 
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            BurnType[type] = 1;
         }
 
         public override void Collapse()

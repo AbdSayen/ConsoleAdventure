@@ -13,14 +13,17 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.stone;
-            isObstacle = true;
-            burnType = 1;
 
             AddTypeToMap();
 
             Initialize();
         }
 
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
+            BurnType[type] = 2;
+        }
         public override void Collapse()
         {
             new Loot(position, w, new List<Stack>() { new Stack(new StoneItem(), 1) });

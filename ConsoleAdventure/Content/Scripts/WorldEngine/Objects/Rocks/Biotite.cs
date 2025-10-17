@@ -17,12 +17,16 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.biotite;
-            isObstacle = true;
-            hardness = 0.5f;
 
             AddTypeToMap();
 
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
+            Hardness[type] = 0.5f;
         }
 
         public override void Collapse()

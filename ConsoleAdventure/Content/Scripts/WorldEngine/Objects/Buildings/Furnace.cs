@@ -16,7 +16,6 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.furnace;
-            isObstacle = false;
 
             AddTypeToMap();
 

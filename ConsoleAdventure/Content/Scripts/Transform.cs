@@ -19,30 +19,33 @@ namespace ConsoleAdventure
     [Serializable]
     public abstract class Transform
     {
+        public static World world { get; protected set; }
+
         public static Type[] TypeMapping { get { return typeMapping; } }
         private static Type[] typeMapping = new Type[256];
 
-        public static World world { get; protected set; }
-        public byte worldLayer { get; protected set; }
-
-        public Position position;  
         public byte type;
-        public bool isObstacle;
-        public byte degreeDestruction = 0;
-        public float hardness = 1;
 
+        public byte degreeDestruction = 0;  
+
+        public byte worldLayer { get; protected set; }
+        public Position position;
+        public byte w;
+        
         internal static bool IsGlobalInit = false;
 
         /// <summary>
-        /// хранит тип горения трансформ:<br/>  
-        /// null - негорит.<br/> 0 - горит от обычного огня.<br/> 1 - горит от высокотемпературного огня.
+        /// Определяет возможность пройти сквозь блок для каждого типа трансформов
+        /// <c>tr</c>
         /// </summary>
-        public byte? burnType = null;
+        public static StaticData<bool> IsObstacle { get; private set; }
 
         /// <summary>
-        /// Ось w, глубина объекта (на коком уровне мира он находится)
+        /// Определяет твёрдость для каждого типа трансформов
         /// </summary>
-        public byte w;
+        public static StaticData<float> Hardness { get; private set; }
+
+        public static StaticData<byte> BurnType { get; private set; }
 
         protected Transform(Position position, byte w)
         {
@@ -74,10 +77,11 @@ namespace ConsoleAdventure
             AddTypeToMap(GetType(), type);
         }
 
-        /*public static void AddTypeToMap<T>(int type)
+        [Obsolete("Используйте \"AddTypeToMap()\" или \"AddTypeToMap(Type T, int type)\" ")]
+        public static void AddTypeToMap<T>(int type)
         {
             AddTypeToMap(typeof(T), type);
-        }*/
+        }
 
         public static void AddTypeToMap(Type T, int type)
         {
@@ -125,7 +129,9 @@ namespace ConsoleAdventure
         /// </summary>
         public virtual void InitStaticData()
         {
-
+            IsObstacle = new StaticData<bool>(false);
+            Hardness = new StaticData<float>(1f);
+            BurnType = new StaticData<byte>(0);
         }
 
         public virtual void SetStaticData()
@@ -290,7 +296,7 @@ namespace ConsoleAdventure
 
         public virtual bool CanBeDestroyed()
         {
-            return hardness > 0;
+            return Hardness[type] > 0;
         }
 
         public virtual bool CanDraw()
@@ -315,24 +321,36 @@ namespace ConsoleAdventure
         {
             List<byte> data = new List<byte>();
 
+            /*
             data.AddRange(BitConverter.GetBytes(position.x)); // 2b                  = 0
             data.AddRange(BitConverter.GetBytes(position.y)); // 2b            0 + 2 = 2
-            data.AddRange(BitConverter.GetBytes(isObstacle)); // 1b            2 + 2 = 4
+            data.AddRange(BitConverter.GetBytes(false)); // 1b                 2 + 2 = 4
             data.AddRange(BitConverter.GetBytes(degreeDestruction)); // 1b     4 + 1 = 5
-            data.AddRange(BitConverter.GetBytes(hardness)); // 4b              5 + 1 = 6
-            data.Add(w); // 1b                     6 + 4 = 10
+            data.AddRange(BitConverter.GetBytes(1f)); // 4b                    5 + 1 = 6
+            data.Add(w); // 1b                                                 6 + 4 = 10
+            */
+
+            data.AddRange(BitConverter.GetBytes(position.x)); // 2b                  = 0
+            data.AddRange(BitConverter.GetBytes(position.y)); // 2b            0 + 2 = 2
+            data.AddRange(BitConverter.GetBytes(degreeDestruction)); // 1b     2 + 2 = 4
+            data.Add(w); // 1b                                                 4 + 1 = 5
 
             return data.ToArray();
         }
 
         public virtual void SetDataFromBytes(byte[] data)
         {
+            /*
             position.x = BitConverter.ToInt16(data, 0);
             position.y = BitConverter.ToInt16(data, 2);
-            isObstacle = BitConverter.ToBoolean(data, 4);
             degreeDestruction = data[5];
-            hardness = BitConverter.ToSingle(data, 6);
             w = data[10];
+            */
+
+            position.x = BitConverter.ToInt16(data, 0);
+            position.y = BitConverter.ToInt16(data, 2);
+            degreeDestruction = data[4];
+            w = data[5];
         }
 
         public virtual string ModifyTooltip()

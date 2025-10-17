@@ -17,15 +17,18 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.granulite;
-            isObstacle = true;
-            hardness = 2;
-            burnType = 1;
 
             AddTypeToMap();
 
             Initialize();
         }
 
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
+            Hardness[type] = 2f;
+            BurnType[type] = 2;
+        }
         public override void Collapse()
         {
             new Loot(position, w, new List<Stack>() { new Stack(new GranuliteItem(), 1) });

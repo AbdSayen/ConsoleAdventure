@@ -12,12 +12,16 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.water;
-            //isObstacle = true;
-            hardness = -1;
 
             AddTypeToMap();
 
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            //IsObstacle[type] = true;
+            Hardness[type] = -1f;
         }
 
         public override string GetSymbol()

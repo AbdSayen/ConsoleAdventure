@@ -24,8 +24,6 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (byte)VanillaTransforms.blackSoilFloor;
 
-            isObstacle = true;
-
             AddTypeToMap();
             Initialize();
         }

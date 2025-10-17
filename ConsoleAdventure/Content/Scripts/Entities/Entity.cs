@@ -37,7 +37,6 @@ namespace ConsoleAdventure.Content.Scripts
         {
             worldLayer = World.MobsLayerId;
             type = (int)VanillaTransforms.entity;
-            isObstacle = false;
 
             if (parameters != null)
             {

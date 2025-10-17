@@ -27,13 +27,15 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (byte)VanillaTransforms.alfisol;
 
-            isObstacle = true;
-            hardness = 0.5f;
-
             AddTypeToMap();
             Initialize();
         }
 
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
+            Hardness[type] = 0.5f;
+        }
         public override void Collapse()
         {
             new Loot(position, w, new List<Stack> { new Stack(new AlfisolItem(), 1) });

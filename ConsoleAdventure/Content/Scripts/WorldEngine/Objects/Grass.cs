@@ -53,12 +53,15 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.grass;
-            isObstacle = false;
-            hardness = 0.1f;
-            burnType = 0;
 
             AddTypeToMap();
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            Hardness[type] = 0.1f;
+            BurnType[type] = 1;
         }
 
         public override string GetSymbol()

@@ -49,9 +49,9 @@ namespace ConsoleAdventure
 
                     Transform transform1 = field1?.content;
 
-                    if (field0?.content == null && transform1 != null && transform1?.hardness <= 0.5f && transform1?.hardness > 0)
+                    if (field0?.content == null && transform1 != null && Transform.Hardness[transform1] <= 0.5f && Transform.Hardness[transform1] > 0)
                     {
-                        transform1.degreeDestruction += (byte)Math.Abs(10f / transform1.hardness);
+                        transform1.degreeDestruction += (byte)Math.Abs(10f / Transform.Hardness[transform1]);
                         if (transform1.degreeDestruction >= 100)
                         {
                             ConsoleAdventure.world.RemoveSubject(transform1, World.BlocksLayerId);

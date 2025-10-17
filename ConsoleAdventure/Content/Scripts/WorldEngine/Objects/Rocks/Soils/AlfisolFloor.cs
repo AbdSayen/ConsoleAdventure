@@ -24,8 +24,6 @@ namespace ConsoleAdventure.WorldEngine
 
             type = (byte)VanillaTransforms.alfisolFloor;
 
-            isObstacle = true;
-
             AddTypeToMap();
             Initialize();
         }

@@ -61,16 +61,19 @@ namespace ConsoleAdventure.Content.Scripts
                 Transform t1 = world.GetField(position.x, position.y, World.BlocksLayerId, w)?.content;
                 Transform t2 = world.GetField(position.x, position.y, World.FloorLayerId, w)?.content;
 
-                if (t1?.burnType <= 1)
-                    transform = t1;
+                transform = null;
 
-                else if (t2?.burnType <= 1)
-                    transform = t2;
+                if (t1 != null)
+                {
+                    if (BurnType[t1.type] == 1) transform = t1;
+                }
 
-                else
-                    transform = null;
+                else if (t2 != null)
+                {
+                    if (BurnType[t2.type] == 1) transform = t2;
+                }
 
-                if(CanHitToPlayer(out short id))
+                if (CanHitToPlayer(out short id))
                 {
                     world.players.ElementAt(id).Value.AddBuff(new InTheFlames(ConsoleAdventure.rand.Next(1, 6) * 60));
                 }
@@ -87,7 +90,7 @@ namespace ConsoleAdventure.Content.Scripts
 
             else if(timer % 2 == 0 && transform.CanBeDestroyed())
             {
-                curDegreeDestruction += Math.Abs(1f / transform.hardness);
+                curDegreeDestruction += Math.Abs(1f / Hardness[transform.type]);
                 transform.degreeDestruction = (byte)curDegreeDestruction;
 
                 transform.WhenBurning();
@@ -109,11 +112,18 @@ namespace ConsoleAdventure.Content.Scripts
                     {
                         Position curPosition = new(position.x + directions[i].x, position.y + directions[i].y);
 
-                        if (world.GetField(curPosition.x, curPosition.y, World.BlocksLayerId, w)?.content?.burnType <= 1)
-                            SpawnFire(curPosition.x, curPosition.y);
+                        Transform t1 = world.GetField(curPosition.x, curPosition.y, World.BlocksLayerId, w)?.content;
+                        Transform t2 = world.GetField(curPosition.x, curPosition.y, World.FloorLayerId, w)?.content;
 
-                        else if (world.GetField(curPosition.x, curPosition.y, World.FloorLayerId, w)?.content?.burnType <= 1)
-                            SpawnFire(curPosition.x, curPosition.y);
+                        if (t1 != null)
+                        {
+                            if (BurnType[t1.type] <= 2) SpawnFire(curPosition.x, curPosition.y);
+                        }
+
+                        else if (t2 != null)
+                        {
+                            if (BurnType[t2.type] <= 2) SpawnFire(curPosition.x, curPosition.y);
+                        }
                     }
                 }
             }

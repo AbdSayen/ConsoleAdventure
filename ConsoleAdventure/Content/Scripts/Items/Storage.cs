@@ -19,8 +19,6 @@ namespace ConsoleAdventure
         {
             if (items != null)
                 this.items = items;
-
-            isObstacle = false;
         }
 
         public List<Stack> GetItems()

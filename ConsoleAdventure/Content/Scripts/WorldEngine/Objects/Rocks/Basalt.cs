@@ -15,13 +15,17 @@ namespace ConsoleAdventure.WorldEngine
         {
             this.worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.basalt;
-            isObstacle = true;
-            hardness = 1.8f;
-            burnType = 1;
 
             AddTypeToMap();
 
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
+            Hardness[type] = 1.8f;
+            BurnType[type] = 2;
         }
 
         public override void Collapse()

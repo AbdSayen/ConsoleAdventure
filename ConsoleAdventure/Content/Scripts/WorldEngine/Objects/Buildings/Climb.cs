@@ -16,11 +16,14 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.climb;
-            isObstacle = false;
-            hardness = -1;
 
             AddTypeToMap();
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            Hardness[type] = -1;
         }
 
         public override string GetSymbol()

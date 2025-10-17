@@ -482,9 +482,9 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
 
                 Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId, w).content;
-                if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].Item.pick > 0 && t.hardness > 0)
+                if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].Item.pick > 0 && Hardness[t.type] > 0)
                 {
-                    t.degreeDestruction += (byte)Math.Abs(inventory.slots[holdItemIndex].Item.pick / t.hardness);
+                    t.degreeDestruction += (byte)Math.Abs(inventory.slots[holdItemIndex].Item.pick / Hardness[t.type]);
                     if (t.degreeDestruction >= 100)
                     {
                         world.RemoveSubject(t, World.BlocksLayerId);

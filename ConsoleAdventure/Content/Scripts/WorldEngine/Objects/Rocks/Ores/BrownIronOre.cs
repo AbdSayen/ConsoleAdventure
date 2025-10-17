@@ -17,13 +17,17 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.brownIronOre;
-            isObstacle = true;
-            hardness = 0.8f;
-            burnType = 1;
 
             AddTypeToMap();
 
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
+            Hardness[type] = 0.8f;
+            BurnType[type] = 2;
         }
 
         public override void Collapse()

@@ -17,11 +17,15 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.seedling;
-            burnType = 0;
 
             AddTypeToMap();
 
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            BurnType[type] = 1;
         }
 
         public override string GetSymbol()

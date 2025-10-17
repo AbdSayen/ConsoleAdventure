@@ -15,7 +15,6 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.torch;
-            isObstacle = false;
 
             AddTypeToMap();
 
@@ -57,7 +56,7 @@ namespace ConsoleAdventure.WorldEngine
                     {
                         Transform transform = world.GetField(position.x + i, position.y + j, worldLayer, w)?.content;
                         Transform mob = world.GetField(position.x + i, position.y + j, World.MobsLayerId, w)?.content;
-                        if (transform?.burnType == 0 && mob == null)
+                        if (BurnType[transform] == 1 && mob == null)
                         {
                             Spawner.Spawn(new Fire(position + new Position(i, j), w));
                         }

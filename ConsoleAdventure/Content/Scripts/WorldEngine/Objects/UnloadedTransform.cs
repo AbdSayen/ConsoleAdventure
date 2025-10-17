@@ -16,10 +16,13 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (byte)modType;
-            isObstacle = true;
-            hardness = 1f;
 
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
         }
 
         public override string GetSymbol()

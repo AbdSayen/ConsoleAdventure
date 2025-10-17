@@ -12,12 +12,16 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.charcoal;
-            isObstacle = true;
-            hardness = 0.6f;
 
             AddTypeToMap();
 
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
+            Hardness[type] = 0.6f;
         }
 
         public override void Collapse()

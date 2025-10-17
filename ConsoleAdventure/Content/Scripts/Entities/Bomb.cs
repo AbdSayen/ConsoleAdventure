@@ -109,8 +109,8 @@ namespace ConsoleAdventure.Content.Scripts
 
             if (transform != null && transform.CanBeDestroyed())
             {
-                transform.degreeDestruction += (byte)(powers[j] - (int)transform.hardness);
-                powers[j] -= (byte)transform.hardness;
+                transform.degreeDestruction += (byte)(powers[j] - (int)Hardness[transform]);
+                powers[j] -= (byte)Hardness[transform];
 
                 if (transform.degreeDestruction > 100)
                 {

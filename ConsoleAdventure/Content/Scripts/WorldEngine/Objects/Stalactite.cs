@@ -92,12 +92,15 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.stalactite;
-            isObstacle = false;
-            hardness = 4f;
 
             AddTypeToMap();
 
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            Hardness[type] = 4f;
         }
 
         public override void Collapse()

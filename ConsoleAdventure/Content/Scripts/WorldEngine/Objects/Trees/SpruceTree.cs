@@ -25,6 +25,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void SetStaticData()
         {
+            SetDefaultStaticData();
             Crowns[type] = new string[,]
             {
                 //{ "  ", " ¾", "¾ ", "  ", "  ", "  ", "  " },

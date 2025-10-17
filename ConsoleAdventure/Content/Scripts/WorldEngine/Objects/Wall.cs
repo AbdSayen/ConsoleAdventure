@@ -13,13 +13,16 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.wall;
-            isObstacle = true;
 
             AddTypeToMap();
 
             Initialize();
         }
 
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
+        }
         public override void Collapse()
         {
             new Loot(position, w, new List<Stack>() { new Stack(new WallItem(), 1) });

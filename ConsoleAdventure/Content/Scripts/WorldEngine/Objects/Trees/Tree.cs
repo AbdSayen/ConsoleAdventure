@@ -10,22 +10,25 @@ namespace ConsoleAdventure.WorldEngine
     [Serializable]
     public abstract class Tree : Transform
     {
-        public static StaticData<string[,]> Crowns { get; set; }
+        public static StaticData<string[,]> Crowns { get; private set; }
 
-        public static StaticData<Color> CrownColors { get; set; }
+        public static StaticData<Color> CrownColors { get; private set; }
 
-        public static StaticData<Type> LogTypes { get; set; }
+        public static StaticData<Type> LogTypes { get; private set; }
 
-        public static StaticData<Type> FruitTypes { get; set; }
+        public static StaticData<Type> FruitTypes { get; private set; }
 
         public Tree(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
             this.position = position;
             if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
             else this.worldLayer = (byte)worldLayer;
+        }
 
-            isObstacle = true;
-            burnType = 0;
+        protected void SetDefaultStaticData()
+        {
+            IsObstacle[type] = true;
+            BurnType[type] = 1;
         }
 
         public override void InitStaticData()

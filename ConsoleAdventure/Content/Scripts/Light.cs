@@ -184,7 +184,7 @@ namespace ConsoleAdventure.Content.Scripts
                 if (ConsoleAdventure.world.GetChunk(xA, yA, out int v1, out int v2) is LoadedChunk)
                 {
                     Transform transform = ConsoleAdventure.world.GetField(xA, yA, World.BlocksLayerId, w)?.content;
-                    if (transform?.isObstacle == true)
+                    if (Transform.IsObstacle[transform] == true)
                     {
                         wallCount++;
                     }

@@ -17,14 +17,17 @@ namespace ConsoleAdventure.WorldEngine
             else this.worldLayer = (byte)worldLayer;
 
             type = (int)VanillaTransforms.graniteWall;
-            isObstacle = true;
-            hardness = 2;
 
             AddTypeToMap();
 
             Initialize();
         }
 
+        public override void SetStaticData()
+        {
+            IsObstacle[type] = true;
+            Hardness[type] = 2f;
+        }
         public override void Collapse()
         {
             new Loot(position, w, new List<Stack>() { new Stack(new GraniteWallItem(), 1) });
