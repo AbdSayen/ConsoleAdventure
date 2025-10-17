@@ -10,12 +10,11 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure
 {
-    [Serializable]
     public abstract class Storage : Transform
     {
         protected List<Stack> items { get; set; } = new();
 
-        public Storage(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, (byte)w)
+        public Storage(Position position, int w, List<Stack> items) : base(position, (byte)w)
         {
             if (items != null)
                 this.items = items;

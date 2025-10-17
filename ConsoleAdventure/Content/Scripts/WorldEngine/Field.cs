@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Field
     {
         public bool isStructure = false;

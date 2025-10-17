@@ -45,8 +45,6 @@ namespace ConsoleAdventure.Content.Scripts
 
             StateMachine = new StateMachine(this);
 
-            AddTypeToMap();
-
             if (!ConsoleAdventure.InWorld) return;
             ConsoleAdventure.world.Start += PreStart;
         }
@@ -62,15 +60,9 @@ namespace ConsoleAdventure.Content.Scripts
             
         }
 
-        public override string GetSymbol()
-        {
-            return "AE";
-        }
+        public override string GetSymbol() => "AE";
 
-        public override Color GetColor()
-        {
-            return Color.Yellow;
-        }
+        public override Color GetColor() => Color.Yellow;
 
         public void UpdateEntityInWorld()
         {

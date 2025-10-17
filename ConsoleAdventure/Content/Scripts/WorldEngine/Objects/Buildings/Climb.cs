@@ -6,18 +6,12 @@ using System.Diagnostics;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Climb : Transform
     {
-        public Climb(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Climb(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.climb;
-
-            AddTypeToMap();
             Initialize();
         }
 
@@ -26,15 +20,9 @@ namespace ConsoleAdventure.WorldEngine
             Hardness[type] = -1;
         }
 
-        public override string GetSymbol()
-        {
-            return "▲▲";
-        }
+        public override string GetSymbol() => "▲▲";
 
-        public override Color GetColor()
-        {
-            return Color.Gray;
-        }
+        public override Color GetColor() => Color.Gray;
 
         public override void Interaction()
         {

@@ -14,30 +14,18 @@ namespace ConsoleAdventure.WorldEngine
             " ≈",
         };
 
-        public SandFloor(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public SandFloor(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            this.worldLayer = World.FloorLayerId;
-
+            worldLayer = World.FloorLayerId;
             type = (byte)VanillaTransforms.sandFloor;
 
-            AddTypeToMap();
             Initialize();
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack> { new Stack(new SandFloorItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new SandFloorItem());
 
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, 2)];
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
 
-        public override Color GetColor()
-        {
-            return new Color(196, 190, 32);
-        }
+        public override Color GetColor() => new Color(196, 190, 32);
     }
 }

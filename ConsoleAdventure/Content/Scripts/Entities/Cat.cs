@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using ConsoleAdventure.Content.Scripts.Entities.StateMachine;
 
 namespace ConsoleAdventure.Content.Scripts
-{
-    [Serializable]
+{ 
     public class Cat : Entity
     {
         public static Color[] Colors = new Color[10]
@@ -40,8 +39,6 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.cat;
             SetMaxLife(9);
 
-            AddTypeToMap();
-
             Initialize();
 
             if (parameters == null)
@@ -63,15 +60,9 @@ namespace ConsoleAdventure.Content.Scripts
             StateMachine?.ChangeState(StatesEnum.Moving);
         }
 
-        public override string GetSymbol()
-        {
-            return " c";
-        }
+        public override string GetSymbol() => " c";
 
-        public override Color GetColor()
-        {
-            return Colors[index];
-        }
+        public override Color GetColor() => Colors[index];
 
         bool isFree = true;
         int timer;

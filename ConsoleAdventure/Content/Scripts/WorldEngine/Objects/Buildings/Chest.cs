@@ -11,25 +11,17 @@ namespace ConsoleAdventure.WorldEngine
     public class Chest : Storage
     {
         internal bool isBrake = false;
-        public Chest(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, w, items)
+        public Chest(Position position, int w, List<Stack> items) : base(position, w, items)
         {
-            this.worldLayer = World.BlocksLayerId;
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.chest;
-
-            AddTypeToMap();
 
             Initialize();
         }
 
-        public override string GetSymbol()
-        {
-            return "<>";
-        }
+        public override string GetSymbol() => "<>";
 
-        public override Color GetColor()
-        {
-            return new(94, 61, 38);
-        }
+        public override Color GetColor() => new(94, 61, 38);
 
         public override void Interaction()
         {

@@ -9,7 +9,6 @@ using System.Linq;
 
 namespace ConsoleAdventure.Content.Scripts
 {
-    [Serializable]
     public class HighTemperatureFire : Entity
     {
         private static Position[] directions = new Position[]
@@ -30,19 +29,7 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.highTemperatureFire;
             SetMaxLife(-1);
 
-            AddTypeToMap();
-
             Initialize();
-        }
-
-        public override string GetSymbol()
-        {
-            return "  ";
-        }
-
-        public override Color GetColor()
-        {
-            return Color.White;
         }
 
         int timer;

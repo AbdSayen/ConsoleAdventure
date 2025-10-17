@@ -9,7 +9,6 @@ using System.Linq;
 
 namespace ConsoleAdventure.Content.Scripts
 {
-    [Serializable]
     public class Fire : Entity
     {
         private static Position[] directions = new Position[]
@@ -29,19 +28,7 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.fire;
             SetMaxLife(-1);
 
-            AddTypeToMap();
-
             Initialize();
-        }
-
-        public override string GetSymbol()
-        {
-            return "  ";
-        }
-
-        public override Color GetColor()
-        {
-            return Color.White;
         }
 
         int timer;

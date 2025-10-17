@@ -5,36 +5,21 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Torch : Transform
     {
         public Torch(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.torch;
-
-            AddTypeToMap();
 
             Initialize();
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new TorchItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new TorchItem());
 
-        public override string GetSymbol()
-        {
-            return " |";
-        }
+        public override string GetSymbol() => " |";
 
-        public override Color GetColor()
-        {
-            return new(94, 61, 38);
-        }
+        public override Color GetColor() => new(94, 61, 38);
 
         float timer;
         public override void OnTheScreen()

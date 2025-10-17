@@ -4,7 +4,6 @@ using System.CodeDom;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Grass : Transform
     {
 
@@ -46,15 +45,11 @@ namespace ConsoleAdventure.WorldEngine
             new(0, 112, 32)
         };
 
-        public Grass(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Grass(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.grass;
 
-            AddTypeToMap();
             Initialize();
         }
 
@@ -64,14 +59,8 @@ namespace ConsoleAdventure.WorldEngine
             BurnType[type] = 1;
         }
 
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, 12)];
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
 
-        public override Color GetColor()
-        {
-            return colorsMap[Utils.HashNoise(position.x, position.y, 9)];
-        }
+        public override Color GetColor() => GetVariation(colorsMap);
     }
 }

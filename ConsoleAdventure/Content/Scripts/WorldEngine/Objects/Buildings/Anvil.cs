@@ -4,35 +4,20 @@ using System.Collections;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Anvil : Transform
     {
-        public Anvil(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Anvil(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.anvil;
-
-            AddTypeToMap();
 
             Initialize();
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new() { new Stack(new AnvilItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new AnvilItem());
 
-        public override string GetSymbol()
-        {
-            return " σ";
-        }
+        public override string GetSymbol() => " σ";
 
-        public override Color GetColor()
-        {
-            return Color.Gray;
-        }
+        public override Color GetColor() => Color.Gray;
     }
 }

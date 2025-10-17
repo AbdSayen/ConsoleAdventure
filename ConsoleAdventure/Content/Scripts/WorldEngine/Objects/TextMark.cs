@@ -4,32 +4,21 @@ using System.Text;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class TextMark : Transform
     {
         string text;
 
-        public TextMark(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public TextMark(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.textMark;
-
-            AddTypeToMap();
 
             Initialize();
         }
 
-        public override string GetSymbol()
-        {
-            return "__";
-        }
+        public override string GetSymbol() => "__";
 
-        public override Color GetColor()
-        {
-            return Color.White;
-        }
+        public override Color GetColor() => Color.White;
 
         public override void OnTheScreen()
         {

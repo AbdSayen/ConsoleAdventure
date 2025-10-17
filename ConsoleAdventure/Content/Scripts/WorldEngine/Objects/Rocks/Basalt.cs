@@ -11,12 +11,10 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Basalt : Transform
     {
-        public Basalt(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Basalt(Position position, int w) : base(position, (byte)w)
         {
-            this.worldLayer = World.BlocksLayerId;
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.basalt;
-
-            AddTypeToMap();
 
             Initialize();
         }
@@ -28,24 +26,12 @@ namespace ConsoleAdventure.WorldEngine
             BurnType[type] = 2;
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new BasaltItem(), 1) });
-        }
-        
-        public override string GetSymbol()
-        {
-            return "‡‡";
-        }
+        public override void Collapse() => DropItem(new BasaltItem());
 
-        public override Color GetColor()
-        {
-            return new Color(10, 10, 10);
-        }
+        public override string GetSymbol() => "‡‡";
 
-        public override Color? GetBGColor()
-        {
-            return new Color(45, 45, 45);
-        }
+        public override Color GetColor() => new Color(10, 10, 10);
+
+        public override Color? GetBGColor() => new Color(45, 45, 45);
     }
 }

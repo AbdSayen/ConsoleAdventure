@@ -12,14 +12,10 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Granite : Transform
     {
-        public Granite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Granite(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.granite;
-
-            AddTypeToMap();
 
             Initialize();
         }
@@ -31,24 +27,12 @@ namespace ConsoleAdventure.WorldEngine
             BurnType[type] = 2;
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new GraniteItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new GraniteItem());
 
-        public override string GetSymbol()
-        {
-            return "##";
-        }
+        public override string GetSymbol() => "##";
 
-        public override Color GetColor()
-        {
-            return new Color(10, 10, 10);
-        }
+        public override Color GetColor() => new Color(10, 10, 10);
 
-        public override Color? GetBGColor()
-        {
-            return new Color(75, 75, 75);
-        }
+        public override Color? GetBGColor() => new Color(75, 75, 75);
     }
 }

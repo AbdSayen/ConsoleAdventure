@@ -7,7 +7,6 @@ using System.Text;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public abstract class Tree : Transform
     {
         public static StaticData<string[,]> Crowns { get; private set; }
@@ -18,11 +17,10 @@ namespace ConsoleAdventure.WorldEngine
 
         public static StaticData<Type> FruitTypes { get; private set; }
 
-        public Tree(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Tree(Position position, int w) : base(position, (byte)w)
         {
             this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
+            worldLayer = World.BlocksLayerId;
         }
 
         protected void SetDefaultStaticData()

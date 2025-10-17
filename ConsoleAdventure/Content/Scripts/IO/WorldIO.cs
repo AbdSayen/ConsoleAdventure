@@ -401,6 +401,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 object[] args = Transform.BuildConstructorArgs(type, new(), 0, null, null);
                 Transform transform = (Transform)Activator.CreateInstance(type, args);
                 transform.InitStaticData();
+                transform.AddTypeToMap();
             }
 
             foreach (Type type in list)

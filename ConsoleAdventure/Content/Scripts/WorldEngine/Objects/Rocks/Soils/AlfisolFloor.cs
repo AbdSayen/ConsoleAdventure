@@ -17,30 +17,18 @@ namespace ConsoleAdventure.WorldEngine
             " `",
         };
 
-        public AlfisolFloor(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public AlfisolFloor(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            this.worldLayer = World.FloorLayerId;
-
+            worldLayer = World.FloorLayerId;
             type = (byte)VanillaTransforms.alfisolFloor;
 
-            AddTypeToMap();
             Initialize();
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack> { new Stack(new AlfisolFloorItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new AlfisolFloorItem());
 
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, 5)];
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
 
-        public override Color GetColor()
-        {
-            return new Color(54, 43, 32);
-        }
+        public override Color GetColor() => new Color(54, 43, 32);
     }
 }

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class GranuliteFloor : Transform
     {
         static string[] symbolsMap = new string[]
@@ -15,32 +14,18 @@ namespace ConsoleAdventure.WorldEngine
             " <",
         };
 
-        public GranuliteFloor(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public GranuliteFloor(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.FloorLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.FloorLayerId;
             type = (int)VanillaTransforms.granuliteFloor;
-
-            AddTypeToMap();
 
             Initialize();
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack> { new Stack(new GranuliteFloorItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new GranuliteFloorItem());
 
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, 3)];
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
 
-        public override Color GetColor()
-        {
-            return new Color(100, 100, 73);
-        }
+        public override Color GetColor() => new Color(100, 100, 73);
     }
 }

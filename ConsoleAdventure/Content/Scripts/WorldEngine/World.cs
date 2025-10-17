@@ -22,7 +22,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class World
     {
         public Action Start;

@@ -170,15 +170,9 @@ namespace ConsoleAdventure
             return "  ";   
         }
 
-        public virtual Color GetColor()
-        {
-            return Color.Black;
-        }
+        public virtual Color GetColor() => Color.Black;
 
-        public virtual Color? GetBGColor()
-        {
-            return null;
-        }
+        public virtual Color? GetBGColor() => null;
 
         public virtual void OnTheScreen()
         {
@@ -259,12 +253,12 @@ namespace ConsoleAdventure
         {
             if (objectType.IsSubclassOf(typeof(Loot)) || objectType == typeof(Loot) ||
                 objectType.IsSubclassOf(typeof(Storage)) || objectType == typeof(Storage))
-                return new object[] { position, w, items, -1 };
+                return new object[] { position, w, items };
 
             if (objectType.IsSubclassOf(typeof(Entity)) || objectType == typeof(Entity))
                 return new object[] { position, w, parameters };
 
-            return new object[] { position, w, -1 };
+            return new object[] { position, w };
         }
 
         internal static void Init(Type type, Position position, int w, List<Stack> items, List<object> parameters)
@@ -378,6 +372,19 @@ namespace ConsoleAdventure
                 if (chunk != null)
                     chunk.IsUpdated = true;
             }
+        }
+
+        protected void DropItem(Item item, int count = 1)
+        {
+            new Loot(position, w, new List<Stack>() { new Stack(item, count) });
+        }
+
+        protected T GetVariation<T>(T[] valuesMap)
+        {
+            if (valuesMap == null || valuesMap.Length == 0) 
+                return default(T);
+
+            return valuesMap[Utils.HashNoise(position.x, position.y, valuesMap.Length - 1)];
         }
     }
 }

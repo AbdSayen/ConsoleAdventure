@@ -21,14 +21,10 @@ namespace ConsoleAdventure.WorldEngine
             " Ϟ",
         };
 
-        public Obsidian(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Obsidian(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.obsidian;
-
-            AddTypeToMap();
 
             Initialize();
         }
@@ -40,24 +36,12 @@ namespace ConsoleAdventure.WorldEngine
             BurnType[type] = 2;
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new ObsidianItem(), 1) });
-        }
-        
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, 6)];
-        }
+        public override void Collapse() => DropItem(new ObsidianItem());
 
-        public override Color GetColor()
-        {
-            return new Color(0, 0, 0);
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
 
-        public override Color? GetBGColor()
-        {
-            return new Color(25, 0, 84);
-        }
+        public override Color GetColor() => new Color(0, 0, 0);
+
+        public override Color? GetBGColor() => new Color(25, 0, 84);
     }
 }

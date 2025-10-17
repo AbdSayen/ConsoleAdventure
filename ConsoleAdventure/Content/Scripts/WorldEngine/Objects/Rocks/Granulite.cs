@@ -11,14 +11,10 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Granulite : Transform
     {
-        public Granulite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Granulite(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.granulite;
-
-            AddTypeToMap();
 
             Initialize();
         }
@@ -29,24 +25,13 @@ namespace ConsoleAdventure.WorldEngine
             Hardness[type] = 2f;
             BurnType[type] = 2;
         }
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new GranuliteItem(), 1) });
-        }
+
+        public override void Collapse() => DropItem(new GranuliteItem());
         
-        public override string GetSymbol()
-        {
-            return "≤≤";
-        }
+        public override string GetSymbol() => "≤≤";
 
-        public override Color GetColor()
-        {
-            return new Color(64, 19, 19);
-        }
+        public override Color GetColor() => new Color(64, 19, 19);
 
-        public override Color? GetBGColor()
-        {
-            return new Color(100, 100, 73);
-        }
+        public override Color? GetBGColor() => new Color(100, 100, 73);
     }
 }

@@ -4,17 +4,12 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Web : Transform
     {
-        public Web(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Web(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.web;
-
-            AddTypeToMap();
 
             Initialize();
         }
@@ -25,19 +20,10 @@ namespace ConsoleAdventure.WorldEngine
             BurnType[type] = 1;
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new WebItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new WebItem());
 
-        public override string GetSymbol()
-        {
-            return "¼¼";
-        }
+        public override string GetSymbol() => "¼¼";
 
-        public override Color GetColor()
-        {
-            return new Color(120, 120, 120);
-        }
+        public override Color GetColor() => new Color(120, 120, 120);
     }
 }

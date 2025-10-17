@@ -8,14 +8,10 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Quartz : Transform
     {
-        public Quartz(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Quartz(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.quartz;
-
-            AddTypeToMap();
 
             Initialize();
         }
@@ -27,24 +23,12 @@ namespace ConsoleAdventure.WorldEngine
             BurnType[type] = 2;
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new QuartzItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new QuartzItem());
 
-        public override string GetSymbol()
-        {
-            return "◊◊";
-        }
+        public override string GetSymbol() => "◊◊";
 
-        public override Color GetColor()
-        {
-            return Color.White;
-        }
+        public override Color GetColor() => Color.White;
 
-        public override Color? GetBGColor()
-        {
-            return Color.Gray;
-        }
+        public override Color? GetBGColor() => Color.Gray;
     }
 }

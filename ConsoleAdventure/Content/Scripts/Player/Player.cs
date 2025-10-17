@@ -125,7 +125,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         Color bgColor = new(0, 0, 0, 0);
         public override Color? GetBGColor()
         {
-            if(postKillTimer > 0)
+            if (postKillTimer > 0)
                 return bgColor = Color.Lerp(bgColor, Color.Red, 0.1f);
 
             bgColor = new(0, 0, 0, 0);

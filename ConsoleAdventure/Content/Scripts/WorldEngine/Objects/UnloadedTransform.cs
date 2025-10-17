@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class UnloadedTransform : Transform
     {
         public object data = null;
@@ -20,15 +19,9 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
-        public override void SetStaticData()
-        {
-            IsObstacle[type] = true;
-        }
+        public override void SetStaticData() => IsObstacle[type] = true;
 
-        public override string GetSymbol()
-        {
-            return " ?";
-        }
+        public override string GetSymbol() => " ?";
 
         public override Color? GetBGColor()
         {
@@ -39,10 +32,7 @@ namespace ConsoleAdventure.WorldEngine
             return color;
         }
 
-        public override Color GetColor()
-        {
-            return new Color(10, 0, 10);
-        }
+        public override Color GetColor() => new Color(10, 0, 10);
 
         public override string ModifyTooltip()
         {

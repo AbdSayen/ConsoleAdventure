@@ -4,17 +4,12 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Wall : Transform
     {
-        public Wall(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Wall(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
+            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.wall;
-
-            AddTypeToMap();
 
             Initialize();
         }
@@ -23,19 +18,11 @@ namespace ConsoleAdventure.WorldEngine
         {
             IsObstacle[type] = true;
         }
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new WallItem(), 1) });
-        }
 
-        public override string GetSymbol()
-        {
-            return "##";
-        }
+        public override void Collapse() => DropItem(new WallItem());
 
-        public override Color GetColor()
-        {
-            return Color.White;
-        }
+        public override string GetSymbol() => "##";
+
+        public override Color GetColor() => Color.White;
     }
 }
