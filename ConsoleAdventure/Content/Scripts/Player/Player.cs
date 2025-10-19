@@ -46,12 +46,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public int postKillTimer = 0;
 
-        public Player(short id, string pcid, Position position, int w, int worldLayer = -1) : base(position, w)
+        public Player(short id, string pcid, Position position, int w) : base(position, w)
         {
-            if (worldLayer == -1) this.worldLayer = World.MobsLayerId; 
-            else this.worldLayer = (byte)worldLayer;
-            this.position = position;
-
             info = new PlayerInfo();
             _movement = new PlayerMovement(speed);
 
@@ -75,10 +71,10 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             info.Id = id;
             info.pcId = pcid;
-            type = (int)VanillaTransforms.player;
-            SetMaxLife(20);
 
-            AddTypeToMap();
+            type = (int)VanillaTransforms.player;
+
+            SetMaxLife(20);
             Initialize();
         }
 

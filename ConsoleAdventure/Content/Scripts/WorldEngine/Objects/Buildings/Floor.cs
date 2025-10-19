@@ -9,11 +9,13 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Floor(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.FloorLayerId;
-
             type = (int)VanillaTransforms.floor;
-
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            DefaultWorldLayer[type] = World.FloorLayerId;
         }
 
         public override void Collapse()

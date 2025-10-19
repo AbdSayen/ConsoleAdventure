@@ -13,9 +13,7 @@ namespace ConsoleAdventure.WorldEngine
         internal bool isBrake = false;
         public Chest(Position position, int w, List<Stack> items) : base(position, w, items)
         {
-            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.chest;
-
             Initialize();
         }
 

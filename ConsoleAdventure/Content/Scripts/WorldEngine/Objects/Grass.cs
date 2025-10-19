@@ -47,9 +47,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public Grass(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.grass;
-
             Initialize();
         }
 

@@ -13,9 +13,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Granulite(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.granulite;
-
             Initialize();
         }
 

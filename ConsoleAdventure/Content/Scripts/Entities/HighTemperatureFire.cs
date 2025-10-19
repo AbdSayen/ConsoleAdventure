@@ -150,5 +150,7 @@ namespace ConsoleAdventure.Content.Scripts
 
             drawTimer++;
         }
+
+        public override string GetSymbol() => "  ";
     }
 }

@@ -16,10 +16,13 @@ namespace ConsoleAdventure.WorldEngine
 
         public SandFloor(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.FloorLayerId;
             type = (byte)VanillaTransforms.sandFloor;
-
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            DefaultWorldLayer[type] = World.FloorLayerId;
         }
 
         public override void Collapse() => DropItem(new SandFloorItem());

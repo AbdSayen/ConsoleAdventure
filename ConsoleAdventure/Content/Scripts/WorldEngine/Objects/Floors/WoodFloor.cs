@@ -9,14 +9,13 @@ namespace ConsoleAdventure.WorldEngine
     {
         public WoodFloor(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.FloorLayerId;
             type = (int)VanillaTransforms.woodFloor;
-
             Initialize();
         }
 
         public override void SetStaticData()
         {
+            DefaultWorldLayer[type] = World.FloorLayerId;
             BurnType[type] = 1;
         }
 

@@ -13,6 +13,7 @@ using SharpDX.Direct2D1;
 using System.Linq;
 using ConsoleAdventure.Content.Scripts.IO;
 using System.ComponentModel;
+using CaModLoaderAPI;
 
 namespace ConsoleAdventure
 {
@@ -35,17 +36,37 @@ namespace ConsoleAdventure
         internal static bool IsGlobalInit = false;
 
         /// <summary>
-        /// Определяет возможность пройти сквозь блок для каждого типа трансформов
-        /// <c>tr</c>
+        /// Определяет возможность пройти сквозь блок для каждого типа трансформов.
+        /// <br/><br/>Значение по умолчанию: <c>false</c>
         /// </summary>
         public static StaticData<bool> IsObstacle { get; private set; }
 
         /// <summary>
         /// Определяет твёрдость для каждого типа трансформов
+        /// <br/><br/>Значение по умолчанию: <c>1f</c>
         /// </summary>
         public static StaticData<float> Hardness { get; private set; }
 
         public static StaticData<byte> BurnType { get; private set; }
+
+        /// <summary>
+        /// Определяет слой, на котором будет находиться этот трансформ.
+        /// <br/><br/>Всего их 4: 
+        /// <br/> - <seealso cref="World.FloorLayerId"/>  - полы
+        /// <br/> - <seealso cref="World.BlocksLayerId"/> - блоки
+        /// <br/> - <seealso cref="World.ItemsLayerId"/>  - предметы
+        /// <br/> - <seealso cref="World.MobsLayerId"/>   - сущности
+        /// <br/><br/> Если т-форм будет динамически выбирать слой, то 
+        /// установите значение на <c>null</c>, тогда вы сможете самостоятельноего 
+        /// перезаписать в конструкторе класса.
+        /// <br/><br/> При вызове <seealso cref="Initialize"/> или 
+        /// <seealso cref="InitializeModTransform"/>, автоматически 
+        /// к <seealso cref="worldLayer"/> будет присвоено значение 
+        /// отсюда, по типу текущего т-форма, 
+        /// если оно <c>null</c>, то ничего не произойдёт.
+        /// <br/><br/> Значение по умолчанию: <seealso cref="World.BlocksLayerId"/>
+        /// </summary>
+        public static StaticData<byte?> DefaultWorldLayer { get; private set; }
 
         protected Transform(Position position, byte w)
         {
@@ -55,14 +76,25 @@ namespace ConsoleAdventure
             world = ConsoleAdventure.world;    
         }
 
-        public void Initialize()
+        public void InitializeModTransform()
+        {
+            type = (byte)Main.GetModTransform(GetType());
+            Initialize();
+        }
+
+        internal void Initialize()
         {
             if (!IsGlobalInit)
             {
-                if (world.GetField(position.x, position.y, worldLayer, w) != null)
+                byte? layer = DefaultWorldLayer[type];
+                if (layer.HasValue)
                 {
-                    world.GetField(position.x, position.y, worldLayer, w).content = this;
-                    //world.GetField(position.x, position.y, worldLayer, w).color = GetColor();
+                    worldLayer = Math.Clamp(layer.Value, (byte)0, World.CountOfLayers);
+                }
+
+                if (world.GetField(position, worldLayer, w) != null)
+                {
+                    world.GetField(position, worldLayer, w).content = this;
                 }
             }
         }
@@ -132,6 +164,7 @@ namespace ConsoleAdventure
             IsObstacle = new StaticData<bool>(false);
             Hardness = new StaticData<float>(1f);
             BurnType = new StaticData<byte>(0);
+            DefaultWorldLayer = new StaticData<byte?>(World.BlocksLayerId);
         }
 
         public virtual void SetStaticData()

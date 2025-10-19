@@ -9,9 +9,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Torch(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.torch;
-
             Initialize();
         }
 

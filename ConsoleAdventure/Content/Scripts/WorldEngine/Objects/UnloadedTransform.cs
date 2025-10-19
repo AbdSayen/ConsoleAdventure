@@ -19,7 +19,11 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
-        public override void SetStaticData() => IsObstacle[type] = true;
+        public override void SetStaticData() 
+        {
+            IsObstacle[type] = true;
+            DefaultWorldLayer[type] = null;
+        }
 
         public override string GetSymbol() => " ?";
 

@@ -19,10 +19,13 @@ namespace ConsoleAdventure.WorldEngine
 
         public AlfisolFloor(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.FloorLayerId;
             type = (byte)VanillaTransforms.alfisolFloor;
-
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            DefaultWorldLayer[type] = World.FloorLayerId;
         }
 
         public override void Collapse() => DropItem(new AlfisolFloorItem());

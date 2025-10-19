@@ -10,7 +10,6 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Climb(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.climb;
             Initialize();
         }

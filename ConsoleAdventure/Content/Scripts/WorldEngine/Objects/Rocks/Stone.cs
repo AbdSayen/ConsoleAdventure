@@ -8,9 +8,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Stone(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.stone;
-
             Initialize();
         }
 

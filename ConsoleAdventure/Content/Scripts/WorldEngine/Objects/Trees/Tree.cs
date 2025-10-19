@@ -17,11 +17,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public static StaticData<Type> FruitTypes { get; private set; }
 
-        public Tree(Position position, int w) : base(position, (byte)w)
-        {
-            this.position = position;
-            worldLayer = World.BlocksLayerId;
-        }
+        public Tree(Position position, int w) : base(position, (byte)w) { }
 
         protected void SetDefaultStaticData()
         {

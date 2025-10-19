@@ -8,9 +8,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Workbench(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.workbench;
-
             Initialize();
         }
 

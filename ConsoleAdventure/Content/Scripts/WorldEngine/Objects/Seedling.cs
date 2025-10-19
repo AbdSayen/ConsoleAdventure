@@ -11,9 +11,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Seedling(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.seedling;
-
             Initialize();
         }
 

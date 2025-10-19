@@ -16,10 +16,13 @@ namespace ConsoleAdventure.WorldEngine
 
         public ObsidianFloor(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.FloorLayerId;
             type = (int)VanillaTransforms.obsidianFloor;
-
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            DefaultWorldLayer[type] = World.FloorLayerId;
         }
 
         public override void Collapse() => DropItem(new ObsidianFloorItem());

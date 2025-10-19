@@ -9,9 +9,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public CharcoalFloor(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.FloorLayerId;
             type = (int)VanillaTransforms.charcoalFloor;
-
             Initialize();
         }
 

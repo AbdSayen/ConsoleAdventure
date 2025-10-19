@@ -35,7 +35,6 @@ namespace ConsoleAdventure.Content.Scripts
 
         public Entity(Position position, int w, List<object> parameters = null) : base(position, (byte)w)
         {
-            worldLayer = World.MobsLayerId;
             type = (int)VanillaTransforms.entity;
 
             if (parameters != null)
@@ -47,6 +46,11 @@ namespace ConsoleAdventure.Content.Scripts
 
             if (!ConsoleAdventure.InWorld) return;
             ConsoleAdventure.world.Start += PreStart;
+        }
+
+        public override void SetStaticData()
+        {
+            DefaultWorldLayer[type] = World.MobsLayerId;
         }
 
         public void PreStart()

@@ -22,9 +22,7 @@ namespace ConsoleAdventure.WorldEngine
 
         public Alfisol(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.BlocksLayerId;
             type = (byte)VanillaTransforms.alfisol;
-
             Initialize();
         }
 

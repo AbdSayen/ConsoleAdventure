@@ -14,9 +14,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public Granite(Position position, int w) : base(position, (byte)w)
         {
-            worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.granite;
-
             Initialize();
         }
 

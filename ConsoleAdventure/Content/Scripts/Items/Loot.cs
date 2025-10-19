@@ -14,14 +14,17 @@ namespace ConsoleAdventure
 
         public Loot(Position position, int w, List<Stack> items) : base(position, w, AddItems(items, position.x, position.y, World.ItemsLayerId, w))
         {
-            worldLayer = World.ItemsLayerId;
             type = (int)VanillaTransforms.loot;
-
-            AddTypeToMap();
 
             if (this.items != null)
                 items = new();
+
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            DefaultWorldLayer[type] = World.ItemsLayerId;
         }
 
         private static List<Stack> AddItems(List<Stack> items, int x, int y, int z, int w)
