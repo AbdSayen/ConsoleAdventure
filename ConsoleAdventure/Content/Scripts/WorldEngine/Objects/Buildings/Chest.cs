@@ -47,7 +47,7 @@ namespace ConsoleAdventure.WorldEngine
             player.isChestOpen = false;
             player.chestPosition = new Vector3(-1, -1, -1);
             isBrake = true;
-            new Loot(position, w, new List<Stack>() { new Stack(new ChestItem(), 1) });
+            DropItem(new ChestItem());
         }
 
         public override bool CanBeDestroyed()

@@ -18,10 +18,7 @@ namespace ConsoleAdventure.WorldEngine
             DefaultWorldLayer[type] = World.FloorLayerId;
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new FloorItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new FloorItem());
 
         public override string GetSymbol() => " .";
 

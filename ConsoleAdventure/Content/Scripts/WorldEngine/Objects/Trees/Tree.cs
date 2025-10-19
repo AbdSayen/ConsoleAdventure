@@ -45,7 +45,7 @@ namespace ConsoleAdventure.WorldEngine
             if (log != null)
             {
                 Item item = (Item)Activator.CreateInstance(log);
-                new Loot(position, w, new List<Stack> { new Stack(item, 3) });
+                DropItem(item, 3);
             }
 
             int count = ConsoleAdventure.rand.Next(2, 15);
@@ -68,13 +68,13 @@ namespace ConsoleAdventure.WorldEngine
                 if (lootType == 1 && fruit != null)
                 {
                     Item item = (Item)Activator.CreateInstance(fruit);
-                    new Loot(pos, w, new List<Stack> { new Stack(item, 1) });
+                    DropItem(item);
                 }
 
                 if (lootType == 2 && log != null)
                 {
                     Item item = (Item)Activator.CreateInstance(log);
-                    new Loot(pos, w, new List<Stack> { new Stack(item, 1) });
+                    DropItem(item);
                 }
             }
         }

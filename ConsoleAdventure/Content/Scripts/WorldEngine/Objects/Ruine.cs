@@ -16,7 +16,7 @@ namespace ConsoleAdventure.WorldEngine
         {
             if(ConsoleAdventure.rand.Next(0, 3) == 0)
             {
-                new Loot(position, w, new List<Stack>() { new Stack(new StoneItem(), 1) });
+                DropItem(new StoneItem());
             }
         }
 
