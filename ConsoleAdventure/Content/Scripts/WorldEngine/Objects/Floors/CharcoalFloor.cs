@@ -13,6 +13,11 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
+        public override void SetStaticData()
+        {
+            DefaultWorldLayer[type] = World.FloorLayerId;
+        }
+
         public override string GetSymbol() => " .";
 
         public override Color GetColor() => new(35, 35, 35);
