@@ -4,36 +4,24 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Stone : Transform
     {
-        public Stone(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Stone(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.stone;
-            isObstacle = true;
-            burnType = 1;
-
-            AddTypeToMap<Stone>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new StoneItem(), 1) });
+            IsObstacle[type] = true;
+            BurnType[type] = 2;
         }
 
-        public override string GetSymbol()
-        {
-            return "██";
-        }
+        public override void Collapse() => DropItem(new StoneItem());
 
-        public override Color GetColor()
-        {
-            return Color.Gray;
-        }
+        public override string GetSymbol() => "██";
+
+        public override Color GetColor() => Color.Gray;
     }
 }

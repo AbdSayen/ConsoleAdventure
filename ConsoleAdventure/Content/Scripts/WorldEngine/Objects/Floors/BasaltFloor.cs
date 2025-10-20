@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using SharpDX.Direct2D1;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class BasaltFloor : Transform
     {
         static string[] symbolsMap = new string[]
@@ -15,33 +15,21 @@ namespace ConsoleAdventure.WorldEngine
             " “",
         };
 
-        public BasaltFloor(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public BasaltFloor(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.FloorLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.basaltFloor;
-            isObstacle = false;
-
-            AddTypeToMap<BasaltFloor>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack> { new Stack(new BasaltFloorItem(), 1) });
+            DefaultWorldLayer[type] = World.FloorLayerId;
         }
 
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, 3)];
-        }
+        public override void Collapse() => DropItem(new BasaltFloorItem());
 
-        public override Color GetColor()
-        {
-            return new Color(35, 35, 35);
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
+
+        public override Color GetColor() => new Color(35, 35, 35);
     }
 }

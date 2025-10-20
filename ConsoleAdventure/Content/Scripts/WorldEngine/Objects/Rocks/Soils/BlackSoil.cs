@@ -20,38 +20,23 @@ namespace ConsoleAdventure.WorldEngine
             "≈ "
         };
 
-        public BlackSoil(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public BlackSoil(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            this.worldLayer = World.BlocksLayerId;
-
             type = (byte)VanillaTransforms.blackSoil;
-
-            isObstacle = true;
-            hardness = 0.5f;
-
-            AddTypeToMap<BlackSoil>(type);
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack> { new Stack(new BlackSoilItem(), 1) });
+            IsObstacle[type] = true;
+            Hardness[type] = 0.5f;
         }
+        public override void Collapse() => DropItem(new BlackSoilItem());
 
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, 8)];
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
 
-        public override Color GetColor()
-        {
-            return new Color(30, 30, 30);
-        }
+        public override Color GetColor() => new Color(30, 30, 30);
 
-        public override Color? GetBGColor()
-        {
-            return new Color(10, 10, 10);
-        }
+        public override Color? GetBGColor() => new Color(10, 10, 10);
     }
 }

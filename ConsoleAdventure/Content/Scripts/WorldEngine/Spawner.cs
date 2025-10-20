@@ -99,7 +99,7 @@ public static class Spawner
                         Field f1 = ConsoleAdventure.world.GetField(position.x, position.y, World.BlocksLayerId, player.w);
                         Field f2 = ConsoleAdventure.world.GetField(position.x, position.y, World.MobsLayerId, player.w);
 
-                        if ((position.x < playerPos.x - minX || position.x > playerPos.x + minX) && (position.y < playerPos.y - minY || position.y > playerPos.y + minY) && f1 != null && f2 != null && f1.content?.isObstacle == false && f2.content == null)
+                        if ((position.x < playerPos.x - minX || position.x > playerPos.x + minX) && (position.y < playerPos.y - minY || position.y > playerPos.y + minY) && f1 != null && f2 != null && Transform.IsObstacle[f1.content] && f2.content == null)
                         {
                             positionFoundFlag = true;
                             break;

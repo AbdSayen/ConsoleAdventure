@@ -46,12 +46,8 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
         public int postKillTimer = 0;
 
-        public Player(short id, string pcid, Position position, int w, int worldLayer = -1) : base(position, w)
+        public Player(short id, string pcid, Position position, int w) : base(position, w)
         {
-            if (worldLayer == -1) this.worldLayer = World.MobsLayerId; 
-            else this.worldLayer = (byte)worldLayer;
-            this.position = position;
-
             info = new PlayerInfo();
             _movement = new PlayerMovement(speed);
 
@@ -75,10 +71,10 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             info.Id = id;
             info.pcId = pcid;
-            type = (int)VanillaTransforms.player;
-            SetMaxLife(20);
 
-            AddTypeToMap<Player>(type);
+            type = (int)VanillaTransforms.player;
+
+            SetMaxLife(20);
             Initialize();
         }
 
@@ -125,7 +121,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
         Color bgColor = new(0, 0, 0, 0);
         public override Color? GetBGColor()
         {
-            if(postKillTimer > 0)
+            if (postKillTimer > 0)
                 return bgColor = Color.Lerp(bgColor, Color.Red, 0.1f);
 
             bgColor = new(0, 0, 0, 0);
@@ -482,9 +478,9 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 }
 
                 Transform t = world.GetField(targetPosition.x, targetPosition.y, World.BlocksLayerId, w).content;
-                if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].Item.pick > 0 && t.hardness > 0)
+                if (t?.CanBeDestroyed() == true && CanDestroyAt(targetPosition, World.BlocksLayerId) && inventory.slots[holdItemIndex].Item.pick > 0 && Hardness[t.type] > 0)
                 {
-                    t.degreeDestruction += (byte)Math.Abs(inventory.slots[holdItemIndex].Item.pick / t.hardness);
+                    t.degreeDestruction += (byte)Math.Abs(inventory.slots[holdItemIndex].Item.pick / Hardness[t.type]);
                     if (t.degreeDestruction >= 100)
                     {
                         world.RemoveSubject(t, World.BlocksLayerId);

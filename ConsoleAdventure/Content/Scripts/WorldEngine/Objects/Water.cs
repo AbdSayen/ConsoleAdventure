@@ -3,31 +3,22 @@ using System;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Water : Transform
     {
-        public Water(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Water(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.water;
-            //isObstacle = true;
-            hardness = -1;
-
-            AddTypeToMap<Water>(type);
-
             Initialize();
         }
 
-        public override string GetSymbol()
+        public override void SetStaticData()
         {
-            return "≈≈";
+            //IsObstacle[type] = true;
+            Hardness[type] = -1f;
         }
 
-        public override Color GetColor()
-        {
-            return new(16, 29, 211);
-        }
+        public override string GetSymbol() => "≈≈";
+
+        public override Color GetColor() => new(16, 29, 211);
     }
 }

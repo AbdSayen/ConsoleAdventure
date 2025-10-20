@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Field
     {
         public bool isStructure = false;
@@ -23,6 +22,9 @@ namespace ConsoleAdventure.WorldEngine
             {
                 if (content_ != null)
                     Transform.UpdatedChunk(content_.position, content_.worldLayer);
+
+                if (value != null)
+                    Transform.UpdatedChunk(value.position, value.worldLayer);
 
                 content_ = value; 
             }

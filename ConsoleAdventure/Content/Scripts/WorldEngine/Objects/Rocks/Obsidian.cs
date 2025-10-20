@@ -21,39 +21,25 @@ namespace ConsoleAdventure.WorldEngine
             " Ϟ",
         };
 
-        public Obsidian(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Obsidian(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.obsidian;
-            isObstacle = true;
-            hardness = 1.5f;
-            burnType = 1;
-
-            AddTypeToMap<Obsidian>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new ObsidianItem(), 1) });
-        }
-        
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, 6)];
+            IsObstacle[type] = true;
+            Hardness[type] = 1.1f;
+            BurnType[type] = 2;
         }
 
-        public override Color GetColor()
-        {
-            return new Color(0, 0, 0);
-        }
+        public override void Collapse() => DropItem(new ObsidianItem());
 
-        public override Color? GetBGColor()
-        {
-            return new Color(25, 0, 84);
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
+
+        public override Color GetColor() => new Color(0, 0, 0);
+
+        public override Color? GetBGColor() => new Color(25, 0, 84);
     }
 }

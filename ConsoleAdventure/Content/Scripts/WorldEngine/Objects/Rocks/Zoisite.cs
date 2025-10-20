@@ -11,38 +11,24 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Zoisite : Transform
     {
-        public Zoisite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Zoisite(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.zoisite;
-            isObstacle = true;
-            hardness = 2;
-
-            AddTypeToMap<Zoisite>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new ZoisiteItem(), 1) });
-        }
-        
-        public override string GetSymbol()
-        {
-            return "ηη";
+            IsObstacle[type] = true;
+            Hardness[type] = 2f;
         }
 
-        public override Color GetColor()
-        {
-            return new Color(6, 61, 31);
-        }
+        public override void Collapse() => DropItem(new ZoisiteItem());
 
-        public override Color? GetBGColor()
-        {
-            return new Color(19, 124, 50);
-        }
+        public override string GetSymbol() => "ηη";
+
+        public override Color GetColor() => new Color(6, 61, 31);
+
+        public override Color? GetBGColor() => new Color(19, 124, 50);
     }
 }

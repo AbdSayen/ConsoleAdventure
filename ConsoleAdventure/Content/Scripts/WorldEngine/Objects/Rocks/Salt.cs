@@ -11,33 +11,22 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Salt : Transform
     {
-        public Salt(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Salt(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.salt;
-            isObstacle = true;
-            hardness = 2;
-
-            AddTypeToMap<Salt>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new SaltItem(), 1) });
-        }
-        
-        public override string GetSymbol()
-        {
-            return "∆∆";
+            IsObstacle[type] = true;
+            Hardness[type] = 1f;
         }
 
-        public override Color GetColor()
-        {
-            return new Color(193, 157, 175);
-        }
+        public override void Collapse() => DropItem(new SaltItem());
+
+        public override string GetSymbol() => "∆∆";
+
+        public override Color GetColor() => new Color(193, 157, 175);
     }
 }

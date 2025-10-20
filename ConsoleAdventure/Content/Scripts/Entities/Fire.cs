@@ -9,7 +9,6 @@ using System.Linq;
 
 namespace ConsoleAdventure.Content.Scripts
 {
-    [Serializable]
     public class Fire : Entity
     {
         private static Position[] directions = new Position[]
@@ -29,19 +28,7 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.fire;
             SetMaxLife(-1);
 
-            AddTypeToMap<Fire>(type);
-
             Initialize();
-        }
-
-        public override string GetSymbol()
-        {
-            return "  ";
-        }
-
-        public override Color GetColor()
-        {
-            return Color.White;
         }
 
         int timer;
@@ -59,15 +46,18 @@ namespace ConsoleAdventure.Content.Scripts
             {
                 Transform t1 = world.GetField(position.x, position.y, World.BlocksLayerId, w)?.content;
                 Transform t2 = world.GetField(position.x, position.y, World.FloorLayerId, w)?.content;
+                
+                transform = null;
 
-                if (t1?.burnType == 0)
-                    transform = t1;
+                if (t1 != null)
+                {
+                    if (BurnType[t1.type] == 1) transform = t1;
+                }
 
-                else if (t2?.burnType == 0)
-                    transform = t2;
-
-                else
-                    transform = null;
+                else if (t2 != null)
+                {
+                    if (BurnType[t2.type] == 1) transform = t2;
+                }
 
                 if(CanHitToPlayer(out short id))
                 {
@@ -86,7 +76,7 @@ namespace ConsoleAdventure.Content.Scripts
 
             else if(timer % 2 == 0 && transform.CanBeDestroyed())
             {
-                curDegreeDestruction += Math.Abs(1f / transform.hardness);
+                curDegreeDestruction += Math.Abs(1f / Hardness[transform.type]);
                 transform.degreeDestruction = (byte)curDegreeDestruction;
 
                 transform.WhenBurning();
@@ -104,15 +94,22 @@ namespace ConsoleAdventure.Content.Scripts
             {
                 if(ConsoleAdventure.rand.Next(0, 3) == 2)
                 {
-                    for(int i = 0; i < 8; i++)
+                    for (int i = 0; i < 8; i++)
                     {
                         Position curPosition = new(position.x + directions[i].x, position.y + directions[i].y);
 
-                        if (world.GetField(curPosition.x, curPosition.y, World.BlocksLayerId, w)?.content?.burnType == 0)
-                            SpawnFire(curPosition.x, curPosition.y);
+                        Transform t1 = world.GetField(curPosition.x, curPosition.y, World.BlocksLayerId, w)?.content;
+                        Transform t2 = world.GetField(curPosition.x, curPosition.y, World.FloorLayerId, w)?.content;
 
-                        else if (world.GetField(curPosition.x, curPosition.y, World.FloorLayerId, w)?.content?.burnType == 0)
-                            SpawnFire(curPosition.x, curPosition.y);
+                        if (t1 != null)
+                        {
+                            if (BurnType[t1.type] == 1) SpawnFire(curPosition.x, curPosition.y);
+                        }
+
+                        else if (t2 != null)
+                        {
+                            if (BurnType[t2.type] == 1) SpawnFire(curPosition.x, curPosition.y);
+                        }
                     }
                 }
             }
@@ -147,5 +144,7 @@ namespace ConsoleAdventure.Content.Scripts
 
             drawTimer++;
         }
+
+        public override string GetSymbol() => "  ";
     }
 }

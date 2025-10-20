@@ -11,38 +11,24 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Biotite : Transform
     {
-        public Biotite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Biotite(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.biotite;
-            isObstacle = true;
-            hardness = 0.5f;
-
-            AddTypeToMap(GetType(), type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new BiotiteItem(), 1) });
-        }
-        
-        public override string GetSymbol()
-        {
-            return "≡≡";
+            IsObstacle[type] = true;
+            Hardness[type] = 0.5f;
         }
 
-        public override Color GetColor()
-        {
-            return new Color(45, 45, 45);
-        }
+        public override void Collapse() => DropItem(new BiotiteItem());
 
-        public override Color? GetBGColor()
-        {
-            return new Color(15, 15, 15);
-        }
+        public override string GetSymbol() => "≡≡";
+
+        public override Color GetColor() => new Color(45, 45, 45);
+
+        public override Color? GetBGColor() => new Color(15, 15, 15);
     }
 }

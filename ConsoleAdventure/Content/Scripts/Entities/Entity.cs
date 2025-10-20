@@ -35,9 +35,7 @@ namespace ConsoleAdventure.Content.Scripts
 
         public Entity(Position position, int w, List<object> parameters = null) : base(position, (byte)w)
         {
-            worldLayer = World.MobsLayerId;
             type = (int)VanillaTransforms.entity;
-            isObstacle = false;
 
             if (parameters != null)
             {
@@ -46,10 +44,13 @@ namespace ConsoleAdventure.Content.Scripts
 
             StateMachine = new StateMachine(this);
 
-            AddTypeToMap<Entity>(type);
-
             if (!ConsoleAdventure.InWorld) return;
             ConsoleAdventure.world.Start += PreStart;
+        }
+
+        public override void SetStaticData()
+        {
+            DefaultWorldLayer[type] = World.MobsLayerId;
         }
 
         public void PreStart()
@@ -63,15 +64,9 @@ namespace ConsoleAdventure.Content.Scripts
             
         }
 
-        public override string GetSymbol()
-        {
-            return "AE";
-        }
+        public override string GetSymbol() => "AE";
 
-        public override Color GetColor()
-        {
-            return Color.Yellow;
-        }
+        public override Color GetColor() => Color.Yellow;
 
         public void UpdateEntityInWorld()
         {

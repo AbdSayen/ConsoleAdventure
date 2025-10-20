@@ -8,7 +8,6 @@ using System.Threading;
 
 namespace ConsoleAdventure.Content.Scripts
 {
-    [Serializable]
     public class Explosion : Entity
     {
         static string[] Symbols = new string[]
@@ -29,20 +28,12 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.explosion;
             SetMaxLife(-1);
 
-            AddTypeToMap<Explosion>(type);
-
             Initialize();
         }
 
-        public override string GetSymbol()
-        {
-            return Symbols[frame];
-        }
+        public override string GetSymbol() => Symbols[frame];
 
-        public override Color GetColor()
-        {
-            return new Color(255, 211, 51);
-        }
+        public override Color GetColor() => new Color(255, 211, 51);
 
         int timer;
         int delay = 5;

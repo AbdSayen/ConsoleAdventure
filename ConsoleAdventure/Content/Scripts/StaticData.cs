@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -58,6 +59,22 @@ namespace ConsoleAdventure.Content.Scripts
             set
             {
                 Add(type, value);
+            }
+        }
+
+        public T this[Transform transform]
+        {
+            get
+            {
+                if (transform == null)
+                    return DefaultData;
+
+                return Get(transform.type);
+            }
+            set
+            {
+                if (transform != null)
+                    Add(transform.type, value);
             }
         }
     }

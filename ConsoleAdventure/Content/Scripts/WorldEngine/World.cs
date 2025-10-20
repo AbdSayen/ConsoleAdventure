@@ -22,7 +22,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class World
     {
         public Action Start;
@@ -399,11 +398,13 @@ namespace ConsoleAdventure.WorldEngine
 
             bool IsValidMove(int worldLayer, int newX, int newY, int w)
             {
+                Transform block = GetField(newX, newY, BlocksLayerId, w)?.content;
+
                 return newX >= 0 && newX < size &&
                        newY >= 0 && newY < size &&
                        (GetField(newX, newY, worldLayer, w)?.content == null &&
-                       (GetField(newX, newY, BlocksLayerId, w)?.content == null ||
-                       (!GetField(newX, newY, BlocksLayerId, w)?.content?.isObstacle == true || ConsoleAdventure.NoCollision)));
+                       (block == null ||
+                       (!Transform.IsObstacle[block] || ConsoleAdventure.NoCollision)));
             }
 
             return false;

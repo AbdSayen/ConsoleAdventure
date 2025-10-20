@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class ObsidianFloor : Transform
     {
         static string[] symbolsMap = new string[]
@@ -15,33 +14,21 @@ namespace ConsoleAdventure.WorldEngine
             " Ϟ",
         };
 
-        public ObsidianFloor(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public ObsidianFloor(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.FloorLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.obsidianFloor;
-            isObstacle = false;
-
-            AddTypeToMap<ObsidianFloor>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack> { new Stack(new ObsidianFloorItem(), 1) });
+            DefaultWorldLayer[type] = World.FloorLayerId;
         }
 
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, 3)];
-        }
+        public override void Collapse() => DropItem(new ObsidianFloorItem());
 
-        public override Color GetColor()
-        {
-            return new Color(25, 0, 84);
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
+
+        public override Color GetColor() => new Color(25, 0, 84);
     }
 }

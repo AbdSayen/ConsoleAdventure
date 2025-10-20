@@ -51,6 +51,11 @@ namespace CaModLoaderAPI
             return modTransformTypes[typeof(T)];
         }
 
+        public static int GetModTransform(Type type)
+        {
+            return modTransformTypes[type];
+        }
+
         public static void InitTransformsTypes(int lastVanillaTransformCount)
         {
             if (ConsoleAdventureMain.world == null) return;

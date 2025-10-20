@@ -11,38 +11,24 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Ruby : Transform
     {
-        public Ruby(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Ruby(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.ruby;
-            isObstacle = true;
-            hardness = 4f;
-
-            AddTypeToMap<Ruby>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new RubyItem(), 1) });
+            IsObstacle[type] = true;
+            Hardness[type] = 4f;
         }
 
-        public override string GetSymbol()
-        {
-            return "♦♦";
-        }
+        public override void Collapse() => DropItem(new RubyItem());
 
-        public override Color GetColor()
-        {
-            return new Color(200, 21, 110);
-        }
+        public override string GetSymbol() => "♦♦";
 
-        public override Color? GetBGColor()
-        {
-            return new Color(19, 124, 50);
-        }
+        public override Color GetColor() => new Color(200, 21, 110);
+
+        public override Color? GetBGColor() => new Color(19, 124, 50);
     }
 }

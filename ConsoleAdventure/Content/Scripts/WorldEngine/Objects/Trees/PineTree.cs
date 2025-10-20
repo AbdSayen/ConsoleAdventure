@@ -16,15 +16,15 @@ namespace ConsoleAdventure.WorldEngine
             "()", "o^", ">o"
         };
 
-        public PineTree(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public PineTree(Position position, int w) : base(position, (byte)w)
         {
             type = (int)VanillaTransforms.pineTree;
-            AddTypeToMap<PineTree>(type);
             Initialize();
         }
 
         public override void SetStaticData()
         {
+            SetDefaultStaticData();
             Crowns[type] = new string[,]
             {
                 { "  ", "  ", "¾¾", "  ", "¾¾", "  ", "  " },
@@ -42,14 +42,8 @@ namespace ConsoleAdventure.WorldEngine
             FruitTypes[type] = typeof(Apple);
         }
 
-        public override string GetSymbol()
-        {
-            return symbolsMap[Utils.HashNoise(position.x, position.y, symbolsMap.Length - 1)];
-        }
+        public override string GetSymbol() => GetVariation(symbolsMap);
 
-        public override Color GetColor()
-        {
-            return new(88, 50, 22);
-        }
+        public override Color GetColor() => new(88, 50, 22);
     }
 }

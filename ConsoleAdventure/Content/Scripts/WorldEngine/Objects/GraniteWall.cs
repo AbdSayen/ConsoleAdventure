@@ -11,38 +11,22 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class GraniteWall : Transform
     {
-        public GraniteWall(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public GraniteWall(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.graniteWall;
-            isObstacle = true;
-            hardness = 2;
-
-            AddTypeToMap<GraniteWall>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new GraniteWallItem(), 1) });
-        }
-        
-        public override string GetSymbol()
-        {
-            return "∫∫";
+            IsObstacle[type] = true;
+            Hardness[type] = 2f;
         }
 
-        public override Color GetColor()
-        {
-            return new Color(45, 45, 45);
-        }
+        public override void Collapse() => DropItem(new GraniteWallItem());
 
-        public override Color? GetBGColor()
-        {
-            return base.GetBGColor();
-        }
+        public override string GetSymbol() => "∫∫";
+
+        public override Color GetColor() => new Color(45, 45, 45);
     }
 }

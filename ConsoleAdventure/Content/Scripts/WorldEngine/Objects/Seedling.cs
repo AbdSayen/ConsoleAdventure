@@ -7,32 +7,19 @@ using System.Text;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Seedling : Transform
     {
-        public Seedling(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Seedling(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.seedling;
-            burnType = 0;
-
-            AddTypeToMap<Seedling>(type);
-
             Initialize();
         }
 
-        public override string GetSymbol()
-        {
-            return " ╢";
-        }
+        public override void SetStaticData() => BurnType[type] = 1;
 
-        public override Color GetColor()
-        {
-            return new (94, 61, 38);
-        }
+        public override string GetSymbol() => " ╢";
+
+        public override Color GetColor() => new(94, 61, 38);
 
         public override void OnTheScreen()
         {

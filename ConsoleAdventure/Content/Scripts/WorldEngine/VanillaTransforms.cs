@@ -2,7 +2,6 @@
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public enum VanillaTransforms { 
         empty,
         player,

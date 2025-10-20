@@ -6,23 +6,25 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure
 {
-    [Serializable]
     public class Loot : Storage
     {
         public static int blinkTimer;
         public static int blinkPer = 30;
         public static int delay = blinkPer / 2;
 
-        public Loot(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, w, AddItems(items, position.x, position.y, World.ItemsLayerId, w))
+        public Loot(Position position, int w, List<Stack> items) : base(position, w, AddItems(items, position.x, position.y, World.ItemsLayerId, w))
         {
-            this.worldLayer = World.ItemsLayerId;
             type = (int)VanillaTransforms.loot;
-
-            AddTypeToMap<Loot>(type);
 
             if (this.items != null)
                 items = new();
+
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            DefaultWorldLayer[type] = World.ItemsLayerId;
         }
 
         private static List<Stack> AddItems(List<Stack> items, int x, int y, int z, int w)
@@ -86,10 +88,7 @@ namespace ConsoleAdventure
             return " $";
         }
 
-        public override Color GetColor()
-        {
-            return Color.Yellow;
-        }
+        public override Color GetColor() => Color.Yellow;
 
 
         int drawItemIndex = -1;

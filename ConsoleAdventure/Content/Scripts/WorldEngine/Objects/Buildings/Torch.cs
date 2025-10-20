@@ -5,37 +5,19 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Torch : Transform
     {
-        public Torch(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Torch(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.torch;
-            isObstacle = false;
-
-            AddTypeToMap<Torch>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
-        {
-            new Loot(position, w, new List<Stack>() { new Stack(new TorchItem(), 1) });
-        }
+        public override void Collapse() => DropItem(new TorchItem());
 
-        public override string GetSymbol()
-        {
-            return " |";
-        }
+        public override string GetSymbol() => " |";
 
-        public override Color GetColor()
-        {
-            return new(94, 61, 38);
-        }
+        public override Color GetColor() => new(94, 61, 38);
 
         float timer;
         public override void OnTheScreen()
@@ -57,7 +39,7 @@ namespace ConsoleAdventure.WorldEngine
                     {
                         Transform transform = world.GetField(position.x + i, position.y + j, worldLayer, w)?.content;
                         Transform mob = world.GetField(position.x + i, position.y + j, World.MobsLayerId, w)?.content;
-                        if (transform?.burnType == 0 && mob == null)
+                        if (BurnType[transform] == 1 && mob == null)
                         {
                             Spawner.Spawn(new Fire(position + new Position(i, j), w));
                         }

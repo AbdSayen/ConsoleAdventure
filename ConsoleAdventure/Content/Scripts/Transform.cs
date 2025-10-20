@@ -12,36 +12,61 @@ using System.CodeDom;
 using SharpDX.Direct2D1;
 using System.Linq;
 using ConsoleAdventure.Content.Scripts.IO;
+using System.ComponentModel;
+using CaModLoaderAPI;
 
 namespace ConsoleAdventure
 {
     [Serializable]
     public abstract class Transform
     {
+        public static World world { get; protected set; }
+
         public static Type[] TypeMapping { get { return typeMapping; } }
         private static Type[] typeMapping = new Type[256];
 
-        public static World world { get; protected set; }
-        public byte worldLayer { get; protected set; }
-
-        public Position position;  
         public byte type;
-        public bool isObstacle;
-        public byte degreeDestruction = 0;
-        public float hardness = 1;
 
+        public byte degreeDestruction = 0;  
+
+        public byte worldLayer { get; protected set; }
+        public Position position;
+        public byte w;
+        
         internal static bool IsGlobalInit = false;
 
         /// <summary>
-        /// хранит тип горения трансформ:<br/>  
-        /// null - негорит.<br/> 0 - горит от обычного огня.<br/> 1 - горит от высокотемпературного огня.
+        /// Определяет возможность пройти сквозь блок для каждого типа трансформов.
+        /// <br/><br/>Значение по умолчанию: <c>false</c>
         /// </summary>
-        public byte? burnType = null;
+        public static StaticData<bool> IsObstacle { get; private set; }
 
         /// <summary>
-        /// Ось w, глубина объекта (на коком уровне мира он находится)
+        /// Определяет твёрдость для каждого типа трансформов
+        /// <br/><br/>Значение по умолчанию: <c>1f</c>
         /// </summary>
-        public byte w;
+        public static StaticData<float> Hardness { get; private set; }
+
+        public static StaticData<byte> BurnType { get; private set; }
+
+        /// <summary>
+        /// Определяет слой, на котором будет находиться этот трансформ.
+        /// <br/><br/>Всего их 4: 
+        /// <br/> - <seealso cref="World.FloorLayerId"/>  - полы
+        /// <br/> - <seealso cref="World.BlocksLayerId"/> - блоки
+        /// <br/> - <seealso cref="World.ItemsLayerId"/>  - предметы
+        /// <br/> - <seealso cref="World.MobsLayerId"/>   - сущности
+        /// <br/><br/> Если т-форм будет динамически выбирать слой, то 
+        /// установите значение на <c>null</c>, тогда вы сможете самостоятельноего 
+        /// перезаписать в конструкторе класса.
+        /// <br/><br/> При вызове <seealso cref="Initialize"/> или 
+        /// <seealso cref="InitializeModTransform"/>, автоматически 
+        /// к <seealso cref="worldLayer"/> будет присвоено значение 
+        /// отсюда, по типу текущего т-форма, 
+        /// если оно <c>null</c>, то ничего не произойдёт.
+        /// <br/><br/> Значение по умолчанию: <seealso cref="World.BlocksLayerId"/>
+        /// </summary>
+        public static StaticData<byte?> DefaultWorldLayer { get; private set; }
 
         protected Transform(Position position, byte w)
         {
@@ -51,14 +76,25 @@ namespace ConsoleAdventure
             world = ConsoleAdventure.world;    
         }
 
-        public void Initialize()
+        public void InitializeModTransform()
+        {
+            type = (byte)Main.GetModTransform(GetType());
+            Initialize();
+        }
+
+        internal void Initialize()
         {
             if (!IsGlobalInit)
             {
-                if (world.GetField(position.x, position.y, worldLayer, w) != null)
+                byte? layer = DefaultWorldLayer[type];
+                if (layer.HasValue)
                 {
-                    world.GetField(position.x, position.y, worldLayer, w).content = this;
-                    //world.GetField(position.x, position.y, worldLayer, w).color = GetColor();
+                    worldLayer = Math.Clamp(layer.Value, (byte)0, World.CountOfLayers);
+                }
+
+                if (world.GetField(position, worldLayer, w) != null)
+                {
+                    world.GetField(position, worldLayer, w).content = this;
                 }
             }
         }
@@ -68,6 +104,12 @@ namespace ConsoleAdventure
             return (T)MemberwiseClone();
         }
         
+        public void AddTypeToMap()
+        {
+            AddTypeToMap(GetType(), type);
+        }
+
+        [Obsolete("Используйте \"AddTypeToMap()\" или \"AddTypeToMap(Type T, int type)\" ")]
         public static void AddTypeToMap<T>(int type)
         {
             AddTypeToMap(typeof(T), type);
@@ -104,7 +146,7 @@ namespace ConsoleAdventure
         /// <summary>
         /// Инициализирует все <see cref="StaticData{T}"/> для <see cref="Transform"/>.
         /// Базовая реализация инициализирует базовые <see cref="StaticData{T}"/> (). <br/><br/>
-        /// Желательно при перезаписи метода писать <c>base.InitAllStaticData();</c> в начале метода,
+        /// Желательно при перезаписи метода писать <c>base.InitStaticData();</c> в начале метода,
         /// для большей надёжности<br/><br/>
         /// Пример override-а:
         /// <code> 
@@ -119,7 +161,10 @@ namespace ConsoleAdventure
         /// </summary>
         public virtual void InitStaticData()
         {
-
+            IsObstacle = new StaticData<bool>(false);
+            Hardness = new StaticData<float>(1f);
+            BurnType = new StaticData<byte>(0);
+            DefaultWorldLayer = new StaticData<byte?>(World.BlocksLayerId);
         }
 
         public virtual void SetStaticData()
@@ -158,15 +203,9 @@ namespace ConsoleAdventure
             return "  ";   
         }
 
-        public virtual Color GetColor()
-        {
-            return Color.Black;
-        }
+        public virtual Color GetColor() => Color.Black;
 
-        public virtual Color? GetBGColor()
-        {
-            return null;
-        }
+        public virtual Color? GetBGColor() => null;
 
         public virtual void OnTheScreen()
         {
@@ -247,12 +286,12 @@ namespace ConsoleAdventure
         {
             if (objectType.IsSubclassOf(typeof(Loot)) || objectType == typeof(Loot) ||
                 objectType.IsSubclassOf(typeof(Storage)) || objectType == typeof(Storage))
-                return new object[] { position, w, items, -1 };
+                return new object[] { position, w, items };
 
             if (objectType.IsSubclassOf(typeof(Entity)) || objectType == typeof(Entity))
                 return new object[] { position, w, parameters };
 
-            return new object[] { position, w, -1 };
+            return new object[] { position, w };
         }
 
         internal static void Init(Type type, Position position, int w, List<Stack> items, List<object> parameters)
@@ -284,7 +323,7 @@ namespace ConsoleAdventure
 
         public virtual bool CanBeDestroyed()
         {
-            return hardness > 0;
+            return Hardness[type] > 0;
         }
 
         public virtual bool CanDraw()
@@ -309,24 +348,36 @@ namespace ConsoleAdventure
         {
             List<byte> data = new List<byte>();
 
+            /*
             data.AddRange(BitConverter.GetBytes(position.x)); // 2b                  = 0
             data.AddRange(BitConverter.GetBytes(position.y)); // 2b            0 + 2 = 2
-            data.AddRange(BitConverter.GetBytes(isObstacle)); // 1b            2 + 2 = 4
+            data.AddRange(BitConverter.GetBytes(false)); // 1b                 2 + 2 = 4
             data.AddRange(BitConverter.GetBytes(degreeDestruction)); // 1b     4 + 1 = 5
-            data.AddRange(BitConverter.GetBytes(hardness)); // 4b              5 + 1 = 6
-            data.Add(w); // 1b                     6 + 4 = 10
+            data.AddRange(BitConverter.GetBytes(1f)); // 4b                    5 + 1 = 6
+            data.Add(w); // 1b                                                 6 + 4 = 10
+            */
+
+            data.AddRange(BitConverter.GetBytes(position.x)); // 2b                  = 0
+            data.AddRange(BitConverter.GetBytes(position.y)); // 2b            0 + 2 = 2
+            data.AddRange(BitConverter.GetBytes(degreeDestruction)); // 1b     2 + 2 = 4
+            data.Add(w); // 1b                                                 4 + 1 = 5
 
             return data.ToArray();
         }
 
         public virtual void SetDataFromBytes(byte[] data)
         {
+            /*
             position.x = BitConverter.ToInt16(data, 0);
             position.y = BitConverter.ToInt16(data, 2);
-            isObstacle = BitConverter.ToBoolean(data, 4);
             degreeDestruction = data[5];
-            hardness = BitConverter.ToSingle(data, 6);
             w = data[10];
+            */
+
+            position.x = BitConverter.ToInt16(data, 0);
+            position.y = BitConverter.ToInt16(data, 2);
+            degreeDestruction = data[4];
+            w = data[5];
         }
 
         public virtual string ModifyTooltip()
@@ -354,6 +405,19 @@ namespace ConsoleAdventure
                 if (chunk != null)
                     chunk.IsUpdated = true;
             }
+        }
+
+        protected void DropItem(Item item, int count = 1)
+        {
+            new Loot(position, w, new List<Stack>() { new Stack(item, count) });
+        }
+
+        protected T GetVariation<T>(T[] valuesMap)
+        {
+            if (valuesMap == null || valuesMap.Length == 0) 
+                return default(T);
+
+            return valuesMap[Utils.HashNoise(position.x, position.y, valuesMap.Length - 1)];
         }
     }
 }

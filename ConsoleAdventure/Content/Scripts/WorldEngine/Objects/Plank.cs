@@ -6,35 +6,24 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Plank : Transform
     {
-        public Plank(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Plank(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.log;
-            isObstacle = true;
-            burnType = 0;
-            hardness = 0.8f;
-
-            AddTypeToMap<Plank>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new Log(), 1) });
+            IsObstacle[type] = true;
+            Hardness[type] = 0.8f;
+            BurnType[type] = 1;
         }
 
-        public override string GetSymbol()
-        {
-            return "≡≡";
-        }
+        public override void Collapse() => DropItem(new Log());
 
-        public override Color GetColor()
-        {
-            return new(94, 61, 38);
-        }
+        public override string GetSymbol() => "≡≡";
+
+        public override Color GetColor() => new(94, 61, 38);
 
         public override void AfterBurning()
         {

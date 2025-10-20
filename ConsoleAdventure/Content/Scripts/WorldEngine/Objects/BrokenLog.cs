@@ -4,41 +4,30 @@ using Microsoft.Xna.Framework;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class BrokenLog : Transform
     {
-        public BrokenLog(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public BrokenLog(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.brokenLog;
-            isObstacle = false;
-            burnType = 0;
-
-            AddTypeToMap<BrokenLog>(type);
-
             Initialize();
+        }
+
+        public override void SetStaticData()
+        {
+            BurnType[type] = 1;
         }
 
         public override void Collapse()
         {
             if(ConsoleAdventure.rand.Next(0, 3) == 0)
             {
-                new Loot(position, w, new List<Stack>() { new Stack(new Log(), 1) });
+                DropItem(new Log());
             }
         }
 
-        public override string GetSymbol()
-        {
-            return "⸗₋";
-        }
+        public override string GetSymbol() => "⸗₋";
 
-        public override Color GetColor()
-        {
-            return new(74, 41, 18);
-        }
+        public override Color GetColor() => new(74, 41, 18);
 
         public override void AfterBurning()
         {

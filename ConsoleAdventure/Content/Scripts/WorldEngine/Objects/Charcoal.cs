@@ -6,33 +6,20 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Charcoal : Transform
     {
-        public Charcoal(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Charcoal(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.charcoal;
-            isObstacle = true;
-            hardness = 0.6f;
-
-            AddTypeToMap<Charcoal>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            //new Loot(position, w, new List<Stack>() { new Stack(new Log(), 1) });
+            IsObstacle[type] = true;
+            Hardness[type] = 0.6f;
         }
 
-        public override string GetSymbol()
-        {
-            return "≡≡";
-        }
+        public override string GetSymbol() => "≡≡";
 
-        public override Color GetColor()
-        {
-            return new(45, 45, 45);
-        }
+        public override Color GetColor() => new(45, 45, 45);
     }
 }

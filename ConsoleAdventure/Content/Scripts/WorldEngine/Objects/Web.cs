@@ -4,37 +4,24 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Web : Transform
     {
-        public Web(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Web(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.web;
-            isObstacle = false;
-            hardness = 0.1f;
-            burnType = 0;
-
-            AddTypeToMap<Web>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new WebItem(), 1) });
+            Hardness[type] = 0.1f;
+            BurnType[type] = 1;
         }
 
-        public override string GetSymbol()
-        {
-            return "¼¼";
-        }
+        public override void Collapse() => DropItem(new WebItem());
 
-        public override Color GetColor()
-        {
-            return new Color(120, 120, 120);
-        }
+        public override string GetSymbol() => "¼¼";
+
+        public override Color GetColor() => new Color(120, 120, 120);
     }
 }

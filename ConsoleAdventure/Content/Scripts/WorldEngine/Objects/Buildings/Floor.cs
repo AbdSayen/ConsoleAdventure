@@ -5,36 +5,23 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class Floor : Transform
     {
-        public Floor(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Floor(Position position, int w) : base(position, (byte)w)
         {
-            this.position = position;
-            if (worldLayer == -1) this.worldLayer = World.FloorLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.floor;
-            isObstacle = false;
-
-            AddTypeToMap<Floor>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new FloorItem(), 1) });
+            DefaultWorldLayer[type] = World.FloorLayerId;
         }
 
-        public override string GetSymbol()
-        {
-            return " .";
-        }
+        public override void Collapse() => DropItem(new FloorItem());
 
-        public override Color GetColor()
-        {
-            return Color.Gray;
-        }
+        public override string GetSymbol() => " .";
+
+        public override Color GetColor() => Color.Gray;
     }
 }

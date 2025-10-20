@@ -11,25 +11,15 @@ namespace ConsoleAdventure.WorldEngine
     public class Chest : Storage
     {
         internal bool isBrake = false;
-        public Chest(Position position, int w, List<Stack> items, int worldLayer = -1) : base(position, w, items)
+        public Chest(Position position, int w, List<Stack> items) : base(position, w, items)
         {
-            this.worldLayer = World.BlocksLayerId;
             type = (int)VanillaTransforms.chest;
-
-            AddTypeToMap<Chest>(type);
-
             Initialize();
         }
 
-        public override string GetSymbol()
-        {
-            return "<>";
-        }
+        public override string GetSymbol() => "<>";
 
-        public override Color GetColor()
-        {
-            return new(94, 61, 38);
-        }
+        public override Color GetColor() => new(94, 61, 38);
 
         public override void Interaction()
         {
@@ -57,7 +47,7 @@ namespace ConsoleAdventure.WorldEngine
             player.isChestOpen = false;
             player.chestPosition = new Vector3(-1, -1, -1);
             isBrake = true;
-            new Loot(position, w, new List<Stack>() { new Stack(new ChestItem(), 1) });
+            DropItem(new ChestItem());
         }
 
         public override bool CanBeDestroyed()

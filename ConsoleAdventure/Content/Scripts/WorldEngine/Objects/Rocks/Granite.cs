@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,39 +12,25 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Granite : Transform
     {
-        public Granite(Position position, int w, int worldLayer = -1) : base(position, (byte)w)
+        public Granite(Position position, int w) : base(position, (byte)w)
         {
-            if (worldLayer == -1) this.worldLayer = World.BlocksLayerId;
-            else this.worldLayer = (byte)worldLayer;
-
             type = (int)VanillaTransforms.granite;
-            isObstacle = true;
-            hardness = 2;
-            burnType = 1;
-
-            AddTypeToMap<Granite>(type);
-
             Initialize();
         }
 
-        public override void Collapse()
+        public override void SetStaticData()
         {
-            new Loot(position, w, new List<Stack>() { new Stack(new GraniteItem(), 1) });
-        }
-        
-        public override string GetSymbol()
-        {
-            return "##";
+            IsObstacle[type] = true;
+            Hardness[type] = 2f;
+            BurnType[type] = 2;
         }
 
-        public override Color GetColor()
-        {
-            return new Color(10, 10, 10);
-        }
+        public override void Collapse() => DropItem(new GraniteItem());
 
-        public override Color? GetBGColor()
-        {
-            return new Color(75, 75, 75);
-        }
+        public override string GetSymbol() => "##";
+
+        public override Color GetColor() => new Color(10, 10, 10);
+
+        public override Color? GetBGColor() => new Color(75, 75, 75);
     }
 }

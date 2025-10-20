@@ -8,7 +8,6 @@ using System.Threading;
 
 namespace ConsoleAdventure.Content.Scripts
 {
-    [Serializable]
     public class Leaves : Entity
     {
         static string[] Symbols = new string[]
@@ -29,17 +28,12 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.leaves;
             SetMaxLife(-1);
 
-            AddTypeToMap<Leaves>(type);
-
             delay = ConsoleAdventure.rand.Next(3, 20);
 
             Initialize();
         }
 
-        public override string GetSymbol()
-        {
-            return Symbols[frame];
-        }
+        public override string GetSymbol() => Symbols[frame];
 
         public override Color GetColor()
         {

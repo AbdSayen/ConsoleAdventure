@@ -9,7 +9,6 @@ using ConsoleAdventure.Settings;
 
 namespace ConsoleAdventure.Content.Scripts
 {
-    [Serializable]
     public class Bomb : Entity
     {
         public Bomb(Position position, int w, List<object> parameters = null) : base(position, w, parameters)
@@ -17,21 +16,14 @@ namespace ConsoleAdventure.Content.Scripts
             type = (int)VanillaTransforms.bomb;
             SetMaxLife(-1);
             
-            AddTypeToMap<Bomb>(type);
             //Spawner.AddSpawnCondition(new SpawnCondition(type, new Range(0, 1), null, 1));
 
             Initialize();   
         }
 
-        public override string GetSymbol()
-        {
-            return " B";
-        }
+        public override string GetSymbol() => " B";
 
-        public override Color GetColor()
-        {
-            return Color.Red;
-        }
+        public override Color GetColor() => Color.Red;
 
 
         int timer;
@@ -109,8 +101,8 @@ namespace ConsoleAdventure.Content.Scripts
 
             if (transform != null && transform.CanBeDestroyed())
             {
-                transform.degreeDestruction += (byte)(powers[j] - (int)transform.hardness);
-                powers[j] -= (byte)transform.hardness;
+                transform.degreeDestruction += (byte)(powers[j] - (int)Hardness[transform]);
+                powers[j] -= (byte)Hardness[transform];
 
                 if (transform.degreeDestruction > 100)
                 {

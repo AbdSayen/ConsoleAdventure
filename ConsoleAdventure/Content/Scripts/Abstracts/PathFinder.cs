@@ -46,7 +46,7 @@ namespace ConsoleAdventure
                     Transform block = fBlock != null ? fBlock.content : null;
                     Transform entity = fEntity != null ? fEntity.content : null;
 
-                    bool isBlock = block != null ? block.isObstacle : false;
+                    bool isBlock = block != null ? Transform.IsObstacle[block] : false;
                     bool isEntity = entity != null ? entity.type > 0 : false;
 
                     if (!IsValidPosition(neighbor) || isBlock || isEntity)

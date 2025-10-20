@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine
 {
-    [Serializable]
     public class LoadedChunk : Chunk
     {
         private readonly Field[,,,] fields;

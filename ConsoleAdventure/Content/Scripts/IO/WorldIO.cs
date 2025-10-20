@@ -395,12 +395,21 @@ namespace ConsoleAdventure.Content.Scripts.IO
             //Фу, мерзость, которая может и аукнутся (из-за абстракности базового Transform)
             foreach (Type type in list)
             {
-                if (type.IsAbstract || type == typeof(UnloadedTransform) || type == typeof(Player.Player))
+                if (type.IsAbstract || type == typeof(UnloadedTransform))
                     continue;
+
+                if (type == typeof(Player.Player))
+                {
+                    var p = new Player.Player(0, "", new Position(), 0);
+                    p.InitStaticData();
+                    p.SetStaticData();
+                    continue;
+                }
 
                 object[] args = Transform.BuildConstructorArgs(type, new(), 0, null, null);
                 Transform transform = (Transform)Activator.CreateInstance(type, args);
                 transform.InitStaticData();
+                transform.AddTypeToMap();
             }
 
             foreach (Type type in list)
