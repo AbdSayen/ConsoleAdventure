@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement;
 
 namespace ConsoleAdventure
 {
@@ -299,6 +300,8 @@ namespace ConsoleAdventure
 
             if (InWorld)
             {
+                //ChunkManager.CheckThread();
+
                 if (_isFirstUpdate)
                 {
                     world.Start?.Invoke();

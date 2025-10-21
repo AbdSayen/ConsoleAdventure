@@ -59,6 +59,11 @@ namespace ConsoleAdventure.WorldEngine.Generate
                     int x = X + i;
                     int y = Y + j;
 
+                    /*for (int k = 0; k < 1000; k++)
+                    {
+                        new SandFloor(new Position(x, y), world.Surface);
+                    }*/
+
                     await Place(world, x, y, chunkPosition);
                 }
             }
