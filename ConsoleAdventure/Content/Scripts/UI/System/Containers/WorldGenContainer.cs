@@ -61,8 +61,12 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
                     name += countIdenticalWorldName;
                 }
 
+                Hide();
+                OnDefocus();
+                ConsoleAdventure.progressBar.Show();
                 await ConsoleAdventure.CreateWorld(name, int.Parse(seed), 25600);
                 WorldIO.Save(ConsoleAdventure.world.name);
+                ConsoleAdventure.progressBar.Hide();
 
                 DestroyWarnTextAndResetFields();
 
@@ -70,8 +74,6 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
                 ((MainMenu)GetParent()).UpdateWorldList(wpc);
                 wpc.OnFocus();
                 wpc.Show();
-                Hide();
-                OnDefocus();
             }
         }
     }
