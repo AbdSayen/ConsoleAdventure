@@ -392,6 +392,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
             Type baseType = typeof(Transform);
             IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType)).ToList().Concat(CaModLoader.modTransforms);
 
+            
+
             //Фу, мерзость, которая может и аукнутся (из-за абстракности базового Transform)
             foreach (Type type in list)
             {
@@ -402,7 +404,6 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 {
                     var p = new Player.Player(0, "", new Position(), 0);
                     p.InitStaticData();
-                    p.SetStaticData();
                     continue;
                 }
 
@@ -416,6 +417,12 @@ namespace ConsoleAdventure.Content.Scripts.IO
             {
                 if (type.IsAbstract)
                     continue;
+
+                if (type == typeof(Player.Player))
+                {
+                    new Player.Player(0, "", new Position(), 0).SetStaticData();
+                    continue;
+                }
 
                 Transform.Init(type, Position.Zero(), 0, null, null); 
             }

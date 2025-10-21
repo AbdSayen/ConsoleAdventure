@@ -19,6 +19,7 @@ using SharpDX.Direct2D1;
 using ConsoleAdventure.WorldEngine.Levels;
 using CaModLoaderAPI;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -95,6 +96,9 @@ namespace ConsoleAdventure.WorldEngine
 
             generator = new Generator(this, size, isInitedContent, isGenerate);
             renderer = new Renderer();
+
+            ChunkManager.Start(this);
+
             new Cursor();
 
             playersDat = new Dictionary<string, byte[]>();
@@ -266,6 +270,8 @@ namespace ConsoleAdventure.WorldEngine
 
             if (Input.PostClick(InputConfig.WorldExit))
             {
+                ChunkManager.End();
+
                 if (isCmdOpen)
                 {
                     isCmdOpen = false;
@@ -605,118 +611,14 @@ namespace ConsoleAdventure.WorldEngine
             return result.ToString();
         }
 
-        public async void LoadChunk(int xChunk, int yChunk, bool playerArea)
+        public void LoadChunk(int xChunk, int yChunk, bool playerArea)
         {
-            int chunkStartX = xChunk * Chunk.Size;
-            int chunkStartY = yChunk * Chunk.Size;
-
-            Chunk chunk = chunks[xChunk, yChunk];
-
-            if (chunk != null)
-            {
-                if (chunk is UnloadedChunk)
-                {
-                    UnloadedChunk uchunk = (UnloadedChunk)chunk;
-                    short[,,,] types = uchunk.fields;
-                    List<TransformDataInChunk> data = uchunk.data;
-
-                    chunks[xChunk, yChunk] = new LoadedChunk() { IsUpdated = true };
-
-                    for (int w = 0; w < Chunk.maxDeep; w++)
-                    {
-                        for (int x = 0; x < Chunk.Size; x++)
-                        {
-                            for (int y = 0; y < Chunk.Size; y++)
-                            {
-                                for (int z = 0; z < 3; z++)
-                                {
-                                    int X = x + chunkStartX;
-                                    int Y = y + chunkStartY;
-
-                                    Transform.SetObject(types[x, y, z, w], new(X, Y), w, z);
-                                }
-                            }
-                        }
-                    }
-
-                    for (int i = 0; i < data.Count; i++)
-                    {
-                        var currentData = data[i];
-
-                        Transform transform = GetField(currentData.position.x, currentData.position.y, currentData.z, currentData.w)?.content;
-
-                        if (transform != null)
-                        {
-                            transform.LoadData(currentData.data);
-                        }
-                    }
-                }
-            }
-
-            else
-            {
-                await GenerateChunk(xChunk, yChunk);
-            }
-
-            for (short i = 0; i < players.Count; i++)
-            {
-                if (i == NetworkManager.Id) continue;
-                if (players[i].position.x > chunkStartX && players[i].position.x < (chunkStartX + Chunk.Size) && players[i].position.y > chunkStartY && players[i].position.y < (chunkStartY + Chunk.Size))
-                {
-                    players[i].SetPosition(players[i].position);
-                }
-            }
+            ChunkManager.RequestLoad(new(xChunk, yChunk));
         }
 
         public void UnloadChunk(int xChunk, int yChunk)
         {
-            Chunk chunk = chunks[xChunk, yChunk];
-
-            if (chunk != null)
-            {
-                if (chunk is LoadedChunk)
-                {
-                    if (chunk.IsUpdated)
-                    {
-                        LoadedChunk lchunk = (LoadedChunk)chunk;
-                        Field[,,,] fields = lchunk.GetFields();
-
-                        chunks[xChunk, yChunk] = new UnloadedChunk() { IsUpdated = true };
-
-                        for (int w = 0; w < Chunk.maxDeep; w++)
-                        {
-                            for (int x = 0; x < Chunk.Size; x++)
-                            {
-                                for (int y = 0; y < Chunk.Size; y++)
-                                {
-                                    for (int z = 0; z < 3; z++)
-                                    {
-                                        short? type = (short?)fields[x, y, z, w]?.content?.type;
-
-                                        if (!type.HasValue)
-                                            type = 0;
-
-                                        ((UnloadedChunk)chunks[xChunk, yChunk]).fields[x, y, z, w] = type.Value;
-
-                                        object data = fields[x, y, z, w]?.content?.SaveData();
-
-                                        short X = (short)(x + xChunk * Chunk.Size);
-                                        short Y = (short)(y + yChunk * Chunk.Size);
-
-                                        if (data != null)
-                                            ((UnloadedChunk)chunks[xChunk, yChunk]).data.Add(new(X, Y, (byte)z, (byte)w, data));
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    else
-                    {
-                        chunks[xChunk, yChunk] = null;
-                    }
-                }
-            }
+            ChunkManager.RequestUnload(new(xChunk, yChunk));
         }
 
         internal void UnloadAllChunks()
