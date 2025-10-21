@@ -201,7 +201,10 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
                         LoadedChunk lchunk = (LoadedChunk)chunk;
                         Field[,,,] fields = lchunk.GetFields();
 
-                        world.chunks[xChunk, yChunk] = new UnloadedChunk() { IsUpdated = true };
+                        lock (world.chunks[xChunk, yChunk].Locking)
+                        {
+                            world.chunks[xChunk, yChunk] = new UnloadedChunk() { IsUpdated = true };
+                        }
 
                         for (int w = 0; w < Chunk.maxDeep; w++)
                         {
@@ -250,47 +253,5 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
         }
 
         #endregion
-
-        public static void CheckThread()
-        {
-            if (Thread != null)
-            {
-                if (Thread.ThreadState == System.Threading.ThreadState.Aborted)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is Aborted!");
-
-                else if (Thread.ThreadState == System.Threading.ThreadState.AbortRequested)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is AbortRequested!");
-
-                else if (Thread.ThreadState == System.Threading.ThreadState.Background)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is Background!");
-
-                else if (Thread.ThreadState == System.Threading.ThreadState.Stopped)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is Stopped!");
-
-                else if (Thread.ThreadState == System.Threading.ThreadState.StopRequested)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is StopRequested!");
-
-                else if (Thread.ThreadState == System.Threading.ThreadState.Suspended)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is Suspended!");
-
-                else if (Thread.ThreadState == System.Threading.ThreadState.SuspendRequested)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is SuspendRequested!");
-
-                else if (Thread.ThreadState == System.Threading.ThreadState.Unstarted)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is Unstarted!");
-
-                else if (Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is WaitSleepJoin!");
-
-
-
-                if (!Thread.IsAlive)
-                    ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is not Alive");
-                
-                return;
-            }
-
-            ConsoleAdventure.logger.AddMessage("[ChunkManager] Thread is null!");
-        }
     }
 }
