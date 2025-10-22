@@ -1,5 +1,6 @@
 ﻿using SharpDX.Direct2D1;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace ConsoleAdventure.WorldEngine

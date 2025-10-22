@@ -9,6 +9,8 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class Chunk
     {
+        internal object Locking { get; } = new object();
+
         protected short biome;
         public bool IsUpdated { get; internal set; } = false;
         public static int Size { get; internal set; } = 16;
