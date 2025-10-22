@@ -79,7 +79,7 @@ namespace ConsoleAdventure.WorldEngine
 
             if (observer != oldPosition || observerW != oldW || timer % 5 == 0)
             {
-                Light.Update(observer);
+                Light.Update(observer, observerW);
             }
 
             int noClampedStartY = observer.y - viewDistanceY / 2;

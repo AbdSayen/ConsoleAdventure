@@ -75,15 +75,14 @@ namespace ConsoleAdventure.Content.Scripts
             return color;
         }
 
-        public static void Update(Position start)
+        public static void Update(Position start, int w)
         {
             x = start.x - 30;
             y = start.y - 15;
-            w = ConsoleAdventure.world.GetLocalPlayer().w;
 
             Color color = Color.Black;
 
-            if (w == ConsoleAdventure.world.Surface)
+            if (ConsoleAdventure.world.levels.Levels[w].SunLight)
             {
                 color = GetSunLightColor();
             }

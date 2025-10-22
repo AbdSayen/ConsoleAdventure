@@ -8,5 +8,9 @@ namespace ConsoleAdventure.WorldEngine.Levels
 {
     public class Surface : WorldLevel
     {
+        public Surface()
+        {
+            SunLight = true;
+        }
     }
 }
