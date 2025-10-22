@@ -45,9 +45,9 @@ namespace ConsoleAdventure.WorldEngine.Generate
                 AddGeneratorToPipeline(new CavernGenerator(), 200);
             }
 
-            ConvertPrioritiesToGenPipeline();
-
             CaModLoader.WorldGeneratorBuildPipelineMods(this);
+
+            ConvertPrioritiesToGenPipeline();
 
             if (isGenerate)
             {
