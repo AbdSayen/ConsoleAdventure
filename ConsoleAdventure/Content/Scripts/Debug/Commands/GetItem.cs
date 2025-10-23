@@ -29,13 +29,13 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             {
                 string name = GetStringArg(args, "name");
                 int count = GetIntArg(args, "count");
-                string namespace_ = "ConsoleAdventure.Item";
+                string namespace_ = "ConsoleAdventure";
                 if (args.Length >= 3)
                     namespace_ = GetStringArg(args, "namespace");
 
                 try
                 {
-                    Type[] type = new Type[2] { Type.GetType(namespace_ + "." + name), Type.GetType(namespace_) };
+                    Type[] type = new Type[2] { Type.GetType(namespace_ + "." + name), Type.GetType(namespace_ + "." + name + "Item") };
 
                     for (int i = 0; i < type.Length; i++)
                     {
