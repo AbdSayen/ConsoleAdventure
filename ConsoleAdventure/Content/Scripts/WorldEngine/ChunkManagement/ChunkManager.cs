@@ -21,6 +21,8 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
 
         private static Thread Thread { get; set; }
 
+        private static readonly AutoResetEvent waitEvent = new(false);
+
         #endregion
 
         public static World world; 
@@ -40,6 +42,8 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
                 TaskQueue.Clear();
 
             ThreadState = true;
+
+            waitEvent.Set();
 
             Thread = new Thread(() =>
             {
@@ -67,18 +71,17 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
                 {
                     if (TaskQueue == null)
                         throw new NullReferenceException();
-                    if (TaskQueue.Count <= 0) return;
+                    if (TaskQueue.Count <= 0)
+                    {
+                        //waitEvent.WaitOne();
+                        return;
+                    }
 
                     task = TaskQueue.Dequeue();
                 }
 
                 if (task != null)
                     task.Execute();
-
-                else
-                {
-                    Thread.Sleep(1);
-                }
             }
 
             catch (Exception e)
@@ -93,10 +96,10 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
         /// <param name="task">задание, которое надо выполнить с чанком по позиции: <seealso cref="IChunkTask.Chunk"/></param>
         public static void Request(IChunkTask task)
         {
-            //Start(world);
-
             lock (locking)
                 TaskQueue.Enqueue(task);
+
+            waitEvent.Set();
         }
 
         /// <summary>
@@ -140,7 +143,10 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
                     short[,,,] types = uchunk.fields;
                     List<TransformDataInChunk> data = uchunk.data;
 
-                    world.chunks[xChunk, yChunk] = new LoadedChunk() { IsUpdated = true };
+                    lock (world.chunks[xChunk, yChunk].Locking)
+                    {
+                        world.chunks[xChunk, yChunk] = new LoadedChunk() { IsUpdated = true };
+                    }
 
                     for (int w = 0; w < Chunk.maxDeep; w++)
                     {
@@ -153,7 +159,10 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
                                     int X = x + chunkStartX;
                                     int Y = y + chunkStartY;
 
-                                    Transform.SetObject(types[x, y, z, w], new(X, Y), w, z);
+                                    lock (world.chunks[xChunk, yChunk].Locking)
+                                    {
+                                        Transform.SetObject(types[x, y, z, w], new(X, Y), w, z);
+                                    }
                                 }
                             }
                         }
@@ -161,13 +170,16 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
 
                     for (int i = 0; i < data.Count; i++)
                     {
-                        var currentData = data[i];
-
-                        Transform transform = world.GetField(currentData.position.x, currentData.position.y, currentData.z, currentData.w)?.content;
-
-                        if (transform != null)
+                        lock (world.chunks[xChunk, yChunk].Locking)
                         {
-                            transform.LoadData(currentData.data);
+                            var currentData = data[i];
+
+                            Transform transform = world.GetField(currentData.position.x, currentData.position.y, currentData.z, currentData.w)?.content;
+
+                            if (transform != null)
+                            {
+                                transform.LoadData(currentData.data);
+                            }
                         }
                     }
                 }

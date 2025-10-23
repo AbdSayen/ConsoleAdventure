@@ -8,6 +8,6 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class WorldLevel
     {
-
+        public bool SunLight { get; set; }
     }
 }
