@@ -405,7 +405,7 @@ namespace ConsoleAdventure
                             Type[] exportedTypes = assembly.GetExportedTypes();
                             Type entityType = typeof(Entity);
 
-                            foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(ModItem)) || type.IsSubclassOf(typeof(Item)))) // Загружаем все предметы из модов
+                            foreach (Type item in exportedTypes.Where(type => type.IsSubclassOf(typeof(Item)))) // Загружаем все предметы из модов
                             {
                                 modItems.Add(item);
 

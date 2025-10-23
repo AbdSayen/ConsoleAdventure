@@ -159,6 +159,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
             string[] names = new string[1];
             int[] seeds = new int[1];
 
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
             names = Directory.GetFiles(path, fileType);
             seeds = new int[names.Length];
 
