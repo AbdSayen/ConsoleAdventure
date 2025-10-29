@@ -4,10 +4,15 @@
   	<TargetFrameworks>net6.0-windows</TargetFrameworks>
 		<!--;net6.0-->
   	<RollForward>Major</RollForward>
-  	<PublishReadyToRun>false</PublishReadyToRun>
+	<PublishReadyToRun>false</PublishReadyToRun>
   	<TieredCompilation>false</TieredCompilation>
   	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   	<DocumentationFile>bin\Debug\net6.0-windows\ConsoleAdventure.xml</DocumentationFile>
+	  
+      <DebugType>portable</DebugType>
+      <DebugSymbols>true</DebugSymbols>
+      <DefineConstants>DEBUG;TRACE</DefineConstants>
+      <Optimize>false</Optimize>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">

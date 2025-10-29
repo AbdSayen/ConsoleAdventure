@@ -15,7 +15,6 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Transforms", "SandFloor");
             description = GetDescription();
             placeType = (int)VanillaTransforms.sandFloor;
-            placeLayer = World.FloorLayerId;
             maxCount = 100;
             AddTypeToMap<SandFloorItem>();
         }

@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using ConsoleAdventure.Content.Scripts.WorldEngine;
 using ConsoleAdventure.Content.Scripts.IO;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace CaModLoaderAPI
 {
@@ -64,6 +65,8 @@ namespace CaModLoaderAPI
         /// Количество модовых баффов
         /// </summary>
         public int BuffsCount { get; internal set; }
+
+        public Assembly Code { get; internal set; }
 
         public string GetModString()
         {

@@ -186,11 +186,12 @@ namespace ConsoleAdventure.Content.Scripts.Player
             {
                 for (int i = 0; i < World.CountOfLayers; i++)
                 {
-                    Transform? block = world.GetField(position.x, position.y, i, w)?.content;
+                    Transform block = world.GetField(position.x, position.y, i, w)?.content;
 
                     if (block != null)
                     {
-                        block.Interaction();
+                        if (CaModLoader.PreInteractionMods(block))
+                            block.Interaction();
                     }
                 }
             }
@@ -451,29 +452,27 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
                     if (item.placeType > -1)
                     {
-                        if (item.placeLayer == World.BlocksLayerId && CanBuildAt(targetPosition, World.BlocksLayerId))
+                        byte? placeLayer = DefaultWorldLayer[item.placeType];
+
+                        if (placeLayer.HasValue)
                         {
-                            Place(item);
-                            return;
+                            if (CanBuildAt(targetPosition, placeLayer.Value))
+                            {
+                                Place(item);
+                                return;
+                            }
                         }
 
-                        if (item.placeLayer == World.FloorLayerId && CanBuildAt(targetPosition, World.FloorLayerId))
+                        else
                         {
-                            Place(item);
-                            return;
+                            if (CanBuildAt(targetPosition, item.placeLayer))
+                            {
+                                Place(item);
+                                return;
+                            }
                         }
 
-                        if (item.placeLayer == World.ItemsLayerId && CanBuildAt(targetPosition, World.ItemsLayerId))
-                        {
-                            Place(item);
-                            return;
-                        }
-
-                        if (item.placeLayer == World.MobsLayerId && CanBuildAt(targetPosition, World.MobsLayerId))
-                        {
-                            Place(item);
-                            return;
-                        }
+                        
                     }
                 }
 

@@ -14,7 +14,6 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Transforms", "ObsidianFloor");
             description = GetDescription();
             placeType = (int)VanillaTransforms.obsidianFloor;
-            placeLayer = World.FloorLayerId;
             maxCount = 100;
             AddTypeToMap<ObsidianFloorItem>();
         }

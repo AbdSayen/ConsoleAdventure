@@ -15,7 +15,6 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Transforms", "BlackSoilFloor");
             description = GetDescription();
             placeType = (int)VanillaTransforms.blackSoilFloor;
-            placeLayer = World.FloorLayerId;
             maxCount = 100;
             AddTypeToMap<BlackSoilItem>();
         }

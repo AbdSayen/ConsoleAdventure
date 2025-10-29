@@ -97,7 +97,8 @@ namespace ConsoleAdventure.WorldEngine
             generator = new Generator(this, size, isInitedContent, isGenerate);
             renderer = new Renderer();
 
-            ChunkManager.Start(this);
+            //ChunkManager.Start(this);
+            ChunkManager.world = this;
 
             new Cursor();
 
@@ -269,7 +270,7 @@ namespace ConsoleAdventure.WorldEngine
 
             if (Input.PostClick(InputConfig.WorldExit))
             {
-                ChunkManager.End();
+                //ChunkManager.End();
 
                 if (isCmdOpen)
                 {
@@ -328,7 +329,11 @@ namespace ConsoleAdventure.WorldEngine
             Field field = subject != null ? GetField(subject.position.x, subject.position.y, worldLayer, subject.w) : null;
 
             if (isDroped && field != null && field.content != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
-                field.content.Collapse();
+            {
+                if (CaModLoader.PreCollapseMods(field?.content))
+                    field.content.Collapse();
+            }
+
             if (field != null && worldLayer >= 0 && worldLayer <= CountOfLayers)
                 field.Destroy();
         }
@@ -612,12 +617,14 @@ namespace ConsoleAdventure.WorldEngine
 
         public void LoadChunk(int xChunk, int yChunk, bool playerArea)
         {
-            ChunkManager.RequestLoad(new(xChunk, yChunk));
+            //ChunkManager.RequestLoad(new(xChunk, yChunk));
+            ChunkManager.LoadChunk(xChunk, yChunk, playerArea);
         }
 
         public void UnloadChunk(int xChunk, int yChunk)
         {
-            ChunkManager.RequestUnload(new(xChunk, yChunk));
+            //ChunkManager.RequestUnload(new(xChunk, yChunk));
+            ChunkManager.UnloadChunk(xChunk, yChunk);
         }
 
         internal void UnloadAllChunks()

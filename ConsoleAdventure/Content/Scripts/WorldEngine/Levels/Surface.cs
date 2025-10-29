@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,9 @@ namespace ConsoleAdventure.WorldEngine.Levels
     {
         public Surface()
         {
-            SunLight = true;
+            HasSun = true;
+            SunLight = Color.White;
+            NightLight = new(25, 25, 25);
         }
     }
 }

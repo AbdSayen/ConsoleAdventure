@@ -14,7 +14,6 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Transforms", "Floor");
             description = GetDescription();
             placeType = (int)VanillaTransforms.floor;
-            placeLayer = World.FloorLayerId;
             maxCount = 100;
             AddTypeToMap<FloorItem>();
         }

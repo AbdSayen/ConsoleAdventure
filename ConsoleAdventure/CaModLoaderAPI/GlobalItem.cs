@@ -18,5 +18,10 @@ namespace ConsoleAdventure.CaModLoaderAPI
         {
             return null;
         }
+
+        public virtual void PostInitialize()
+        {
+
+        }
     }
 }

@@ -432,6 +432,11 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 Transform.Init(type, Position.Zero(), 0, null, null); 
             }
 
+            foreach (var globalTransform in CaModLoader.modGlobalTransforms)
+            {
+                globalTransform.SetStaticData();
+            }
+
             Transform.IsGlobalInit = false;
 
             ConsoleAdventure.recipes.Clear();

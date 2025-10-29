@@ -40,11 +40,16 @@ namespace ConsoleAdventure.Content.Scripts.Formatting
 
             Item item = null;
             try 
-            { 
-                item = (Item)Activator.CreateInstance(Type.GetType(name)); 
+            {
+                Type type = CaModLoader.GetTypeFromAnyMod(name);
+
+                item = (Item)Activator.CreateInstance(type); 
             }
 
-            catch { }
+            catch 
+            { 
+            
+            }
 
             if (item == null) 
                 return -1;
