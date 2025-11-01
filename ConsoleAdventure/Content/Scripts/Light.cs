@@ -44,10 +44,7 @@ namespace ConsoleAdventure.Content.Scripts
         public static bool onPlaceLightSource = false;
         public static bool hackLight;
 
-        private static Color dayColor = Color.White;
-        private static Color nightColor = new(25, 25, 25);
-
-        public static Color GetSunLightColor()
+        public static Color GetSunLightColor(Color dayColor, Color nightColor)
         {
             Time time = ConsoleAdventure.world.time;
             Color color = Color.Black;
@@ -82,9 +79,11 @@ namespace ConsoleAdventure.Content.Scripts
 
             Color color = Color.Black;
 
-            if (ConsoleAdventure.world.levels.Levels[w].SunLight)
+            WorldLevel level = ConsoleAdventure.world.levels.Levels[w];
+
+            if (level.HasSun)
             {
-                color = GetSunLightColor();
+                color = GetSunLightColor(level.SunLight, level.NightLight);
             }
 
             if (hackLight)

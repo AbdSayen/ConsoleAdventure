@@ -39,6 +39,7 @@ namespace ConsoleAdventure
         public static List<GlobalPlayer> modGlobalPlayers = new List<GlobalPlayer>();
         public static List<Type> modTransforms = new List<Type>();
         public static List<Buff> modBuffs = new List<Buff>();
+        public static List<GlobalTransform> modGlobalTransforms = new List<GlobalTransform>();
 
         //public static Dictionary<Type, List<int>> modLoadedContentCount = new Dictionary<Type, List<int>>();  // [0] - items, [1] - blocks
 
@@ -319,6 +320,7 @@ namespace ConsoleAdventure
                 modGlobalPlayers = new();
                 modTransforms = new();
                 modBuffs = new();
+                modGlobalTransforms = new();
                 mods = new();
                 allMods = new();
                 Main.modTypesInitialized = new();
@@ -391,6 +393,7 @@ namespace ConsoleAdventure
                             mod.modVersion = modData.modVersion;
                             mod.modDescription = modData.modDescription;
                             mod.modIcon = modData.modIcon;
+                            mod.Code = assembly;
 
                             mods.Add(mod); // Добавляем в список модов
                             allMods.Add(mod); // Добавляем в список всех модов
@@ -418,6 +421,12 @@ namespace ConsoleAdventure
                             {
                                 GlobalItem gi = (GlobalItem)Activator.CreateInstance(gItem);
                                 modGlobalItems.Add(gi);
+                            }
+
+                            foreach (Type gTransform in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalTransform)))) // Загружаем все global трансформы из модов
+                            {
+                                GlobalTransform gi = (GlobalTransform)Activator.CreateInstance(gTransform);
+                                modGlobalTransforms.Add(gi);
                             }
 
                             foreach (Type player in exportedTypes.Where(type => type.IsSubclassOf(typeof(GlobalPlayer)))) // Загружаем все глобальных Игроков из модов
@@ -667,6 +676,60 @@ namespace ConsoleAdventure
             {
                 mods[i].PostInitContent();
             }
+        }
+
+        public static Type GetTypeFromAnyMod(string fullName)
+        {
+            Type type = typeof(ConsoleAdventure).Assembly.GetType(fullName);
+
+            if (type == null)
+            {
+                List<Mod> mods = GetActiveMods();
+
+                for (int i = 0; i < mods.Count; i++)
+                {
+                    Assembly code = mods[i].Code;
+
+                    if (code != null)
+                    {
+                        type = code.GetType(fullName);
+
+                        if (type != null) break;
+                    }
+                }
+            }
+
+            return type;
+        }
+
+        public static bool PreCollapseMods(Transform transform)
+        {
+            bool commonSkip = true;
+
+            for (int i = 0; i < modGlobalTransforms.Count; i++)
+            {
+                bool skip = modGlobalTransforms[i].PreCollapse(transform);
+
+                if (commonSkip) 
+                    commonSkip = skip;
+            }
+
+            return commonSkip;
+        }
+
+        public static bool PreInteractionMods(Transform transform)
+        {
+            bool commonSkip = true;
+
+            for (int i = 0; i < modGlobalTransforms.Count; i++)
+            {
+                bool skip = modGlobalTransforms[i].PreInteraction(transform);
+
+                if (commonSkip)
+                    commonSkip = skip;
+            }
+
+            return commonSkip;
         }
     }
 }

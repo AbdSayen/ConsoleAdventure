@@ -2,7 +2,6 @@
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace ConsoleAdventure
 {
@@ -14,7 +13,6 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Transforms", "WoodFloor");
             description = GetDescription();
             placeType = (int)VanillaTransforms.woodFloor;
-            placeLayer = World.FloorLayerId;
             maxCount = 100;
             AddTypeToMap<WoodFloorItem>();
         }

@@ -32,8 +32,15 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void OnTheScreen()
         {
-            if (w == world.Surface - 1)
-                Light.Add(position.x, position.y, w, Light.GetSunLightColor(), 8.5f);
+            if (w < world.levels.Levels.Count - 1) 
+            {
+                WorldLevel level = world.levels.Levels[w + 1];
+
+                if (level.HasSun)
+                {
+                    Light.Add(position.x, position.y, w, Light.GetSunLightColor(level.SunLight, level.NightLight), 8.5f);
+                } 
+            }
         }
     }
 }

@@ -14,7 +14,6 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Transforms", "GranuliteFloor");
             description = GetDescription();
             placeType = (int)VanillaTransforms.granuliteFloor;
-            placeLayer = World.FloorLayerId;
             maxCount = 100;
             AddTypeToMap<GranuliteFloorItem>();
         }

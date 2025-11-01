@@ -9,6 +9,8 @@ namespace ConsoleAdventure
     public class PlaceableItem : Item
     {
         public int placeType = -1;
+
+        [Obsolete()]
         public int placeLayer = World.BlocksLayerId;
 
         public new string GetDescription()

@@ -238,6 +238,16 @@ namespace ConsoleAdventure
                     if (ConsoleAdventure.ShowTypes)
                         typeText = $" <{field?.content?.type}:{field?.content?.GetType()?.FullName}>";
 
+                    foreach (var globalTransform in CaModLoader.modGlobalTransforms)
+                    {
+                        string modTooltip = globalTransform.ModifyTooltip(field?.content);
+
+                        if (modTooltip != null)
+                        {
+                            return modTooltip + typeText;
+                        }
+                    }
+
                     return field?.content.ModifyTooltip() + typeText;
                 } 
 
@@ -308,7 +318,10 @@ namespace ConsoleAdventure
             if (type.IsSubclassOf(typeof(Entity)) || type == typeof(Entity))
                 Spawner.Spawn((Entity)transform);
 
-            if (IsGlobalInit) transform.SetStaticData();
+            if (IsGlobalInit) 
+            { 
+                transform.SetStaticData();
+            }
         }
 
         public virtual void LoadData(object data)
@@ -407,7 +420,7 @@ namespace ConsoleAdventure
             }
         }
 
-        protected void DropItem(Item item, int count = 1)
+        public void DropItem(Item item, int count = 1)
         {
             new Loot(position, w, new List<Stack>() { new Stack(item, count) });
         }

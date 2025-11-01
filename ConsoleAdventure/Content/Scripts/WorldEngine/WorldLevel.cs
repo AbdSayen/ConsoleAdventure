@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace ConsoleAdventure.WorldEngine
 {
     public class WorldLevel
     {
-        public bool SunLight { get; set; }
+        public bool HasSun { get; set; } = false;
+        public Color SunLight { get; set; } = Color.Black;
+        public Color NightLight { get; set;} = Color.Black;
     }
 }

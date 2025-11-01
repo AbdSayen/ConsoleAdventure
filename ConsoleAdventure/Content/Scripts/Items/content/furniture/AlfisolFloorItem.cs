@@ -15,7 +15,6 @@ namespace ConsoleAdventure
             name = Localization.GetTranslation("Transforms", "AlfisolFloor");
             description = GetDescription();
             placeType = (int)VanillaTransforms.alfisolFloor;
-            placeLayer = World.FloorLayerId;
             maxCount = 100;
             AddTypeToMap<AlfisolFloorItem>();
         }

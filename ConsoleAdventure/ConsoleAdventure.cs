@@ -461,14 +461,23 @@ namespace ConsoleAdventure
 
         private void DrawTooltip(SpriteBatch spriteBatch)
         {
-            string baseTooltip = display.TransformTooltip();
+            try
+            {
+                string baseTooltip = display.TransformTooltip();
 
-            if (baseTooltip != oldTooltip) {
-                formatTooltip = new FormatString(baseTooltip, Color.Gray);      
-                oldTooltip = baseTooltip;
-            } 
-            
-            formatTooltip.Draw(spriteBatch, new Vector2(197, 10));
+                if (baseTooltip != oldTooltip)
+                {
+                    formatTooltip = new FormatString(baseTooltip, Color.Gray);
+                    oldTooltip = baseTooltip;
+                }
+
+                formatTooltip.Draw(spriteBatch, new Vector2(197, 10));
+            }
+
+            catch
+            {
+
+            }
         }
 
         private static void SaveFontTexture(string path)
