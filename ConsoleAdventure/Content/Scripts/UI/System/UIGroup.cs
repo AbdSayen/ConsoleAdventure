@@ -30,6 +30,14 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             return child;
         }
 
+        public override List<UIElement> ClearChilds()
+        {
+            List<UIElement> list = elements.ToList();
+            elements.Clear();
+            childs.Clear();
+            return list;
+        }
+
         public override void Update()
         {
             base.Update();

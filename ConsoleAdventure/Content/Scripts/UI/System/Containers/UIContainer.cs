@@ -64,7 +64,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
             return elements.ToList();
         }
 
-        public List<UIElement> ClearChilds()
+        public virtual List<UIElement> ClearChilds()
         {
             List<UIElement> list = elements.ToList();
             elements.Clear();

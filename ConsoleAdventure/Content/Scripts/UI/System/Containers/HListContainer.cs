@@ -81,7 +81,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Containers
                 elementsForRender[i].screenPosition = drawPosition.ToPoint();
                 elementsForRender[i].screenPosition.Y += offset;
                 elementsForRender[i].Draw(spriteBatch, elementsForRender[i].ApplyAnchor(elementsForRender[i].screenPosition.ToVector2()));
-                if (!offsetMode)
+                if (!offsetMode && elementsForRender.Count > 1)
                     offset += size.Y / (elementsForRender.Count - 1);
                 else
                     offset += size.Y + elementsForRender[i].size.Y;

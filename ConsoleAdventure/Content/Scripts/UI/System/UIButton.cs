@@ -45,6 +45,23 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
             this.selectText = selectText;
         }
 
+        public void SetText(string newText)
+        {
+            text = newText;
+            currentText = new(text);
+        }
+
+        public void SetText(FormatString newText)
+        {
+            text = newText.BaseString;
+            currentText = newText;
+        }
+
+        public FormatString GetText()
+        {
+            return currentText;
+        }
+
         public override void OnConfirmKeyUp()
         {
             onClick.Invoke(this);

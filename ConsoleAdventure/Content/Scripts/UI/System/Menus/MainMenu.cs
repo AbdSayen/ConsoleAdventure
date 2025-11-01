@@ -10,6 +10,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
         public MenuState State = MenuState.mainScreen;
 
         private VListContainer mainButtonsContainer;
+        private HListContainer settingsContainer;
 
         public void UpdateWorldList(UIContainer worldPanelsContainer)
         {
@@ -38,8 +39,24 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             State = MenuState.mainScreen;
         }
 
+        public void Relocalize()
+        {
+            CreateMenu();
+            
+            mainButtonsContainer.OnDefocus();
+
+            settingsContainer.Show();
+            settingsContainer.OnFocus();
+        }
+
         public MainMenu() : base(new(0, 0))
         {
+            CreateMenu();
+        }
+
+        public void CreateMenu()
+        {
+            ClearChilds();
             SetName("MainMenu");
 
             string[] randomItemData = ConsoleAdventure.GetRandomPrettyItem();
@@ -68,12 +85,25 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
                 BackToMainMenu(c);
             };
 
-            worldGenContainer.AddElement(new UITextInputField(Color.White, new(), 30, Localization.GetTranslation("UI", "WorldNameField"),       chars: new char[] { '\\', '|', '/', '<', '>', '*', '"', '?', '\n', '\r' }, listType: TextInput.BlackList, anchor: Anchor.TopLeft).SetName("WorldNameField"));
-            worldGenContainer.AddElement(new UITextInputField(Color.White, new(), 30, Localization.GetTranslation("UI", "WorldSeedField"),       chars: new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' },    listType: TextInput.WhiteList, anchor: Anchor.TopLeft).SetName("WorldSeedField"));
+            worldGenContainer.AddElement(new UITextInputField(Color.White, new(), 30, Localization.GetTranslation("UI", "WorldNameField"), chars: new char[] { '\\', '|', '/', '<', '>', '*', '"', '?', '\n', '\r' }, listType: TextInput.BlackList, anchor: Anchor.TopLeft).SetName("WorldNameField"));
+            worldGenContainer.AddElement(new UITextInputField(Color.White, new(), 30, Localization.GetTranslation("UI", "WorldSeedField"), chars: new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }, listType: TextInput.WhiteList, anchor: Anchor.TopLeft).SetName("WorldSeedField"));
             worldGenContainer.AddElement(new UITextInputField(Color.White, new(), 30, Localization.GetTranslation("UI", "WorldPlayerNameField"), chars: new char[] { '\\', '|', '/', '<', '>', '*', '"', '?', '\n', '\r' }, listType: TextInput.BlackList, anchor: Anchor.TopLeft).SetName("WorldPlayerNameField"));
 
             worldGenContainer.Hide();
             AddElement(worldGenContainer.SetName("WorldGenContainer"));
+            #endregion
+
+            #region settings
+            settingsContainer = new HListContainer(new Point(1920 / 2, 320), new(0, 9), anchor: Anchor.Top, offsetMode: true);
+            settingsContainer.onBackButtonPressed += (UIContainer c) => BackToMainMenu(c);
+
+            settingsContainer.AddElement(new UILanguageButton());
+            settingsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "About"), Color.White, Color.Yellow, new()));
+            settingsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Control"), Color.White, Color.Yellow, new()));
+            settingsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "MusicVolume") + "100%", Color.White, Color.Yellow, new()));
+
+            settingsContainer.Hide();
+            AddElement(settingsContainer.SetName("SettingsContainer"));
             #endregion
 
             // Main Buttons Creation
@@ -87,6 +117,10 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             };
             ((UIButton)mainButtonsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Settings"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top))).onClick = (UIButton btn) => {
                 State = MenuState.settings;
+                mainButtonsContainer.OnDefocus();
+
+                settingsContainer.Show();
+                settingsContainer.OnFocus();
             };
             ((UIButton)mainButtonsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Mods"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top))).onClick = (UIButton btn) => {
                 State = MenuState.mods;
@@ -98,7 +132,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             mainButtonsContainer.OnFocus();
             AddElement(mainButtonsContainer.SetName("MainButtonsContainer"));
 
-            ConsoleAdventure.progressBar = (UIProgressBar)AddElement(new UIProgressBar(50, new(1920 / 2, 1080/2 - 120), Anchor.Top));
+            ConsoleAdventure.progressBar = (UIProgressBar)AddElement(new UIProgressBar(50, new(1920 / 2, 1080 / 2 - 120), Anchor.Top));
             ConsoleAdventure.progressBar.Hide();
         }
     }
