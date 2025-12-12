@@ -43,6 +43,7 @@
 	</Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="CaModLoaderAPI\Loaders\" />
     <Folder Include="Content\AudioFiles\Music\" />
     <Folder Include="Content\Effects\" />
     <Folder Include="Content\Scripts\WorldEngine\Objects\Rocks\Gems\" />

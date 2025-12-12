@@ -65,7 +65,7 @@ namespace ConsoleAdventure
                 int width = Math.Min(items.Count, 5);
                 for (int i = 0; i < width; i++)
                 {
-                    stringBuilder.Append($"[item:{items[i].Item.GetType().FullName}] ");
+                    stringBuilder.Append($"[item:{items[i].Item.GetType().FullName}, {items[i].Item.material}] ");
                     stringBuilder.Append($"{items[i].GetInfo()}");
                     if (i != width - 1)
                     {

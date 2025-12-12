@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure.Content.Scripts.UI
 {
-    internal class TextInputField : BaseUI
+    public class TextInputField : BaseUI
     {
         public static byte UnderliningCursor => 0;
         public static byte VerticalStickCursor => 1;

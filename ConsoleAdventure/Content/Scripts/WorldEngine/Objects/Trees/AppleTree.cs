@@ -1,5 +1,9 @@
-﻿using ConsoleAdventure.Content.Scripts.IO;
+﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Content.Scripts.MaterialLogic;
+using ConsoleAdventure.Content.Scripts.MaterialTypes;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +28,8 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void SetStaticData()
         {
+            CreateMaterial(new WoodType(), "AppleWood", (i, t) => new(ColorAssets.woodenColor));
+
             SetDefaultStaticData();
             Crowns[type] = new string[,]
             {
@@ -39,6 +45,10 @@ namespace ConsoleAdventure.WorldEngine
             CrownColors[type] = new Color(13, 152, 20) * 0.5f;
 
             LogTypes[type] = typeof(Log);
+            LogMaterials[type] = MaterialSystem.GetMaterial("AppleWood").Type;
+            TrunkLogCounts[type] = 2..3;
+            BranchesLogMaxCounts[type] = 2;
+
             FruitTypes[type] = typeof(Apple);
         }
 

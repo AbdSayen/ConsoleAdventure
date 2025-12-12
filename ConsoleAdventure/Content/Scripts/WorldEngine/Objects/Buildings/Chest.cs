@@ -17,9 +17,9 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
-        public override string GetSymbol() => "<>";
+        public override string GetSymbol() => GetMaterialSymbol("EƎ");
 
-        public override Color GetColor() => new(94, 61, 38);
+        public override Color GetColor() => GetMaterialColor();
 
         public override void Interaction()
         {
@@ -47,7 +47,7 @@ namespace ConsoleAdventure.WorldEngine
             player.isChestOpen = false;
             player.chestPosition = new Vector3(-1, -1, -1);
             isBrake = true;
-            DropItem(new ChestItem());
+            DropItem(new ChestItem(), 1, material);
         }
 
         public override bool CanBeDestroyed()

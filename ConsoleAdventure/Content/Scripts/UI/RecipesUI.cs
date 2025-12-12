@@ -45,15 +45,92 @@ namespace ConsoleAdventure.Content.Scripts.UI
 
                 for (int i = 0; i < ConsoleAdventure.recipes.Count; i++)
                 {
-                    if (ConsoleAdventure.recipes[i].IsAvailable() || ConsoleAdventure.GodMode)
+                    Recipe recipe = ConsoleAdventure.recipes[i].Copy();
+
+                    if (recipe.IsAvailable() || ConsoleAdventure.GodMode)
                     {
-                        ConsoleAdventure.availableRecipes.Add(ConsoleAdventure.recipes[i]);
+                        Player.Player player = ConsoleAdventure.world.GetLocalPlayer();
+
+                        HashSet<(int type, string name)> addedRecipes = new();
+
+                        for (int m = 0; m < player.inventory.slots.Count; m++)
+                        {
+                            bool found = false;
+
+                            Dictionary<int, Ingredient> usedMaterials = new();
+
+                            for (int j = 0; j < recipe.Ingredients.Count; j++)
+                            {
+                                if (recipe.Ingredients[j].AvailableMaterial == null)
+                                {
+                                    usedMaterials.Add(j, recipe.Ingredients[j]);
+                                }
+                            }
+
+                            int usedMaterialsCount = usedMaterials.Count;
+
+                            Dictionary<int, Ingredient> modified = new();
+
+                            for (int j = m; j < player.inventory.slots.Count; j++)
+                            {
+                                Stack item = player.inventory.slots[j];
+
+                                for (int k = 0; k < usedMaterials.Count; k++)
+                                {
+                                    var ingredient = usedMaterials.ElementAt(k);
+                                    Ingredient newIngredient = ingredient.Value.Copy();
+
+                                    if (item.Item.GetType() == ingredient.Value.Item.GetType())
+                                    {
+                                        newIngredient.Item.material = item.Item.material;
+                                        modified.Add(ingredient.Key, newIngredient);
+                                        usedMaterials.Remove(ingredient.Key);
+
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (found && modified.Count == usedMaterialsCount)
+                            {
+                                Recipe modifyRecipe = ConsoleAdventure.recipes[i].Copy();
+
+                                for (int j = 0; j < modified.Count; j++)
+                                {
+                                    var modify = modified.ElementAt(j);
+                                    modifyRecipe.Ingredients[modify.Key] = modify.Value;
+                                }
+
+                                if (modifyRecipe.InheritedMaterial > -1)
+                                {
+                                    modifyRecipe.OutItem.Item.ApplyMaterial(modifyRecipe.Ingredients[modifyRecipe.InheritedMaterial].Item.material);
+                                }
+
+                                string recipeName = modifyRecipe.OutItem.GetType().FullName + "|" + i + "|" + (modifyRecipe.OutItem.Item.Material?.Name ?? "None");
+                                int recipeType = i;
+
+                                if (!addedRecipes.Contains((recipeType, recipeName)))
+                                {
+                                    if (modifyRecipe.IsExistItemMaterials())
+                                    {
+                                        modifyRecipe.IDName = recipeName;
+                                        ConsoleAdventure.availableRecipes.Add(modifyRecipe);
+                                        
+                                        addedRecipes.Add((recipeType, recipeName));
+                                    }
+                                }
+                            }
+                        }
+                    
+
+                        //ConsoleAdventure.availableRecipes.Add(recipe);
                     }
                 }
 
                 int oldPos = cursorPos;
                 
-                cursorPos = ConsoleAdventure.availableRecipes.IndexOf(curRecipe);
+                cursorPos = ConsoleAdventure.availableRecipes.FindIndex(r => r?.IDName == curRecipe?.IDName);
 
                 if(cursorPos == -1)
                 {
@@ -128,9 +205,9 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 //int countWidth = 0;
                 for (int i = 0; i < recipe.Ingredients.Count; i++)
                 {
-                    var ingredient = recipe.Ingredients.ElementAt(i);
-                    ingredient.Key.Draw(spriteBatch, Position + new Vector2(36 + nameSize.X + (i * 27), size.Y * 19));
-                    spriteBatch.DrawString(ConsoleAdventure.Font, $" {ingredient.Value}", Position + new Vector2(36 + nameSize.X + ((i) * 27), size.Y * 19), color);
+                    var ingredient = recipe.Ingredients[i];
+                    ingredient.Item.Draw(spriteBatch, Position + new Vector2(36 + nameSize.X + (i * 27), size.Y * 19));
+                    spriteBatch.DrawString(ConsoleAdventure.Font, $" {ingredient.Count}", Position + new Vector2(36 + nameSize.X + ((i) * 27), size.Y * 19), color);
 
                     //countWidth = (int)ConsoleAdventure.Font.MeasureString($" {ingredient.Value}").X;
                 }

@@ -441,6 +441,19 @@ namespace ConsoleAdventure
                     color = Color.Yellow;
                     ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, ">", position + new Vector2(-18, i * 19), color);
                     string description = "──────────────────────────\n" + inventory.slots[i].Item.description;
+
+                    if (ConsoleAdventure.ShowTypes)
+                    {
+                        string types = $"\nItemName:\n" +
+                                       $" -{inventory.slots[i].Item.GetType().Name}\n\n" +
+                                       $"ItemMaterial:\n" +
+                                       $" -{inventory.slots[i].Item.Material?.Name ?? "None"}\n" +
+                                       $" -{inventory.slots[i].Item.Material?.MaterialType?.GetType()?.Name ?? "None"}\n" +
+                                       $" -Type: {inventory.slots[i].Item.material}";
+
+                        description += "\n" + types;
+                    }
+
                     ConsoleAdventure._spriteBatch.DrawString(ConsoleAdventure.Font, description, startDescription, Color.White);
                     startLogs.Y += ConsoleAdventure.Font.MeasureString(description).Y;
 

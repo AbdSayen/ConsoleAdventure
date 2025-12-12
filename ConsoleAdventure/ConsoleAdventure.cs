@@ -433,7 +433,7 @@ namespace ConsoleAdventure
                 formatTooltip.Draw(spriteBatch, new Vector2(197, 10));
             }
 
-            catch
+            catch (Exception e) 
             {
 
             }

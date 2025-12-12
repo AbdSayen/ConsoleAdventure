@@ -14,11 +14,11 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
-        public override void Collapse() => DropItem(new FurnaceItem());
+        public override void Collapse() => DropItem(new FurnaceItem(), material);
 
-        public override string GetSymbol() => "[]";
+        public override string GetSymbol() => "⌂≡";
 
-        public override Color GetColor() => Color.Gray;
+        public override Color GetColor() => GetMaterialColor();
 
         int drawTimer;
         public override void OnTheScreen()
@@ -27,9 +27,9 @@ namespace ConsoleAdventure.WorldEngine
 
             if (CanDraw())
             {
-                StringPaint.Draw("●", position, w, new(0.24f, -0.00f), Color.OrangeRed);
-                StringPaint.Draw("•", position, w, new(0.28f + (float)(Math.Sin((float)drawTimer / 30 * Math.PI) / 20), -0.12f), Color.OrangeRed * 0.8f);
-                StringPaint.Draw("•", position, w, new(0.28f, -0.00f), Color.Orange * (float)(1 + Math.Sin((float)drawTimer / 60 * Math.PI) / 4));
+                StringPaint.Draw("•", position, w, new(0.04f, 0.1f), Color.OrangeRed);
+                StringPaint.Draw("·", position, w, new(0.08f + (float)(Math.Sin((float)drawTimer / 30 * Math.PI) / 20), -0.02f), Color.OrangeRed * 0.8f);
+                StringPaint.Draw("·", position, w, new(0.08f, 0.1f), Color.Orange * (float)(1 + Math.Sin((float)drawTimer / 60 * Math.PI) / 4));
             }
 
             drawTimer++;

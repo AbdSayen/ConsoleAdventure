@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ConsoleAdventure.WorldEngine;
 using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.MaterialLogic;
 
 namespace ConsoleAdventure
 {
@@ -15,6 +16,8 @@ namespace ConsoleAdventure
     {
         public string name = "Name missing";
         public string description = "Description missing";
+
+        public int material = -1;
 
         public int pick = 0;
         public int hammer = 0;
@@ -31,6 +34,8 @@ namespace ConsoleAdventure
             { 0, typeof(Item) },
         };
 
+        public Material Material => MaterialSystem.GetMaterial(material);
+
         protected string GetDescription()
         {
             foreach (GlobalItem item in CaModLoader.modGlobalItems)
@@ -46,6 +51,17 @@ namespace ConsoleAdventure
         {
             return new CharTexture().AddLayer("I", Color.White);
         }
+
+        protected Color GetMaterialColor()
+        {
+            return (Material?.ModifyColor?.Invoke(null, this))?.Color ?? Color.Magenta;
+        }
+
+        protected string GetMaterialSymbol(string defaultSymbol)
+        {
+            return Material?.ModifySymbol?.Invoke(null, this) ?? defaultSymbol;
+        }
+
 
         public static void AddTypeToMap<T>(int type)
         {
@@ -85,6 +101,33 @@ namespace ConsoleAdventure
             GetTexture().Draw(spriteBatch, position);
         }
 
+        public bool ApplyMaterial(int type)
+        {
+            Material material = MaterialSystem.GetMaterial(type);
+            if (material == null) return false;
+
+            if (CanApplyMaterial(material))
+                this.material = type;
+            
+            return true;
+        }
+
+        public bool ApplyMaterial(string name)
+        {
+            Material material = MaterialSystem.GetMaterial(name);
+            if (material == null) return false;
+
+            if (CanApplyMaterial(material))
+                this.material = material.Type;
+
+            return true;
+        }
+
+        public Item Copy() 
+        { 
+            return (Item)MemberwiseClone(); 
+        }
+
         public virtual bool CanBePickedUp()
         {
             foreach (GlobalItem glItem in CaModLoader.modGlobalItems)
@@ -114,6 +157,18 @@ namespace ConsoleAdventure
         public virtual void PickedUp()
         {
 
+        }
+
+        /// <summary>
+        /// Вызывается при применении материала к предмету. Нужно для изменения 
+        /// параметров предмета в зависимости от материала и для кастомных правил 
+        /// ограничия применения их. 
+        /// </summary>
+        /// <param name="material"></param>
+        /// <returns></returns>
+        public virtual bool CanApplyMaterial(Material material)
+        {
+            return true;
         }
     }
 }
