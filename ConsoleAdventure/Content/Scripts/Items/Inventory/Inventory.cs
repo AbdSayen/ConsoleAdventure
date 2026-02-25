@@ -4,7 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using ConsoleAdventure.CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts.MaterialLogic;
 using ConsoleAdventure.Content.Scripts.Player;
+using SharpDX.DirectWrite;
 
 namespace ConsoleAdventure
 {
@@ -114,32 +116,39 @@ namespace ConsoleAdventure
             if (count == -1) addCount = item.count; 
             else addCount = count;
 
-            loop:
-
-            Type itemType = newItem.Item.GetType();
-            for (int i = 0; i < slots.Count; i++)  //Бегаем по инвентарю
+            while (true)
             {
-                if (slots[i].Item.GetType() == itemType) //Проверяем, что тип предмета в слоте равен типу добавляемого
+                Type itemType = newItem.Item.GetType();
+                for (int i = 0; i < slots.Count; i++)  //Бегаем по инвентарю
                 {
-                    int maxCount = slots[i].maxStackCount;
-                    if (slots[i].count < maxCount)
+                    if (slots[i].Item.GetType() == itemType) //Проверяем, что тип предмета в слоте равен типу добавляемого
                     {
-                        int realAddCount = Math.Min(addCount, slots[i].maxStackCount - slots[i].count); //это нужно чтобы не добавить больше максимума стака
-                        slots[i].count += realAddCount;
-                        newItem.count -= realAddCount;
-                        addCount -= realAddCount;
+                        if (slots[i].Item.material == item.Item.material)
+                        {
+                            int maxCount = slots[i].maxStackCount;
+                            if (slots[i].count < maxCount)
+                            {
+                                int realAddCount = Math.Min(addCount, slots[i].maxStackCount - slots[i].count); //это нужно чтобы не добавить больше максимума стака
+                                slots[i].count += realAddCount;
+                                newItem.count -= realAddCount;
+                                addCount -= realAddCount;
+                            }
+                        }
                     }
                 }
-            }
 
-            if (newItem.count > 0 && slots.Count < maxCount && addCount > 0) //это нужно чтобы новые итемы добавлялись
-            {
-                int realAddCount = Math.Min(addCount, newItem.Item.maxCount); //это нужно чтобы не добавить больше максимума стака
-                slots.Add(new(newItem.Item, realAddCount));
-                newItem.count -= realAddCount;
-                addCount -= realAddCount;
+                if (newItem.count > 0 && slots.Count < maxCount && addCount > 0) //это нужно чтобы новые итемы добавлялись
+                {
+                    int realAddCount = Math.Min(addCount, newItem.Item.maxCount); //это нужно чтобы не добавить больше максимума стака
+                    slots.Add(new(newItem.Item, realAddCount));
+                    newItem.count -= realAddCount;
+                    addCount -= realAddCount;
+                }
 
-                goto loop;
+                else
+                {
+                    break;
+                }
             }
 
             return newItem;
@@ -176,6 +185,49 @@ namespace ConsoleAdventure
             return false;
         }
 
+        public bool HasItems(Item item, int count, int material)
+        {
+            int total = 0;
+            foreach (var slot in slots)
+            {
+                if (slot.Item.GetType() == item.GetType() && slot.Item.material == material)
+                {
+                    total += slot.count;
+                    if (total >= count)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool HasItems(Item item, int count, List<MaterialType> materialTypes)
+        {
+            int total = 0;
+            foreach (var slot in slots)
+            {
+                if (slot.Item.GetType() == item.GetType())
+                {
+                    foreach (var materialType in materialTypes)
+                    {
+                        Material material = MaterialSystem.GetMaterial(slot.Item.material);
+                        MaterialType itemMaterialType = material.MaterialType;
+
+                        if (itemMaterialType.GetType() != materialType.GetType())
+                            continue;
+                    }
+
+                    total += slot.count;
+                    if (total >= count)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public void RemoveItems(Item item, int count)
         {
             int total = 0;
@@ -186,6 +238,33 @@ namespace ConsoleAdventure
                 for (int i = 0; i < slots.Count; i++)
                 {
                     if (slots[i].Item.name == item.name)
+                    {
+                        if (slots[i].count <= itemsToRemove)
+                        {
+                            itemsToRemove -= slots[i].count;
+                            slots.RemoveAt(i);
+                            i--; // Уменьшаем индекс, так как элемент был удален
+                        }
+                        else
+                        {
+                            slots[i].count -= itemsToRemove;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void RemoveItems(Item item, int count, int material)
+        {
+            int total = 0;
+
+            if (HasItems(item, count, material))
+            {
+                int itemsToRemove = count;
+                for (int i = 0; i < slots.Count; i++)
+                {
+                    if (slots[i].Item.GetType() == item.GetType() && slots[i].Item.material == item.material)
                     {
                         if (slots[i].count <= itemsToRemove)
                         {

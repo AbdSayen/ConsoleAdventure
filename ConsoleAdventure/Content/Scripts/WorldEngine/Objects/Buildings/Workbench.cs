@@ -17,11 +17,11 @@ namespace ConsoleAdventure.WorldEngine
             BurnType[type] = 1;
         }
 
-        public override void Collapse() => DropItem(new WorkbenchItem());
+        public override void Collapse() => DropItem(new WorkbenchItem(), 1, material);
 
-        public override string GetSymbol() => " ∏";
+        public override string GetSymbol() => GetMaterialSymbol(" ∏");
 
-        public override Color GetColor() => new(94, 61, 38);
+        public override Color GetColor() => GetMaterialColor();
 
         public override void AfterBurning()
         {

@@ -1,4 +1,5 @@
 ﻿using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.Content.Scripts.MaterialLogic;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
@@ -17,15 +18,22 @@ namespace ConsoleAdventure
             AddTypeToMap<WorkbenchItem>();
         }
 
+        public override bool CanApplyMaterial(Material material)
+        {
+            name = Localization.GetTranslation("Materials", material.Name) + " " +
+                   Localization.GetTranslation("Transforms", "Workbench");
+            return true;
+        }
+
         public override CharTexture GetTexture()
         {
-            return new CharTexture().AddLayer("∏", new Color(94, 61, 38));
+            return new CharTexture().AddLayer(GetMaterialSymbol("∏"), GetMaterialColor());
         }
 
         public override Recipe AddRecipe()
         {
             Recipe recipe = new Recipe(new Stack(this, 1));
-            recipe.AddIngredient(new Log(), 5);
+            recipe.AddIngredient(new Log(), 5, true);
 
             return recipe;
         }

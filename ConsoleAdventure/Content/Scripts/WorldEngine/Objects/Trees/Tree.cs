@@ -15,6 +15,12 @@ namespace ConsoleAdventure.WorldEngine
 
         public static StaticData<Type> LogTypes { get; private set; }
 
+        public static StaticData<int> LogMaterials { get; private set; }
+
+        public static StaticData<Range> TrunkLogCounts { get; private set; }
+
+        public static StaticData<int> BranchesLogMaxCounts { get; private set; }
+
         public static StaticData<Type> FruitTypes { get; private set; }
 
         public Tree(Position position, int w) : base(position, (byte)w) { }
@@ -31,6 +37,9 @@ namespace ConsoleAdventure.WorldEngine
             Crowns = new StaticData<string[,]>(new string[0, 0]);
             CrownColors = new StaticData<Color>(Color.White);
             LogTypes = new StaticData<Type>(null);
+            LogMaterials = new StaticData<int>(-1);
+            TrunkLogCounts = new StaticData<Range>(0..0);
+            BranchesLogMaxCounts = new StaticData<int>(0);
             FruitTypes = new StaticData<Type>(null);
         }
 
@@ -41,11 +50,14 @@ namespace ConsoleAdventure.WorldEngine
             int yOffset = (crown.GetLength(1) - 1) / 2;
 
             Type log = LogTypes[type];
+            Range logCounts = TrunkLogCounts[type];
 
-            if (log != null)
+            if (log != null && logCounts.End.Value - logCounts.Start.Value > 0)
             {
                 Item item = (Item)Activator.CreateInstance(log);
-                DropItem(item, 3);
+                int randCount = ConsoleAdventure.rand.Next(logCounts.Start.Value, logCounts.End.Value);
+
+                new Loot(position, w, new() { new Stack(item, randCount, LogMaterials[type]) });
             }
 
             int count = ConsoleAdventure.rand.Next(2, 15);
@@ -56,25 +68,32 @@ namespace ConsoleAdventure.WorldEngine
                     Spawner.Spawn(new Leaves(pos, w));
             }
 
-            int lootCount = ConsoleAdventure.rand.Next(1, 5);
-            for (int i = 0; i < lootCount; i++)
+            Type fruit = FruitTypes[type];
+
+            if (fruit != null)
             {
-                Position pos = new(ConsoleAdventure.rand.Next(position.x - xOffset, position.x + xOffset + 1), ConsoleAdventure.rand.Next(position.y - yOffset, position.y + yOffset + 1));
-
-                int lootType = ConsoleAdventure.rand.Next(0, 3);
-
-                Type fruit = FruitTypes[type];
-
-                if (lootType == 1 && fruit != null)
+                int fruitCount = ConsoleAdventure.rand.Next(1, 3);
+                for (int i = 0; i < fruitCount; i++)
                 {
+                    Position pos = new(ConsoleAdventure.rand.Next(position.x - xOffset, position.x + xOffset + 1),
+                                       ConsoleAdventure.rand.Next(position.y - yOffset, position.y + yOffset + 1));
+
                     Item item = (Item)Activator.CreateInstance(fruit);
-                    DropItem(item);
+                    new Loot(pos, w, new() { new Stack(item, 1) });
                 }
+            }
 
-                if (lootType == 2 && log != null)
+            if (log != null)
+            {
+                int logCount = ConsoleAdventure.rand.Next(0, BranchesLogMaxCounts[type] + 1);
+
+                for (int i = 0; i < logCount; i++)
                 {
+                    Position pos = new(ConsoleAdventure.rand.Next(position.x - xOffset, position.x + xOffset + 1), 
+                                       ConsoleAdventure.rand.Next(position.y - yOffset, position.y + yOffset + 1));
+
                     Item item = (Item)Activator.CreateInstance(log);
-                    DropItem(item);
+                    new Loot(pos, w, new() { new Stack(item, 1, LogMaterials[type]) });
                 }
             }
         }

@@ -410,7 +410,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
             {
                 for (int i = 0; i < recipe.Ingredients.Count; i++)
                 {
-                    inventory.RemoveItems(recipe.Ingredients.ElementAt(i).Key, recipe.Ingredients.ElementAt(i).Value);
+                    inventory.RemoveItems(recipe.Ingredients[i].Item, recipe.Ingredients[i].Count, recipe.Ingredients[i].Item.material);
                 } 
             }
         }
@@ -501,7 +501,10 @@ namespace ConsoleAdventure.Content.Scripts.Player
 
             void Place(PlaceableItem item)
             {
-                SetObject(item.placeType, targetPosition, w);
+                SetObject(item.placeType, targetPosition, w, -1, null, null);
+                world.GetField(targetPosition, DefaultWorldLayer[item.placeType].Value, w).content.ApplyMaterial(item.material);
+
+
                 inventory.RemoveAt(holdItemIndex, 1);
             }
         }

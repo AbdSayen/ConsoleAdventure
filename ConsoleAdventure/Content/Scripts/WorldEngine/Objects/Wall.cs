@@ -17,10 +17,10 @@ namespace ConsoleAdventure.WorldEngine
             IsObstacle[type] = true;
         }
 
-        public override void Collapse() => DropItem(new WallItem());
+        public override void Collapse() => DropItem(new WallItem(), 1, material);
 
-        public override string GetSymbol() => "##";
+        public override string GetSymbol() => GetMaterialSymbol("##");
 
-        public override Color GetColor() => Color.White;
+        public override Color GetColor() => GetMaterialColor();
     }
 }

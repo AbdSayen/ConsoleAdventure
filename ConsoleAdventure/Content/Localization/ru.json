@@ -99,6 +99,12 @@
 
   },
 
+  "Materials": {
+    "SpruceWood": "ель",
+    "PineWood": "сосна",
+    "AppleWood": "яблоня"
+  },
+
   "Events": {
     "Eating": "было съедено",
     "DeadPlayer": "ю дед"

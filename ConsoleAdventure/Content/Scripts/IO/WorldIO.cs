@@ -1,5 +1,6 @@
 ﻿using CaModLoaderAPI;
 using ConsoleAdventure.CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts.MaterialLogic;
 using ConsoleAdventure.Content.Scripts.Player;
 using ConsoleAdventure.Content.Scripts.Settings;
 using ConsoleAdventure.Content.Scripts.UI;
@@ -9,6 +10,7 @@ using ConsoleAdventure.WorldEngine.Levels;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -295,6 +297,12 @@ namespace ConsoleAdventure.Content.Scripts.IO
             List<byte> transformsDataZ = new();
             List<byte> transformsDataW = new();
 
+            List<int> transformsMaterials = new();
+            List<int> transformsMaterialsX = new();
+            List<int> transformsMaterialsY = new();
+            List<byte> transformsMaterialsZ = new();
+            List<byte> transformsMaterialsW = new();
+
             for (int i = 0; i < world.chunks.GetLength(0); i++)
             {
                 for (int j = 0; j < world.chunks.GetLength(1); j++)
@@ -303,6 +311,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                     if (chunk is UnloadedChunk)
                     {
                         List<TransformDataInChunk> data = ((UnloadedChunk)world.chunks[i, j]).data;
+                        List<TransformMaterialInChunk> materials = ((UnloadedChunk)world.chunks[i, j]).materials;
 
                         for (int k = 0; k < data.Count; k++)
                         {
@@ -312,9 +321,18 @@ namespace ConsoleAdventure.Content.Scripts.IO
                             transformsDataW.Add(data[k].w);
                             transformsData.Add(data[k].data);
                         }
+
+                        for (int k = 0; k < materials.Count; k++)
+                        {
+                            transformsMaterialsX.Add(materials[k].position.x);
+                            transformsMaterialsY.Add(materials[k].position.y);
+                            transformsMaterialsZ.Add(materials[k].z);
+                            transformsMaterialsW.Add(materials[k].w);
+                            transformsMaterials.Add(materials[k].material);
+                        }
                     }
 
-                    else if (chunk is LoadedChunk)
+                    else if (chunk is LoadedChunk && chunk.IsUpdated)
                     { 
                         for (int k = 0; k < Chunk.maxDeep; k++)
                         {
@@ -329,6 +347,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
                                         if (field?.content != null)
                                         {
                                             object data = field.content.SaveData();
+                                            int material = field.content.material;
 
                                             if (data != null)
                                             {
@@ -337,6 +356,15 @@ namespace ConsoleAdventure.Content.Scripts.IO
                                                 transformsDataZ.Add(field.content.worldLayer);
                                                 transformsDataW.Add(field.content.w);
                                                 transformsData.Add(data);
+                                            }
+
+                                            if (material >= 0)
+                                            {
+                                                transformsMaterialsX.Add(field.content.position.x);
+                                                transformsMaterialsY.Add(field.content.position.y);
+                                                transformsMaterialsZ.Add(field.content.worldLayer);
+                                                transformsMaterialsW.Add(field.content.w);
+                                                transformsMaterials.Add(material);
                                             }
                                         }
                                     }
@@ -355,6 +383,12 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["TransformsDataY"] = transformsDataY.ToArray();
             tags["TransformsDataZ"] = transformsDataZ.ToArray();
             tags["TransformsDataW"] = transformsDataW.ToArray();
+
+            tags["TransformsMaterials"] = transformsMaterials.ToArray();
+            tags["TransformsMaterialsX"] = transformsMaterialsX.ToArray();
+            tags["TransformsMaterialsY"] = transformsMaterialsY.ToArray();
+            tags["TransformsMaterialsZ"] = transformsMaterialsZ.ToArray();
+            tags["TransformsMaterialsW"] = transformsMaterialsW.ToArray();
 
             int EntityCount = world.entities.Count;
             int[] EntityX = new int[EntityCount];
@@ -389,6 +423,7 @@ namespace ConsoleAdventure.Content.Scripts.IO
         public static void InitContent()
         {
             Transform.ClearTypeMap();
+            MaterialSystem.Init();
 
             Light.Clear();
 
@@ -610,6 +645,24 @@ namespace ConsoleAdventure.Content.Scripts.IO
                                                      transformsDataZ[i], 
                                                      transformsDataW[i], 
                                                      transformsData[i]));
+                    }
+                }
+
+                int[] transformsMaterials = tags.SafelyGet("TransformsMaterials", new int[0]);
+                int[] transformsMaterialsX = tags.SafelyGet("TransformsMaterialsX", new int[0]);
+                int[] transformsMaterialsY = tags.SafelyGet("TransformsMaterialsY", new int[0]);
+                byte[] transformsMaterialsZ = tags.SafelyGet("TransformsMaterialsZ", new byte[0]);
+                byte[] transformsMaterialsW = tags.SafelyGet("TransformsMaterialsW", new byte[0]);
+
+                if (transformsMaterials?.Length > 0)
+                {
+                    for (int i = 0; i < transformsMaterials.Length; i++)
+                    {
+                        world.ApplyMaterialAnyway(new((short)transformsMaterialsX[i],
+                                                      (short)transformsMaterialsY[i],
+                                                      transformsMaterialsZ[i],
+                                                      transformsMaterialsW[i],
+                                                      transformsMaterials[i]));
                     }
                 }
 

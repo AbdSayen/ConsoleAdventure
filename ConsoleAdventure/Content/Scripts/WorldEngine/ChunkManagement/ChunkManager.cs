@@ -142,6 +142,7 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
                     UnloadedChunk uchunk = (UnloadedChunk)chunk;
                     short[,,,] types = uchunk.fields;
                     List<TransformDataInChunk> data = uchunk.data;
+                    List<TransformMaterialInChunk> materials = uchunk.materials;
 
                     lock (world.chunks[xChunk, yChunk].Locking)
                     {
@@ -179,6 +180,21 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
                             if (transform != null)
                             {
                                 transform.LoadData(currentData.data);
+                            }
+                        }
+                    }
+
+                    for (int i = 0; i < materials.Count; i++)
+                    {
+                        lock (world.chunks[xChunk, yChunk].Locking)
+                        {
+                            var currentMaterial = materials[i];
+
+                            Transform transform = world.GetField(currentMaterial.position.x, currentMaterial.position.y, currentMaterial.z, currentMaterial.w)?.content;
+
+                            if (transform != null)
+                            {
+                                transform.ApplyMaterial(currentMaterial.material);
                             }
                         }
                     }
@@ -234,12 +250,16 @@ namespace ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement
                                         ((UnloadedChunk)world.chunks[xChunk, yChunk]).fields[x, y, z, w] = type.Value;
 
                                         object data = fields[x, y, z, w]?.content?.SaveData();
+                                        int? material = fields[x, y, z, w]?.content?.material;
 
                                         short X = (short)(x + xChunk * Chunk.Size);
                                         short Y = (short)(y + yChunk * Chunk.Size);
 
                                         if (data != null)
                                             ((UnloadedChunk)world.chunks[xChunk, yChunk]).data.Add(new(X, Y, (byte)z, (byte)w, data));
+
+                                        if (material.HasValue && material != -1)
+                                            ((UnloadedChunk)world.chunks[xChunk, yChunk]).materials.Add(new(X, Y, (byte)z, (byte)w, material.Value));
                                     }
                                 }
                             }

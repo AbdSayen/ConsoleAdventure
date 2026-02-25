@@ -95,6 +95,12 @@
     "AppleTree": "apple tree"
   },
 
+  "Materials": {
+    "SpruceWood": "spruce wood",
+    "PineWood": "pine wood",
+    "AppleWood": "apple wood"
+  },
+
   "Events": {
     "Eating": "was eaten",
     "DeadPlayer": "you dead"

@@ -540,6 +540,29 @@ namespace ConsoleAdventure.WorldEngine
             }
         }
 
+        public void ApplyMaterialAnyway(TransformMaterialInChunk material)
+        {
+            int x = material.position.x;
+            int y = material.position.y;
+
+            Chunk chunk = GetChunk(x, y, out int localX, out int localY);
+            if (chunk != null)
+            {
+                if (chunk is UnloadedChunk)
+                    ((UnloadedChunk)chunk).materials.Add(material);
+
+                else if (chunk is LoadedChunk)
+                {
+                    Transform transform = GetField(x, y, material.z, material.w)?.content;
+
+                    if (transform != null)
+                    {
+                        transform.ApplyMaterial(material.material);
+                    }
+                }
+            }
+        }
+
         public Field GetField(Position position, int layer, int w)
         {
             return GetField(position.x, position.y, layer, w);

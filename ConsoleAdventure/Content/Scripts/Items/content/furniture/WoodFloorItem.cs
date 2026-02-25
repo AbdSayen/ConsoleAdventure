@@ -27,7 +27,7 @@ namespace ConsoleAdventure
             Recipe recipe = new Recipe(new Stack(this, 2));
             recipe.AddIngredient(new Log(), 1);
             recipe.AddStation((int)VanillaTransforms.workbench);
-            return recipe;
+            return null;//recipe;
         }
     }
 }

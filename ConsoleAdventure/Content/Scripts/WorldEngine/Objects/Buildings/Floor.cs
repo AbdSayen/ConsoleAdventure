@@ -18,10 +18,10 @@ namespace ConsoleAdventure.WorldEngine
             DefaultWorldLayer[type] = World.FloorLayerId;
         }
 
-        public override void Collapse() => DropItem(new FloorItem());
+        public override void Collapse() => DropItem(new FloorItem(), 1, material);
 
-        public override string GetSymbol() => " .";
+        public override string GetSymbol() => GetMaterialSymbol(" .");
 
-        public override Color GetColor() => Color.Gray;
+        public override Color GetColor() => GetMaterialColor();
     }
 }

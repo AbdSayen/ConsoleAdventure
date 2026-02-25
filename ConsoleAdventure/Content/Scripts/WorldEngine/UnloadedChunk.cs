@@ -10,6 +10,7 @@ namespace ConsoleAdventure.WorldEngine
     {
         public short[,,,] fields;
         public List<TransformDataInChunk> data = new();
+        public List<TransformMaterialInChunk> materials = new();
 
         public UnloadedChunk()
         {
@@ -31,6 +32,23 @@ namespace ConsoleAdventure.WorldEngine
             this.z = z;
             this.w = w;
             this.data = data;
+        }
+    }
+
+    public struct TransformMaterialInChunk
+    {
+        public Position position = new();
+        public byte z;
+        public byte w;
+        public int material;
+
+        public TransformMaterialInChunk(short x, short y, byte z, byte w, int material)
+        {
+            position.x = x;
+            position.y = y;
+            this.z = z;
+            this.w = w;
+            this.material = material;
         }
     }
 }

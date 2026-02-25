@@ -13,11 +13,11 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
-        public override void Collapse() => DropItem(new TorchItem());
+        public override void Collapse() => DropItem(new TorchItem(), 1, material);
 
-        public override string GetSymbol() => " |";
+        public override string GetSymbol() => GetMaterialSymbol(" |");
 
-        public override Color GetColor() => new(94, 61, 38);
+        public override Color GetColor() => GetMaterialColor();
 
         float timer;
         public override void OnTheScreen()

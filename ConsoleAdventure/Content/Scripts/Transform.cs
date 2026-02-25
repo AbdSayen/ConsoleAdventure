@@ -4,16 +4,11 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using ConsoleAdventure.Content.Scripts.Player;
-using System.Reflection;
-using System.Text;
-using System.DirectoryServices;
-using ConsoleAdventure.Settings;
-using System.CodeDom;
-using SharpDX.Direct2D1;
 using System.Linq;
-using ConsoleAdventure.Content.Scripts.IO;
-using System.ComponentModel;
 using CaModLoaderAPI;
+using ConsoleAdventure.Content.Scripts.MaterialLogic;
+using ModifyColor = System.Func<ConsoleAdventure.Transform, ConsoleAdventure.Item, ConsoleAdventure.Content.Scripts.SmartColor>;
+using ModifySymbol = System.Func<ConsoleAdventure.Transform, ConsoleAdventure.Item, string>;
 
 namespace ConsoleAdventure
 {
@@ -26,6 +21,8 @@ namespace ConsoleAdventure
         private static Type[] typeMapping = new Type[256];
 
         public byte type;
+
+        public /*short*/ int material = -1;
 
         public byte degreeDestruction = 0;  
 
@@ -49,6 +46,8 @@ namespace ConsoleAdventure
 
         public static StaticData<byte> BurnType { get; private set; }
 
+        //public static StaticData<>
+
         /// <summary>
         /// Определяет слой, на котором будет находиться этот трансформ.
         /// <br/><br/>Всего их 4: 
@@ -67,6 +66,52 @@ namespace ConsoleAdventure
         /// <br/><br/> Значение по умолчанию: <seealso cref="World.BlocksLayerId"/>
         /// </summary>
         public static StaticData<byte?> DefaultWorldLayer { get; private set; }
+
+        public Material Material => MaterialSystem.GetMaterial(material);
+
+        public bool ApplyMaterial(int type)
+        {
+            Material material = MaterialSystem.GetMaterial(type);
+            if (material == null) return false;
+
+            if (CanApplyMaterial(material))
+                this.material = type;
+
+            return true;
+        }
+
+        public bool ApplyMaterial(string name)
+        {
+            Material material = MaterialSystem.GetMaterial(name);
+            if (material == null) return false;
+
+            if (CanApplyMaterial(material))
+                this.material = material.Type;
+
+            return true;
+        }
+
+        protected Color GetMaterialColor()
+        {
+            return (Material?.ModifyColor?.Invoke(this, null))?.Color ?? Color.Magenta;
+        }
+
+        protected string GetMaterialSymbol(string defaultSymbol)
+        {
+            return Material?.ModifySymbol?.Invoke(this, null) ?? defaultSymbol;
+        }
+
+        /// <summary>
+        /// Вызывается при применении материала к предмету. Нужно для изменения 
+        /// параметров предмета в зависимости от материала и для кастомных правил 
+        /// ограничия применения их. 
+        /// </summary>
+        /// <param name="material"></param>
+        /// <returns></returns>
+        public virtual bool CanApplyMaterial(Material material)
+        {
+            return true;
+        }
 
         protected Transform(Position position, byte w)
         {
@@ -420,17 +465,40 @@ namespace ConsoleAdventure
             }
         }
 
-        public void DropItem(Item item, int count = 1)
+        public void DropItem(Item item, int count = 1, int material = -1)
         {
-            new Loot(position, w, new List<Stack>() { new Stack(item, count) });
+            new Loot(position, w, new List<Stack>() { new Stack(item, count, material) });
         }
 
-        protected T GetVariation<T>(T[] valuesMap)
+        public T GetVariation<T>(T[] valuesMap)
         {
             if (valuesMap == null || valuesMap.Length == 0) 
                 return default(T);
 
-            return valuesMap[Utils.HashNoise(position.x, position.y, valuesMap.Length - 1)];
+            return valuesMap[Utils.HashNoise(position.x, position.y, valuesMap.Length)];
+        }
+
+        public Material CreateMaterial(MaterialType materialType, string name, ModifyColor modifyColor, ModifySymbol modifySymbol = null)
+        {
+            Mod mod = null;
+            string modName = GetType().Assembly.GetName().Name;
+            int modIndex = CaModLoader.GetActiveMods().FindIndex(mod => mod.modName == modName);
+
+            if (modIndex > -1) 
+                mod = CaModLoader.GetActiveMods()[modIndex];
+
+            if (MaterialSystem.Materials.ToList().FindIndex(m => m.Value.FromTransformType == type) > -1) 
+                return null;
+
+            Material material = MaterialSystem.AddMaterial(mod, materialType, name, modifyColor, modifySymbol);
+            material.FromTransformType = type;
+
+            return material;
+        }
+
+        public Material CreateMaterial(MaterialType materialType, ModifyColor modifyColor, ModifySymbol modifySymbol = null)
+        {
+            return CreateMaterial(materialType, GetType().Name, modifyColor, modifySymbol);
         }
     }
 }

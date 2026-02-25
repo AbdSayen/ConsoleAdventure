@@ -9,17 +9,15 @@ using System.Threading.Tasks;
 
 namespace ConsoleAdventure.Content.Scripts.Debug.Commands
 {
-    public class GetItem: Command
+    public class Spawn: Command
     {
-        public GetItem() 
+        public Spawn() 
         {
-            Name = "item";
-            Description = "gives the player \nan item";
+            Name = "spawn";
+            Description = "spawn entity";
             Arguments = new List<string>()
             {
                 "name",
-                "count",
-                "namespace"
             };
         }
 
@@ -28,38 +26,35 @@ namespace ConsoleAdventure.Content.Scripts.Debug.Commands
             try
             {
                 string name = GetStringArg(args, "name");
-                int count = GetIntArg(args, "count");
-                string namespace_ = "ConsoleAdventure";
-                if (args.Length >= 3)
-                    namespace_ = GetStringArg(args, "namespace");
+                string namespace_ = "ConsoleAdventure.Content.Scripts";
 
                 try
                 {
-                    Type[] type = new Type[4] 
+                    Type[] type = new Type[2] 
                     { 
                         CaModLoader.GetTypeFromAnyMod(namespace_ + "." + name),
-                        CaModLoader.GetTypeFromAnyMod(namespace_ + "." + name + "Item"),
                         CaModLoader.GetTypeFromAnyMod(name),
-                        CaModLoader.GetTypeFromAnyMod(name + "Item")
                     };
 
                     for (int i = 0; i < type.Length; i++)
                     {
-                        if (type[i] != null && type[i].IsSubclassOf(typeof(Item)))
+                        if (type[i] != null && type[i].IsSubclassOf(typeof(Entity)))
                         {
-                            if (count < 1) count = 1;
-
-                            Item item = (Item)Activator.CreateInstance(type[i]);
                             if (id == -2) id = NetworkManager.Id;
                             if (id == -1) id = 0;
                             Player.Player pl = ConsoleAdventure.world.players[id];
-                            pl.inventory.PickUpItems(new List<Stack>() { new Stack(item, count) });
+                            Entity entity = (Entity)Activator.CreateInstance(type[i], new object[] { pl.position + new Position(0, 1), pl.w, null });
+                            Spawner.Spawn(entity);
+
                             break;
                         }
                     }
                 }
 
-                catch (Exception) { }
+                catch (Exception) 
+                { 
+                
+                }
             }
             catch 
             {
