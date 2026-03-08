@@ -1,4 +1,5 @@
-﻿using ConsoleAdventure.Content.Scripts.InputLogic;
+﻿using ConsoleAdventure.Content.Scripts.Audio;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
 using ConsoleAdventure.Content.Scripts.UI.System.Containers;
 using Microsoft.Xna.Framework;
@@ -34,24 +35,28 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
         public void BackToMainMenu(UIContainer currentMenu)
         {
             currentMenu.Hide();
-            currentMenu.OnDefocus();
-            mainButtonsContainer.OnFocus();
+            FocusManager.SetFocus(mainButtonsContainer);
             State = MenuState.mainScreen;
         }
 
         public void Relocalize()
         {
             CreateMenu();
-            
-            mainButtonsContainer.OnDefocus();
 
             settingsContainer.Show();
-            settingsContainer.OnFocus();
+            FocusManager.SetFocus(settingsContainer);
         }
 
         public MainMenu() : base(new(0, 0))
         {
             CreateMenu();
+        }
+
+        public void OpenInformationPanel(string name, string text, Point? pos = null, UIContainer container = null)
+        {
+            UIInformationPanel panel = new UIInformationPanel(pos ?? new Point(1920 / 2, 1080 / 2), new Point(800, 600), name, text, Color.Gray, returnControlTo: container);
+            AddElement(panel);
+            FocusManager.SetFocus(panel);
         }
 
         public void CreateMenu()
@@ -66,7 +71,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             AddElement(new UIText(TextAssets.logo, Color.White, new Point(1920 / 2, 20), anchor: Anchor.Top));
             AddElement(new UIText(new FormatString($" [color:999999=\"T\"][color:dddddd=\"h\"][color:999999=\"e\"] [color:999999=\"Co\"][color:dddddd=\"nso\"][color:999999=\"le\"] [color:999999=\"Ad\"][color:dddddd=\"ventu\"][color:999999=\"re\"] [item:{randomItem}]"), Color.White, new Point(0, 0), anchor: Anchor.TopLeft));
 
-            mainButtonsContainer = new VListContainer(new(1920 / 2, 220), new(300, 20), Anchor.Top);
+            mainButtonsContainer = new VListContainer(new(1920 / 2, 220), new(300, 20), Anchor.Top, 0);
 
             #region world container
             WorldPanelsContainer worldPanelsContainer = new WorldPanelsContainer(new(1920 / 2, 19 * 4 + 9 * 30));
@@ -98,9 +103,15 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             settingsContainer.onBackButtonPressed += (UIContainer c) => BackToMainMenu(c);
 
             settingsContainer.AddElement(new UILanguageButton());
-            settingsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "About"), Color.White, Color.Yellow, new()));
-            settingsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Control"), Color.White, Color.Yellow, new()));
-            settingsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "MusicVolume") + "100%", Color.White, Color.Yellow, new()));
+            ((UIButton)settingsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "About"), Color.White, Color.Yellow, new()))).onClick = (UIButton btn) =>
+            {
+                OpenInformationPanel(TextAssets.About, TextAssets.AboutGame, null, settingsContainer);
+            };
+            ((UIButton)settingsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Control"), Color.White, Color.Yellow, new()))).onClick = (UIButton btn) =>
+            {
+
+            };
+            settingsContainer.AddElement(new UIMusicVolumeButton());
 
             settingsContainer.Hide();
             AddElement(settingsContainer.SetName("SettingsContainer"));
@@ -110,17 +121,15 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
             ((UIButton)mainButtonsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Play"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top))).onClick = (UIButton btn) => {
                 State = MenuState.worldMenu;
                 ConsoleAdventure.display = new Display(ConsoleAdventure.world);
-                mainButtonsContainer.OnDefocus();
-
+                
                 worldPanelsContainer.Show();
-                worldPanelsContainer.OnFocus();
+                FocusManager.SetFocus(worldPanelsContainer);
             };
             ((UIButton)mainButtonsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Settings"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top))).onClick = (UIButton btn) => {
                 State = MenuState.settings;
-                mainButtonsContainer.OnDefocus();
 
                 settingsContainer.Show();
-                settingsContainer.OnFocus();
+                FocusManager.SetFocus(settingsContainer);
             };
             ((UIButton)mainButtonsContainer.AddElement(new UIButton(Localization.GetTranslation("UI", "Mods"), Color.White, Color.Yellow, Point.Zero, anchor: Anchor.Top))).onClick = (UIButton btn) => {
                 State = MenuState.mods;
@@ -129,7 +138,7 @@ namespace ConsoleAdventure.Content.Scripts.UI.System.Menus
                 ConsoleAdventure.isExit = true;
             };
 
-            mainButtonsContainer.OnFocus();
+            FocusManager.SetFocus(mainButtonsContainer);
             AddElement(mainButtonsContainer.SetName("MainButtonsContainer"));
 
             ConsoleAdventure.progressBar = (UIProgressBar)AddElement(new UIProgressBar(50, new(1920 / 2, 1080 / 2 - 120), Anchor.Top));

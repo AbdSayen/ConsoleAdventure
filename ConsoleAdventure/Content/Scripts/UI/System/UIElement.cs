@@ -173,12 +173,12 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         public virtual void OnFocus()
         {
-            
+            hovered = true;
         }
 
         public virtual void OnDefocus()
         {
-
+            hovered = false;
         }
 
         public virtual void Update()

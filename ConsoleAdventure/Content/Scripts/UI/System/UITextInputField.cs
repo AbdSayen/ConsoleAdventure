@@ -114,8 +114,8 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
         }
 
         int timer;
-        int offs = 4;
-        int offsBottom = 5; // between hint and text
+        int offs = 4; // borders offset
+        int offsBottom = 5; // between hint and original text
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
             if (fieldContent == "" && tooltip != "")

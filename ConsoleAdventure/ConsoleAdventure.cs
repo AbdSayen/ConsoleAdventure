@@ -248,6 +248,9 @@ namespace ConsoleAdventure
             WorldIO.InitContent();
 
             CaModLoader.RunMods();
+
+            mainUIgroup = new UIGroup(new(0, 0));
+            mainUIgroup.AddElement(new MainMenu());
         }
 
         protected override void LoadContent()
@@ -299,9 +302,6 @@ namespace ConsoleAdventure
             {
                 return c1.R == c2.R && c1.G == c2.G && c1.B == c2.B;
             }
-
-            mainUIgroup = new UIGroup(new(0, 0));
-            mainUIgroup.AddElement(new MainMenu());
         }
 
         protected override void UnloadContent()

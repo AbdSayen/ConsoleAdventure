@@ -45,18 +45,18 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
 
         public UIText(string text, Color color, Point screenPosition, Point size = new(), Align align = Align.Left, Anchor anchor = Anchor.Center, bool sizeByContent = true, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
+            SizeByContent = sizeByContent;
             this.text = new FormatString(text);
             this.color = color;
             this.align = align;
-            SizeByContent = sizeByContent;
         }
 
         public UIText(FormatString ftext, Color color, Point screenPosition, Point size = new(), Align align = Align.Left, Anchor anchor = Anchor.Center, bool sizeByContent = true, int zOrder = 0) : base(screenPosition, size, anchor, zOrder)
         {
+            SizeByContent = sizeByContent;
             text = ftext;
             this.color = color;
             this.align = align;
-            SizeByContent = sizeByContent;
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)

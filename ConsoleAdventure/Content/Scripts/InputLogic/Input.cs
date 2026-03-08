@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework.Input;
+using System.Runtime.InteropServices;
 
 namespace ConsoleAdventure.Content.Scripts.InputLogic;
 
@@ -96,5 +97,31 @@ public static class Input
     public static bool OnClick(Key key)
     {
         return IsKeyDown(key) && !IsOldKeyDown(key);
+    }
+
+
+    [DllImport("user32.dll")]
+    private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
+
+    private const uint KEYEVENTF_KEYUP = 0x0002;
+
+    /// <summary>
+    /// Програмно отжать кнопку
+    /// </summary>
+    /// <param name="key">Кнопка, которую нужно отжать</param>
+    public static void ReleaseKey(Keys key)
+    {
+        byte vkCode = (byte)(int)key;
+
+        keybd_event(vkCode, 0, KEYEVENTF_KEYUP, 0);
+    }
+
+    /// <summary>
+    /// Програмно отжать кнопку
+    /// </summary>
+    /// <param name="key">Кнопка, которую нужно отжать</param>
+    public static void ReleaseKey(Key key)
+    {
+        ReleaseKey(key.key);
     }
 }
