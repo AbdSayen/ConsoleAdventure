@@ -6,6 +6,7 @@ using ConsoleAdventure.CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Content.Scripts.MaterialLogic;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;

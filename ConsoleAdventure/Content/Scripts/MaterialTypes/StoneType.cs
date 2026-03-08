@@ -41,6 +41,5 @@ namespace ConsoleAdventure.Content.Scripts.MaterialTypes
                 return null;
             };
         }
-   
     }
 }

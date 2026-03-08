@@ -23,11 +23,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement;
+using System.Diagnostics;
 
 namespace ConsoleAdventure
 {
     public class ConsoleAdventure : Game
     {
+        public static Stopwatch TotalRenderingTimer { get; private set; }
+
+        public static Stopwatch TotalUpdatingTimer { get; private set; }
+
         public static GraphicsDeviceManager _graphics;
         public static SpriteBatch _spriteBatch;
         private static SpriteFont font;
@@ -211,6 +216,7 @@ namespace ConsoleAdventure
 
             world = new World("empty", 0, 16, false, false);
             Main.InitTransformsTypes(Main.vanillaTypesInitialized);
+            world.materials = new();
             WorldIO.InitContent();
 
             CaModLoader.RunMods();
@@ -274,6 +280,9 @@ namespace ConsoleAdventure
 
         protected override void Update(GameTime gameTime)
         {
+            TotalUpdatingTimer = new Stopwatch();
+            TotalUpdatingTimer.Start();
+
             //FontEditor.ModifyChars(Content);
             WindowActive = IsActive;
 
@@ -339,6 +348,8 @@ namespace ConsoleAdventure
 
             Timer++;
 
+            TotalUpdatingTimer.Stop();
+
             base.Update(gameTime);
         }
 
@@ -346,6 +357,9 @@ namespace ConsoleAdventure
         int frame;
         protected override void Draw(GameTime gameTime)
         {
+            TotalRenderingTimer = new Stopwatch();
+            TotalRenderingTimer.Start();
+
             GraphicsDevice.Clear(bg);
             CaModLoader.PreDrawMods(_spriteBatch, gameTime);
 
@@ -405,6 +419,15 @@ namespace ConsoleAdventure
             }
 
             CaModLoader.PostDrawMods(_spriteBatch, gameTime);
+
+            TotalRenderingTimer.Stop();
+
+            if (Display.IsTimersShowed && InWorld)
+            {
+                _spriteBatch.Begin();
+                _spriteBatch.DrawString(font, display.DisplayTimers(), new Vector2(1110, world.GetLocalPlayer().isChestOpen ? 400 : 10), Color.Gray);
+                _spriteBatch.End();
+            }
 
             frameCounter++;
             base.Draw(gameTime);

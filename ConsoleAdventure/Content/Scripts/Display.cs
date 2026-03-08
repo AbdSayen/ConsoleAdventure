@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Xml;
 
 namespace ConsoleAdventure
@@ -36,6 +37,8 @@ namespace ConsoleAdventure
 
         private float worldScreenProgress;
 
+        public static bool IsTimersShowed { get; set; }
+
         public Display(World world)
         {
             this.world = world;
@@ -47,6 +50,21 @@ namespace ConsoleAdventure
             hpBar = new Bar(new Vector2(0, 0), Color.Red, 20);
             hpBar.Position = barsPos + new Vector2(27, 0);
             hpBar.baseSymbol = '∙';
+        }
+
+        public string DisplayTimers()
+        {
+            return
+                "Timers:\n\n" +
+                $"Total Updating:      {ConsoleAdventure.TotalUpdatingTimer.ElapsedMilliseconds.ToString() ?? "?"} ms\n" +
+                "\n" + 
+                $"Total Rendering:     {ConsoleAdventure.TotalRenderingTimer.ElapsedMilliseconds.ToString() ?? "?"} ms\n" +
+                $"Lighting:            {Light.UpdateTimer.ElapsedMilliseconds.ToString() ?? "?"} ms\n" +
+                $"Loading View Chunks: {Renderer.LoadingViewChunksTimer.ElapsedMilliseconds.ToString() ?? "?"} ms\n" +
+                $"First Drawing Pass:  {Renderer.FirstPassTimer.ElapsedMilliseconds.ToString() ?? "?"} ms\n" +
+                $"Rendering T-forms:   {Renderer.TransformRenderTimer.ElapsedMilliseconds.ToString() ?? "?"} ms\n" +
+                $"String Painting:     {Renderer.StringPaintRenderTimer.ElapsedMilliseconds.ToString() ?? "?"} ms\n"
+                ;
         }
 
         public string DisplayInfo()

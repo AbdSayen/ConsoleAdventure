@@ -14,7 +14,7 @@ namespace ConsoleAdventure.WorldEngine
             Initialize();
         }
 
-        public override void Collapse() => DropItem(new FurnaceItem(), material);
+        public override void Collapse() => DropItem(new FurnaceItem(), 1, material);
 
         public override string GetSymbol() => "⌂≡";
 

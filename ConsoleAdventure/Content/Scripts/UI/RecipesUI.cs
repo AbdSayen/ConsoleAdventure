@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConsoleAdventure.Content.Scripts.MaterialLogic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -6,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using ConsoleAdventure.Content.Scripts.InputLogic;
 
 namespace ConsoleAdventure.Content.Scripts.UI
 {
@@ -47,84 +50,85 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 {
                     Recipe recipe = ConsoleAdventure.recipes[i].Copy();
 
+                    Player.Player player = ConsoleAdventure.world.GetLocalPlayer();
+
+                    List<Stack> materialSources = new();
+
+                    for (int j = 0; j < player.inventory.slots.Count; j++)
+                    {
+                        Stack item = player.inventory.slots[j];
+                        int? material = item?.Item?.material;
+
+                        if (material > -1 && material < MaterialSystem.Materials.Count)
+                        {
+                            materialSources.Add(item);
+                        }
+                    }
+
                     if (recipe.IsAvailable() || ConsoleAdventure.GodMode)
                     {
-                        Player.Player player = ConsoleAdventure.world.GetLocalPlayer();
+                        List<(Stack item, int ingridient)> usedSources = new();
 
-                        HashSet<(int type, string name)> addedRecipes = new();
-
-                        for (int m = 0; m < player.inventory.slots.Count; m++)
+                        for (int j = 0; j < recipe.Ingredients.Count; j++)
                         {
-                            bool found = false;
+                            Ingredient ingredient = recipe.Ingredients[j];
+                            Item item = ingredient.Item;
 
-                            Dictionary<int, Ingredient> usedMaterials = new();
-
-                            for (int j = 0; j < recipe.Ingredients.Count; j++)
+                            List<Stack> stacks = materialSources.FindAll(i =>
                             {
-                                if (recipe.Ingredients[j].AvailableMaterial == null)
-                                {
-                                    usedMaterials.Add(j, recipe.Ingredients[j]);
-                                }
-                            }
+                                return i.Item.GetType() == item.GetType(); //&& i.Item.material == item.material;
+                            });
 
-                            int usedMaterialsCount = usedMaterials.Count;
-
-                            Dictionary<int, Ingredient> modified = new();
-
-                            for (int j = m; j < player.inventory.slots.Count; j++)
+                            for (int k = 0; k < stacks.Count; k++)
                             {
-                                Stack item = player.inventory.slots[j];
-
-                                for (int k = 0; k < usedMaterials.Count; k++)
+                                int index = usedSources.FindIndex(i => 
                                 {
-                                    var ingredient = usedMaterials.ElementAt(k);
-                                    Ingredient newIngredient = ingredient.Value.Copy();
+                                    return i.item.Item.GetType() == stacks[k].Item.GetType() &&
+                                    i.item.Item.material == stacks[k].Item.material;
+                                });
 
-                                    if (item.Item.GetType() == ingredient.Value.Item.GetType())
-                                    {
-                                        newIngredient.Item.material = item.Item.material;
-                                        modified.Add(ingredient.Key, newIngredient);
-                                        usedMaterials.Remove(ingredient.Key);
-
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (found && modified.Count == usedMaterialsCount)
-                            {
-                                Recipe modifyRecipe = ConsoleAdventure.recipes[i].Copy();
-
-                                for (int j = 0; j < modified.Count; j++)
-                                {
-                                    var modify = modified.ElementAt(j);
-                                    modifyRecipe.Ingredients[modify.Key] = modify.Value;
-                                }
-
-                                if (modifyRecipe.InheritedMaterial > -1)
-                                {
-                                    modifyRecipe.OutItem.Item.ApplyMaterial(modifyRecipe.Ingredients[modifyRecipe.InheritedMaterial].Item.material);
-                                }
-
-                                string recipeName = modifyRecipe.OutItem.GetType().FullName + "|" + i + "|" + (modifyRecipe.OutItem.Item.Material?.Name ?? "None");
-                                int recipeType = i;
-
-                                if (!addedRecipes.Contains((recipeType, recipeName)))
-                                {
-                                    if (modifyRecipe.IsExistItemMaterials())
-                                    {
-                                        modifyRecipe.IDName = recipeName;
-                                        ConsoleAdventure.availableRecipes.Add(modifyRecipe);
-                                        
-                                        addedRecipes.Add((recipeType, recipeName));
-                                    }
-                                }
+                                if (index > -1) usedSources[index].item.count += stacks[k].count;
+                                else usedSources.Add((stacks[k].Copy(), j));
                             }
                         }
-                    
+                        
+                        if (usedSources.Count <= 0 || usedSources == null)
+                        {
+                            Recipe newRecipe = recipe.Copy();
+                            newRecipe.IDName = newRecipe.GetNewNameID(i);
 
-                        //ConsoleAdventure.availableRecipes.Add(recipe);
+                            ConsoleAdventure.availableRecipes.Add(newRecipe);
+                        }
+
+                        else
+                        {
+                            Dictionary<int, List<Stack>> splintUsed = new();
+                            
+                            for (int j = 0; j < usedSources.Count; j++)
+                            {
+                                var used = usedSources[j];
+
+                                if (splintUsed.ContainsKey(used.ingridient))
+                                {
+                                    splintUsed[used.ingridient].Add(used.item);
+                                }
+
+                                else
+                                {
+                                    splintUsed.Add(used.ingridient, new() { used.item });
+                                }
+                            }
+
+                            try
+                            {
+                                AddMaterialRecipes(splintUsed, recipe, i);
+                            }
+
+                            catch(Exception ex)
+                            {
+                                ConsoleAdventure.logger.AddException(ex);
+                            }
+                        }
                     }
                 }
 
@@ -138,12 +142,74 @@ namespace ConsoleAdventure.Content.Scripts.UI
                 }
             }
 
-            if (!ConsoleAdventure.kstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter) && ConsoleAdventure.prekstate.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter) && cursorPos > -1 && cursorPos < ConsoleAdventure.availableRecipes.Count)
+            if (Input.PostClick(Keys.Enter) && cursorPos > -1 && cursorPos < ConsoleAdventure.availableRecipes.Count)
             {
                 ConsoleAdventure.world.GetLocalPlayer().CraftItem(cursorPos);
             }
 
             timer++;
+        }
+
+        private void AddMaterialRecipes(Dictionary<int, List<Stack>> splintUsed, Recipe recipe, int recipeIndex, int keyIndex = 0, List<int> curIndexes = null)
+        {
+            var stacks = splintUsed.ElementAt(keyIndex);
+
+            if (curIndexes == null)
+            {
+                curIndexes = new();
+
+                for (int i = 0; i < splintUsed.Count - 1; i++)
+                {
+                    curIndexes.Add(0);
+                }
+            }
+
+            Recipe newRecipe = recipe.Copy();
+
+            if (keyIndex < splintUsed.Count - 1)
+            {
+                newRecipe = newRecipe.Copy();
+                newRecipe.Ingredients[keyIndex].Item.material = splintUsed[keyIndex][curIndexes[keyIndex]].Item.material;
+                
+                keyIndex++;
+                
+                AddMaterialRecipes(splintUsed, newRecipe, recipeIndex, keyIndex, curIndexes);
+            }
+
+            else
+            {
+                for (int i = 0; i < stacks.Value.Count; i++)
+                {
+                    newRecipe = newRecipe.Copy();
+                    newRecipe.Ingredients[keyIndex].Item.material = splintUsed[keyIndex][i].Item.material;
+
+                    if (newRecipe.InheritedMaterial > -1)
+                        newRecipe.OutItem.Item.ApplyMaterial(newRecipe.Ingredients[newRecipe.InheritedMaterial].Item.material);
+
+                    newRecipe.IDName = newRecipe.GetNewNameID(recipeIndex);
+                    ConsoleAdventure.availableRecipes.Add(newRecipe);
+                }
+
+                bool endAddingRecipes = true;
+
+                if (curIndexes.Count > 0)
+                {
+                    if (curIndexes[0] < splintUsed.ElementAt(0).Value.Count - 1) 
+                        endAddingRecipes = false;
+                }
+
+                if (!endAddingRecipes)
+                {
+                    keyIndex = 0;
+
+                    if (curIndexes[keyIndex] >= stacks.Value.Count - 1)
+                        curIndexes[keyIndex] = 0;
+
+                    else curIndexes[keyIndex]++;
+
+                    AddMaterialRecipes(splintUsed, newRecipe, recipeIndex, keyIndex, curIndexes);
+                }
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)

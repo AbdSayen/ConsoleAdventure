@@ -9,8 +9,6 @@ using ConsoleAdventure.WorldEngine;
 using ConsoleAdventure.WorldEngine.Levels;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
-using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -222,6 +220,8 @@ namespace ConsoleAdventure.Content.Scripts.IO
             tags["ModTransforms"] = world.modTransforms;
             tags["VanillaTransforms"] = Main.vanillaTypesInitialized;
 
+            tags["Materials"] = world.materials;
+
             List<WorldLevel> rawLevels = world.levels.Levels;
             List<string> levels = new();
 
@@ -423,16 +423,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
         public static void InitContent()
         {
             Transform.ClearTypeMap();
-            MaterialSystem.Init();
+            MaterialSystem.Init(ConsoleAdventure.world);
 
             Light.Clear();
 
             Transform.IsGlobalInit = true;
 
             Type baseType = typeof(Transform);
-            IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType)).ToList().Concat(CaModLoader.modTransforms);
-
-            
+            IEnumerable<Type> list = Assembly.GetAssembly(baseType).GetTypes().Where(type => type.IsSubclassOf(baseType)).ToList().Concat(CaModLoader.modTransforms);   
 
             //Фу, мерзость, которая может и аукнутся (из-за абстракности базового Transform)
             foreach (Type type in list)
@@ -506,6 +504,14 @@ namespace ConsoleAdventure.Content.Scripts.IO
                     ConsoleAdventure.recipes.Add(recipe);
             }
 
+            ConsoleAdventure.world.materials = new Dictionary<string, int>();
+
+            foreach (Material material in MaterialSystem.Materials)
+            {
+                ConsoleAdventure.world.materials.Add(material.Name, material.Type);
+                ConsoleAdventure.logger.AddMessage($"Material: {material.Name} in {material.ModName} inited with id {material.Type}");
+            }
+
             CaModLoader.PostInitContentMods();
         }
 
@@ -541,6 +547,9 @@ namespace ConsoleAdventure.Content.Scripts.IO
                 }
 
                 Main.InitTransformsTypes(0);
+
+                world.materials = tags.SafelyGet("Materials", new Dictionary<string, int>());
+
                 InitContent();
 
                 string[] levels = tags.SafelyGet<string[]>("WorldLevels", null);

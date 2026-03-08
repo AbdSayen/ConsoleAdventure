@@ -20,6 +20,7 @@ using ConsoleAdventure.WorldEngine.Levels;
 using CaModLoaderAPI;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 using ConsoleAdventure.Content.Scripts.WorldEngine.ChunkManagement;
+using System.Diagnostics;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -63,6 +64,8 @@ namespace ConsoleAdventure.WorldEngine
         public Dictionary<string, byte[]> playersDat;
 
         internal Dictionary<string, int> modTransforms = new Dictionary<string, int>();
+
+        internal Dictionary<string, int> materials = new Dictionary<string, int>();
 
         public Rain rain = new Rain();
 
@@ -292,7 +295,7 @@ namespace ConsoleAdventure.WorldEngine
                 Player p = GetLocalPlayer();
                 observer = new Observer(p.position, p.w);
             }
-            renderer.Render(observer.position, observer.w, Cursor.Instance.CursorPosition, Color.OrangeRed);
+            renderer.Render(observer.position, observer.w, Cursor.Instance.CursorPosition, Color.OrangeRed, ConsoleAdventure.worldPos);
 
             ChatDraw();
         }

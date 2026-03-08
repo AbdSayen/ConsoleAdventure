@@ -33,10 +33,36 @@ namespace ConsoleAdventure
         internal static bool IsGlobalInit = false;
 
         /// <summary>
-        /// Определяет возможность пройти сквозь блок для каждого типа трансформов.
+        /// Определяет возможность пройти сквозь блок для каждого типа трансформов.<br/><br/>
+        /// По умолчанию предполагается, что твёрдый блок блокирует свет. Если вам нужны болие гибкие настройки, ознакомьтесь с <seealso cref="IsLightingInteractable"/> и <seealso cref="LightAbsorption"/>
         /// <br/><br/>Значение по умолчанию: <c>false</c>
         /// </summary>
         public static StaticData<bool> IsObstacle { get; private set; }
+
+        /// <summary>
+        /// Определяет, может ли блок взаимодействовать со светом для каждого типа трансформов. Если значение null, 
+        /// то при расчёте освещение учитивыется <seealso cref="IsObstacle"/>. Иначе, 
+        /// можно отменить или присвоить возможность взаимодействия со светом любому 
+        /// блоку, с любым <seealso cref="IsObstacle"/>
+        /// <br/><br/>Значение по умолчанию: <c>null</c>
+        /// </summary>
+        public static StaticData<bool?> IsLightingInteractable { get; private set; }
+
+        /// <summary>
+        /// Используется при расчете освещения и определяет, на сколько должен увеличится 
+        /// счётчик пересечённых стен при попадании луча света на блок. Значения параметра 
+        /// находится в границах от 0 до 1. Значение по умалчанию - <c>0.5f</c> это равно тому, 
+        /// что свет полностью поглатится за 2 блока.
+        /// 
+        /// <br/><br/>Вот другие примеры для сравнения: 
+        /// <br/>- <c>0.0f</c> - сколько угодно блоков (до пределов распростронения света) 
+        /// <br/>- <c>0.1f</c> - 10 блоков 
+        /// <br/>- <c>0.2f</c> - 5 блоков 
+        /// <br/>- <c>1.0f</c> - 1 блок
+        /// <br/><br/><b>Для работы нужно, чтобы <seealso cref="IsObstacle"/> или <seealso cref="IsLightingInteractable"/> был равен true</b>
+        /// <br/><br/>Значение по умолчанию: <c>0.5f</c>
+        /// </summary>
+        public static StaticData<float> LightAbsorption { get; private set; }
 
         /// <summary>
         /// Определяет твёрдость для каждого типа трансформов
@@ -207,6 +233,8 @@ namespace ConsoleAdventure
         public virtual void InitStaticData()
         {
             IsObstacle = new StaticData<bool>(false);
+            IsLightingInteractable = new StaticData<bool?>(null);
+            LightAbsorption = new StaticData<float>(0.5f, (v) => Math.Clamp(v, 0f, 1f));
             Hardness = new StaticData<float>(1f);
             BurnType = new StaticData<byte>(0);
             DefaultWorldLayer = new StaticData<byte?>(World.BlocksLayerId);
@@ -487,7 +515,7 @@ namespace ConsoleAdventure
             if (modIndex > -1) 
                 mod = CaModLoader.GetActiveMods()[modIndex];
 
-            if (MaterialSystem.Materials.ToList().FindIndex(m => m.Value.FromTransformType == type) > -1) 
+            if (MaterialSystem.Materials.FindIndex(m => m.FromTransformType == type) > -1) 
                 return null;
 
             Material material = MaterialSystem.AddMaterial(mod, materialType, name, modifyColor, modifySymbol);

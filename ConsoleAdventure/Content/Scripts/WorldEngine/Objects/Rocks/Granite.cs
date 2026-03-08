@@ -4,13 +4,6 @@ using ConsoleAdventure.Content.Scripts.MaterialTypes;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -36,7 +29,7 @@ namespace ConsoleAdventure.WorldEngine
             BurnType[type] = 2;
         }
 
-        public override void Collapse() => DropItem(new StoneItem(), material: 0);
+        public override void Collapse() => DropItem(new StoneItem(), 1, MaterialSystem.GetMaterial(GetType().Name).Type);
 
         public override string GetSymbol() => "##";
 
