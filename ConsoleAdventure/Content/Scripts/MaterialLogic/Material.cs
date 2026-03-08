@@ -1,5 +1,6 @@
 ﻿using CaModLoaderAPI;
 using Microsoft.Xna.Framework;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,14 @@ namespace ConsoleAdventure.Content.Scripts.MaterialLogic
 {
     public class Material
     {
-        public int Type { get; private set; } = 0;
+        public int Type { get; private set; } = -1;
 
         public Mod Mod { get; private set; } = null;
 
         public string ModName => Mod?.modName ?? "ConsoleAdventure";
-        
+
+        public string FullName => (Mod?.modName != null ? ModName : "") + "|" + Name;
+
         public string Name { get; private set; }
 
         public MaterialType MaterialType { get; private set; }
@@ -38,15 +41,21 @@ namespace ConsoleAdventure.Content.Scripts.MaterialLogic
         /// </summary>
         public int FromTransformType { get; set; } = 0;
 
-        internal Material(MaterialType materialType, string name, int type)
+        internal Material(Mod mod, MaterialType materialType, string name)
         {
-            if (materialType == null) throw new ArgumentNullException(nameof(materialType));
+            //if (materialType == null) throw new ArgumentNullException(nameof(materialType));
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (name == "") throw new ArgumentException(nameof(name));
 
+            Mod = mod;
             MaterialType = materialType;
             Name = name;
-            Type = type;
+        }
+
+        internal void SetType(int type)
+        {
+            if (Type == -1 && type >= 0)
+                Type = type;
         }
     }
 }

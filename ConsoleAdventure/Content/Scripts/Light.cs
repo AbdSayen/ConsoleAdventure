@@ -8,6 +8,7 @@ using ConsoleAdventure.WorldEngine;
 using System.ComponentModel;
 using System.Xaml.Permissions;
 using System.Threading;
+using System.Diagnostics;
 
 namespace ConsoleAdventure.Content.Scripts
 {
@@ -15,33 +16,48 @@ namespace ConsoleAdventure.Content.Scripts
     {
         private struct LightSource
         {
-            public int x;
-            public int y;
-            public int w;
+            public Position position;
+            public byte w;
             public Color color;
             public float radius;
 
-            public LightSource(int x, int y, int w, Color color, float radius)
+            public LightSource(short x, short y, byte w, Color color, float radius)
             {
-                this.x = x;
-                this.y = y;
+                position = new Position(x, y);
                 this.w = w;
                 this.color = color;
                 this.radius = radius;
             }
         }
 
+        private struct Wall
+        {
+            public bool isWall;
+            public float absorption;
+
+            public Wall(bool isWall, float absorption)
+            {
+                this.isWall = isWall;
+                this.absorption = absorption;
+            }
+        }
+
+        public static Stopwatch UpdateTimer { get; private set; }
+
         private static readonly object locker = new object();
+
         private static List<LightSource> lightSources = new();
+
         public static Color[,] colors = new Color[61, 31];
+        private static Wall[,] wallsMap = new Wall[61, 31];
 
         private static int x;
         private static int y;
         private static int w;
+
         public static int width = 61;
         public static int height = 31;
 
-        public static bool onPlaceLightSource = false;
         public static bool hackLight;
 
         public static Color GetSunLightColor(Color dayColor, Color nightColor)
@@ -74,6 +90,9 @@ namespace ConsoleAdventure.Content.Scripts
 
         public static void Update(Position start, int w)
         {
+            UpdateTimer = new Stopwatch();
+            UpdateTimer.Start();
+
             x = start.x - 30;
             y = start.y - 15;
 
@@ -87,7 +106,9 @@ namespace ConsoleAdventure.Content.Scripts
             }
 
             if (hackLight)
+            {
                 color = Color.White;
+            }
 
             /*Light.Clear();
             StringPaint.Clear();
@@ -112,6 +133,7 @@ namespace ConsoleAdventure.Content.Scripts
             }*/
 
             colors = new Color[width, height];
+            wallsMap = new Wall[width, height];
 
             for (int i = 0; i < width; i++)
             {
@@ -121,107 +143,137 @@ namespace ConsoleAdventure.Content.Scripts
                     {
                         Field field = ConsoleAdventure.world.GetField(i + x, j + y, World.BlocksLayerId, w);
 
-                        Color accumulatedLight = color;
-
                         if (field != null)
                         {
-                            for (int k = 0; k < lightSources.Count; k++)
+                            int type = field.content?.type ?? 0;
+                            bool? canBlockLight = Transform.IsLightingInteractable[type];
+
+                            bool isWall = !canBlockLight.HasValue ? Transform.IsObstacle[type] : canBlockLight.Value;
+
+                            wallsMap[i, j] = new Wall(isWall, Transform.LightAbsorption[type]); 
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    Vector3 accumulatedLight = color.ToVector3();
+                    
+                    float intersectionsCount = 0;
+
+                    for (int k = 0; k < lightSources.Count; k++)
+                    {
+                        LightSource source = lightSources[k];
+
+                        if (source.w != w)
+                            continue;
+
+                        float distance = Vector2.DistanceSquared(new Vector2(i + x, j + y), source.position.ToVector2());
+                        if (distance < source.radius)
+                        {
+                            float intensity = MathHelper.Clamp(1f - (distance / source.radius), 0, 1);
+
+                            Vector3 lightColor = (source.color * intensity).ToVector3();
+
+                            if (!accumulatedLight.Equals(lightColor))
                             {
-                                LightSource source = lightSources[k];
-
-                                if (source.w != w)
-                                    continue;
-
-                                float distance = Vector2.DistanceSquared(new Vector2(i + x, j + y), new Vector2(source.x, source.y));
-                                if (distance < source.radius)
+                                if (LightBlock(i, j, w, source, out float count))
                                 {
-                                    float intensity = MathHelper.Clamp(1f - (distance / source.radius), 0, 1);
+                                    lightColor *= 1f - count;
 
-                                    Color lightColor = source.color * intensity;
+                                    if (lightColor.X > accumulatedLight.X)
+                                        accumulatedLight.X = lightColor.X;
 
-                                    if (!accumulatedLight.Equals(lightColor))
-                                    {
-                                        if (LightBlock(i + x, j + y, w, source, out int count))
-                                        {
-                                            lightColor *= 1f / (1f + (float)count);
+                                    if (lightColor.Y > accumulatedLight.Y)
+                                        accumulatedLight.Y = lightColor.Y;
 
-                                            accumulatedLight = Utils.AddColors(accumulatedLight, lightColor);
-                                        }
-                                    }
+                                    if (lightColor.Z > accumulatedLight.Z)
+                                        accumulatedLight.Z = lightColor.Z;
+
+                                    intersectionsCount++;
                                 }
-
-                                accumulatedLight.A = 255;
                             }
                         }
-
-                        colors[i, j] = accumulatedLight;
                     }
+
+                    colors[i, j] = (accumulatedLight).ToColor();
                 }
             }
+
+            UpdateTimer.Stop();
         }
 
-        private static bool LightBlock(int x, int y, int w, LightSource lightSource, out int wallsCount)
+        private static bool LightBlock(int x, int y, int w, LightSource lightSource, out float wallsCount)
         {
-            int maxWallCount = 1;
-            int wallCount = 0;
-            int xA = lightSource.x;
-            int yA = lightSource.y;
-
-            int dx = Math.Abs(x - xA);
-            int dy = Math.Abs(y - yA);
-
-            int sx = xA < x ? 1 : -1;
-            int sy = yA < y ? 1 : -1;
-
-            int err = dx - dy;
-
-            while (true)
+            try
             {
-                if (xA == x && yA == y) break;
+                float wallCounter = 0;
 
-                if (ConsoleAdventure.world.GetChunk(xA, yA, out int v1, out int v2) is LoadedChunk)
+                int xA = Math.Clamp(lightSource.position.x - ConsoleAdventure.startDisplay.x, 0, 60);
+                int yA = Math.Clamp(lightSource.position.y - ConsoleAdventure.startDisplay.y, 0, 30);
+
+                int dx = Math.Abs(x - xA);
+                int dy = Math.Abs(y - yA);
+
+                int sx = xA < x ? 1 : -1;
+                int sy = yA < y ? 1 : -1;
+
+                int err = dx - dy;
+
+                while (true)
                 {
-                    Transform transform = ConsoleAdventure.world.GetField(xA, yA, World.BlocksLayerId, w)?.content;
-                    if (Transform.IsObstacle[transform] == true)
+                    if (xA == x && yA == y) break;
+
+                    if (wallsMap[xA, yA].isWall)
                     {
-                        wallCount++;
+                        wallCounter += wallsMap[xA, yA].absorption;
+                    }
+
+                    if (wallCounter >= 1)
+                    {
+                        wallsCount = wallCounter;
+                        return false;
+                    }
+
+                    int e2 = 2 * err;
+
+                    if (e2 > -dy)
+                    {
+                        err -= dy;
+                        xA += sx;
+                    }
+
+                    if (e2 < dx)
+                    {
+                        err += dx;
+                        yA += sy;
                     }
                 }
-
-                if (wallCount > maxWallCount)
-                {
-                    wallsCount = wallCount;
-                    return false;
-                }
-
-                int e2 = 2 * err;
-
-                if (e2 > -dy)
-                {
-                    err -= dy;
-                    xA += sx;
-                }
-
-                if (e2 < dx)
-                {
-                    err += dx;
-                    yA += sy;
-                }
+                wallsCount = wallCounter;
+                return true;
             }
-            wallsCount = wallCount;
-            return true;
+
+            catch (Exception ex)
+            {
+                
+            }
+
+            wallsCount = 0;
+            return false;
         }
 
-        public static void Add(int x, int y, int w, Color color, float radius = -1)
+        public static void Add(short x, short y, byte w, Color color, float radius = -1)
         {
             if(radius < 0)
                 radius = (float)((color.R + color.G + color.B) / 3);
 
             lightSources.Add(new LightSource(x, y, w, color, radius));
-            onPlaceLightSource = true;
         }
 
-        public static void Add(Position position, int w, Color color)
+        public static void Add(Position position, byte w, Color color)
         {
             Add(position.x, position.y, w, color);
         }

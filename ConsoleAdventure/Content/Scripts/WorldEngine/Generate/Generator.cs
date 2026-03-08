@@ -33,6 +33,7 @@ namespace ConsoleAdventure.WorldEngine.Generate
 
             if (isInitedContent)
             {
+                world.materials = new();
                 Main.InitTransformsTypes(Main.vanillaTypesInitialized);
                 WorldIO.InitContent();
 

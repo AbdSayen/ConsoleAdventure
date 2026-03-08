@@ -1,4 +1,6 @@
-﻿using ConsoleAdventure.WorldEngine;
+﻿using ConsoleAdventure.Content.Scripts.MaterialTypes;
+using ConsoleAdventure.Content.Scripts;
+using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -6,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using ConsoleAdventure.Content.Scripts.MaterialLogic;
 
 namespace ConsoleAdventure.WorldEngine
 {
@@ -19,11 +22,16 @@ namespace ConsoleAdventure.WorldEngine
 
         public override void SetStaticData()
         {
+            Func<Transform, Item, SmartColor> color = (i, t) => new(35, 35, 35);
+
+            var symbol = StoneType.GetModifySymbol("≡", "Ξ", "-", "ΞΞ", new[] { " -", " =" });
+            CreateMaterial(new StoneType(), color, symbol);
+
             IsObstacle[type] = true;
             Hardness[type] = 0.5f;
         }
 
-        public override void Collapse() => DropItem(new BiotiteItem());
+        public override void Collapse() => DropItem(new StoneItem(), 1, MaterialSystem.GetMaterial(GetType().Name).Type);
 
         public override string GetSymbol() => "≡≡";
 

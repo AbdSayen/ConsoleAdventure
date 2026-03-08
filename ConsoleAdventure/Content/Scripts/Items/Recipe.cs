@@ -4,6 +4,7 @@ using System.Linq;
 using ConsoleAdventure.Content.Scripts.Player;
 using System.Threading.Tasks;
 using ConsoleAdventure.Content.Scripts.MaterialLogic;
+using System.Text;
 
 namespace ConsoleAdventure
 {
@@ -159,6 +160,23 @@ namespace ConsoleAdventure
             }
 
             return copy;
+        }
+
+        public string GetNewNameID(int index)
+        {
+            StringBuilder ingredients = new StringBuilder();
+
+            for (int i = 0; i < Ingredients.Count; i++)
+            {
+                ingredients.Append(Ingredients[i].Item.Material?.Name ?? "None");
+
+                if (i >= Ingredients.Count - 1)
+                    ingredients.Append(", ");
+            }
+
+            return OutItem.Item.GetType().FullName + "|" + index + "|" + 
+                   (OutItem.Item.Material?.Name ?? "None") + "[" +
+                   ingredients.ToString() + "]";
         }
     }
 

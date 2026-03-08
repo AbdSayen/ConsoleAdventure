@@ -114,7 +114,7 @@ namespace ConsoleAdventure.WorldEngine
                 for (int j = 0; j < height; j++)
                 {
                     Position curPos = new Position(pos.x + j, pos.y + i);
-                    if (ConsoleAdventure.world.GetField(curPos.x, curPos.y, World.BlocksLayerId, w)?.content?.type != type && curPos >= ConsoleAdventure.startDisplay && curPos < ConsoleAdventure.endDisplay)
+                    if (Crowns[ConsoleAdventure.world.GetField(curPos.x, curPos.y, World.BlocksLayerId, w)?.content?.type ?? 0].Length == 0 && curPos >= ConsoleAdventure.startDisplay && curPos < ConsoleAdventure.endDisplay)
                         crown.Append(Crown[i, j]);
                     else 
                         crown.Append("  ");
@@ -124,7 +124,7 @@ namespace ConsoleAdventure.WorldEngine
 
             Position tryColorPos = new Position(Math.Clamp(position.x - ConsoleAdventure.startDisplay.x, 0, 60), Math.Clamp(position.y - ConsoleAdventure.startDisplay.y, 0, 30));
             Color crownColor = (color.ToVector3() * Light.colors[tryColorPos.x, tryColorPos.y].ToVector3()).ToColor();
-            if (crownColor.R != 0 && crownColor.G != 0 && crownColor.B != 0) 
+            if (crownColor.R != 0 || crownColor.G != 0 || crownColor.B != 0) 
             { 
                 StringPaint.Draw(crown.ToString(), pos, w, new(), crownColor);
             }

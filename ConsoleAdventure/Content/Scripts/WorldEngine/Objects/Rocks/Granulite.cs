@@ -32,7 +32,7 @@ namespace ConsoleAdventure.WorldEngine
             BurnType[type] = 2;
         }
 
-        public override void Collapse() => DropItem(new StoneItem(), material: 1);
+        public override void Collapse() => DropItem(new StoneItem(), 1, MaterialSystem.GetMaterial(GetType().Name).Type);
 
         public override string GetSymbol() => "≤≤";
 

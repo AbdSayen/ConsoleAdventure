@@ -8,11 +8,20 @@ using ConsoleAdventure.Content.Scripts.IO;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using ConsoleAdventure.Content.Scripts.WorldEngine;
+using System.Diagnostics;
 
 namespace ConsoleAdventure.WorldEngine
 {
     public class Renderer
     {
+        public static Stopwatch FirstPassTimer { get; private set; }
+
+        public static Stopwatch TransformRenderTimer { get; private set; }
+
+        public static Stopwatch StringPaintRenderTimer { get; private set; }
+
+        public static Stopwatch LoadingViewChunksTimer { get; private set; }
+
         private World world;
         private int viewDistanceY = 30;
         private int viewDistanceX = 60;
@@ -35,18 +44,25 @@ namespace ConsoleAdventure.WorldEngine
         int timer;
         Position oldPosition;
         int oldW;
-        public void Render(Position observer, int observerW, Position cursorPosition, Color cursorColor)
+        public void Render(Position observer, int observerW, Position cursorPosition, Color cursorColor, Vector2 worldPos)
         {
             world = ConsoleAdventure.world;
 
+            LoadingViewChunksTimer = new Stopwatch();
+            LoadingViewChunksTimer.Start();
+
             LoadViewChunks(observer);
+
+            LoadingViewChunksTimer.Stop();
+
+            FirstPassTimer = new Stopwatch();
+            FirstPassTimer.Start();
 
             ConsoleAdventure.startDisplay = observer - new Position(30, 15);
             ConsoleAdventure.endDisplay = observer + new Position(30, 15);
 
             SpriteBatch spriteBatch = ConsoleAdventure._spriteBatch;
             SpriteFont font = ConsoleAdventure.Font;
-            Vector2 worldPos = ConsoleAdventure.worldPos;
             Vector2 cellSize = ConsoleAdventure.cellSize;
 
             if (ConsoleAdventure.WindowActive)
@@ -75,12 +91,17 @@ namespace ConsoleAdventure.WorldEngine
                 }
             }
 
+            FirstPassTimer.Stop();
+
             spriteBatch.DrawString(font, FrameSystem.GetFrame(new(122, 32), Frame.BaseFrame), new Vector2(worldPos.X - (cellSize.X / 2) + 4, worldPos.Y - cellSize.Y) - new Vector2(4, 0), new Color(50, 50, 50));
 
             if (observer != oldPosition || observerW != oldW || timer % 5 == 0)
             {
                 Light.Update(observer, observerW);
             }
+
+            TransformRenderTimer = new Stopwatch();
+            TransformRenderTimer.Start();
 
             int noClampedStartY = observer.y - viewDistanceY / 2;
             int noClampedStartX = observer.x - viewDistanceX / 2;
@@ -140,7 +161,14 @@ namespace ConsoleAdventure.WorldEngine
                 Y++; X = nx;
             }
 
+            TransformRenderTimer.Stop();
+
+            StringPaintRenderTimer = new Stopwatch();
+            StringPaintRenderTimer.Start();
+
             StringPaint.DrawUnits((ConsoleAdventure.startDisplay).ToVector2());
+
+            StringPaintRenderTimer.Stop();
 
             if (Cursor.Instance != null && Cursor.Instance.IsActive)
             {

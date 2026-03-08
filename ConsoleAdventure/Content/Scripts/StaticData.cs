@@ -13,10 +13,13 @@ namespace ConsoleAdventure.Content.Scripts
 
         public T[] Values { get; private set; }
 
-        public StaticData(T defaultData)
+        public Func<T, T> Normalize { get; private set; }
+
+        public StaticData(T defaultData, Func<T, T> normalize = null)
         {
             Values = new T[0];
             DefaultData = defaultData;
+            Normalize = normalize;
         }
 
         private void Add(int type, T value)
@@ -58,7 +61,7 @@ namespace ConsoleAdventure.Content.Scripts
             }
             set
             {
-                Add(type, value);
+                Add(type, Normalize == null ? value : Normalize.Invoke(value));
             }
         }
 
