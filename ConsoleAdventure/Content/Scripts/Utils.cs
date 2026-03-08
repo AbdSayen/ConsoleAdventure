@@ -276,5 +276,18 @@ namespace ConsoleAdventure
             int indexColor = ConsoleAdventure.Timer / 60 % colors.Count;
             return Color.Lerp(colors[indexColor], colors[(indexColor + 1) % colors.Count], amount);
         }
+
+        public static void DrawAnySizeFrame(SpriteBatch spriteBatch, Point position, Point size, int borderWidth, Color borderColor)
+        {
+            spriteBatch.Draw(ConsoleAdventure.pixel, new Rectangle(position, size), Color.Black);
+
+            int borderWidthHalf = borderWidth / 2;
+
+            // BORDERS
+            spriteBatch.Draw(ConsoleAdventure.pixel, new Rectangle(new Point(position.X - borderWidthHalf, position.Y - borderWidthHalf), new Point(size.X + borderWidth, borderWidth)), borderColor); // UP
+            spriteBatch.Draw(ConsoleAdventure.pixel, new Rectangle(new Point(position.X - borderWidthHalf, position.Y + size.Y - borderWidthHalf), new Point(size.X + borderWidth, borderWidth)), borderColor); // DOWN
+            spriteBatch.Draw(ConsoleAdventure.pixel, new Rectangle(new Point(position.X - borderWidthHalf, position.Y - borderWidthHalf), new Point(borderWidth, size.Y + borderWidth)), borderColor); // LEFT
+            spriteBatch.Draw(ConsoleAdventure.pixel, new Rectangle(new Point(position.X + size.X - borderWidthHalf, position.Y - borderWidthHalf), new Point(borderWidth, size.Y + borderWidth)), borderColor); // RIGHT
+        }
     }
 }

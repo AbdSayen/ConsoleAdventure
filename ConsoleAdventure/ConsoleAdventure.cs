@@ -230,7 +230,7 @@ namespace ConsoleAdventure
             base.Initialize();
 
             pixel = new Texture2D(_graphics.GraphicsDevice, 1, 1);
-            pixel.SetData(new Color[] { Color.Black });
+            pixel.SetData(new Color[] { Color.White });
 
             CaModLoader.UpdateModSourcesDLL();
 

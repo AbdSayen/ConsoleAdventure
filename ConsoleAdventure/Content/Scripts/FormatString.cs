@@ -78,6 +78,7 @@ namespace ConsoleAdventure.Content.Scripts
 
                     for (int j = endNameIndex + 1; j <= end + 1; j++)
                     {
+                        if (j >= String.Length) continue;
                         char symbol = String[j];
 
                         if (symbol == ',' || symbol == '=' || symbol == ']')

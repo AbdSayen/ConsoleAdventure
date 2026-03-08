@@ -98,22 +98,24 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
         {
             if (!IsHovered()) return;
             string newText = TextInput.GetInputText(fieldContent, cursorPos, out cursorPos, chars, listType);
-            if ((newText.Length <= fieldContent.Length || text.String.Length < Width) && !isAutoSized || isAutoSized)
+            if ((newText.Length <= fieldContent.Length || text.BaseString.Length < Width) && !isAutoSized || isAutoSized)
             {
                 fieldContent = newText;
                 text.SetText(fieldContent, new SmartColor(color));
 
                 if (isAutoSized)
                 {
-                    if (text.String.Length > targetWidth)
+                    if (text.BaseString.Length > targetWidth)
                     {
-                        Width = text.String.Length;
+                        Width = text.BaseString.Length;
                     }
                 }
             }
         }
 
         int timer;
+        int offs = 4;
+        int offsBottom = 5; // between hint and text
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
             if (fieldContent == "" && tooltip != "")
@@ -121,12 +123,25 @@ namespace ConsoleAdventure.Content.Scripts.UI.System
                 spriteBatch.DrawString(ConsoleAdventure.Font, tooltip, drawPosition + new Vector2(9, 0), Color.Gray, 0, Vector2.Zero, 1f, 0, 0);
             }
 
-            //spriteBatch.DrawString(ConsoleAdventure.Font, sourceText, drawPosition + new Vector2(9, -19), new Color(70, 70, 70)); // format tooltip
-            base.Draw(spriteBatch, drawPosition + new Vector2(9, 0));
+            bool isFormated = text.BaseString != text.String;
+            if (hovered)
+            {
+                spriteBatch.DrawString(ConsoleAdventure.Font, text.BaseString, drawPosition + new Vector2(9, 0), isFormated ? new Color(70, 70, 70) : Color.White); // original
+
+                // Lets draw BG for formated here if isFormated
+                if (isFormated)
+                {
+                    Utils.DrawAnySizeFrame(spriteBatch, (drawPosition + new Vector2(9, -19 - offs - offsBottom) + new Vector2(-offs*2, -offs)).ToPoint(), new Point((int)ConsoleAdventure.Font.MeasureString(text.String).X + offs * 4, 19 + offs * 2), 1, Color.White);
+                }
+            }
+            if (isFormated || !hovered)
+            {
+                base.Draw(spriteBatch, drawPosition + (hovered ? new Vector2(9, -19 - offs - offsBottom) : new Vector2(9, 0))); // formated
+            }
 
             if (IsHovered() && timer % cursorTickTime > ((float)cursorTickTime / 2))
             {
-                spriteBatch.DrawString(ConsoleAdventure.Font, cursorChars[cursor], drawPosition + new Vector2(9, 0) + new Vector2(cursorPos.X * 9, cursorPos.Y * 19) + new Vector2(-(text.BaseString.Length - text.String.Length) * 9, 0), color, 0, Vector2.Zero, 1f, 0, 0);
+                spriteBatch.DrawString(ConsoleAdventure.Font, cursorChars[cursor], drawPosition + new Vector2(9, 0) + new Vector2(cursorPos.X * 9, cursorPos.Y * 19), color, 0, Vector2.Zero, 1f, 0, 0); // + new Vector2(-(text.BaseString.Length - text.String.Length) * 9, 0)
             }
 
             spriteBatch.DrawString(ConsoleAdventure.Font, BorderChars[0], drawPosition, color, 0, Vector2.Zero, 1f, 0, 0);

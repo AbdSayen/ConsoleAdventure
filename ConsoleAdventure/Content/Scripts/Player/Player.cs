@@ -6,6 +6,7 @@ using ConsoleAdventure.CaModLoaderAPI;
 using ConsoleAdventure.Content.Scripts.Entities;
 using ConsoleAdventure.Content.Scripts.InputLogic;
 using ConsoleAdventure.Content.Scripts.IO;
+using ConsoleAdventure.Content.Scripts.MaterialLogic;
 using ConsoleAdventure.Settings;
 using ConsoleAdventure.WorldEngine;
 using Microsoft.Xna.Framework;
@@ -56,7 +57,7 @@ namespace ConsoleAdventure.Content.Scripts.Player
                 slots =
                 {
                     new Stack( new IronPick(), 1),
-                    new Stack( new TorchItem(), 1),
+                    new Stack(new TorchItem(), 1, MaterialSystem.GetMaterial("PineWood")?.Type ?? -1),
                 }
             };
 
