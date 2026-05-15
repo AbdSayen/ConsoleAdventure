@@ -24,6 +24,12 @@ namespace ConsoleAdventure
                 
         }
 
+        public static void InitOptionDefaultSettings()
+        {
+            InitSetting("Options", "Language", (int)Language.english);
+            InitSetting("Options", "MusicVolume", 100);
+        }
+
         public static void SetSetting(string type, string key, int value)
         {
             settings[type][key] = value; // По типу и ключу установить значение

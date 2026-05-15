@@ -246,6 +246,8 @@ namespace ConsoleAdventure
         {
             string enabledModsFile = modsDirPath + @"\enabled-mods.json";
 
+            Directory.CreateDirectory(modsDirPath);
+
             if (!File.Exists(enabledModsFile))
             {
                 string data = JsonSerializer.Serialize(new List<string>());
