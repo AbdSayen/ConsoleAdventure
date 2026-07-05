@@ -139,6 +139,8 @@ namespace ConsoleAdventure
             if (File.Exists(Program.savePath + "settings.json")) // Если файл существует
                 SettingsSystem.LoadSettings(); // Загружаем сохраненные настройки
 
+            SettingsSystem.InitOptionDefaultSettings();
+
             InputConfig.Init();
             InputConfig.Load();
 
