@@ -346,6 +346,7 @@ namespace ConsoleAdventure
                             byte entityType = packet.ReadByte();
 
                             nextNetID = entityNetID;
+                            ConsoleAdventure.logger.AddMessage("entitySpawned nextNetID: " + nextNetID.ToString());
                             Entity entity = (Entity)Activator.CreateInstance(Entity.TypeMapping[entityType], new object[] { entityPosition, entityW, null });
                             Spawner.Spawn(entity);
                             break;

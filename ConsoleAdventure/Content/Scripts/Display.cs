@@ -229,6 +229,7 @@ namespace ConsoleAdventure
 
                 if (Input.PostClick(Keys.F12))
                 {
+                    ConsoleAdventure.logger.AddMessage("Clicked F12");
                     try
                     {
                         System.Drawing.Bitmap bitmap = await Task.Run(() => MapScreen(mapW));
@@ -245,6 +246,7 @@ namespace ConsoleAdventure
 
                 else if (Input.PostClick(Keys.F11))
                 {
+                    ConsoleAdventure.logger.AddMessage("Clicked F11");
                     try
                     {
                         System.Drawing.Bitmap bitmap = await Task.Run(() => MapScreen2(mapW));
